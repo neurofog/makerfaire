@@ -1,5 +1,20 @@
 <?php
 
+require_once( WP_CONTENT_DIR . '/themes/vip/plugins/vip-init.php' );
+
+if ( function_exists( 'wpcom_vip_enable_opengraph' ) ) {
+	wpcom_vip_enable_opengraph();
+}
+
+if ( function_exists( 'vip_contrib_add_upload_cap' ) ) {
+	vip_contrib_add_upload_cap();
+}
+
+if ( function_exists( 'wpcom_vip_sharing_twitter_via' ) ) {
+	wpcom_vip_sharing_twitter_via( 'make' );
+}
+
+
 function make_enqueue_jquery() {
 	wp_enqueue_script( 'jquery' );
 	wp_enqueue_style( 'make', get_stylesheet_directory_uri() . '/style.css' );
