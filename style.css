@@ -45,6 +45,14 @@ License URI: license.txt
 	width:auto;
 	}
 
-.more_faires {min-height:372px;}
+.more_faires {
+	min-height:372px;
+}
 
-
+.smaller {
+	font-size:16px;
+	line-height:24px;
+}
+.smaller small { 
+	font-size:14px;
+}
