@@ -24,14 +24,14 @@
 			<div class="table-cell">
 				<a href="http://www.disneyabctv.com/web/index.aspx"><img style="margin-left:10px;width:280px !important;" src="http://makezineblog.files.wordpress.com/2012/09/disneyabc_logo_stacked.jpg?w=280" alt="Disney ABC Television" valign="center" title="Disney ABC Television" /></a> 
 			</div>
-</div>
+		</div>
 		<div class="item">
-<div class="table-cell">
+			<div class="table-cell">
 				<a href="http://creation.redbullusa.com/"><img style="margin-left:10px;width:280px !important;" src="http://makezineblog.files.wordpress.com/2012/08/red-bull-creation-_black.jpg?w=280" alt="Red Bull Creation Challenge" valign="center" title="Red Bull Creation Challenge" /></a> 
 			</div>
-</div>
-<div class="item">
-<div class="table-cell">
+		</div>
+		<div class="item">
+			<div class="table-cell">
 				<a href="http://www.timewarnercable.com/"><img style="margin-left:10px;width:280px !important;" src="http://makezineblog.files.wordpress.com/2012/09/timewarnercable1.jpg?w=280" alt="Time Warner Cable" valign="center" title="Time Warner Cable" /></a> 
 			</div>
 		</div>
@@ -60,21 +60,21 @@
 				<a href="http://www.epiloglaser.com/"><img style="margin-left:10px;width:280px !important;" src="http://makezineblog.files.wordpress.com/2012/09/epilog.jpg?w=280" alt="Epilog Laser" valign="center" title="Epilog Laser" /></a> 
 			</div>
 		</div>
-<div class="item">
+		<div class="item">
 			<div class="table-cell">
 				<a href="http://www.ge.com/"><img style="margin-left:10px;width:280px !important;" src="http://makezineblog.files.wordpress.com/2012/10/ge-logo.jpg" alt="General Electric" valign="center" title="General Electric" /></a> 
 			</div>
-</div>
-	<div class="item">
+		</div>
+		<div class="item">
 			<div class="table-cell">
 				<a href="http://www.gm.com/"><img style="margin-left:10px;width:280px !important;" src="http://makezineblog.files.wordpress.com/2012/09/general-motors-company-copy.jpg?w=280" alt="General Motors" valign="center" title="General Motors" /></a> 
 			</div>
-</div>
-<div class="item">
+		</div>
+		<div class="item">
 			<div class="table-cell">
 				<a href="https://plus.google.com/"><img style="margin-left:10px;width:280px !important;" src="http://makezineblog.files.wordpress.com/2012/09/google-plus-logo-05.jpeg?w=280" alt="Google Plus" valign="center" title="Google Plus" /></a> 
 			</div>
-</div>
+		</div>
 		<div class="item">
 			<div class="table-cell">
 				<a href="facebook.com/schickxtreme3"><img style="margin-left:10px;width:280px !important;" src="http://makezineblog.files.wordpress.com/2012/08/schick_x3_eco_m-logo-hr.jpg?w=280" alt="Schick Xtreme 3" valign="center" title="Schick Xtreme 3" /></a> 
@@ -89,8 +89,8 @@
 			<div class="table-cell">
 				<a href="http://www.sketchup.com/"><img style="margin-left:10px;width:280px !important;" src="http://makezineblog.files.wordpress.com/2012/09/sketchup_logo_hires.jpeg?w=280" alt="Sketch Up" valign="center" title="Sketch Up" /></a> 
 			</div>
-	</div>
-<div class="item">
+		</div>
+		<div class="item">
 			<div class="table-cell">
 				<a href=""><img style="margin-left:10px;width:280px !important;" src="http://makezineblog.files.wordpress.com/2012/10/makerweekribbon1.jpeg?w=280" alt="" valign="center" title="Maker Week" /></a> 
 			</div>

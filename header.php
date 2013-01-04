@@ -19,124 +19,29 @@
 
 	<!-- Le styles -->
 	
-	<!-- Le fav and touch icons -->
-	<link rel="shortcut icon" href="/images/favicon.ico">
-	<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-	<link rel="apple-touch-icon" sizes="72x72" href="/images/apple-touch-icon-72x72.png">
-	<link rel="apple-touch-icon" sizes="114x114" href="/images/apple-touch-icon-114x114.png">
-
 	<script type="text/javascript" src="http://use.typekit.com/fzm8sgx.js"></script>
 	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-
-
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.js"></script>
-	<script type="text/javascript" src="http://makerfaire.com/new/js/prettify.js"></script>
-	<script type="text/javascript" src="http://cdn.makezine.com/make/js/jquery.innerfade-mod.js"></script>
-	<script type="text/javascript" src="http://cdn.makezine.com/make/js/jquery.countdown.js"></script>
-	<script type="text/javascript" src="http://cdn.makezine.com/make/js/jquery.cycle.min.js"></script>
-	<script type="text/javascript" src="http://widgets.twimg.com/j/2/widget.js"></script>
-	<script type="text/javascript" src="http://cdn.makezine.com/make/bootstrap/js/jquery.oembed.min.js"></script>
-	<script type="text/javascript" src="http://cdn.makezine.com/make/js/jquery.embedly.js"></script>
 
 	<script type="text/javascript" charset="utf-8">
 		$.embedly.defaults['key'] = '899d8ef024274909b3fabb22f2f8ee24';
 	</script>
-
-	<script type="text/javascript" charset="utf-8">
-		
-( function( $ ) {
-	function getParams() {
-		var params = {};
-		var input = String( window.location.href ).match( /s[^?]*\?(.*)/i );
-		if ( input != null ) {
-			input = input[1];
-			input = input.split( "&" );
-
-			for ( var i in input ) {
-				var d = input[i].match( /([^=]*)=([^=]*)/i );
-				if ( d != null ) {
-					params[ d[1] ] = d[2]
-				}
-			}
-		}
-
-		return params;
-	}
 	
-	$( function () {
-		var p = getParams();
 
-		$( ".topic-" + p['topic'] ).addClass( 'active' );
+	<script type="text/javascript">
 
-		if ( p['tags_new'] != null ) {
-			$('.tags').addClass('active');
-			$('.tags a').tab('show');
-		}
-		if ( p['topic'] != null ) {
-			$('.categories').addClass('active');
-			$('.categories a').tab('show');
-		}
-	})
-}) ( jQuery );
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-51157-7']);
+		_gaq.push(['_trackPageview']);
 
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
 
 	</script>
-	
-<!-- <csif cond="{cs.var.faire}" eq="ny12">	
-
-
-<script type="text/javascript">
-$(document).ready(function() {
-	var mfba = new Date(2012,9 - 1,29,10,0,0);	
-	//mfba = new Date(mfba.getFullYear(), 5 - 1, 21 );
-	//(year, month, day, hours, minutes, seconds, milliseconds)
-	$('#defaultCountdown').countdown({
-		until: mfba,
-		format: 'DHMS',
-		layout:'<div class="countdown-numbers"><table><tr><th>{dnn}</th><th>{sep}</td><th>{hnn}</th><th>{sep}</td><th>{mnn}</th><th>{sep}</td><th>{snn}</th></tr><tr class="time"><td>Days</td><td></td><td>Hours</td><td></td><td>Minutes</td><td></td><td>Seconds</td></tr></table></div>',
-		timeSeparator:'<span class="separator">:</span>',
-	});
-
-	  });
-</script>
-
-<cselse>
-
-
-<script type="text/javascript">
-$(document).ready(function() {
-	var mfba = new Date(2012,9 - 1,29,10,0,0);	
-//	mfba = new Date(mfba.getFullYear(), 5 - 1, 21 );
-//(year, month, day, hours, minutes, seconds, milliseconds)
-	$('#defaultCountdown').countdown({
-		until: mfba,
-		format: 'DHMS',
-		layout:'<div class="countdown-numbers"><table><tr><th>{dnn}</th><th>{sep}</td><th>{hnn}</th><th>{sep}</td><th>{mnn}</th><th>{sep}</td><th>{snn}</th></tr><tr class="time"><td>Days</td><td></td><td>Hours</td><td></td><td>Minutes</td><td></td><td>Seconds</td></tr></table></div>',
-		timeSeparator:'<span class="separator">:</span>',
-	});
-
-	  });
-</script>
-
-</csif> -->
-
-
-<script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-51157-7']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
 
 	<?php wp_head(); ?>
-
 
 	</head>
 
@@ -296,7 +201,7 @@ Topbar
 								
 								<ul class="dropdown-menu">
 									<li><a href="http://makerfaire.com/press/highlights.html">Highlights</a></li>
-<li><a href="http://makerfaire.com/newyork/2012/beat-reports/index.html">MAKE Editorial Coverage</a></li>
+									<li><a href="http://makerfaire.com/newyork/2012/beat-reports/index.html">MAKE Editorial Coverage</a></li>
 									<li><a href="http://makerfaire.com/newyork/2012/press/register.html">Press Registration</a></li>
 									<!--li><a href="http://makerfaire.com/bayarea/2012/press/">Press</a></li>
 									<li><a href="http://makerfaire.com/bayarea/2012/press/releases.html">Press Releases</a></li>

@@ -14,7 +14,6 @@ if ( function_exists( 'wpcom_vip_sharing_twitter_via' ) ) {
 	wpcom_vip_sharing_twitter_via( 'make' );
 }
 
-
 function make_enqueue_jquery() {
 	wp_enqueue_script( 'jquery' );
 	wp_enqueue_script( 'make-bootstrap', get_stylesheet_directory_uri() . '/js/bootstrap.js', array( 'jquery' ) );
