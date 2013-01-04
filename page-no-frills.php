@@ -14,25 +14,23 @@ get_header(); ?>
 
 		<div class="content span8">
 
-			<?php
-						if ( have_posts() ) :
-							while ( have_posts() ) :
-								the_post();
-								get_template_part( 'content' );
-							endwhile; ?>
+			<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
+				
+			
+				<article <?php post_class(); ?>>
 
-							<ul class="pager">
-						
-								<li class="previous"><?php previous_posts_link('&larr; Previous Page'); ?></li>
-								<li class="next"><?php next_posts_link('Next Page &rarr;'); ?></li>
-							
-							</ul>
-						
-						<?php else: ?>
-						
-							<p><?php _e('Sorry, no posts matched your criteria.'); ?></p>
-						
-						<?php endif; ?>
+					<?php the_content(); ?>
+
+				</article>
+
+			<?php endwhile; ?>
+
+			
+			<?php else: ?>
+			
+				<p><?php _e('Sorry, no posts matched your criteria.'); ?></p>
+			
+			<?php endif; ?>
 
 		</div><!--Content-->
 
