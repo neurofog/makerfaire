@@ -22,11 +22,6 @@
 	<script type="text/javascript" src="http://use.typekit.com/fzm8sgx.js"></script>
 	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 
-	<script type="text/javascript" charset="utf-8">
-		$.embedly.defaults['key'] = '899d8ef024274909b3fabb22f2f8ee24';
-	</script>
-	
-
 	<script type="text/javascript">
 
 		var _gaq = _gaq || [];

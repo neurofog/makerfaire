@@ -9,6 +9,10 @@ License: GNU General Public License
 License URI: license.txt
 */
 
+.center {
+	text-align: center;
+}
+
 .admin-bar .navbar {
 	margin-top:28px;
 }
@@ -1006,3 +1010,4 @@ padding-left: 20px;
 	border-top:2px solid #ca3e2a;
 	border-bottom:2px solid #ca3e2a;
 }
+

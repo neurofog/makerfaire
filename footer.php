@@ -72,9 +72,12 @@
 						<!--li><a href="http://makerfaire.com/bayarea/2012/jointhelist.html">Join the List</a></li-->
 						<li><a href="http://makerfaire.com/sponsors/">Sponsors</a></li>
 						<li><a href="http://makerfaire.com/be-a-maker.html">Be a Maker</a></li>			
-						<li><a href="http://makerfaire.com/blue-ribbon/">Editor's Choice Blue Ribbon Winners</a></li>			
 					</ul>
 					
+				</div>
+				
+				<div class="span12 center">
+					<?php if ( function_exists('vip_powered_wpcom') ) { echo vip_powered_wpcom(4); } ?>
 				</div>
 			
 			</div>
@@ -87,18 +90,26 @@
 <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tab.js"></script>
 <script type="text/javascript">
 
-$('.dropdown-toggle').dropdown()
-$('#north').tab('show')
-$('#myModal').modal('hide')
-$('.carousel').carousel({
-  interval: 4000
-})
-$('.sponsorCarousel').carousel({
-  interval: 3000
-})
+	jQuery(document).ready(function(){
 
+		jQuery('.dropdown-toggle').dropdown()
+		jQuery('#north').tab('show')
+		jQuery('#myModal').modal('hide')
+		jQuery('.carousel').carousel({
+			interval: 4000
+		})
+		jQuery('.sponsorCarousel').carousel({
+			interval: 3000
+		})
+	});
 
 </script>
+
+<script type="text/javascript" charset="utf-8">
+	jQuery.embedly.defaults['key'] = '899d8ef024274909b3fabb22f2f8ee24';
+</script>
+
+	
 <div id="fb-root"></div>
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];

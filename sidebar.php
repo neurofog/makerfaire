@@ -13,10 +13,10 @@
 
 				<script type="text/javascript">
 
-					$(document).ready(function(){
+					jQuery(document).ready(function(){
 
-						$('#jjuruj-jjuruj').focus(function() {
-							$('.hide').slideDown('fast').css('margin-left', '20px');
+						jQuery('#jjuruj-jjuruj').focus(function() {
+							jQuery('.hide').slideDown('fast').css('margin-left', '20px');
 						});
 
 					});
