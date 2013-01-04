@@ -94,10 +94,7 @@
 		
 		</div>
 	
-		<?php
-			$sidebar = file_get_contents('http://blog.makezine.com/maker-faire-news-sidebar/');
-			echo $sidebar;
-		?> 
+		<?php echo makerfaire_sidebar_news(); ?>
 
 	</div>
 

@@ -192,7 +192,7 @@ header {
 	height:128px;
 	border-bottom:2px solid #60c9f2;
 	background-color:#a0e0f9;
-	background-image: url('../images/header_bg.gif');
+	background-image: url('images/header_bg.gif');
 	-webkit-box-shadow: 0px 0px 10px px #999;
 	-moz-box-shadow: 0px 0px 10px #999;
 	box-shadow: 0px 0px 10px #999;
@@ -238,12 +238,7 @@ header .blurb {
 	display:inline-block;
 	margin:0 -4px;
 	}
-	
 
-
-/*
-Sidebar
-*/
 
 .sblock {
 	margin: 30px 10px;
@@ -255,7 +250,7 @@ Sidebar
 }
 .home-sidebar {
 	min-height:320px;
-	background-image:url('../images/stripe_bg1.gif');
+	background-image:url('images/stripe_bg1.gif');
 	}
 
 .home-sidebar h3 {
@@ -310,7 +305,7 @@ Sidebar
 	padding:10px;
 	min-height:223px;
 	border:3px solid #c92126;
-	background-image:url('../images/stripe_bg.gif');
+	background-image:url('images/stripe_bg.gif');
 	}
 
 .ours h1  {
@@ -482,7 +477,7 @@ footer {
 .more_faires ul {margin-bottom:0;}
 
 .more_faires ul li {
-	list-style-image:url('../images/arrow.gif');
+	list-style-image:url('images/arrow.gif');
 	font-size:14px;
 	}
 	
