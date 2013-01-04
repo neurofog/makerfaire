@@ -9,3 +9,13 @@ function make_enqueue_jquery() {
 }
 
 add_action( 'wp_enqueue_scripts', 'make_enqueue_jquery' );
+
+
+function makerfaire_get_news() {
+
+	$url = 'http://blog.makezine.com/maker-faire-news/';
+	$output = wpcom_vip_file_get_contents( $url, 3, 60*60,  array( 'obey_cache_control_header' => false ) );
+	return $output;
+}
+
+add_shortcode('news', 'makerfaire_get_news');
