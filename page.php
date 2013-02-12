@@ -63,7 +63,7 @@
                                 </div>
                                 <div class="span6">
                                 <?php echo str_replace(array($f['img'], '<p><a href="'.$f['i']->get_link().'">Read the full article on MAKE</a></p>'), '', html_entity_decode(esc_html($f['i']->get_description()))); ?>
-                                <p class="read_more"><strong>
+                                <p class="read_more" style="margin:10px 0"><strong>
                                 <a class="btn btn-primary btn-mini" href="<?php echo esc_url($f['i']->get_link()); ?>">Read full story &raquo;</a></strong></p>
                                 
                                     <ul class="unstyled">
@@ -75,6 +75,7 @@
                         <?php endforeach; ?> 
                 	</div>
                 </div>
+                <h4><a href="http://blog.makezine.com/tag/maker-faire/">Read More &rarr;</a></h4>
 				<?php endif; ?>
 							
 			<?php endwhile; ?>
