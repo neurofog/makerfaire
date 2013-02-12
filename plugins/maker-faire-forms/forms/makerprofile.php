@@ -11,14 +11,20 @@
 	<input type="button" value="Apply for Maker Faire" onclick="document.location = '/bayarea-2013-callformakers';" />
     <h3 style="margin-top:30px;">Edit Your Maker Faire Applications</h3>
     <hr />
-    <?php foreach($forms as $type=>$set) : ?>
+
     <div id="exhibit">
-        <h3 style="font-size:13px"><strong><?php echo esc_html(strtoupper($type));?> APPLICATIONS</strong></h3>
-        <ul>
-        <?php foreach($set as $f) : ?>
-        <li><a href="<?php echo esc_url('/'.$type.'?id='.$f->ID);?>"><?php echo esc_html($f->ID.' - '.$f->post_title.' ('.($f->post_status == 'mf_pending' ? 'pending' : 'submitted').')');?></a></li>
-        <?php endforeach; ?>
-        </ul>
+        <h3 style="font-size:13px"><strong>EXHIBIT APPLICATIONS</strong></h3>
+        <ul></ul>
     </div>
-    <?php endforeach; ?>
+	
+    <div id="presenter">
+        <h3 style="font-size:13px"><strong>PRESENTER APPLICATIONS</strong></h3>
+        <ul></ul>
+    </div>
+    
+    <div id="performer">
+        <h3 style="font-size:13px"><strong>PERFORMER APPLICATIONS</strong></h3>
+        <ul></ul>
+    </div>
+    
 </div>

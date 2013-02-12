@@ -20,8 +20,8 @@
 </div>
 
 <form action="/wp-admin/admin-ajax.php" method="post" class="mf-form">
-	
-    <input name="form" type="hidden" value="performer" />
+	<?php wp_nonce_field('mf_nonce', 'mf_submit_nonce'); ?>
+    <input id="form_type" name="form" type="hidden" value="performer" />
     <input name="maker_faire" type="hidden" value="<?php echo esc_attr($this->form['maker_faire']); ?>" />
     <input id="step" name="step" type="hidden" value="1" />
     <input id="id" name="id" type="hidden" value="<?php echo esc_attr($this->form['id']); ?>" />

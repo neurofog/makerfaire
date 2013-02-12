@@ -454,7 +454,7 @@ class MAKER_FAIRE_FORM
 		
 		if($this->type == 'makerprofile')
 		{
-			$forms = $this->getforms();
+			//$forms = $this->getforms();
 			include(plugin_dir_path(__FILE__).'forms/makerprofile.php'); 
 		}
 		else
@@ -463,13 +463,16 @@ class MAKER_FAIRE_FORM
 			if(isset($_GET['id']))
 			{
 				$p = get_post($_GET['id']);
-
+				
 				if($p->post_type = 'mf_form')
 				{
+					$uid = get_post_meta($p->ID, 'mf_gigya_id', true); 
+					
 					$frm = json_decode(str_replace("\'", "'", $p->post_content));
-					if($frm->form_type != $this->type || $frm->maker_faire != $this->maker_faire)
+					if($frm->form_type != $this->type || $frm->maker_faire != $this->maker_faire || $uid == '')
 						unset($frm);
 				}
+				
 			}
 			
 			//SET DEFAULT VALUES
@@ -495,6 +498,7 @@ class MAKER_FAIRE_FORM
 			if(isset($frm))
 			{
 				$this->form['id']          = $p->ID;
+				$this->form['uid']         = $uid;
 				$this->form['maker_faire'] = $frm->maker_faire;			
 				
 				foreach($frm->tags as $t)
@@ -520,14 +524,14 @@ class MAKER_FAIRE_FORM
 	@Parameters:
 	@Returns: N/A
 	=====================================================================*/
-	public function getforms()
+	public function ajax_getforms()
 	{	
 		$args = array(
 			'post_type'  => 'mf_form',
 			'meta_query' => array(
 				'relation' => 'OR',
-				array('key' => 'mf_gigya_id',        'value' => sanitize_text_field($_GET['uid'])),
-				array('key' => 'mf_additional_user', 'value' => sanitize_text_field(urldecode($_GET['e'])))
+				array('key' => 'mf_gigya_id',        'value' => sanitize_text_field($_POST['uid'])),
+				array('key' => 'mf_additional_user', 'value' => sanitize_text_field($_POST['e']))
 			)
 		);
 
@@ -541,7 +545,7 @@ class MAKER_FAIRE_FORM
 			$f[$d->form_type][$p->ID] = $p;
 		}
 		
-		return $f;
+		die(json_encode(array('status'=>'OK', 'forms'=>$f)));
 	}
 	
 	/* ajax_handler()
@@ -551,6 +555,9 @@ class MAKER_FAIRE_FORM
 	=====================================================================*/
 	public function ajax_handler() 
 	{	
+		if (!isset( $_POST['mf_submit_nonce'] ) || !wp_verify_nonce($_POST['mf_submit_nonce'], 'mf_nonce'))
+			die(json_encode(array('status'=>'ERROR', 'errors'=>array('BAD USER'))));
+	
 		//POTENTIAL FILES TO BE UPLOADED
 		$files  = array(
 			'exhibit'=>array(

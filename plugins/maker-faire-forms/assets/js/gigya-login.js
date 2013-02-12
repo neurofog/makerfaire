@@ -11,9 +11,9 @@ jQuery(function($)
 		onLogin:  mf_onLoginHandler, 
 		onLogout: mf_onLogoutHandler
 	});
-
-	mf_is_loggedin();
 	
+	gigya.accounts.getAccountInfo({ callback: mf_is_loggedin })
+
 	var r = mf_get_query_value('register');
 	if(r == 1)
 		gigya.accounts.showScreenSet({screenSet:'MakerFaire', startScreen:'gigya-register-screen'});
@@ -53,40 +53,52 @@ function mf_get_cookie(c_name)
 	  }
 }
 
-function mf_is_loggedin()
+function mf_is_loggedin(o)
 {
-	var c = mf_get_cookie('gigya_id');
-	
-	if(c != null && c != 0)
+	console.log(o);
+
+	if(o.errorCode == 0)
 	{
-		var u = jQuery.parseJSON(mf_get_cookie('gigya_info'));
-		
-		jQuery('.nav-collapse ul:first-of-type').append('<li><a href="/makerprofile?uid='+c+'&e='+encodeURIComponent(u.email)+'">Your Account</a></li><li><a href="#" onclick="javascript: gigya.accounts.logout();">Logout</a></li>');
-		
+		jQuery('.nav-collapse ul:first-of-type').append('<li><a href="/makerprofile">Your Account</a></li><li><a href="#" onclick="javascript: gigya.accounts.logout();">Logout</a></li>');		
 		
 		if(path.indexOf('exhibit') >= 0 || path.indexOf('presenter') >= 0 || path.indexOf('performer') >= 0)
 		{	
+			if(jQuery('.mf-form #id').val() != 0 && jQuery('.mf-form #uid').val() != o.UID)
+				document.location = '/'+jQuery('.mf-form  #form_type').val()+'form';
+		
 			if(jQuery('input.default-name').val() == '')
 			{
-				jQuery('input.default-name').val(u.firstName+' '+u.lastName);
-				jQuery('input.default-email').val(u.email);  
-				jQuery('textarea.default-bio').val(u.bio); 
+				jQuery('input.default-name').val(o.profile.firstName+' '+o.profile.lastName);
+				jQuery('input.default-email').val(o.profile.email);  
+				jQuery('textarea.default-bio').val(o.data.bio); 
 			}
 			
-			jQuery('h3.default-name').html(u.firstName+' '+u.lastName);
-  			jQuery('h3.default-email').html(u.email);   
+			jQuery('h3.default-name').html(o.profile.firstName+' '+o.profile.lastName);
+  			jQuery('h3.default-email').html(o.profile.email);   
 			
-			jQuery('#uid').val(c);
+			jQuery('#uid').val(o.UID );
 			jQuery(window).bind('beforeunload', function(){ return 'Are you sure you want to leave?'; });
 		}
 		else if(path.indexOf('makerprofile') >= 0)
 		{
-			if(u.thumbnailURL != undefined && u.thumbnailURL != 'undefined')
-				jQuery('.maker-image').attr('src', u.thumbnailURL);
+			if(o.profile.thumbnailURL != undefined && o.profile.thumbnailURL != 'undefined')
+				jQuery('.maker-image').attr('src', o.profile.thumbnailURL);
 				
-			jQuery('.maker-name span:first-of-type').html(u.firstName);
-			jQuery('.maker-name span:last-of-type').html(u.lastName);
-			jQuery('.mf-editforms .bio').html(u.bio);
+			jQuery('.maker-name span:first-of-type').html(o.profile.firstName);
+			jQuery('.maker-name span:last-of-type').html(o.profile.lastName);
+			jQuery('.mf-editforms .bio').html(o.data.bio);
+			
+			jQuery.post('http://mf.insourcecode.com/wp-admin/admin-ajax.php', {action: 'mfform_getforms', uid:o.UID, e:o.profile.email}, function(r){
+				
+				for(i in r.forms)
+				{
+					for(j in r.forms[i])
+					{
+						jQuery('#'+i+' ul').append('<li><a href="/'+i+'form/?id='+j+'">'+j+' - '+r.forms[i][j]['post_title']+' ('+(r.forms[i][j]['post_status'] == 'mf_pending' ? 'pending' : 'submitted')+')</a></li>');
+					}
+				}
+			}, 
+			'json'); 
 		}
 	}
 	else
@@ -106,23 +118,23 @@ function mf_is_loggedin()
 // onLogin Event handler
 function mf_onLoginHandler(o) 
 {	
-	mf_set_cookie("gigya_id",   o.UID, 1);
-	mf_set_cookie("gigya_info", '{"firstName":"'+o.profile.firstName+'", "lastName":"'+o.profile.lastName+'", "email":"'+o.profile.email+'", "thumbnailURL":"'+o.profile.thumbnailURL+'", "bio":"'+o.data.bio+'"}', 1);
+	//mf_set_cookie("gigya_id",   o.UID, 1);
+	//mf_set_cookie("gigya_info", '{"firstName":"'+o.profile.firstName+'", "lastName":"'+o.profile.lastName+'", "email":"'+o.profile.email+'", "thumbnailURL":"'+o.profile.thumbnailURL+'", "bio":"'+o.data.bio+'"}', 1);
 
-	document.location = '/makerprofile?uid='+o.UID+'.&e='+encodeURIComponent(u.o.profile.email);
+	document.location = '/makerprofile';
 }
 
 // onLogout Event handler
 function mf_onLogoutHandler(o) 
 {
-	mf_set_cookie("gigya_id",   0, -1);
-	mf_set_cookie("gigya_info", '{}', -1);
+	//mf_set_cookie("gigya_id",   0, -1);
+	//mf_set_cookie("gigya_info", '{}', -1);
 	
 	document.location = '/';
 }
 
 function mf_update_profile(o)
 {
-	mf_set_cookie("gigya_info", '{"firstName":"'+o.profile.firstName+'", "lastName":"'+o.profile.lastName+'", "email":"'+o.profile.email+'", "thumbnailURL":"'+o.profile.thumbnailURL+'", "bio":"'+o.data.bio+'"}', 1);
+	//mf_set_cookie("gigya_info", '{"firstName":"'+o.profile.firstName+'", "lastName":"'+o.profile.lastName+'", "email":"'+o.profile.email+'", "thumbnailURL":"'+o.profile.thumbnailURL+'", "bio":"'+o.data.bio+'"}', 1);
 	window.location.reload();	
 }
