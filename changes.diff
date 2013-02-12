@@ -1,0 +1,112 @@
+diff --git a/footer.php b/footer.php
+index 000e822..f8fd68c 100644
+--- a/footer.php
++++ b/footer.php
+@@ -72,10 +72,13 @@
+ 						<!--li><a href="http://makerfaire.com/bayarea/2012/jointhelist.html">Join the List</a></li-->
+ 						<li><a href="http://makerfaire.com/sponsors/">Sponsors</a></li>
+ 						<li><a href="http://makerfaire.com/be-a-maker.html">Be a Maker</a></li>			
+-						<li><a href="http://makerfaire.com/blue-ribbon/">Editor's Choice Blue Ribbon Winners</a></li>			
+ 					</ul>
+ 					
+ 				</div>
++				
++				<div class="span12 center">
++					<?php if ( function_exists('vip_powered_wpcom') ) { echo vip_powered_wpcom(4); } ?>
++				</div>
+ 			
+ 			</div>
+ 		</footer>
+@@ -87,18 +90,26 @@
+ <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tab.js"></script>
+ <script type="text/javascript">
+ 
+-$('.dropdown-toggle').dropdown()
+-$('#north').tab('show')
+-$('#myModal').modal('hide')
+-$('.carousel').carousel({
+-  interval: 4000
+-})
+-$('.sponsorCarousel').carousel({
+-  interval: 3000
+-})
++	jQuery(document).ready(function(){
++
++		jQuery('.dropdown-toggle').dropdown()
++		jQuery('#north').tab('show')
++		jQuery('#myModal').modal('hide')
++		jQuery('.carousel').carousel({
++			interval: 4000
++		})
++		jQuery('.sponsorCarousel').carousel({
++			interval: 3000
++		})
++	});
+ 
++</script>
+ 
++<script type="text/javascript" charset="utf-8">
++	jQuery.embedly.defaults['key'] = '899d8ef024274909b3fabb22f2f8ee24';
+ </script>
++
++	
+ <div id="fb-root"></div>
+ <script>(function(d, s, id) {
+   var js, fjs = d.getElementsByTagName(s)[0];
+diff --git a/header.php b/header.php
+index 46c383f..eb5dd61 100644
+--- a/header.php
++++ b/header.php
+@@ -22,11 +22,6 @@
+ 	<script type="text/javascript" src="http://use.typekit.com/fzm8sgx.js"></script>
+ 	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+ 
+-	<script type="text/javascript" charset="utf-8">
+-		$.embedly.defaults['key'] = '899d8ef024274909b3fabb22f2f8ee24';
+-	</script>
+-	
+-
+ 	<script type="text/javascript">
+ 
+ 		var _gaq = _gaq || [];
+diff --git a/sidebar.php b/sidebar.php
+index b2e1669..42b7aa5 100644
+--- a/sidebar.php
++++ b/sidebar.php
+@@ -13,10 +13,10 @@
+ 
+ 				<script type="text/javascript">
+ 
+-					$(document).ready(function(){
++					jQuery(document).ready(function(){
+ 
+-						$('#jjuruj-jjuruj').focus(function() {
+-							$('.hide').slideDown('fast').css('margin-left', '20px');
++						jQuery('#jjuruj-jjuruj').focus(function() {
++							jQuery('.hide').slideDown('fast').css('margin-left', '20px');
+ 						});
+ 
+ 					});
+diff --git a/style.css b/style.css
+index 06d0954..a390ff3 100644
+--- a/style.css
++++ b/style.css
+@@ -9,6 +9,10 @@ License: GNU General Public License
+ License URI: license.txt
+ */
+ 
++.center {
++	text-align: center;
++}
++
+ .admin-bar .navbar {
+ 	margin-top:28px;
+ }
+@@ -1005,4 +1009,5 @@ padding-left: 20px;
+ .topper {
+ 	border-top:2px solid #ca3e2a;
+ 	border-bottom:2px solid #ca3e2a;
+-}
+\ No newline at end of file
++}
++
