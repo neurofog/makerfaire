@@ -12,6 +12,11 @@ License URI: license.txt
 	text-align: center;
 }
 
+.faire-thumb {  
+	max-width:130px;
+	max-height: 130px; 
+}
+
 .admin-bar .navbar {
 	margin-top:28px;
 }
@@ -1100,5 +1105,3 @@ padding-left: 20px;
 	border-top:2px solid #ca3e2a;
 	border-bottom:2px solid #ca3e2a;
 }
-
-.faire-thumb{max-width:130px;}
