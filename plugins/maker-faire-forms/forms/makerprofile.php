@@ -9,11 +9,11 @@
     </div>
     <div class="clear"></div><br /><br />
 	<input type="button" value="Apply for Maker Faire" onclick="document.location = '/bayarea-2013-callformakers';" />
-    <h1 style="margin-top:30px;">Edit Your Maker Faire Applications</h1>
+    <h3 style="margin-top:30px;">Edit Your Maker Faire Applications</h3>
     <hr />
     <?php foreach($forms as $type=>$set) : ?>
     <div id="exhibit">
-        <h3><strong><?php echo esc_html(strtoupper($type));?> APPLICATIONS</strong></h3>
+        <h3 style="font-size:13px"><strong><?php echo esc_html(strtoupper($type));?> APPLICATIONS</strong></h3>
         <ul>
         <?php foreach($set as $f) : ?>
         <li><a href="<?php echo esc_url('/'.$type.'?id='.$f->ID);?>"><?php echo esc_html($f->ID.' - '.$f->post_title.' ('.($f->post_status == 'mf_pending' ? 'pending' : 'submitted').')');?></a></li>

@@ -169,7 +169,6 @@ jQuery(function($) {
 							mlbl = 'Second Phone Number Type';
 						
 						html += '<h3>'+mlbl+'</h3><h4>'+(val == undefined ? 'N/A' : val)+'</h4>';
-						console.log(mlbl+' | '+(val == undefined ? 'N/A' : val));
 					}
 				}
 			});

@@ -1,6 +1,6 @@
 <script>
 
-	num = <?php echo esc_js(count($this->form['data[s2][m_maker_name]'])); ?>;
+	num = <?php echo intval(count($this->form['data[s2][m_maker_name]'])); ?>;
 
 	jQuery(function($) 
 	{

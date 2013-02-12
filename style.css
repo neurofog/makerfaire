@@ -1,5 +1,4 @@
 /*
-Theme Name: Maker Faire (makerfaire)
 Theme URI: http://makerfaire.com
 Author: Jake Spurlock
 Author URI: http://jakespurlock.com
@@ -37,7 +36,7 @@ License URI: license.txt
 
 /*.newsies h3 {
     color: #FC040C;
-    font-family: 'Oswald', sans-serif;
+    font-family: "bebas-neue",sans-serif;
     font-size: 28px;
     font-weight: 300;
     margin: 25px 0 0;
@@ -76,7 +75,7 @@ color: #FC040C;
 text-align: center;
 font-weight: 500;
 font-size: 35px;
-font-family: 'Oswald', sans-serif;
+font-family: "bebas-neue";
 }
 
 .ours tr.time {
@@ -85,7 +84,7 @@ color: black;
 text-align: center;
 font-weight: 300;
 font-size: 18px;
-font-family: 'Oswald', sans-serif;
+font-family: "bebas-neue";
 }
 
 .countdown-numbers {
@@ -119,7 +118,7 @@ font-family: 'Oswald', sans-serif;
 	text-align:center;
 	font-weight:300;
 	font-size:42px;
-	font-family: 'Oswald', sans-serif;
+	font-family: "bebas-neue";
 	}
 
 tr.time {
@@ -128,7 +127,7 @@ tr.time {
 	text-align:center;
 	font-weight:300;
 	font-size:24px;
-	font-family: 'Oswald', sans-serif;
+	font-family: "bebas-neue";
 	}
 
 .separator {
@@ -415,8 +414,8 @@ Sidebar
 .home-sidebar h3 {
 	color:#fc040c;
 	font-weight:300;
-	font-size:14px;
-	font-family: 'Oswald', sans-serif;
+	font-size:18px;
+	font-family: "bebas-neue";
 	line-height:110%;
 	text-transform: uppercase;
 	}
@@ -534,7 +533,7 @@ color: #FC040C;
 text-align: center;
 font-weight: 500;
 font-size: 35px;
-font-family: 'Oswald', sans-serif;
+font-family: "bebas-neue";
 }
 
 .ours tr.time {
@@ -543,7 +542,7 @@ color: black;
 text-align: center;
 font-weight: 300;
 font-size: 18px;
-font-family: 'Oswald', sans-serif;
+font-family: "bebas-neue";
 }
 
 .ours ul li {
@@ -560,7 +559,7 @@ line-height: 18px;
 	margin:20px 0 0;
 	font-weight: 300;
 	font-size:28px;
-	font-family: 'Oswald', sans-serif;
+	font-family: "bebas-neue", sans-serif;
 	}
 
 .featured h2 a {
@@ -623,7 +622,7 @@ footer {
 	color:#67abc6;
 	font-weight:300;
 	font-size:32px;
-	font-family: 'Oswald', sans-serif;
+	font-family: "bebas-neue", sans-serif;
 	}
 	
 .more_faires h4 {
@@ -631,7 +630,7 @@ footer {
 	color:#67abc6;
 	font-weight:300;
 	font-size:28px;
-	font-family: 'Oswald', sans-serif;
+	font-family: "bebas-neue", sans-serif;
 	}
 
 .more_faires ul {margin-bottom:0;}
@@ -829,8 +828,8 @@ h6.letter {
 	margin:25px 0 0;
 	color: #FC040C;
 	font-weight: 300;
-	font-size: 24px;
-	font-family: 'Oswald', sans-serif;
+	font-size: 28px;
+	font-family: "bebas-neue", sans-serif;
 	}
 
 .newsies {
@@ -844,7 +843,7 @@ h6.letter {
 	color: #333;
 	font-weight: 300;
 	font-size: 20px;
-	font-family: 'Oswald', sans-serif;
+	font-family: "bebas-neue", sans-serif;
 	}
 	
 .home-sidebar .news h3 a {
@@ -873,7 +872,7 @@ h6.letter {
 	color:#EC0D29;
 	font-weight:300;
 	font-size:38px;
-	font-family: 'Oswald', sans-serif;
+	font-family: "bebas-neue";
 	line-height:36px;
 	}
 	
@@ -989,8 +988,7 @@ header {
 	text-align:center;
 	font-weight:300;
 	font-size:42px;
-	font-family: 'Oswald', sans-serif;
-	}
+	font-family: "bebas-neue";	}
 
 tr.time {
 	height:45px;
@@ -998,7 +996,7 @@ tr.time {
 	text-align:center;
 	font-weight:300;
 	font-size:24px;
-	font-family: 'Oswald', sans-serif;
+	font-family: "bebas-neue";
 	}
 
 .separator {
@@ -1039,7 +1037,7 @@ tr.time {
 	color: #333;
 	font-weight: 300;
 	font-size: 28px;
-	font-family: 'Oswald', sans-serif;
+	font-family: "bebas-neue",sans-serif;
 }
 
 .pt {

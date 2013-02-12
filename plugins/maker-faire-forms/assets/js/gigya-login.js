@@ -7,17 +7,29 @@ jQuery(function($)
 {	
 	$('body').prepend('<div id="userScreensDiv"></div>');
 
-	gigya.accounts.getAccountInfo({callback:mf_test}); 
-
 	gigya.accounts.addEventHandlers({
 		onLogin:  mf_onLoginHandler, 
 		onLogout: mf_onLogoutHandler
 	});
 
 	mf_is_loggedin();
-
+	
+	var r = mf_get_query_value('register');
+	if(r == 1)
+		gigya.accounts.showScreenSet({screenSet:'MakerFaire', startScreen:'gigya-register-screen'});
 });
 
+function mf_get_query_value(name)
+{
+  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+  var regexS = "[\\?&]" + name + "=([^&#]*)";
+  var regex = new RegExp(regexS);
+  var results = regex.exec(window.location.search);
+  if(results == null)
+    return "";
+  else
+    return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
 function mf_set_cookie(c_name,value,exdays)
 {
 	var exdate=new Date();
@@ -40,18 +52,17 @@ function mf_get_cookie(c_name)
 		}
 	  }
 }
-function mf_test(o)
-{
-	console.log(o);
-}
+
 function mf_is_loggedin()
 {
 	var c = mf_get_cookie('gigya_id');
 	
 	if(c != null && c != 0)
 	{
-		jQuery('.nav-collapse ul:first-of-type').append('<li><a href="/makerprofile?uid='+c+'">Your Account</a></li><li><a href="#" onclick="javascript: gigya.accounts.logout();">Logout</a></li>');
 		var u = jQuery.parseJSON(mf_get_cookie('gigya_info'));
+		
+		jQuery('.nav-collapse ul:first-of-type').append('<li><a href="/makerprofile?uid='+c+'&e='+encodeURIComponent(u.email)+'">Your Account</a></li><li><a href="#" onclick="javascript: gigya.accounts.logout();">Logout</a></li>');
+		
 		
 		if(path.indexOf('exhibit') >= 0 || path.indexOf('presenter') >= 0 || path.indexOf('performer') >= 0)
 		{	
@@ -98,7 +109,7 @@ function mf_onLoginHandler(o)
 	mf_set_cookie("gigya_id",   o.UID, 1);
 	mf_set_cookie("gigya_info", '{"firstName":"'+o.profile.firstName+'", "lastName":"'+o.profile.lastName+'", "email":"'+o.profile.email+'", "thumbnailURL":"'+o.profile.thumbnailURL+'", "bio":"'+o.data.bio+'"}', 1);
 
-	document.location = '/makerprofile?uid='+o.UID;
+	document.location = '/makerprofile?uid='+o.UID+'.&e='+encodeURIComponent(u.o.profile.email);
 }
 
 // onLogout Event handler

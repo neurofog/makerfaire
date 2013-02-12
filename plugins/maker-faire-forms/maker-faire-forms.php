@@ -392,7 +392,7 @@ class MAKER_FAIRE_FORM
             <tbody>
         	<?php foreach($data as $k=>$v) : if(strpos($k, '_thumb') !== false) continue;
 			
-					if($k == 'tags' || $k == 'cats' || $k == 'radio_frequency' || $k == 'booth_options') :
+					if(($k == 'tags' || $k == 'cats' || $k == 'radio_frequency' || $k == 'booth_options') && is_array($v)) :
 						$esc_v = esc_html(implode(', ', $v));
 						
 					elseif($k == 'presenter_name') :
@@ -524,7 +524,11 @@ class MAKER_FAIRE_FORM
 	{	
 		$args = array(
 			'post_type'  => 'mf_form',
-			'meta_query' => array(array('key' => 'mf_gigya_id', 'value' => sanitize_text_field($_GET['uid'])))
+			'meta_query' => array(
+				'relation' => 'OR',
+				array('key' => 'mf_gigya_id',        'value' => sanitize_text_field($_GET['uid'])),
+				array('key' => 'mf_additional_user', 'value' => sanitize_text_field(urldecode($_GET['e'])))
+			)
 		);
 
 		$q = new WP_Query($args);		
@@ -539,7 +543,6 @@ class MAKER_FAIRE_FORM
 		
 		return $f;
 	}
-	
 	
 	/* ajax_handler()
 	@Description: Handle Ajax Calls from the Form Step Process
@@ -595,7 +598,7 @@ class MAKER_FAIRE_FORM
 			if(isset($_POST['data']['s2']['maker']) && $_POST['data']['s2']['maker'] == 'A list of makers')
 				$this->fields['exhibit']['s2']['m_maker_name'] = $this->fields['exhibit']['s2']['m_maker_email'] = $this->fields['exhibit']['s2']['m_maker_photo'] = $this->fields['exhibit']['s2']['m_maker_bio'] = 1;
 			if(isset($_POST['data']['s2']['maker']) && $_POST['data']['s2']['maker'] == 'A group or association')
-				$this->fields['exhibit']['s2']['group_name'] = $this->fields['exhibit']['s2']['group_email'] = $this->fields['exhibit']['s2']['group_photo'] = $this->fields['exhibit']['s2']['group_bio'] = 1;
+				$this->fields['exhibit']['s2']['group_name'] = $this->fields['exhibit']['s2']['group_photo'] = $this->fields['exhibit']['s2']['group_bio'] = 1;
 		}
 		//PERFORMER STEP 1
 		elseif($_POST['form'] == 'performer' && $_POST['step'] == 1)
@@ -656,7 +659,7 @@ class MAKER_FAIRE_FORM
 					$v = nl2br($v);
 				
 				//SANATIZE ALL DATA
-				$res[$k] = wp_kses_post($v);
+				$res[$k] = wp_filter_post_kses($v);
 			}	
 		}
 		
@@ -810,6 +813,7 @@ class MAKER_FAIRE_FORM
 		if($s == 4)
 		{
 			$d['post_status'] = 'mf_complete';
+			$emails           = $r['form_type'] == 'exhibit' ? array_slice($r['m_maker_email'], 1) : ($r['form_type'] == 'presenter' ? array_slice($r['presenter_email'], 1) : array());
 			
 			foreach($r as $k=>$v)
 				if(is_array($v))
@@ -818,14 +822,54 @@ class MAKER_FAIRE_FORM
 			//SYNC WITH MAKE DB
 			$res = wp_remote_post('http://makedb.makezine.com/updateExhibitInfo', array('body'=>array_merge(array('eid'=>$id, 'mid'=>$r['uid']), (array)$r)));
 		
-			//Send email for user to review  info submitted
-			//add_filter('wp_mail_content_type',create_function('', 'return "text/html";'));
-			//$headers = 'From: makers@makerfaire.com ' . "\r\n";
-			//wp_mail();
-			//print_r((array)$r);
+			add_filter('wp_mail_content_type',create_function('', 'return "text/html";'));
+
+			$i = '';
+			foreach($r as $k=>$v)
+			{
+				$v  = is_array($v) ? implode(', ', $v) : $v;
+				$i .= '<tr><td><strong>' . ucwords(str_replace("_"," ",$k)) . '</strong></td><td>'.$v.'</td></tr>';
+			}
+
+			//SEND CONFIRMATION EMAIL TO MAKER
+			$this->send_maker_email($r, $i, $n);
+			
+			//SEND EMAILS TO ADDITIONAL USERS
+			if($r['form_type'] == 'exhibit' || $r['form_type'] == 'presenter')
+			{
+				if(!empty($emails))
+				{
+					foreach($emails as $e)
+						add_post_meta($id, 'mf_additional_user', $e);
+					$this->send_maker_invite_email($id, $emails, $r, $i, $n);						
+				}
+			}
 		}
 		
 		return wp_update_post( $d ); 
+	}
+	
+	/* send_maker_email()
+	@Description: Send Confirmation Email to Maker
+	@Parameters: $r | all form data, $n | Form Name
+	@Returns: boolean | email sent successfully
+	=====================================================================*/
+	private function send_maker_email($r, $i, $n) 
+	{
+		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><p>Dear ' . ucfirst($r['name']) .',</p><br /><p>Thanks for your interest in participating in Maker Faire! Your application has been received.</p><br /><p>You can update your application anytime until the application deadline - just login to your maker account from makerfaire.com. On your profile page, you\'ll see a link to edit any applications you\'ve started or finished and submitted. You\'ll hear from us shortly after the application deadline. If we accept your application, we\'ll do our best to accommodate all your requests but can\'t guarantee it. Details will be confirmed in a follow-up letter after acceptance.</p><br /><p>Your Application: </p><br /><table style="font-family: Verdana,sans-serif; font-size: 11px; color: #374953; width: 600px;"><thead><tr style="background:#FFF;"><td><strong>FORM FIELD</strong></td><td><strong>USER INPUT</strong></td></tr></thead><tbody>'.$i.'</tbody></table></body></html>';
+
+		return wp_mail($r['email'], 'Maker Faire ' . ucfirst($r['form_type']) . ' Application Received: ' . $n, $m, 'From: Maker Faire <makers@makerfaire.com>' . '\r\n');
+	}
+	/* send_maker_invite_email()
+	@Description: Send Confirmation Email to Maker
+	@Parameters: $r | all form data, $n | Form Name
+	@Returns: boolean | email sent successfully
+	=====================================================================*/
+	private function send_maker_invite_email($id, $emails, $r, $i, $n) 
+	{		
+		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><p>Thanks for your interest in participating in Maker Faire Bay Area 2013!</p><br /><p>'.ucwords($r['name']).' has submitted an application and indicated you were part of their exhibit or presentation. We need you to create a maker account at <a href="'.home_url().'/?register=1" alt="Maker Faire">makerfaire.com</a> and provide some additional details that we can include about you.</p><br /><p>Spread the word - Like us on <a href="http://facebook.com/makerfaire" alt="Like Maker Faire Facebook">Facebook</a> and follow us on <a href="https://twitter.com/#%21/makerfaire" alt="Follow Maker Faire Twitter">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts" alt="Maker Faire Google+">G+</a></p><p>Your Application: </p><br /><table style="font-family: Verdana,sans-serif; font-size: 11px; color: #374953; width: 600px;"><thead><tr style="background:#FFF;"><td><strong>FORM FIELD</strong></td><td><strong>USER INPUT</strong></td></tr></thead><tbody>'.$i.'</tbody></table></body></html>';
+
+		return wp_mail($emails, 'Maker Faire Application: '.$id.': ' . $n, $m, array('From: Maker Faire <makers@makerfaire.com>','Bcc: Maker Faire <makers@makerfaire.com>'));
 	}
 	
 	/* is_phone()
