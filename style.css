@@ -8,6 +8,10 @@ License: GNU General Public License
 License URI: license.txt
 */
 
+#biggins .carousel-control {
+	top:80%;
+}
+
 .center {
 	text-align: center;
 }

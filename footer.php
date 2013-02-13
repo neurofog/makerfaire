@@ -10,7 +10,7 @@
 
 				<div class="span4" style="background-color:#e8f1f4;">
 
-					<div class="fb-like-box" data-href="http://www.facebook.com/worldmakerfaire" data-width="300" data-height="393" data-show-faces="true" data-stream="false" data-header="false"></div>
+					<div class="fb-like-box" data-href="http://www.facebook.com/makerfaire" data-width="300" data-height="393" data-show-faces="true" data-stream="false" data-header="false"></div>
 		
 				</div><!--Facebook-->
 				

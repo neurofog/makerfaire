@@ -88,7 +88,7 @@ function mf_is_loggedin(o)
 			jQuery('.maker-name span:last-of-type').html(o.profile.lastName);
 			jQuery('.mf-editforms .bio').html(o.data.bio);
 			
-			jQuery.post('http://mf.insourcecode.com/wp-admin/admin-ajax.php', {action: 'mfform_getforms', uid:o.UID, e:o.profile.email}, function(r){
+			jQuery.post('/wp-admin/admin-ajax.php', {action: 'mfform_getforms', uid:o.UID, e:o.profile.email}, function(r){
 				
 				for(i in r.forms)
 				{
@@ -118,23 +118,16 @@ function mf_is_loggedin(o)
 // onLogin Event handler
 function mf_onLoginHandler(o) 
 {	
-	//mf_set_cookie("gigya_id",   o.UID, 1);
-	//mf_set_cookie("gigya_info", '{"firstName":"'+o.profile.firstName+'", "lastName":"'+o.profile.lastName+'", "email":"'+o.profile.email+'", "thumbnailURL":"'+o.profile.thumbnailURL+'", "bio":"'+o.data.bio+'"}', 1);
-
 	document.location = '/makerprofile';
 }
 
 // onLogout Event handler
 function mf_onLogoutHandler(o) 
 {
-	//mf_set_cookie("gigya_id",   0, -1);
-	//mf_set_cookie("gigya_info", '{}', -1);
-	
 	document.location = '/';
 }
 
 function mf_update_profile(o)
 {
-	//mf_set_cookie("gigya_info", '{"firstName":"'+o.profile.firstName+'", "lastName":"'+o.profile.lastName+'", "email":"'+o.profile.email+'", "thumbnailURL":"'+o.profile.thumbnailURL+'", "bio":"'+o.data.bio+'"}', 1);
 	window.location.reload();	
 }

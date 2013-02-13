@@ -38,20 +38,11 @@
 	</script>
 
 	<?php wp_head(); ?>
-	<!-- socialize.js script should only be included once -->
-	<!-- <script type="text/javascript" src="http://cdn.gigya.com/js/socialize.js?apiKey=3_vTDunCe4Ou6Ep04raVPTrgc-rBx0xxXx0qU0g_1tDw_9df286Erpi4s3S5FAQG3A">
-	{
-		siteName: 'mf.insourcecode.com (Maker Faire Dev Site)'
-		,enabledProviders: 'facebook,twitter,google,linkedin,yahoo,messenger,myspace,aol,foursquare,orkut,vkontakte,renren,QQ,Sina,kaixin'
-	}
-	</script>-->
-
-	
 
 	</head>
 
 
-<body id="bootstrap-js" onload="onLoad()" <?php body_class(); ?> >
+<body id="bootstrap-js" onLoad="onLoad()" <?php body_class(); ?> >
 
 <!-- 
 ======
