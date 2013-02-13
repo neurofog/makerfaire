@@ -743,8 +743,6 @@ class MAKER_FAIRE_FORM
 		{
 			list($w, $h) = getimagesize($ufile['tmp_name']);	
 
-			if($w < 500)
-				return false;
 		}
 		
 		$overrides = array( 'test_form' => false );

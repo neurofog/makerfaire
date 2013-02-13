@@ -166,6 +166,7 @@
         <div class="info">* Indicates a required field.</div>
         <hr />
         
+		<h2>Topics</h2>
 		<h3>To help people find your performance on our website and at Maker Faire, please select all of the topics below which apply to your project.* </h3>
         <?php include('tags.php'); ?>		
 		

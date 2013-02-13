@@ -80,4 +80,62 @@ function makerfaire_carousel_shortcode( $atts ) {
 }
 add_shortcode( 'arrows', 'makerfaire_carousel_shortcode' );
 
-?>
+
+function makerfaire_newsletter_shortcode() {
+
+		$output = '<form action="http://makermedia.createsend.com/t/r/s/jjuruj/" method="post" class="form-horizontal" id="subForm">
+			<fieldset>
+			
+			<legend>Sign up for the Maker Faire Newsletter</legend>
+			
+			<div class="control-group">
+				<label for="name" class="control-label">Your Name:</label>
+				<div class="controls">
+					<input type="text" class="input-xlarge" name="cm-name" id="name" size="35" />
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="jjuruj-jjuruj">Your Email:</label>
+				<div class="controls">
+					<input type="text" class="input-xlarge" name="cm-jjuruj-jjuruj" id="jjuruj-jjuruj" size="35" />
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="cm621683"></label>
+				<div class="controls">
+					<label class="checkbox">
+						<input type="checkbox" name="cm-fo-dduult" id="cm621683" value="621683" />
+						Please let me know when the Call for Makers goes out!
+					</label>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="optionsCheckbox">Any chance we could interest you in...</label>
+				<div class="controls">
+					<label for="CRAFTNewsletter" class="checkbox">
+						<input type="checkbox" name="cm-ol-jjurhj" id="CRAFTNewsletter" />
+						The CRAFT Newsletter?
+					</label>
+				</div>
+				<div class="controls">
+					<label for="MAKENewsletter" class="checkbox">
+						<input type="checkbox" name="cm-ol-jjuylk" id="MAKENewsletter" />
+						The MAKE Newsletter?
+					</label>
+				</div>
+			</div>
+			
+			<div class="form-actions">
+				<input type="submit" value="Subscribe" class="btn btn-primary" />
+			</div>
+			
+			</fieldset>
+		</form>';
+
+	return $output;
+}
+
+add_shortcode( 'newsletter', 'makerfaire_newsletter_shortcode' );
