@@ -96,8 +96,6 @@
 
 			</div>
 
-			<?php get_template_part('sponsor-slider'); ?>
-			
 			<div class="featured">
 			
 				<h3>Upcoming Featured Faires</h3>
