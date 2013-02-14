@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="apple-itunes-app" content="app-id=463248665"/>
 
-	<title><?php bloginfo('name'); ?> | <?php is_home() ? bloginfo('description') : wp_title(''); ?></title>
+	<title><?php bloginfo('name'); ?> | <?php is_front_page() ? bloginfo('description') : wp_title(''); ?></title>
 	<meta name="description" content="<?php if ( is_single() ) {
 				echo wp_trim_words(strip_shortcodes(get_the_excerpt('...')), 20);
 			} else {
