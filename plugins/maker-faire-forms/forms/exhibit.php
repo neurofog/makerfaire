@@ -126,8 +126,8 @@
         
         <div class="input">
             <label>Project Name *</label>
-            <div class="info">Provide a short, catchy name for your project. Response limited to 30 characters</div>
-            <?php $this->text('data[s1][project_name]', array('maxlength'=>30, 'class'=>'mf-shorter-field')); ?>
+            <div class="info">Provide a short, catchy name for your project. Response limited to 50 characters</div>
+            <?php $this->text('data[s1][project_name]', array('maxlength'=>50, 'class'=>'mf-shorter-field')); ?>
         </div>
         
         <div class="input">
@@ -142,7 +142,7 @@
 		<div class="input">
             <label>Short Project Description *</label>
             <div class="info">We need a short, concise description. Limited to 225 characters.</div>
-             <?php $this->textarea('data[s1][public_description]', array('maxlength'=>230, 'class'=>'mf-shorter-field')); ?>
+             <?php $this->textarea('data[s1][public_description]', array('maxlength'=>225, 'class'=>'mf-shorter-field')); ?>
         </div>
         
         <div class="input">

@@ -96,6 +96,29 @@
 
 			</div>
 
+			<div id="myCarousel" class="carousel slide">
+				<div class="carousel-inner">
+					<?php 
+						$args = array(
+							'orderby'          => 'name',
+							'order'            => 'ASC',
+							'limit'            => -1,
+							'category_name'    => 'Sponsor',
+							'title_li'         => __('Sponsors'),
+							'title_before'     => '<h3>',
+							'title_after'      => '</h3>',
+							'category_orderby' => 'name',
+							'category_order'   => 'ASC',
+							'class'            => 'linkcat',
+							'before'			=> '<div class="item">',
+							'after'				=> '</div>',
+
+							'category_before'  => '<div class="item" id=%id class=%class>',
+							'category_after'   => '</div>' ); 
+						wp_list_bookmarks( $args ); ?>
+				</div>
+			</div>
+			
 			<div class="featured">
 			
 				<h3>Upcoming Featured Faires</h3>

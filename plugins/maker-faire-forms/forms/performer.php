@@ -50,7 +50,7 @@
         <div class="input">
             <label>Short Performer Description *</label>
             <div class="info">We need a short concise description for the website and mobile app. Response limited to 225 characters or less.</div>
-            <?php $this->textarea('data[s1][public_description]', array('maxlength'=>230, 'class'=>'mf-shorter-field')); ?>
+            <?php $this->textarea('data[s1][public_description]', array('maxlength'=>225, 'class'=>'mf-shorter-field')); ?>
         </div>
         
         <div class="input">
@@ -79,7 +79,7 @@
 		
 		<div class="input">
             <label>Which day(s) can you perform? Please pick the option that fits you best. *</label>
-            <?php $this->radio('data[s1][performance_time]', array('Saturday Only', 'Sunday Only', 'Sunday Only', 'Either Saturday or Sunday; We\'re flexible but prefer to play only once.', 'Both Saturday and Sunday; We\'d love to play both days if there\'s space and time in the schedule.', 'All Weekend! We have our own separate setup and would like to play all weekend, if possible.')); ?>
+            <?php $this->radio('data[s1][performance_time]', array('Saturday Only', 'Sunday Only', 'Either Saturday or Sunday; We\'re flexible but prefer to play only once.', 'Both Saturday and Sunday; We\'d love to play both days if there\'s space and time in the schedule.', 'All Weekend! We have our own separate setup and would like to play all weekend, if possible.')); ?>
         </div>
 		
         <div class="input">

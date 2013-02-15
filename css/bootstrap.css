@@ -714,6 +714,9 @@ input[type="hidden"] {
 .checkbox {
   padding-left: 18px;
 }
+
+.contact-form input[type="radio"], .contact-form input[type="checkbox"] {float:left !Important}
+
 .radio input[type="radio"],
 .checkbox input[type="checkbox"] {
   float: left;

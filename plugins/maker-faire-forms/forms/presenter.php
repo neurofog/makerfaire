@@ -62,8 +62,8 @@
         
         <div class="input">
             <label>Title of Presentation *</label>
-            <div class="info">Provide a short name for your presentation. Limited to 30 characters.</div>
-            <?php $this->text('data[s1][presentation_name]', array('maxlength'=>30, 'class'=>'mf-shorter-field')); ?>
+            <div class="info">Provide a short name for your presentation. Limited to 50 characters.</div>
+            <?php $this->text('data[s1][presentation_name]', array('maxlength'=>50, 'class'=>'mf-shorter-field')); ?>
         </div>
         
         <div class="input">
@@ -88,7 +88,7 @@
         <div class="input">
             <label>Short Presentation Description *</label>
             <div class="info">Response limited to 225 characters or less.</div>
-            <?php $this->textarea('data[s1][public_description]', array('maxlength'=>230, 'class'=>'mf-shorter-field')); ?>
+            <?php $this->textarea('data[s1][public_description]', array('maxlength'=>225, 'class'=>'mf-shorter-field')); ?>
         </div>
         
         <div class="input">
