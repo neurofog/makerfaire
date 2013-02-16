@@ -51,7 +51,7 @@
                 <?php if(is_front_page()) : ?>
                 <div class="newsies">
                 	<div class="news post">
-                		<h3 style="color: #fc040c;"><a href="http://blog.makezine.com/category/events-3/maker-faire-events/">Latest Maker Faire News</a></h3>
+                		<h3 style="color: #fc040c;"><a href="http://blog.makezine.com/tag/maker-faire/">Latest Maker Faire News</a></h3>
 						<?php 
                         $fs = makerfaire_index_feed();
 
