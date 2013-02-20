@@ -87,12 +87,6 @@ Topbar
 <header id="header">
 
 	<div class="container">
-	
-		<div class="top-ad" style="width:728px;height:90px;background-color:#fff;margin:10px auto;">
-			
-			
-			
-		</div>
 
 		<p class="tagline"><strong><em>A two-day, family-friendly festival of invention, creativity and resourcefulness, and a celebration of the Maker movement.</em></strong></p>
 		

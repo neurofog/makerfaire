@@ -66,7 +66,7 @@ function makerfaire_index_feed($n = 4)
 
 function isc_register_menus() {
   register_nav_menus(
-    array( 'header-menu' => __( 'Header Menu' ) )
+	array( 'header-menu' => __( 'Header Menu' ) )
   );
 }
 add_action( 'init', 'isc_register_menus' );
@@ -139,3 +139,37 @@ function makerfaire_newsletter_shortcode() {
 }
 
 add_shortcode( 'newsletter', 'makerfaire_newsletter_shortcode' );
+
+function makerfaire_news_rss() {
+
+	if(is_front_page()) : ?>
+		<div class="newsies">
+			<div class="news post">
+				<h3 style="color: #fc040c;"><a href="http://blog.makezine.com/tag/maker-faire/">Latest Maker Faire News</a></h3>
+				<?php 
+				$fs = makerfaire_index_feed();
+
+				foreach($fs as $f) : $a = $f['i']->get_authors(); ?>
+					<h4><a href="<?php echo esc_url($f['i']->get_link()); ?>"><?php echo esc_html($f['i']->get_title()); ?></a></h4>
+					<div class="row">
+						<div class="span2">
+							<a href="<?php echo esc_url($f['i']->get_link()); ?>" title="<?php echo esc_attr($f['i']->get_title()); ?>"><img class="thumbnail faire-thumb " alt="<?php echo esc_attr($f['i']->get_title()); ?>" src="<?php echo esc_url($f['src']); ?>" /></a>
+						</div>
+						<div class="span6">
+						<?php echo str_replace(array($f['img'], '<p><a href="'.$f['i']->get_link().'">Read the full article on MAKE</a></p>'), '', html_entity_decode(esc_html($f['i']->get_description()))); ?>
+						<p class="read_more" style="margin:10px 0"><strong>
+						<a class="btn btn-primary btn-mini" href="<?php echo esc_url($f['i']->get_link()); ?>">Read full story &raquo;</a></strong></p>
+						
+							<ul class="unstyled">
+								<li>Posted by <?php echo esc_html($a[0]->name); ?> | <?php echo esc_html($f['i']->get_date()); ?></li>
+								<li>Categories: <?php foreach($f['i']->get_categories() as $cat) : echo esc_html($cat->term.', '); endforeach; ?></li>
+							</ul>
+						</div>
+					</div>
+				<?php endforeach; ?> 
+			</div>
+		</div>
+		<h4><a href="http://blog.makezine.com/tag/maker-faire/">Read More &rarr;</a></h4>
+	<?php endif;
+
+}
