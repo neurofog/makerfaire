@@ -99,23 +99,16 @@
 			<div id="myCarousel" class="carousel slide">
 				<div class="carousel-inner">
 					<?php 
-						$args = array(
-							'orderby'          => 'name',
-							'order'            => 'ASC',
-							'limit'            => -1,
-							'category_name'    => 'Sponsor',
-							'title_li'         => __('Sponsors'),
-							'title_before'     => '<h3>',
-							'title_after'      => '</h3>',
-							'category_orderby' => 'name',
-							'category_order'   => 'ASC',
-							'class'            => 'linkcat',
-							'before'			=> '<div class="item">',
-							'after'				=> '</div>',
-
-							'category_before'  => '<div class="item" id=%id class=%class>',
-							'category_after'   => '</div>' ); 
-						wp_list_bookmarks( $args ); ?>
+						$sponsors = get_bookmarks();
+						foreach ($sponsors as $idx => $sponsor) {
+							if ( $idx == 0 ) {
+								echo '<div class="item active">';
+							} else {
+								echo '<div class="item">';
+							}
+							echo '<a href="' . esc_url( $sponsor->link_url ) . '"><img src="' . esc_url( $sponsor->link_image ) . '" alt="' . esc_attr( $sponsor->link_name ) . '"></a></div>';
+						}
+					?>
 				</div>
 			</div>
 			
