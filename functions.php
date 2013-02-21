@@ -173,3 +173,15 @@ function makerfaire_news_rss() {
 	<?php endif;
 
 }
+function makerfaire_widgets_init() {
+
+	register_sidebar( array(
+		'name' => 'Maker Faire Calendar',
+		'id' => 'home_right_1',
+		'before_widget' => '',
+		'after_widget' => '',
+		'before_title' => '<h4 class="more-faires">',
+		'after_title' => '</h4>',
+	) );
+}
+add_action( 'widgets_init', 'makerfaire_widgets_init' );

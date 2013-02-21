@@ -99,7 +99,7 @@
 			<div id="myCarousel" class="carousel slide">
 				<div class="carousel-inner">
 					<?php 
-						$sponsors = get_bookmarks();
+						$sponsors = get_bookmarks( array( 'orderby' => 'rating' ) );
 						foreach ($sponsors as $idx => $sponsor) {
 							if ( $idx == 0 ) {
 								echo '<div class="item active">';
