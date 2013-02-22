@@ -80,6 +80,25 @@ function makerfaire_carousel_shortcode( $atts ) {
 }
 add_shortcode( 'arrows', 'makerfaire_carousel_shortcode' );
 
+function makerfaire_data_toggle() {
+	return '<ul class="nav nav-tabs">
+		<li class="active"><a data-toggle="tab" href="#ny2012">New York 2012</a></li>
+		<li><a data-toggle="tab" href="#d2012">Detroit 2012</a></li>
+		<li><a data-toggle="tab" href="#ba2012">Bay Area 2012</a></li>
+		<li><a data-toggle="tab" href="#ny2011">New York 2011</a></li>
+		<li><a data-toggle="tab" href="#d2011">Detroit 2011</a></li>
+		<li><a data-toggle="tab" href="#ba2011">Bay Area 2011</a></li>
+		<li><a data-toggle="tab" href="#ny2010">New York 2010</a></li>
+		<li><a data-toggle="tab" href="#d2010">Detroit 2010</a></li>
+		<li><a data-toggle="tab" href="#ba2010">Bay Area 2010</a></li>
+		<li><a data-toggle="tab" href="#ba2009">Bay Area 2009</a></li>
+		<li><a data-toggle="tab" href="#a2008">Austin 2008</a></li>
+		<li><a data-toggle="tab" href="#ba2008">Bay Area 2008</a></li>
+		<li><a data-toggle="tab" href="#a2007">Austin 2007</a></li>
+	</ul>';
+}
+
+add_shortcode( 'tabs', 'makerfaire_data_toggle' );
 
 function makerfaire_newsletter_shortcode() {
 
@@ -140,39 +159,36 @@ function makerfaire_newsletter_shortcode() {
 
 add_shortcode( 'newsletter', 'makerfaire_newsletter_shortcode' );
 
-function makerfaire_news_rss() {
+function makerfaire_news_rss() { ?>
+	<div class="newsies">
+		<div class="news post">
+			<h3 style="color: #fc040c;"><a href="http://blog.makezine.com/tag/maker-faire/">Latest Maker Faire News</a></h3>
+			<?php 
+			$fs = makerfaire_index_feed();
 
-	if(is_front_page()) : ?>
-		<div class="newsies">
-			<div class="news post">
-				<h3 style="color: #fc040c;"><a href="http://blog.makezine.com/tag/maker-faire/">Latest Maker Faire News</a></h3>
-				<?php 
-				$fs = makerfaire_index_feed();
-
-				foreach($fs as $f) : $a = $f['i']->get_authors(); ?>
-					<h4><a href="<?php echo esc_url($f['i']->get_link()); ?>"><?php echo esc_html($f['i']->get_title()); ?></a></h4>
-					<div class="row">
-						<div class="span2">
-							<a href="<?php echo esc_url($f['i']->get_link()); ?>" title="<?php echo esc_attr($f['i']->get_title()); ?>"><img class="thumbnail faire-thumb " alt="<?php echo esc_attr($f['i']->get_title()); ?>" src="<?php echo esc_url($f['src']); ?>" /></a>
-						</div>
-						<div class="span6">
-						<?php echo str_replace(array($f['img'], '<p><a href="'.$f['i']->get_link().'">Read the full article on MAKE</a></p>'), '', html_entity_decode(esc_html($f['i']->get_description()))); ?>
-						<p class="read_more" style="margin:10px 0"><strong>
-						<a class="btn btn-primary btn-mini" href="<?php echo esc_url($f['i']->get_link()); ?>">Read full story &raquo;</a></strong></p>
-						
-							<ul class="unstyled">
-								<li>Posted by <?php echo esc_html($a[0]->name); ?> | <?php echo esc_html($f['i']->get_date()); ?></li>
-								<li>Categories: <?php foreach($f['i']->get_categories() as $cat) : echo esc_html($cat->term.', '); endforeach; ?></li>
-							</ul>
-						</div>
+			foreach($fs as $f) : $a = $f['i']->get_authors(); ?>
+				<h4><a href="<?php echo esc_url($f['i']->get_link()); ?>"><?php echo esc_html($f['i']->get_title()); ?></a></h4>
+				<div class="row">
+					<div class="span2">
+						<a href="<?php echo esc_url($f['i']->get_link()); ?>" title="<?php echo esc_attr($f['i']->get_title()); ?>"><img class="thumbnail faire-thumb " alt="<?php echo esc_attr($f['i']->get_title()); ?>" src="<?php echo esc_url($f['src']); ?>" /></a>
 					</div>
-				<?php endforeach; ?> 
-			</div>
+					<div class="span6">
+					<?php echo str_replace(array($f['img'], '<p><a href="'.$f['i']->get_link().'">Read the full article on MAKE</a></p>'), '', html_entity_decode(esc_html($f['i']->get_description()))); ?>
+					<p class="read_more" style="margin:10px 0"><strong>
+					<a class="btn btn-primary btn-mini" href="<?php echo esc_url($f['i']->get_link()); ?>">Read full story &raquo;</a></strong></p>
+					
+						<ul class="unstyled">
+							<li>Posted by <?php echo esc_html($a[0]->name); ?> | <?php echo esc_html($f['i']->get_date()); ?></li>
+							<li>Categories: <?php foreach($f['i']->get_categories() as $cat) : echo esc_html($cat->term.', '); endforeach; ?></li>
+						</ul>
+					</div>
+				</div>
+			<?php endforeach; ?> 
 		</div>
-		<h4><a href="http://blog.makezine.com/tag/maker-faire/">Read More &rarr;</a></h4>
-	<?php endif;
+	</div>
+	<h4><a href="http://blog.makezine.com/tag/maker-faire/">Read More &rarr;</a></h4>
+<?php }
 
-}
 function makerfaire_widgets_init() {
 
 	register_sidebar( array(

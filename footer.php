@@ -102,11 +102,6 @@
 	});
 
 </script>
-
-<script type="text/javascript" charset="utf-8">
-	jQuery.embedly.defaults['key'] = '899d8ef024274909b3fabb22f2f8ee24';
-</script>
-
 	
 <div id="fb-root"></div>
 <script>(function(d, s, id) {
