@@ -36,13 +36,20 @@
         
         <div class="input">
             <label>Performer, Band, or Group Name *</label>
-            <?php $this->text('data[s1][performer_name]', array('class'=>'mf-shorter-field')); ?>
+            <div class="info">Response limited to 50 characters</div>
+            <?php $this->text('data[s1][performer_name]', array('maxlength'=>50, 'class'=>'mf-shorter-field')); ?>
         </div>
         
         <div class="input">
             <label>Tell us about your performance *</label>
             <div class="info">For the Maker Faire team, describe what your performance is like. If you are a band, include what type of music and where you normally play. This information will not be made public.</div>
             <?php $this->textarea('data[s1][private_description]'); ?>
+        </div>
+        
+        <div class="input">
+            <label>Length of Presentation.</label>  
+            <div class="info">Select all options that apply.</div>
+            <?php $this->checkbox('data[s1][length]', array('10 minutes', '20 minutes', '45 minutes')); ?>
         </div>
         
 		<h2>Public Performer Info:</h2>

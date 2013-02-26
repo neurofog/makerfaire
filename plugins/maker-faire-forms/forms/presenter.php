@@ -77,6 +77,12 @@
             <?php $this->textarea('data[s1][private_description]'); ?>
         </div>
         
+        <div class="input">
+            <label>Presentation Schedule Availability.</label>  
+            <div class="info">Your flexibility is greatly appreciated.</div>
+            <?php $this->radio('data[s1][availability]', array('Either Saturday or Sunday', 'Saturday only', 'Sunday only')); ?>       
+        </div>
+        
 		<div class="input">
             <label>Special Requests (Equipment or Scheduling)</label>
             <?php $this->textarea('data[s1][special_requests]'); ?>

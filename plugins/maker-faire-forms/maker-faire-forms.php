@@ -105,6 +105,7 @@ class MAKER_FAIRE_FORM
 				's1'=>array(
 					'performer_name'        => 1,
 					'private_description'   => 1,
+					'length'                => 0,
 					'public_description'    => 1,
 					'performer_website'     => 0, 
 					'performer_photo'       => 1,
@@ -146,6 +147,7 @@ class MAKER_FAIRE_FORM
 					'presentation_name'        => 1,
 					'presentation_type'        => 1,
 					'private_description'      => 1,
+					'availablity'              => 0,
 					'special_requests'         => 0,
 					'public_description'       => 1,
 					'presentation_photo'       => 1,
@@ -392,7 +394,7 @@ class MAKER_FAIRE_FORM
             <tbody>
         	<?php foreach($data as $k=>$v) : if(strpos($k, '_thumb') !== false) continue;
 			
-					if(($k == 'tags' || $k == 'cats' || $k == 'radio_frequency' || $k == 'booth_options') && is_array($v)) :
+					if(($k == 'tags' || $k == 'cats' || $k == 'radio_frequency' || $k == 'booth_options' || $k == 'length') && is_array($v)) :
 						$esc_v = esc_html(implode(', ', $v));
 						
 					elseif($k == 'presenter_name') :
@@ -555,7 +557,7 @@ class MAKER_FAIRE_FORM
 	=====================================================================*/
 	public function ajax_handler() 
 	{	
-		if (!isset( $_POST['mf_submit_nonce'] ) || !wp_verify_nonce($_POST['mf_submit_nonce'], 'mf_nonce'))
+		if ($_POST['uid'] == 0 || !isset( $_POST['mf_submit_nonce'] ) || !wp_verify_nonce($_POST['mf_submit_nonce'], 'mf_nonce'))
 			die(json_encode(array('status'=>'ERROR', 'errors'=>array('BAD USER'))));
 	
 		//POTENTIAL FILES TO BE UPLOADED
@@ -580,7 +582,10 @@ class MAKER_FAIRE_FORM
 			'cats'        => array()
 		);
 
-		
+		//BLOCK ATTEMPTS TO SUBMIT FORMS OF AN UNKNOWN TYPE
+		if(!in_array($res['form_type'], array('exhibit', 'performer', 'presenter')))
+			die(json_encode(array('status'=>'ERROR', 'errors'=>array('BAD FORM TYPE'))));
+			
 		/****************************************/
 		/*  ERROR CHECK FORM SPECIFIC SITUATIONS
 		/****************************************/
@@ -649,7 +654,7 @@ class MAKER_FAIRE_FORM
 					}
 					elseif($r && !in_array($k, $files[$_POST['form']][$s]) && $v == '') //Empty / Not Set / Blank
 						$errors[$s][$k] = 'Required.';
-					elseif(($k == 'public_description' && strlen($v) > 255) || ($k == 'bio' && strlen($v) > 200))  //Input too many characters.
+					elseif(($k == 'public_description' && strlen($v) > 255) || (($k == 'maker_bio' || $k == 'm_maker_bio' || $k == 'group_bio') && strlen($v) > 200))  //Input too many characters.
 						$errors[$s][$k] = 'Too Long.';
 					elseif($r && $k == 'email' && !is_email($v))  //Check Email
 						$errors[$s][$k] = 'Valid Email Required.';
@@ -826,8 +831,6 @@ class MAKER_FAIRE_FORM
 
 			//SYNC WITH MAKE DB
 			$res = wp_remote_post('http://makedb.makezine.com/updateExhibitInfo', array('body'=>array_merge(array('eid'=>$id, 'mid'=>$r['uid']), (array)$r)));
-		
-			add_filter('wp_mail_content_type',create_function('', 'return "text/html";'));
 
 			$i = '';
 			foreach($r as $k=>$v)
@@ -837,7 +840,7 @@ class MAKER_FAIRE_FORM
 			}
 
 			//SEND CONFIRMATION EMAIL TO MAKER
-			$this->send_maker_email($r, $i, $n);
+			$this->send_maker_email($r, $n);
 			
 			//SEND EMAILS TO ADDITIONAL USERS
 			if($r['form_type'] == 'exhibit' || $r['form_type'] == 'presenter')
@@ -859,11 +862,17 @@ class MAKER_FAIRE_FORM
 	@Parameters: $r | all form data, $n | Form Name
 	@Returns: boolean | email sent successfully
 	=====================================================================*/
-	private function send_maker_email($r, $i, $n) 
+	private function send_maker_email($r, $n) 
 	{
-		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><p>Dear ' . ucfirst($r['name']) .',</p><br /><p>Thanks for your interest in participating in Maker Faire! Your application has been received.</p><br /><p>You can update your application anytime until the application deadline - just login to your maker account from makerfaire.com. On your profile page, you\'ll see a link to edit any applications you\'ve started or finished and submitted. You\'ll hear from us shortly after the application deadline. If we accept your application, we\'ll do our best to accommodate all your requests but can\'t guarantee it. Details will be confirmed in a follow-up letter after acceptance.</p><br /><p>Your Application: </p><br /><table style="font-family: Verdana,sans-serif; font-size: 11px; color: #374953; width: 600px;"><thead><tr style="background:#FFF;"><td><strong>FORM FIELD</strong></td><td><strong>USER INPUT</strong></td></tr></thead><tbody>'.$i.'</tbody></table></body></html>';
+		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><p>Dear '.ucfirst($r['name']).',</p><p>Thanks for your interest in participating in Maker Faire Bay Area 2013! We have received your application for '.$n.'.</p><p>You can update your application anytime until March 15th:</p><ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li><li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol><p>You will be notified as to the status of your application no later than March 29th.</p><p>If your application is accepted, we\'ll do our best to accommodate your requests. Please understand that your requests are not guaranteed. What we can provide will be confirmed in a follow-up letter after acceptance.</p><p>Spread the word - Like us on <a href="http://facebook.com/makerfaire">Facebook</a> and follow us on <a href="https://twitter.com/makerfaire">Twitter</a> and <a href="https://google.com/+MAKE/">G+</a>.</p></body></html>';
 
-		return wp_mail($r['email'], 'Maker Faire ' . ucfirst($r['form_type']) . ' Application Received: ' . $n, $m, 'From: Maker Faire <makers@makerfaire.com>' . '\r\n');
+		add_filter('wp_mail_content_type', array($this, 'set_html_email'));
+		
+		$r = wp_mail($r['email'], 'Maker Faire ' . ucfirst($r['form_type']) . ' Application Received: ' . $n, $m, 'From: Maker Faire <makers@makerfaire.com>' . '\r\n');
+		
+		remove_filter('wp_mail_content_type', array($this, 'set_html_email'));
+		
+		return $r;
 	}
 	/* send_maker_invite_email()
 	@Description: Send Confirmation Email to Maker
@@ -873,8 +882,24 @@ class MAKER_FAIRE_FORM
 	private function send_maker_invite_email($id, $emails, $r, $i, $n) 
 	{		
 		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body><p>Thanks for your interest in participating in Maker Faire Bay Area 2013!</p><br /><p>'.ucwords($r['name']).' has submitted an application and indicated you were part of their exhibit or presentation. We need you to create a maker account at <a href="'.home_url().'/?register=1" alt="Maker Faire">makerfaire.com</a> and provide some additional details that we can include about you.</p><br /><p>Spread the word - Like us on <a href="http://facebook.com/makerfaire" alt="Like Maker Faire Facebook">Facebook</a> and follow us on <a href="https://twitter.com/#%21/makerfaire" alt="Follow Maker Faire Twitter">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts" alt="Maker Faire Google+">G+</a></p><p>Your Application: </p><br /><table style="font-family: Verdana,sans-serif; font-size: 11px; color: #374953; width: 600px;"><thead><tr style="background:#FFF;"><td><strong>FORM FIELD</strong></td><td><strong>USER INPUT</strong></td></tr></thead><tbody>'.$i.'</tbody></table></body></html>';
-
-		return wp_mail($emails, 'Maker Faire Application: '.$id.': ' . $n, $m, array('From: Maker Faire <makers@makerfaire.com>','Bcc: Maker Faire <makers@makerfaire.com>'));
+		
+		add_filter('wp_mail_content_type', array($this, 'set_html_email'));
+		
+		$r = wp_mail($emails, 'Maker Faire Application: '.$id.': ' . $n, $m, array('From: Maker Faire <makers@makerfaire.com>','Bcc: Maker Faire <makers@makerfaire.com>'));
+		
+		remove_filter('wp_mail_content_type', array($this, 'set_html_email'));
+		
+		return $r;
+	}
+	
+	/* set_html_email()
+	@Description: Allow for HTML Email
+	@Parameters: 
+	@Returns: string
+	=====================================================================*/
+	public function set_html_email() 
+	{
+		return 'text/html';
 	}
 	
 	/* is_phone()
