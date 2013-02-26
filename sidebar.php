@@ -87,17 +87,9 @@
 		
 		<div class="count">
 		
-			<div class="row" style="margin-top: 10px;">
-
-				<div class="span4">
-					<a class="twitter-timeline" href="https://twitter.com/makerfaire" data-widget-id="250340360495169536">Tweets by @makerfaire</a>
-					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-				</div>
-
-			</div>
-
 			<div id="myCarousel" class="carousel slide">
 				<div class="carousel-inner">
+					<h3 class="red">Maker Faire Sponsors</h3>
 					<?php 
 						$sponsors = get_bookmarks( array( 'orderby' => 'rating' ) );
 						foreach ($sponsors as $idx => $sponsor) {
@@ -110,6 +102,15 @@
 						}
 					?>
 				</div>
+			</div>
+		
+			<div class="row" style="margin-top: 10px;">
+
+				<div class="span4">
+					<a class="twitter-timeline" href="https://twitter.com/makerfaire" data-widget-id="250340360495169536">Tweets by @makerfaire</a>
+					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+				</div>
+
 			</div>
 			
 			<div class="featured">

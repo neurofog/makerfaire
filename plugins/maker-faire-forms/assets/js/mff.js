@@ -27,17 +27,19 @@ jQuery(function($) {
 		
 			if(r.status == 'ERROR')
 			{
-				$('.mf-form').prepend('<h3 class="mf-frm-err-top">Whoops! You left a required field blank or need to correct some information. Please scroll down and correct the fields marked in red.</h3>');
+				err = '<h3 class="mf-frm-err-top">Whoops! You left a required field blank or need to correct some information. Please scroll down and correct the fields marked in red.<ul>';
 				
 				for(i in r.errors)
+				{
 					for(j in r.errors[i])
-					{						
+					{				
 						if(typeof r.errors[i][j] == 'object')
 						{
 							for(k in r.errors[i][j])
 							{
 								n = '[name=data\\['+i+'\\]\\['+j+'\\]\\['+(parseInt(k) + 1)+'\\]]';
 								e = r.errors[i][j][k];
+								err += '<li>'+k.replace('_', ' ').toUpperCase()+' : '+e+'</li>';
 								
 								$('input'+n+', select'+n+', textarea'+n).css('border', '3px solid #EC1C23');
 								$('<div class="mf-err">'+e+'</div>').insertAfter($('label', $('input'+n+', select'+n+', textarea'+n).closest('.input')));
@@ -51,11 +53,17 @@ jQuery(function($) {
 								n = '[name='+j+']';
 							
 							e = r.errors[i][j];
+							
+							err += '<li>'+j.replace('_', ' ').toUpperCase()+' : '+e+'</li>';
+							
 							$('input'+n+', select'+n+', textarea'+n).css('border', '3px solid #EC1C23');
 							$('<div class="mf-err">'+e+'</div>').insertAfter($('label', $('input'+n+', select'+n+', textarea'+n).closest('.input')));	
 						}
 						
 					}
+				}
+				
+				$('.mf-form').prepend(err+'</ul></h3>');
 			}
 			else
 			{

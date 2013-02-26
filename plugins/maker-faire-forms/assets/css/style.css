@@ -32,6 +32,7 @@
 
 .mf-err {background: none repeat scroll 0 0 #EC1C23;border-radius: 2px 2px 2px 2px;color: #FFFFFF;font-size: 10px;padding: 2px 5px; width:30%; display:none; margin-bottom:10px;}
 .mf-frm-err-top{color:#EC1C23; font-size:20px !important; margin-bottom:20px;}
+	.mf-frm-err-top ul{font-size:12px; margin-top:10px;}
 .mf-form .input .mf-err:first-of-type{display:block}
 	
 .mf-breadcrumbs{width:510px; height:39px; background:url(../i/breadcrumbs-bg.jpg) no-repeat; position:relative; margin:10px auto 20px auto}
