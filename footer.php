@@ -14,47 +14,17 @@
 		
 				</div><!--Facebook-->
 				
-				<div class="span4">
-				
-					<script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
-					<script>
-					new TWTR.Widget({
-					  version: 2,
-					  type: 'search',
-					  search: 'makerfaire',
-					  interval: 30000,
-					  title: 'Follow us on Twitter @makerfaire',
-					  subject: 'Tweets about Maker Faire',
-					  width: 298,
-					  height: 300,
-					  theme: {
-						shell: {
-						  background: '#e8f1f4',
-						  color: '#3B5998'
-						},
-						tweets: {
-						  background: '#e8f1f4',
-						  color: '#6b6b6b',
-						  links: '#81a6c8'
-						}
-					  },
-					  features: {
-						scrollbar: false,
-						loop: true,
-						live: true,
-						behavior: 'default'
-					  }
-					}).render().start();
-					</script>
-				
-				</div><!--Twitter-->
 		
 				<div class="span4">
-
-						<?php get_template_part('feat_faires'); ?>
-				
-				</div>
+					<?php get_template_part('feat_faires'); ?>
+				</div><!--find a faire-->
 							
+				<div class="span4">
+                    <a href="https://readerservices.makezine.com/MK/subscribe.aspx">
+                        <img src="http://cdn.makezine.com/make/ads/subscribe-make33-mf-ad.png" alt="Subscribe to MAKE magazine!" />
+                    </a>
+                </div><!--subad-->
+		
 			</div>
 			
 			<div class="row">

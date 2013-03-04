@@ -19,7 +19,8 @@
     <div>4</div>
 </div>
 
-<form action="/wp-admin/admin-ajax.php" method="post" class="mf-form">
+<h1 class="mf-not-loggedin-header hide-if-js"><?php _e('You Must Have JavaScript Enabled and Be Logged In to Complete This Application.');?></h1>
+<form action="/wp-admin/admin-ajax.php" method="post" class="mf-form hide-if-no-js"> 
 	<?php wp_nonce_field('mf_nonce', 'mf_submit_nonce'); ?>
     <input id="form_type" name="form" type="hidden" value="performer" />
     <input name="maker_faire" type="hidden" value="<?php echo esc_attr($this->form['maker_faire']); ?>" />

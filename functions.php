@@ -201,3 +201,10 @@ function makerfaire_widgets_init() {
 	) );
 }
 add_action( 'widgets_init', 'makerfaire_widgets_init' );
+
+
+if ( function_exists( 'vip_redirects' ) ) {
+	vip_redirects( array(
+		'/mini/toolkit/'	=> 'https://www.dropbox.com/sh/ykbi3al0j4hatd2/hSN6Z9nXTU'
+	) );
+}

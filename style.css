@@ -8,6 +8,13 @@ License: GNU General Public License
 License URI: license.txt
 */
 
+.no-js .mf-form div.step,
+.no-js .mf-breadcrumbs,
+.js .hide-if-js,
+.no-js .hide-if-no-js {
+	display: none; 
+}
+
 .upcoming h3 {
 	margin:20px 0 10px !important;
 }

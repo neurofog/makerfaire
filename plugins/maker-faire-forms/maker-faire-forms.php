@@ -392,6 +392,7 @@ class MAKER_FAIRE_FORM
                 </tr>
             </thead>
             <tbody>
+        	<?php if(!empty($data)):?>
         	<?php foreach($data as $k=>$v) : if(strpos($k, '_thumb') !== false) continue;
 			
 					if(($k == 'tags' || $k == 'cats' || $k == 'radio_frequency' || $k == 'booth_options' || $k == 'length') && is_array($v)) :
@@ -426,6 +427,7 @@ class MAKER_FAIRE_FORM
                         <td><?php echo $esc_v; ?></td>
                     </tr>
             <?php endforeach; ?>
+            <?php endif; // if $data (post->post_content) is empty ?>
             </tbody>
             <tfoot>
             	<tr style="background:#FFF;">
@@ -557,7 +559,7 @@ class MAKER_FAIRE_FORM
 	=====================================================================*/
 	public function ajax_handler() 
 	{	
-		if ($_POST['uid'] == 0 || !isset( $_POST['mf_submit_nonce'] ) || !wp_verify_nonce($_POST['mf_submit_nonce'], 'mf_nonce'))
+		if (!isset( $_POST['mf_submit_nonce'] ) || !wp_verify_nonce($_POST['mf_submit_nonce'], 'mf_nonce'))
 			die(json_encode(array('status'=>'ERROR', 'errors'=>array('BAD USER'))));
 	
 		//POTENTIAL FILES TO BE UPLOADED
@@ -622,11 +624,13 @@ class MAKER_FAIRE_FORM
 		/****************************************/
 		/*  ERROR CHECK GENERIC 
 		/****************************************/
-		foreach($files[$_POST['form']]['s'.$_POST['step']] as $n)
-		{
-			if($this->fields[$_POST['form']]['s'.$_POST['step']][$n] && !isset($_FILES[$n]) && !isset($_POST['data']['s'.$_POST['step']][$n]))
-				$errors['s'.$_POST['step']][$n] = 'Photo Required.';	
-		}
+		if(isset($_POST['form'], $_POST['step'], $files[$_POST['form']]['s'.$_POST['step']])):
+			foreach($files[$_POST['form']]['s'.$_POST['step']] as $n)
+			{
+				if($this->fields[$_POST['form']]['s'.$_POST['step']][$n] && !isset($_FILES[$n]) && !isset($_POST['data']['s'.$_POST['step']][$n]))
+					$errors['s'.$_POST['step']][$n] = 'Photo Required.';	
+			}
+		endif;
 
 
 		foreach($this->fields[$_POST['form']] as $s=>$f)
@@ -654,14 +658,10 @@ class MAKER_FAIRE_FORM
 					}
 					elseif($r && !in_array($k, $files[$_POST['form']][$s]) && $v == '') //Empty / Not Set / Blank
 						$errors[$s][$k] = 'Required.';
-					elseif(($k == 'public_description' && strlen($v) > 255) || (($k == 'maker_bio' || $k == 'm_maker_bio' || $k == 'group_bio') && strlen($v) > 200))  //Input too many characters.
+					elseif(($k == 'public_description' && strlen($v) > 255) || (($k == 'maker_bio' || $k == 'm_maker_bio' || $k == 'group_bio') && strlen($v) > 500))  //Input too many characters.
 						$errors[$s][$k] = 'Too Long.';
 					elseif($r && $k == 'email' && !is_email($v))  //Check Email
 						$errors[$s][$k] = 'Valid Email Required.';
-					//elseif(($k == 'zip' || $k == 'private_zip') && !$this->is_zip($v))  //Check Zip
-						//$errors[$s][$k] = 'Valid Zip Required.';
-//					elseif(($k == 'phone1' || $k == 'onsite_phone') && !$this->is_phone($v))  //Check Phone
-//						$errors[$s][$k] = 'Valid Phone Please.';
 					elseif($r && $k == 'compensation' && !is_numeric($v))  //Check Value
 						$errors[$s][$k] = 'Number Required.';
 				}
@@ -671,7 +671,13 @@ class MAKER_FAIRE_FORM
 					$v = nl2br($v);
 				
 				//SANATIZE ALL DATA
-				$res[$k] = wp_filter_post_kses($v);
+				if(is_array($v))
+				{
+					foreach($v as $nn=>$d) 
+						$v[$nn] = wp_filter_post_kses($d);
+				}
+				else
+					$res[$k] = wp_filter_post_kses($v);
 			}	
 		}
 		
@@ -694,28 +700,30 @@ class MAKER_FAIRE_FORM
 		$file_res = $thumbs_res = array();
 
 		//ERROR CHECK AND UPLOAD FILES
-		foreach($files[$_POST['form']]['s'.$_POST['step']] as $n)
-		{			
-			if(empty($errors) && ((isset($_POST[$n]) && $_POST[$n] != '') || isset($_FILES[$n])))
-			{
-				if(isset($_FILES[$n]) && $_FILES[$n]['name'] != '')
+		if(isset($_POST['form'], $_POST['step'], $files[$_POST['form']]['s'.$_POST['step']])):
+			foreach($files[$_POST['form']]['s'.$_POST['step']] as $n)
+			{			
+				if(empty($errors) && ((isset($_POST[$n]) && $_POST[$n] != '') || isset($_FILES[$n])))
 				{
-					if($r = $this->upload($_FILES[$n], !in_array($n, array('layout', 'supporting_documents'))))
+					if(isset($_FILES[$n]) && $_FILES[$n]['name'] != '')
 					{
-						$file_res[$n]     = $r['url'];
-						$thumbs_res[$n]   = $r['thumb'];
-						$res[$n]          = $r['url'];
-						$res[$n.'_thumb'] = $r['thumb'];
+						if($r = $this->upload($_FILES[$n], !in_array($n, array('layout', 'supporting_documents'))))
+						{
+							$file_res[$n]     = $r['url'];
+							$thumbs_res[$n]   = $r['thumb'];
+							$res[$n]          = $r['url'];
+							$res[$n.'_thumb'] = $r['thumb'];
+						}
+						else
+							$errors['s'.$_POST['step']][$n] = 'Valid 500px or Wider Image Required.';
 					}
-					else
-						$errors['s'.$_POST['step']][$n] = 'Valid 500px or Wider Image Required.';
+				}
+				elseif(empty($errors) && $res[$n] == '' && $this->fields[$_POST['form']]['s'.$_POST['step']][$n])
+				{
+					$errors['s'.$_POST['step']][$n] = 'Photo Required.';	
 				}
 			}
-			elseif(empty($errors) && $res[$n] == '' && $this->fields[$_POST['form']]['s'.$_POST['step']][$n])
-			{
-				$errors['s'.$_POST['step']][$n] = 'Photo Required.';	
-			}
-		}
+		endif; // isset($_POST['form'], $_POST['step'], $files[$_POST['form']]['s'.$_POST['step']]
 
 		//IF THERE ARE ERRORS DIE WITH ERRORS
 		if(!empty($errors))
@@ -796,9 +804,12 @@ class MAKER_FAIRE_FORM
 			'post_status'  => 'mf_pending',
 			'post_type'    => 'mf_form'
 		);
+		
+		// if uid is 0, empty, or not set then just return and do not insert the post or update the post_meta
+		if(!isset($r['uid']) || $r['uid']=='0' || $r['uid']=='') return;
 
 		$pid = wp_insert_post( $d );
-		
+
 		update_post_meta($pid, 'mf_gigya_id', $r['uid']);
 		
 		return $pid;
@@ -828,9 +839,16 @@ class MAKER_FAIRE_FORM
 			foreach($r as $k=>$v)
 				if(is_array($v))
 					$r[$k] = implode(', ', $v);
+			
+			// if uid is 0, empty, or not set then just return and do not insert the post or update the post_meta
+			if(!isset($r['uid']) || $r['uid']=='0' || $r['uid']=='') return;
 
 			//SYNC WITH MAKE DB
-			$res = wp_remote_post('http://makedb.makezine.com/updateExhibitInfo', array('body'=>array_merge(array('eid'=>$id, 'mid'=>$r['uid']), (array)$r)));
+			$res  = wp_remote_post('http://makedb.makezine.com/updateExhibitInfo', array('body'=>array_merge(array('eid'=>$id, 'mid'=>$r['uid']), (array)$r)));
+			$body = json_decode($res['body']);
+
+			if($body->exhibit_id == '' && $body->exhibit_id == 0)
+				add_post_meta($id, 'mf_jdb_sync_fail', time());
 
 			$i = '';
 			foreach($r as $k=>$v)
@@ -955,7 +973,7 @@ class MAKER_FAIRE_FORM
 	public function checkbox($n, $set) 
 	{ 
 		foreach($set as $k=>$v) : $k = is_numeric($k) ? $v : $k; ?>
-        <div><input name="<?php echo esc_attr($n); ?>[]" type="checkbox" value="<?php echo esc_attr($k); ?>" <?php checked(in_array($v, $this->form[$n])); ?> /> <?php echo esc_html($v) ?></div>
+        <div><input name="<?php echo esc_attr($n); ?>[]" type="checkbox" value="<?php echo esc_attr($k); ?>" <?php checked(in_array($v, (array)$this->form[$n])); ?> /> <?php echo esc_html($v) ?></div>
 <?php	endforeach;
 	}
 	

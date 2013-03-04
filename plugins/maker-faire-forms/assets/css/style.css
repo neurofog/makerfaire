@@ -1,6 +1,13 @@
 @charset "utf-8";
 /* CSS Document */
 
+.no-js .mf-form div.step,
+.no-js .mf-breadcrumbs,
+.js .hide-if-js,
+.no-js .hide-if-no-js {
+	display: none; 
+}
+
 .mf-form{}
 
 /*-  GENERIC STYLES
@@ -24,10 +31,10 @@
 	.mf-form input[type=text], .mf-editprofile input[type=text]{width:75%}
 	.mf-form textarea, .mf-editprofile textarea{width:75%; height:100px;}
 
-	.mf-form label, .mf-editprofile label{display:block; font-weight:bold; font-size:16px;}
+	.mf-form label, .mf-editprofile label{display:block; font-weight:bold; font-size:16px; text-transform:capitalize} 
 	.mf-form h2, .mf-editprofile h2{margin-bottom:20px;}
 	.mf-form h3, .mf-editprofile h3{font-weight:bold; font-size:12px; line-height:inherit !important;}
-	.mf-form .info, .mf-editprofile .info{color:#888; font-size:11px; font-style:italic; margin-bottom:10px;}
+	.mf-form .info, .mf-editprofile .info{color:#888; font-size:13px; margin-bottom:10px;} 
 	.mf-form .secondary-info, .mf-editprofile .secondary-info{margin-left:30px}
 
 .mf-err {background: none repeat scroll 0 0 #EC1C23;border-radius: 2px 2px 2px 2px;color: #FFFFFF;font-size: 10px;padding: 2px 5px; width:30%; display:none; margin-bottom:10px;}

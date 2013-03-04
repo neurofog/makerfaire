@@ -169,12 +169,6 @@
 				
 			</div>
 			
-			<div>
-				<a href="https://readerservices.makezine.com/MK/subscribe.aspx">
-					<img src="http://cdn.makezine.com/make/ads/subscribe-make33-mf-ad.png" alt="Subscribe to MAKE magazine!">
-				</a>
-			</div>						
-		
 		</div>
 	
 		<?php //echo makerfaire_sidebar_news(); ?>

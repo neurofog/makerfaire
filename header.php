@@ -42,7 +42,9 @@
 	</head>
 
 
-<body id="bootstrap-js" <?php body_class(); ?>>
+<body id="bootstrap-js" <?php body_class('no-js'); ?>>
+
+<script type="text/javascript">document.body.className = document.body.className.replace('no-js','js');</script> 
 
 <!-- 
 ======
