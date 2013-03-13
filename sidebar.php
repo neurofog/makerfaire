@@ -87,9 +87,9 @@
 		
 		<div class="count">
 		
+			<h3 class="red">Maker Faire Sponsors</h3>
 			<div id="myCarousel" class="carousel slide">
 				<div class="carousel-inner">
-					<h3 class="red">Maker Faire Sponsors</h3>
 					<?php 
 						$sponsors = get_bookmarks( array( 'orderby' => 'rating' ) );
 						foreach ($sponsors as $idx => $sponsor) {
