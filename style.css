@@ -12,7 +12,17 @@ License URI: license.txt
 .no-js .mf-breadcrumbs,
 .js .hide-if-js,
 .no-js .hide-if-no-js {
-	display: none; 
+	display: none;
+}
+
+.countdown {
+	margin-left:0px;
+}
+
+.topad {
+	width:728px;
+	height:92px;
+	margin:10px auto 0;
 }
 
 .upcoming h3 {
@@ -92,36 +102,31 @@ License URI: license.txt
 	font-size:14px;
 }
 
-.ours .span4plus .countdown-numbers {
-margin-top: 0;
-margin-right: 10px;
-margin-left: 0;
-padding-top: 5px;
-padding-bottom: 10px;
-padding-left: 0;
-background-color: none;
-}
-
-.ours .countdown-numbers th {
-color: #FC040C;
-text-align: center;
-font-weight: 500;
-font-size: 35px;
-font-family: "bebas-neue";
-}
-
-.ours tr.time {
-height: 30px;
-color: black;
-text-align: center;
-font-weight: 300;
-font-size: 18px;
-font-family: "bebas-neue";
-}
-
 .countdown-numbers {
+	margin-top: 0;
+	margin-right: 10px;
+	margin-left: 0;
+	padding-top: 5px;
+	padding-left: 0;
+	background-color: none;
 }
 
+.countdown-numbers th {
+	color: #FC040C;
+	text-align: center;
+	font-weight: 500;
+	font-size: 35px;
+	font-family: "Bebas Neue", "bebas-neue";
+}
+
+tr.time {
+	height: 30px;
+	color: black;
+	text-align: center;
+	font-weight: 300;
+	font-size: 18px;
+	font-family: "Bebas Neue", "bebas-neue";
+}
 .count img {
 	display:block;
 	margin:0 auto;
@@ -138,11 +143,8 @@ font-family: "bebas-neue";
 	margin-top:15px;
 	margin-right:15px;
 	margin-left:15px;
-	padding-top:25px;
-	padding-bottom:10px;
 	padding-left:5px;
-	background-color:#fff;
-	}
+}
 	
 	
 .countdown-numbers th {
@@ -150,7 +152,7 @@ font-family: "bebas-neue";
 	text-align:center;
 	font-weight:300;
 	font-size:42px;
-	font-family: "bebas-neue";
+	font-family: "Bebas Neue" "bebas-neue";
 	}
 
 tr.time {
@@ -159,7 +161,7 @@ tr.time {
 	text-align:center;
 	font-weight:300;
 	font-size:24px;
-	font-family: "bebas-neue";
+	font-family: "Bebas Neue" "bebas-neue";
 	}
 
 .separator {
@@ -283,7 +285,7 @@ body {
 	
 header {
 	margin:40px 0px;
-	height:128px;
+	height:232px;
 	border-bottom:2px solid #60c9f2;
 	background-color:#a0e0f9;
 	background-image: url('images/header_bg.gif');
@@ -549,33 +551,6 @@ Sidebar
 	color:#404040;
 	font-size:14px;
 	}
-	
-.ours .span4plus .countdown-numbers {
-margin-top: 0;
-margin-right: 10px;
-margin-left: 0;
-padding-top: 5px;
-padding-bottom: 10px;
-padding-left: 0;
-background-color: none;
-}
-
-.ours .countdown-numbers th {
-color: #FC040C;
-text-align: center;
-font-weight: 500;
-font-size: 35px;
-font-family: "bebas-neue";
-}
-
-.ours tr.time {
-height: 30px;
-color: black;
-text-align: center;
-font-weight: 300;
-font-size: 18px;
-font-family: "bebas-neue";
-}
 
 .ours ul li {
 padding-bottom: 10px;

@@ -25,7 +25,7 @@
 			});
 
 			$('.input', m).each(function() {
-				if($(this).index() > 1)
+				if( !$('input', $(this)).hasClass('default-name') && !$('input', $(this)).hasClass('default-email') )
 					$(this).remove();
 			});			
 			
@@ -121,41 +121,11 @@
 
 	<!--STEP 2-->
     <div class="step" id="step2">
-        <h1>Step 2 of 4: Contact & Presenter Information</h1>
+        <h1>Step 2 of 4: Presenter & Primary Contact Information</h1>
         <div class="info">* Indicates a required field.</div>
-        <hr />
-        
+        <hr />        
 		<div class="info">The Presenter Information below is specific to your Maker Faire Application. Changes you make will not affect your Maker Profile.</div>
-		<div class="input">
-            <label>Contact Name</label>
-            <h3 class="default-name"></h3>
-            <input type="hidden" class="default-name" name="data[s2][name]" value="<?php echo esc_attr($this->form['data[s2][name]']); ?>" />
-        </div>
-        
-        <div class="input">
-            <label>Contact Email</label>
-            <input type="text" class="default-email" name="data[s2][email]" value="<?php echo esc_attr($this->form['data[s2][email]']); ?>" />
-        </div>
-        
-		<div class="input">
-            <label>Contact Phone Number *</label>
-            <?php $this->text('data[s2][phone1]', array('class'=>'mf-extra-short')); ?> <?php $this->select('data[s2][phone1_type]', array('mobile'=>'Mobile', 'home'=>'Home', 'work'=>'Work', 'other'=>'Other')); ?>
-        </div>
-        
-        <div class="input">
-            <label>Second Phone Number</label>
-            <?php $this->text('data[s2][phone2]', array('class'=>'mf-extra-short')); ?> <?php $this->select('data[s2][phone2_type]', array('mobile'=>'Mobile', 'home'=>'Home', 'work'=>'Work', 'other'=>'Other')); ?>
-        </div>
-        
-        <h2>Private Contact Information (Maker Faire Staff Use Only)</h2>
-		<div class="input">
-            <label>Onsite Phone Number *</label>
-			<div class="info">Please provide a mobile phone number so that we are able to reach the presenter onsite during the event if the need arises. This number will only be used by Maker Faire staff.</div>
-            <?php $this->text('data[s2][onsite_phone]', array('class'=>'mf-extra-short')); ?>
-		</div>
-		
-		<?php include('address.php'); ?>
-        
+
 		<div id="m-maker">
         	<label>Presenter(s)</label>
             <div class="info">These names, bio and photo will appear on the Maker Faire website and mobile app.</div>
@@ -167,16 +137,27 @@
                         <label>Presenter Name *</label>
                         <input type="text" class="default-name" name="data[s2][presenter_name][<?php echo esc_attr(($i + 1)); ?>]" value="<?php echo esc_attr($this->form['data[s2][presenter_name]'][$i]); ?>" />
                     </div> 
+					<?php if($i == 0) : ?>
+					<div class="input">
+                        <label>Presenter Bio *</label>
+                        <div class="info">This bio will appear on your exhibit sign and on our website. Limited to 200 characters. If you have listed more than one presenter, we will link to the maker accounts you've listed and display each of their personal bios.</div>
+                        <textarea name="data[s2][presenter_bio][<?php echo esc_attr(($i + 1)); ?>]" maxlength="200" class="mf-shorter-field default-bio"><?php echo esc_html($this->form['data[s2][presenter_bio]'][$i]); ?></textarea>
+                    </div> 
+					<div class="input">
+                        <label>Presenter Photo *</label>
+                        <div class="info">Headshot Preferred. File must be at least 500px wide or larger. PNG, JPG or GIF formats only.</div>
+                        <?php $this->file('data[s2][presenter_photo]', 'presenter_photo'); ?>
+                    </div>
+					<?php endif; ?>
                     <div class="input">
                         <label>Presenter Email *</label>
                         <input type="text" class="default-email" name="data[s2][presenter_email][<?php echo esc_attr(($i + 1)); ?>]" value="<?php echo esc_attr($this->form['data[s2][presenter_email]'][$i]); ?>" />
                     </div> 
-                    <?php if($i == 0) : ?>
-                    <div class="input">
-                        <label>Presenter Bio *</label>
-                        <div class="info">This bio will appear on your exhibit sign and on our website. Limited to 200 characters. If you have listed more than one presenter, we will link to the maker accounts you've listed and display each of their personal bios.</div>
-                        <textarea name="data[s2][presenter_bio][<?php echo esc_attr(($i + 1)); ?>]" maxlength="200" class="mf-shorter-field default-bio"><?php echo esc_html($this->form['data[s2][presenter_bio]'][$i]); ?></textarea>
-                    </div>
+					<?php if($i == 0) : ?>
+					<div class="input">
+						<label>Onsite Phone Number *</label>
+						<input type="text" name="data[s2][presenter_onsite_phone][<?php echo esc_attr(($i + 1)); ?>]" value="<?php echo esc_attr($this->form['data[s2][presenter_onsite_phone]'][$i]); ?>" />
+					</div>
                     <div class="input">
                         <label>Organization/Company</label>
                         <input type="text" name="data[s2][presenter_org][<?php echo esc_attr(($i + 1)); ?>]" value="<?php echo esc_attr($this->form['data[s2][presenter_org]'][$i]); ?>" />
@@ -184,18 +165,39 @@
                     <div class="input">
                         <label>Job Title</label>
                         <input type="text" name="data[s2][presenter_title][<?php echo esc_attr(($i + 1)); ?>]" value="<?php echo esc_attr($this->form['data[s2][presenter_title]'][$i]); ?>" />
-                    </div>				
-                    <div class="input">
-                        <label>Presenter Photo *</label>
-                        <div class="info">Headshot Preferred. File must be at least 500px wide or larger. PNG, JPG or GIF formats only</div>
-                        <?php $this->file('data[s2][presenter_photo]', 'presenter_photo'); ?>
-                    </div>
+                    </div>				                  
                     <?php endif; ?>
                 </div>
                 <?php endfor; ?>
             </div>
             <div id="add-maker">+ Add Presenter</div>
         </div>
+
+		<h2 style="margin-bottom:0px;">Private Contact Information</h2>
+		<h3 style="margin-bottom:20px;">The presentation's primary contact information will be kept private and is for Maker Faire staff use only.</h3>
+		
+		<div class="input">
+            <label>Primary Contact Name</label>
+            <h3 class="default-name"></h3>
+            <input type="hidden" class="default-name" name="data[s2][name]" value="<?php echo esc_attr($this->form['data[s2][name]']); ?>" />
+        </div>
+        
+        <div class="input">
+            <label>Primary Contact Email</label>
+            <input type="text" class="default-email" name="data[s2][email]" value="<?php echo esc_attr($this->form['data[s2][email]']); ?>" />
+        </div>
+        
+		<div class="input">
+            <label>Primary Contact Phone Number *</label>
+            <?php $this->text('data[s2][phone1]', array('class'=>'mf-extra-short')); ?> <?php $this->select('data[s2][phone1_type]', array('mobile'=>'Mobile', 'home'=>'Home', 'work'=>'Work', 'other'=>'Other')); ?>
+        </div>
+        
+        <div class="input">
+            <label>Primary Contact Second Phone Number</label>
+            <?php $this->text('data[s2][phone2]', array('class'=>'mf-extra-short')); ?> <?php $this->select('data[s2][phone2_type]', array('mobile'=>'Mobile', 'home'=>'Home', 'work'=>'Work', 'other'=>'Other')); ?>
+        </div>
+
+		<?php include('address.php'); ?>
 
 	</div>
     <!--STEP 2 END-->

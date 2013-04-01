@@ -1,8 +1,24 @@
 <?php
 require_once( WP_CONTENT_DIR . '/themes/vip/plugins/vip-init.php' );
 
+// include maker-faire-forms plugin
 require_once( __DIR__ . '/plugins/maker-faire-forms/maker-faire-forms.php' );
 
+require_once( 'taxonomies/location.php' );
+require_once( 'plugins/post-types/event-items.php' );
+if ( defined( 'WP_CLI' ) && WP_CLI )
+	require_once( 'plugins/wp-cli/wp-cli.php' );
+
+if ( function_exists( 'wpcom_vip_load_plugin' ) ) {
+	wpcom_vip_load_plugin( 'easy-custom-fields' );
+}
+
+// load edit-flow plugin
+if ( function_exists( 'wpcom_vip_load_plugin' ) ) {
+	wpcom_vip_load_plugin( 'edit-flow' );
+}
+
+// add post-thumbnails support to theme
 add_theme_support( 'post-thumbnails' );
 
 if ( function_exists( 'wpcom_vip_enable_opengraph' ) ) {
@@ -20,6 +36,7 @@ if ( function_exists( 'wpcom_vip_sharing_twitter_via' ) ) {
 function make_enqueue_jquery() {
 	wp_enqueue_script( 'jquery' );
 	wp_enqueue_script( 'make-bootstrap', get_stylesheet_directory_uri() . '/js/bootstrap.js', array( 'jquery' ) );
+	wp_enqueue_script( 'make-countdown', get_stylesheet_directory_uri() . '/js/jquery.countdown.js', array( 'jquery' ) );
 	wp_enqueue_style( 'make-bootstrap', get_stylesheet_directory_uri() . '/css/bootstrap.css' );
 	wp_enqueue_style( 'make', get_stylesheet_directory_uri() . '/style.css' );
 }
@@ -44,8 +61,7 @@ function makerfaire_sidebar_news() {
 
 }
 
-function makerfaire_index_feed($n = 4)
-{
+function makerfaire_index_feed($n = 4) {
 	$f = fetch_feed('http://blog.makezine.com/tag/maker-faire/feed/'); 
 
 	if(is_wp_error($f))
@@ -208,3 +224,29 @@ if ( function_exists( 'vip_redirects' ) ) {
 		'/mini/toolkit/'	=> 'https://www.dropbox.com/sh/ykbi3al0j4hatd2/hSN6Z9nXTU'
 	) );
 }
+
+function mf_quick_links_box() {
+	add_meta_box( 'quickly', 'Quick Links', 'mf_quick_links', 'mf_form' );
+}
+// This function echoes the content of our meta box
+function mf_quick_links() {
+	$output = '<ul class="subsubsub">
+		<li class="all"><a href="edit.php?post_type=mf_form" class="current">All</a> |</li>
+		<li class="trash"><a href="edit.php?post_status=trash&amp;post_type=mf_form">Trash</a> |</li>
+		<li class="proposed"><a href="edit.php?post_status=proposed&amp;post_type=mf_form" title="Application proposed; waiting for acceptance.">Proposed</a> |</li>
+		<li class="waiting-for-info"><a href="edit.php?post_status=waiting-for-info&amp;post_type=mf_form" title="Question has been emailed to Maker, waiting for response.">Waiting for Info</a> |</li>
+		<li class="accepted"><a href="edit.php?post_status=accepted&amp;post_type=mf_form" title="Application is accepted to Maker Faire.">Accepted</a> |</li>
+		<li class="cancelled"><a href="edit.php?post_status=cancelled&amp;post_type=mf_form" title="Accepted application is cancelled; This project will not attend Maker Faire after all.">Cancelled</a> |</li>
+		<li class="in-progress"><a href="edit.php?post_status=in-progress&amp;post_type=mf_form" title="">In Progress</a></li>
+	</ul><div class="clear"></div>';
+	echo $output;
+}
+
+if (is_admin())
+	add_action('admin_menu', 'mf_quick_links_box');
+	
+function mf_clean_title( $title ) {
+    $title = str_replace('&nbsp;', ' ', $title);
+    return $title;
+}
+add_filter('the_title', 'mf_clean_title', 10, 2);

@@ -9,7 +9,14 @@
     </div>
     <div class="clear"></div><br /><br />
 	<input type="button" value="Apply for Maker Faire" onclick="document.location = '/bayarea-2013-callformakers';" />
-    <h3 style="margin-top:30px;">Edit Your Maker Faire Applications</h3>
+	
+    <h3 style="margin-top:30px;">The deadline for Maker entries has passed.</h3>
+	<p>You can still apply. We will consider your entry as a last-minute addition.</p>
+
+	<p>If you do not receive an acceptance letter by May 1st, we were not able to find space for your exhibit. We will do our best to notify you before then.</p>
+	
+	<p>To make changes to your current application(s), use the change forms in the <a href="http://makerfaire.com/bayarea-2013-makertoolkit/">Maker Toolkit</a> under "Helpful Forms".</p>
+	<h3 style="margin-top:30px;">Your Current Applications</h3>
     <hr />
 
     <div id="exhibit">

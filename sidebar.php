@@ -75,15 +75,39 @@
 			</ul>
 		</div>
 		
-	</div>
-	
-	<div>
-	
-		<div id="buy-ticket" style="margin:15px 0;">
+		<h3 style="text-align:center;">Countdown until Bay Area!</h3>
+		
+		<div class="countdown">
+			
+			<script type="text/javascript">
+				// var newYear = new Date(); 
+				// newYear = new Date('2013-05-18 9:00 AM UTC -0800'); 
+				// jQuery('.countdown').countdown({until: newYear });
+
+				jQuery(document).ready(function() {
+					var newYear = new Date();
+					mfba = new Date(2013, 5-1, 18, 9, 00);
+					jQuery('.countdown').countdown({
+						until: mfba,
+						timezone: -7,
+						format: 'DHMS',
+						layout:'<div class="countdown-numbers"><table><tr><th>{dnn}</th><th>{sep}</td><th>{hnn}</th><th>{sep}</td><th>{mnn}</th><th>{sep}</td><th>{snn}</th></tr><tr class="time"><td>Days</td><td></td><td>Hours</td><td></td><td>Minutes</td><td></td><td>Seconds</td></tr></table></div>',
+						timeSeparator:'<span class="separator">:</span>',
+					});
+
+				});
+			</script>
+			
+		</div>
+		<div id="buy-ticket">
 			<a href="http://makerfaire2013.eventbrite.com/">
 				<img src="http://cdn.makezine.com/make/makerfaire/images/ticket.png" width="296" height="100" alt="Get your tickets today">
 			</a>
 		</div>
+		
+	</div>
+	
+	<div>
 		
 		<div class="count">
 		
@@ -103,6 +127,14 @@
 					?>
 				</div>
 			</div>
+			
+			<!-- Beginning Sync AdSlot 2 for Ad unit header ### size: [[300,250]]  -->
+			<div id='div-gpt-ad-664089004995786621-2'>
+				<script type='text/javascript'>
+					googletag.display('div-gpt-ad-664089004995786621-2');
+				</script>
+			</div>
+			<!-- End AdSlot 2 -->
 		
 			<div class="row" style="margin-top: 10px;">
 
@@ -172,6 +204,14 @@
 		</div>
 	
 		<?php //echo makerfaire_sidebar_news(); ?>
+		
+		<!-- Beginning Sync AdSlot 3 for Ad unit header ### size: [[300,250]]  -->
+		<div id='div-gpt-ad-664089004995786621-3'>
+			<script type='text/javascript'>
+				googletag.display('div-gpt-ad-664089004995786621-3');
+			</script>
+		</div>
+		<!-- End AdSlot 3 -->
 
 	</div>
 

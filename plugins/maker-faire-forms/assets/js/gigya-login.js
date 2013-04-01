@@ -59,7 +59,7 @@ function mf_is_loggedin(o)
 
 	if(o.errorCode == 0)
 	{
-		jQuery('.nav-collapse ul:first-of-type').append('<li><a href="/makerprofile">Your Account</a></li><li><a href="#" onclick="javascript: gigya.accounts.logout();">Logout</a></li>');		
+		jQuery('.nav-collapse ul:first-of-type').append('<li><a href="/makerprofile">Your Account</a></li><li><a href="#" onclick="javascript: gigya.accounts.logout();">Logout</a></li>');
 		
 		if(path.indexOf('exhibit') >= 0 || path.indexOf('presenter') >= 0 || path.indexOf('performer') >= 0)
 		{	
@@ -70,7 +70,6 @@ function mf_is_loggedin(o)
 			{
 				jQuery('input.default-name').val(o.profile.firstName+' '+o.profile.lastName);
 				jQuery('input.default-email').val(o.profile.email);  
-				jQuery('textarea.default-bio').val(o.data.bio); 
 			}
 			
 			jQuery('h3.default-name').html(o.profile.firstName+' '+o.profile.lastName);
@@ -94,7 +93,11 @@ function mf_is_loggedin(o)
 				{
 					for(j in r.forms[i])
 					{
-						jQuery('#'+i+' ul').append('<li><a href="/'+i+'form/?id='+j+'">'+j+' - '+r.forms[i][j]['post_title']+' ('+(r.forms[i][j]['post_status'] == 'mf_pending' ? 'pending' : 'submitted')+')</a></li>');
+						append = '<li>'+j+' - '+r.forms[i][j]['post_title']+' ('+r.forms[i][j]['post_status']+')</li>';
+						if (r.forms[i][j]['post_status'] == 'in-progress' )
+							append = '<li><a href="/'+i+'form/?id='+j+'">'+j+' - '+r.forms[i][j]['post_title']+' ('+r.forms[i][j]['post_status']+')</a></li>';
+						
+						jQuery('#'+i+' ul').append(append);
 					}
 				}
 			}, 
@@ -129,5 +132,5 @@ function mf_onLogoutHandler(o)
 
 function mf_update_profile(o)
 {
-	window.location.reload();	
+	window.location.reload();
 }

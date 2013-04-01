@@ -84,3 +84,14 @@
 #userScreensDiv_content{padding:25px;}
 .showUserScreenDiv{display:block !important}
 #userScreensDiv .gigya-screen-caption .close{background-image: url("http://cdn.gigya.com/gs/i/accounts/close_dialog.png");background-position: right center;background-repeat: no-repeat; cursor: pointer;float: right; height: 33px; line-height: 33px;width: 20px;}
+
+/*-  Backend
+----------------------------------------------------------------------*/
+.mf-form-row td:first-of-type{width:150px; font-weight:bold}
+.mf-form-row td:last-of-type{border-bottom:1px solid #DDD; padding:10px 0px;}
+	#form_type, #maker_faire{display:none}
+
+.mf-form-row input[type=text], .mf-form-row textarea{width:100%}
+.mf-form-row textarea{height:150px;}
+
+.remove-maker td{background:#DDD; padding:5px;}
