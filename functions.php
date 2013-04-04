@@ -4,6 +4,12 @@ require_once( WP_CONTENT_DIR . '/themes/vip/plugins/vip-init.php' );
 // include maker-faire-forms plugin
 require_once( __DIR__ . '/plugins/maker-faire-forms/maker-faire-forms.php' );
 
+// include maker-faire-forms plugin
+require_once( __DIR__ . '/plugins/public-pages/makers.php' );
+
+// Markdown
+include_once dirname(__file__) . '/plugins/markdown/markdown.php';
+
 require_once( 'taxonomies/location.php' );
 require_once( 'plugins/post-types/event-items.php' );
 if ( defined( 'WP_CLI' ) && WP_CLI )

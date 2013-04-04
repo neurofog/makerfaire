@@ -36,7 +36,12 @@ get_header(); ?>
 							echo '<img src="'. wpcom_vip_get_resized_remote_image_url( $json->project_photo, 610, 400 ) . '" class="thumbnail" />';
 						}
 						if (!empty($json->private_description)) {
-							echo Markdown( wp_kses_post( $json->private_description ) ) ;
+							if (class_exists(Markdown)) {
+								echo Markdown( wp_kses_post( $json->private_description ) ) ;
+							} else {
+								echo '<p>' . wp_kses_post( $json->private_description ) . '</p>';
+							}
+							
 						}
 						
 						if (!empty($json->project_website)) {
@@ -54,7 +59,12 @@ get_header(); ?>
 							}
 							echo '<div class="media-body">';
 							echo '<h4>' . wp_kses_post( $json->name ) . '</h4>';
-							echo '<p>' . Markdown( wp_kses_post( $json->maker_bio ) ) . '</p>';
+							if (class_exists(Markdown)) {
+								echo Markdown( wp_kses_post( $json->maker_bio ) );	
+							} else {
+								echo '<p>' . wp_kses_post( $json->maker_bio ) . '</p>';
+							}
+							
 							echo '</div></div>';
 						}
 						if (!empty($json->group_name)) {

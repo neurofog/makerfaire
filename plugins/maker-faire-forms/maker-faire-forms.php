@@ -299,7 +299,7 @@ class MAKER_FAIRE_FORM {
 	public function admin_init() {
 		
 		if ( isset( $_GET['form_csv'] ) )
-			$this->build_form_export( $_GET['form_csv'] );
+			$this->build_form_export( $_GET['form_csv'], ( isset( $_GET['form_status'] ) ? $_GET['form_status'] : 'all' ) );
 
 		if ( isset( $_GET['maker_csv'] ) )
 			$this->build_maker_export( $_GET['maker_csv'] );
@@ -477,7 +477,10 @@ class MAKER_FAIRE_FORM {
 	public function meta_box( $post, $args ) {
 		$data = json_decode( str_replace( "\'", "'", $post->post_content ) );
 
-		if( $args['id'] == 'mf_save' ) { ?>
+		if( $args['id'] == 'mf_save' ) { 
+			$wf = get_post_meta( $post->ID, '_mf_waiting_for', true );
+			$wf = $wf == '' ? 'Waiting on?' : $wf;
+		?>		
 				<?php wp_nonce_field( 'mf_nonce', 'mf_submit_nonce' ); ?>
 				<?php $post_status_types    = array( 'in-progress', 'proposed', 'waiting-for-info', 'accepted', 'rejected', 'cancelled' ); ?>
 				<input name="mf_form" type="hidden" value="1" />
@@ -529,7 +532,7 @@ class MAKER_FAIRE_FORM {
 							postStatusDisplay.html(postStatusSelectedTitle);
 
 							if ( newStatus == 'waiting-for-info' ) {
-								$('#mfquestionwait').html('<textarea name="mf_waitingquestion" id="mf_waitingquestion" style="width:99%">Waiting on?</textarea>');
+								$('#mfquestionwait').html('<textarea name="mf_waitingquestion" id="mf_waitingquestion" style="width:99%"><?php echo esc_textarea( html_entity_decode( $wf ) ); ?></textarea>');
 							} else {
 								$('#mfquestionwait').html('');
 							}
@@ -553,12 +556,28 @@ class MAKER_FAIRE_FORM {
 					echo '<li>'.esc_html( $log ).'</li>';
 				}
 				echo "</ul>";
-		} elseif ( $args['id'] == 'mf_summary' ) { ?>
+		} elseif ( $args['id'] == 'mf_summary' ) { 
+		
+			$jdb_success = get_post_meta( $post->ID, 'mf_jdb_sync', true);
+			if( $jdb_success == '' ) {
+				$jdb_fail = get_post_meta( $post->ID, 'mf_jdb_sync_fail', true);
+				$jdb      = '[FAILED] : N/A';
+				if( $jdb_success == '' )
+					$jdb      = '[FAILED] : '.date( 'M jS, Y g:i A', $jdb_fail - ( 7 * 3600 ) );
+			} else {
+				$jdb = '[SUCCESS] : '.date( 'M jS, Y g:i A', $jdb_success - ( 7 * 3600 ) );	
+			}
+			
+			$photo = $data->{ $this->merge_fields( 'form_photo_thumb', $data->form_type ) };
+			if( '' == $photo )
+				$photo = $data->{ $this->merge_fields( 'form_photo', $data->form_type ) };
+			
+		?>
 					<h1><?php echo esc_html( $data->{ $this->merge_fields( 'project_name', $data->form_type ) } ); ?></h1>
 					<input name="form_type" type="hidden" value="<?php echo esc_attr( $data->form_type ); ?>" />
 					<table style="width:100%">
 					<tr>
-						<td style="width:210px;" valign="top"><img src="<?php echo esc_url( $data->{ $this->merge_fields( 'form_photo_thumb', $data->form_type ) } ); ?>" height="200" width="200" /></td>
+						<td style="width:210px;" valign="top"><img src="<?php echo esc_url( $photo ); ?>" height="200" width="200" /></td>
 						<td valign="top">
 						<p><?php echo esc_html( $data->public_description ); ?></p>
 						<table style="width:100%">
@@ -610,6 +629,10 @@ class MAKER_FAIRE_FORM {
 								<td valign="top"><?php echo esc_attr( $data->sales == '' ? 'N/A' : $data->sales ); ?></td>
 							</tr>
 							<?php endif; ?>
+							<tr>
+								<td valign="top"><strong>JDB Sync:</strong></td>
+								<td valign="top"><?php echo esc_html( $jdb ); ?></td>
+							</tr>
 						</table>
 						</td>
 					</tr>
@@ -619,9 +642,20 @@ class MAKER_FAIRE_FORM {
 		
 			echo stripslashes( wp_filter_post_kses( $this->convert_newlines( $data->private_description ) ) );
 			
-		} elseif ( $args['id'] == 'mf_maker' ) { ?>
+		} elseif ( $args['id'] == 'mf_maker' ) { 
+			
+			$photo = $data->{ $this->merge_fields( 'user_photo_thumb', $data->form_type ) };
+			if( '' == $photo )
+				$photo = $data->{ $this->merge_fields( 'user_photo', $data->form_type ) };
+			if( is_array( $photo ) )
+				$photo = $photo[0];
+				
+			$bio   = $data->{ $this->merge_fields( 'user_bio', $data->form_type ) };
+			if( is_array( $bio ) )
+				$bio = $bio[0];
+		?>
 
-				<img src="<?php echo esc_url( $data->{ $this->merge_fields( 'user_photo_thumb', $data->form_type ) } ); ?>" style="float:left; margin-right:10px;" height="75" width="75" />
+				<img src="<?php echo esc_url( $photo ); ?>" style="float:left; margin-right:10px;" height="75" width="75" />
 				<div style="float:left; width:150px;">
 					<strong><?php echo esc_html( $data->name ); ?></strong><br />
 					<?php echo esc_html( $data->phone1 ); ?><br />
@@ -632,7 +666,7 @@ class MAKER_FAIRE_FORM {
 				<?php echo esc_html( $data->private_address.' '.$data->private_address2 ); ?><br />
 				<?php echo esc_html( $data->private_city.', '.$data->private_state.' '.$data->private_zip.' '.$data->private_country ); ?><br /><br />
 				<strong>Bio</strong><br />
-				<?php echo esc_html( $data->{ $this->merge_fields( 'user_bio', $data->form_type ) } ); ?>
+				<?php echo esc_html( $bio ); ?>
 				<?php
 		} elseif ( $args['id'] == 'mf_form_type' ) { ?>
 				<input class="mf_form_type" name="form_type" type="radio" value="exhibit" /> &nbsp; Exhibit Application &nbsp;
@@ -1064,7 +1098,9 @@ class MAKER_FAIRE_FORM {
 		foreach( $remove_ids as $gigya_id ) {
 			delete_post_meta( $id, 'mf_gigya_id',  $gigya_id );	
 		}
-
+		
+		//SYNC WITH JDB
+		$this->sync_jdb( $id );
 
 		if ( isset( $_POST['original_post_status'], $_POST['post_status'], $_POST['action'], $_POST['post_type'] ) )
 			$this->handle_post_status_change();
@@ -1093,6 +1129,7 @@ class MAKER_FAIRE_FORM {
 
 		// grab post as ref to get the content
 		$post =& get_post( $post_id );
+		$wf   =  get_post_meta( $post_id, '_mf_waiting_for', true );
 
 		//SANITIZE POST STATUS | post status ( proposed, waiting-for-info, accepted, rejected, cancelled )
 		$post_status = sanitize_key( $_POST['post_status'] );
@@ -1114,7 +1151,7 @@ class MAKER_FAIRE_FORM {
 
 
 		// if new status write the log
-		if ( $_POST['original_post_status'] != $post_status || ( $post_status == 'waiting-for-info' && isset( $_POST['mf_waitingquestion'] ) ) ) {
+		if ( $_POST['original_post_status'] != $post_status || ( $post_status == 'waiting-for-info' && isset( $_POST['mf_waitingquestion'] ) && $wf != $_POST['mf_waitingquestion'] ) ) {
 			
 			$current_user = wp_get_current_user();
 			$user_name    = $current_user->user_login;
@@ -1122,8 +1159,10 @@ class MAKER_FAIRE_FORM {
 			$date = date('m/d/y h:i a');
 
 			$extra = '';
-			if ( $post_status == 'waiting-for-info' && isset( $_POST['mf_waitingquestion'] ) )
+			if ( $post_status == 'waiting-for-info' ) {
 				$extra = esc_textarea( $_POST['mf_waitingquestion'] );
+				update_post_meta( $post_id, '_mf_waiting_for', $extra );	
+			}
 
 			$post_status_pretty = '';
 			if ( $post_status == 'accepted' ) {
@@ -1152,14 +1191,12 @@ class MAKER_FAIRE_FORM {
 			$post_status_log   = array_slice($post_status_log, -15);
 			
 			update_post_meta( $post_id, '_mf_log', $post_status_log);
+		} else {
+			return;	
 		}
 
-		// skip if post status is the same as prev post status except for waiting-for-info
-		if ( $post_status != 'waiting-for-info' && ( $_POST['original_post_status'] == $post_status ) )
-			return;
-
 		// Get Project Name
-		$project_name = sanitize_text_field( $form[$this->merge_fields( 'project_name', $form_type )] );
+		$project_name = str_replace( '&amp;' , '&', sanitize_text_field( $form[$this->merge_fields( 'project_name', $form_type )] ) );
 
 
 		// set maker name
@@ -1282,7 +1319,7 @@ class MAKER_FAIRE_FORM {
 
 		// if editor is waiting on something.. add to the email
 		if ( $post_status == 'waiting-for-info' && isset( $_POST['mf_waitingquestion'] ) && $_POST['mf_waitingquestion'] != 'Waiting on?' )
-			$extras .= esc_textarea( force_balance_tags( wpautop( stripslashes( $_POST['mf_waitingquestion'] ) ) ) );
+			$extras .= esc_textarea( force_balance_tags( stripslashes( $_POST['mf_waitingquestion'] ) ) );
 
 
 		if ( $form_type == 'exhibit' ) {
@@ -1746,11 +1783,7 @@ class MAKER_FAIRE_FORM {
 				return;
 
 			//SYNC WITH MAKE DB
-			$res  = wp_remote_post( 'http://makedb.makezine.com/updateExhibitInfo', array( 'body' => array_merge( array( 'eid' => $id, 'mid' => $r['uid'] ), (array) $r ) ) );
-			$body = json_decode( $res['body'] );
-
-			if ( $body->exhibit_id == '' && $body->exhibit_id == 0 )
-				add_post_meta( $id, 'mf_jdb_sync_fail', time() );
+			$this->sync_jdb( $id );
 
 			//SEND CONFIRMATION EMAIL TO MAKER
 			$this->send_maker_email( $r, $n );
@@ -1794,7 +1827,9 @@ class MAKER_FAIRE_FORM {
 		$m.='<p>Maker Media, Inc.<br />1005 Gravenstein Hwy North<br />Sebastopol, CA 95472</p>';
 		$m.='</body></html>';
 
-		$r = wp_mail( $r['email'], 'Maker Faire ' . esc_html( ucfirst( $r['form_type'] ) ) . ' Application Received: ' . esc_html( $n ), $m, array( 'Content-Type: text/html', 'From: Maker Faire <makers@makerfaire.com>','Bcc: Maker Faire <makers@makerfaire.com>' ) );
+		$app_name = str_replace( '&amp;', '&', esc_html( $n ) );
+
+		$r = wp_mail( $r['email'], 'Maker Faire ' . esc_html( ucfirst( $r['form_type'] ) ) . ' Application Received: ' . $app_name, $m, array( 'Content-Type: text/html', 'From: Maker Faire <makers@makerfaire.com>','Bcc: Maker Faire <makers@makerfaire.com>' ) );
 
 		return $r;
 	}
@@ -1817,7 +1852,9 @@ class MAKER_FAIRE_FORM {
 		$m.='<br /><p>Spread the word - Like us on <a href="http://facebook.com/makerfaire" alt="Like Maker Faire Facebook">Facebook</a> and follow us on ';
 		$m.='<a href="https://twitter.com/#%21/makerfaire" alt="Follow Maker Faire Twitter">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts" alt="Maker Faire Google+">G+</a></p>';
 
-		$r = wp_mail( $emails, 'Maker Faire Application: '.intval( $id ).': ' . esc_html( $n ), $m, array( 'Content-Type: text/html', 'From: Maker Faire <makers@makerfaire.com>','Bcc: Maker Faire <makers@makerfaire.com>' ) );
+		$app_name = str_replace( '&amp;', '&', esc_html( $n ) );
+
+		$r = wp_mail( $emails, 'Maker Faire Application: '.intval( $id ).': ' . $app_name, $m, array( 'Content-Type: text/html', 'From: Maker Faire <makers@makerfaire.com>','Bcc: Maker Faire <makers@makerfaire.com>' ) );
 
 		return $r;
 	}
@@ -2235,8 +2272,16 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	public function show_reports_page() { 
 	
-		$stats = $this->get_reports_stats();
+		if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
+			//NONCE CHECK
+			if ( isset( $_POST['_wpnonce'] ) && !wp_verify_nonce( $_GET['_wpnonce'], 'mf_syncjdb' ) )
+				return false;
+			$this->sync_jdb();
+		}
 	
+		$stats = $this->get_reports_stats();
+		$fails = $this->get_failed_syncs();
+		
 		?>
 		<div class="wrap" id="iscic">
 			<?php echo screen_icon(); ?>
@@ -2263,14 +2308,35 @@ class MAKER_FAIRE_FORM {
 						<?php endforeach; ?>
 					</tbody>
 			</table>
+			<h1 style="margin-top:40px;">Sync with JDB</h1>
+			<?php if( $_SERVER['SERVER_ADDR_NAME'] != 'iscrackweb1' ) : ?>
+				Last Sync : <?php echo esc_html( get_option( 'mf_full_jdb_sync', 'NEVER' ) ); ?><br />
+				<form action="" method="post">
+					<p class="submit"><input type="submit" value="Sync With JDB Now" class="button button-primary button-large" /></p>
+					<?php wp_nonce_field( 'mf_syncjdb', 'mf_syncjdb' ); ?>
+				</form>
+			<?php endif; ?>
+			<h2>Failed Syncs</h2>
+			<ul>
+			<?php foreach( $fails as $fail ) : ?>
+				<li><a href="post.php?post=<?php echo intval( $fail->ID ); ?>&action=edit"><?php echo esc_html( $fail->post_title ); ?></a></li>
+			<?php endforeach; ?>
+			</ul>
 			</div>
 			<div style="width:45%; float:right; border:1px solid #DFDFDF; border-radius:3px; padding:10px; background:#F2F2F2">
 				<h1>Project/Application Reports</h1>
+				
+				<h2>Accepted Projects/Applications</h2>
+        		<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&form_csv=exhibit&form_status=accepted', 'mf_export_check' ); ?>">Export Accepted Exhibit Applications</a></h3>
+        		<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&form_csv=performer&form_status=accepted', 'mf_export_check' ); ?>">Export Accepted Performer Applications</a></h3>
+        		<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&form_csv=presenter&form_status=accepted', 'mf_export_check' ); ?>">Export Accepted Presenter Applications</a></h3>
+        
 				<h2>Project/Application Reports</h2>
 				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&form_csv=all', 'mf_export_check' ); ?>">Export All Applications</a></h3>
 				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&form_csv=exhibit', 'mf_export_check' ); ?>">Export All Exhibit Applications</a></h3>
 				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&form_csv=performer', 'mf_export_check' ); ?>">Export All Performer Applications</a></h3>
 				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&form_csv=presenter', 'mf_export_check' ); ?>">Export All Presenter Applications</a></h3>
+				
 				<h2 style="margin-top:40px;">Maker Reports</h2>
 				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&maker_csv=presenter', 'mf_export_check' ); ?>">Export All Makers</a></h3>
 			</div>
@@ -2315,9 +2381,10 @@ class MAKER_FAIRE_FORM {
 	*
 	* @access private
 	* @param string $export_type The type of form to output
+	* @param string $status The status of the form
 	* @param boolean $return_array Whether to return an array or output CSV
 	* =====================================================================*/
-	private function build_form_export( $export_type = 'all', $return_array = false ) {
+	private function build_form_export( $export_type = 'all', $status = 'all', $return_array = false ) {
 
 		//NONCE CHECK
 		if ( isset( $_GET['_wpnonce'] ) && !wp_verify_nonce( $_GET['_wpnonce'], 'mf_export_check' ) )
@@ -2346,23 +2413,38 @@ class MAKER_FAIRE_FORM {
 			'user_bio'            => ''
 		);
 
-		if ( $export_type == 'all' ) {			
+		if ( $export_type == 'all' ) {	
+			$s = array( 's1' => array() );	
 			foreach( $this->fields as $type => $st ) { 
 				foreach( $st as $sn => $d ) {
-					foreach( $d as $key => $r ) {
-						$data[$key] = '';
-					}
+					$s['s1'] = array_merge( $s['s1'], $d );
 				}
 			}
 		} else {
-			foreach( $this->fields[ $export_type ] as $sn => $d ) {
-				foreach( $d as $key => $r ) {
-					$data[$key] = '';
+			$s = $this->fields[ $export_type ];
+		}
+		
+		foreach( $s as $sn => $d ) {
+			foreach( $d as $key => $r ) {
+				$data[$key] = '';
+				
+				if( 'm_maker_gigyaid' == $key ) {
+					for( $i=2; $i < 5; $i++ ) {
+						$data['m_maker_name_'.$i]    = '';
+						$data['m_maker_email_'.$i]   = '';
+						$data['m_maker_gigyaid_'.$i] = '';
+					}
+				} elseif( 'presenter_gigyaid' == $key ) {
+					for( $i=2; $i < 5; $i++ ) {
+						$data['presenter_name_'.$i]    = '';
+						$data['presenter_email_'.$i]   = '';	
+						$data['presenter_gigyaid_'.$i] = '';
+					}
 				}
 			}
 		}
 
-		$posts   = $this->get_all_forms();
+		$posts   = $this->get_all_forms(NULL, $status);
 		$efterms = $this->get_editflow_terms();
 		$efdata  = $this->get_editflow_data( $efterms );
 		$efdef   = array(
@@ -2394,22 +2476,72 @@ class MAKER_FAIRE_FORM {
 				'status'     => $post->post_status,
 				'project_id' => $post->ID
 			) );
-
+			
+			$line             = '';
 			$res[ $post->ID ] = array();
-			$line           = "";
-
+			
+			$multi = array( 
+				'm_maker_name', 
+				'm_maker_email', 
+				'm_maker_gigyaid', 
+				'presenter_name', 
+				'presenter_email', 
+				'presenter_gigyaid' 
+			);
+			
 			//SET POST DATA
 			foreach( $data as $key => $set ) {
 				$data_key = $key;
 				if( $mkey = $this->merge_fields( $key, $form['form_type'] ) )
 					$key = $mkey;
-				$d = "";
-				if( isset( $form[$key] ) )
-					$d = is_array( $form[$key] ) ? implode( ',', $form[$key] ) : $form[$key];
 
-				$res[$post->ID][$data_key] = $d;
-				$line .= "\t".$d;
+				//BREAK UP MULTIPLE MAKERS/PRESENTERS
+				if( in_array( $data_key, $multi ) ) {
+					$d = is_array( $form[$key] ) ? $form[$key][0] : $form[$key]; 
+					
+					$res[$post->ID][$data_key] = $d;
+					$line .= "\t".$d;
+					
+					if( 'm_maker_gigyaid' == $data_key ) {
+						for( $i=1; $i < 4; $i++ ) {
+							foreach( array( 'm_maker_name', 'm_maker_email', 'm_maker_gigyaid' ) as $n ) {
+								$res[$post->ID][$n.'_'.( $i + 1 )] = $form[$n][$i];
+								$line .= "\t".$form[$n][$i];
+							}
+						}
+					} elseif( 'presenter_gigyaid' == $data_key ) {
+						for( $i=1; $i < 4; $i++ ) {
+							foreach( array( 'presenter_name', 'presenter_email', 'presenter_gigyaid' ) as $n ) {
+								$res[$post->ID][$n.'_'.( $i + 1 )] = $form[$n][$i];
+								$line .= "\t".$form[$n][$i];
+							}
+						}
+					}
+				//CATCH ALL
+				} elseif( isset( $form[$key] ) ) {
+					$d = is_array( $form[$key] ) ? implode( ',', $form[$key] ) : $form[$key];
+					
+					$res[$post->ID][$data_key] = $d;
+					$line .= "\t".$d;
+				} else {
+					
+					$is_multi = false;
+					foreach( $multi as $m ) {
+						for( $i=2; $i < 5; $i++ ) {
+							if( $data_key == $m.'_'.$i ) {
+								$is_multi = true;
+								break;	
+							}
+						}
+					}
+					
+					if( !$is_multi ) {
+						$res[$post->ID][$data_key] = "";
+						$line .= "\t"."";
+					}
+				}
 			}
+
 			//SET EDITFLOW DATA	
 			foreach( $efterms as $efid => $efterm ) {
 				if ( isset( $efdata[ $post->ID ][ $efid ] ) ) {
@@ -2429,9 +2561,7 @@ class MAKER_FAIRE_FORM {
 					$ls .= ', '.str_replace( '&amp;', '&', $l->name );	
 				}
 				$line .= "\t".substr($ls, 2);
-			}
-				
-
+			}	
 			$body .= substr( $line, 1)."\r\n";
 		}
 
@@ -2661,13 +2791,17 @@ class MAKER_FAIRE_FORM {
 	*
 	* @access private
 	* @param string|null $sort Whether and how the forms should be sorted.
+	* @param string $status The status of the application
 	* @return array Maker Faire Forms
 	* =====================================================================*/
-	private function get_all_forms( $sort = NULL ) {
+	private function get_all_forms( $sort = NULL, $status = 'all' ) {
 		$args = array(
 			'posts_per_page' => 999,
 			'post_type'      => 'mf_form'
 		);
+
+		if( $status != 'all' )
+      		$args['post_status'] = esc_attr( $status );
 
 		$ps      = new WP_Query( $args );
 		$posts   = $ps->get_posts();
@@ -2701,6 +2835,24 @@ class MAKER_FAIRE_FORM {
 		}
 
 		return $res;
+	}
+	/*
+	* Get all posts that have failed to sync with JDB
+	*
+	* @access private
+	* @return array WP Posts
+	* =====================================================================*/
+	private function get_failed_syncs() {
+		$args = array(
+			'posts_per_page' => 999,
+			'post_type'      => 'mf_form',
+			'meta_key'       => 'mf_jdb_sync_fail'
+		);
+
+		$ps      = new WP_Query( $args );
+		$posts   = $ps->get_posts();
+		
+		return $posts;
 	}
 	/*
 	* Determines if a field is textarea
@@ -2744,6 +2896,54 @@ class MAKER_FAIRE_FORM {
 	private function convert_newlines( $str, $replace = '<br />' ) {
 		$s = array('nn-', ' nn', '.nn', '<br />rn');
 		return str_replace($s, $replace, $str);
+	}
+	/*
+	* Sync all MakerFiare Application Objects with External JDB
+	*
+	* @access private
+	* @param int $id Post id to SYNC
+	* =====================================================================*/
+	private function sync_jdb( $id = 0 ) {
+		
+		//DONT SYNC FROM OUR SERVER
+		if( $_SERVER['SERVER_ADDR_NAME'] == 'iscrackweb1' )
+			return false;
+	
+		if( !$id ) {
+			$posts = $this->get_all_forms();
+		} else {
+			$post  = get_post( $id ); 
+			
+			if( is_null( $post ) )
+				return false;
+			if( $post->post_type != 'mf_form' )
+				return false;
+			
+			$posts = array( $post );
+		}
+		
+		$total = count( $posts );
+
+		foreach( $posts as $post ) {
+			
+			$form = (array) json_decode( str_replace( "\'", "'", $post->post_content ) );
+			$res  = wp_remote_post( 'http://makedb.makezine.com/updateExhibitInfo', array( 'body' => array_merge( array( 'eid' => $post->ID, 'mid' => $form['uid'] ), (array) $form ) ) );
+	
+			if ( 200 == $res['response']['code'] ) {
+				$body = json_decode( $res['body'] );
+				if ( $body->exhibit_id == '' && $body->exhibit_id == 0 ) {
+					update_post_meta( $post->ID, 'mf_jdb_sync_fail', time() );
+				} else {
+					update_post_meta( $post->ID, 'mf_jdb_sync', time() );
+					delete_post_meta( $post->ID, 'mf_jdb_sync_fail' );
+				}
+			} else {
+				update_post_meta( $post->ID, 'mf_jdb_sync_fail', time() );
+			}
+		}
+		
+		if( !$id )	
+			update_option( 'mf_full_jdb_sync', date( 'M jS, Y g:s A', ( time() - ( 3600 * 7 ) ) ) );
 	}
 	/*
 	* Updgrade plugin apporpriatly.

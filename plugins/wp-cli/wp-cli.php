@@ -15,6 +15,7 @@ class MAKE_CLI extends WP_CLI_Command {
 		$args = array(
 			'posts_per_page' => 1000,
 			'post_type' => 'mf_form',
+			'post_status' => 'any',
 
 			// Prevent new posts from affecting the order
 			'orderby' => 'ID',
@@ -31,33 +32,56 @@ class MAKE_CLI extends WP_CLI_Command {
 
 		while ( $query->have_posts() ) : $query->the_post();
 		global $post;
+			setup_postdata($post);
 			WP_CLI::line( get_the_title() );
 			$json_post = json_decode( get_the_content() );
-			if (!empty($json_post->cats)) {
+
+			if ( isset( $json_post->cats ) ) {
+				$catsobj = $json_post->cats;
+			} else {
+				$catsobj = null;
+			}
+			$cats = null;
+			if ( is_array( $catsobj ) ) {
+				$cats = $catsobj;
+			} else {
+				$cats = explode(',', $catsobj);
+			}
+			if ( !empty( $cats[0] ) ) {
 				WP_CLI::line('Categories:');
-				$cats = explode( ',', $json_post->cats );
 				foreach ($cats as $cat) {
 					$result = wp_set_object_terms( get_the_ID(), $cat, 'category', true );
 					if ( !empty( $result ) ) {
-						WP_CLI::line( $cat );
+						WP_CLI::success( $cat );
 					} else {
 						WP_CLI::error( $cat );
 					}
 				}
 			}
-			if (!empty($json_post->tags)) {
+			if ( isset( $json_post->tags ) ) {
+				$tagsobj = $json_post->tags;
+			} else {
+				$tagsobj = null;
+			}
+			$tags = null;
+			if ( is_array( $tagsobj ) ) {
+				$tags = $tagsobj;
+			} else {
+				$tags = explode(',', $tagsobj);
+			}
+			if ( !empty( $tags[0] ) ) {
 				WP_CLI::line('Tags:');
-				$tags = explode( ',', $json_post->tags );
 				foreach ($tags as $tag) {
-					WP_CLI::line( $tag );
 					$result = wp_set_object_terms( get_the_ID(), $tag, 'post_tag', true );
 					if ( !empty( $result ) ) {
-						WP_CLI::line( $tag );
+						WP_CLI::success( $tag );
 					} else {
 						WP_CLI::error( $tag );
 					}
 				}
 			}
+			
+
 		WP_CLI::line( '' );
 		endwhile;
 		WP_CLI::success( "Boom!" );
