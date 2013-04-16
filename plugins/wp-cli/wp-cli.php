@@ -34,7 +34,7 @@ class MAKE_CLI extends WP_CLI_Command {
 		global $post;
 			setup_postdata($post);
 			WP_CLI::line( get_the_title() );
-			$json_post = json_decode( get_the_content() );
+			$json_post = json_decode( str_replace( "\'", "'", get_the_content() ) );
 
 			if ( isset( $json_post->cats ) ) {
 				$catsobj = $json_post->cats;

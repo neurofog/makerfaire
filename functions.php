@@ -67,6 +67,19 @@ function makerfaire_sidebar_news() {
 
 }
 
+/**
+ * Make the 'accepted' status public so that forms can be shown
+ *
+ * @see http://vip-support.automattic.com/tickets/16382
+ */
+add_action( 'init', function() {
+	global $wp_post_statuses;
+
+	if ( isset( $wp_post_statuses['accepted'] ) )
+		$wp_post_statuses['accepted']->public = true;
+
+}, 400 );
+
 function makerfaire_index_feed($n = 4) {
 	$f = fetch_feed('http://blog.makezine.com/tag/maker-faire/feed/'); 
 

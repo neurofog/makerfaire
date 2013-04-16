@@ -15,6 +15,14 @@
 
 .postmeta, .gig-share-button, .meta{display:none}
 
+#ef-comments h5 span.meta {
+	color: #666666;
+	font-size: 0.85em;
+	margin: 0 0 1.5em;
+	font-style: normal;
+	display: inline;
+}
+
 .mf-form input[type=submit], .mf-editforms input[type=button]{background:#EC1C23; color:#FFF; font-size:16px; padding:5px 20px; font-weight:bold;}
 
 .mf-form .h{display:none}

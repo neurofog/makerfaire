@@ -15,6 +15,11 @@ License URI: license.txt
 	display: none;
 }
 
+
+.media-object.thumbnail.pull-left {
+	margin-right:20px;
+}
+
 .countdown {
 	margin-left:0px;
 }

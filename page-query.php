@@ -50,7 +50,7 @@ $entities = array();
 
 // Loop through the posts
 foreach ($posts as $post) {
-	$exhibit = json_decode( $post->post_content );
+	$exhibit = json_decode( str_replace( "\'", "'", $post->content ) );
 	$jsonpost["id"] = get_the_ID();
 	$jsonpost["name"] = get_the_title();
 	$jsonpost["original_id"] = get_the_ID();
@@ -66,11 +66,7 @@ foreach ($posts as $post) {
 	$jsonpost["thumb_img_url"] = $url;
 	$jsonpost["large_img_url"] = $exhibit->project_photo;
 	$locs = get_the_terms( get_the_ID(), 'location' );
-	$venue_id_ref = array();
-	foreach ($locs as $loc) {
-		array_push( $venue_id_ref, $loc->term_id);
-	}
-	$jsonpost["venue_id_ref"] = $venue_id_ref;
+	$jsonpost["venue_id_ref"] = key($locs);
 	$cats = get_the_category( get_the_ID() );
 	$category_id_refs = array();
 	foreach ( $cats as $cat ) {
@@ -84,11 +80,11 @@ foreach ($posts as $post) {
 	$jsonpost["facebook_url"] = '';
 	$jsonpost["email"] = $exhibit->email;
 	$taggers = get_the_tags();
-	$tags = array();
+	$tags = null;
 	foreach ( $taggers as $tag ) {
-		array_push( $tags, $tag->name );
+		$tags .= ', ' . $tag->name;
 	}
-	$jsonpost["tags"] = $tags;
+	$jsonpost["tags"] = substr($tags, 2);
 	$jsonpost["featured"] = '';
 	
 	$jsonpost["url"] = $exhibit->project_website;

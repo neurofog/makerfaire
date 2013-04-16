@@ -3549,7 +3549,7 @@ input[type="submit"].btn.btn-mini {
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
   -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
-  max-width:130px;
+  /* max-width:130px; */
 }
 a.thumbnail:hover {
   border-color: #0088cc;

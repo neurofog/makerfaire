@@ -138,9 +138,11 @@
 		
 			<div class="row" style="margin-top: 10px;">
 
-				<div class="span4">
-					<a class="twitter-timeline" href="https://twitter.com/makerfaire" data-widget-id="250340360495169536">Tweets by @makerfaire</a>
-					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+				<div class="span4" style="text-align:center;">
+					<a href="https://twitter.com/makerfaire" class="twitter-follow-button" data-show-count="false" data-size="large">Follow @makerfaire</a>
+					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+					<a class="twitter-timeline" href="https://twitter.com/search?q=%23makerfaire" data-widget-id="322225978648698880">Tweets about "#makerfaire"</a>
+					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 				</div>
 
 			</div>
@@ -194,7 +196,7 @@
 						<h4 class="smaller"><a href="http://www.makerfairerome.eu/">Maker Faire <small style="color:#0088cc;">Rome</small></a></h4>
 						<ul class="unstyled">
 							<li>Date: October 3<sup>rd</sup> through 6<sup>th</sup>, 2013</li>
-							<li>Location TBA</li>
+							<li>Campo Boario</li>
 						</ul>
 					</div>
 				</div>	

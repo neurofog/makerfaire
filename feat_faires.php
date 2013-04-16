@@ -1,9 +1,9 @@
 
 <div class="more_faires">
-	<h3><a href="http://makerfaire.com/map.csp">Find a Faire near you</a></h3>
-	<a href="http://makerfaire.com/map.csp"><img src="<?php echo get_template_directory_uri(); ?>/images/map.jpg" alt="Other Faires" /></a> 
+	<h3><a href="http://makerfaire.com/map/">Find a Faire near you</a></h3>
+	<a href="http://makerfaire.com/map/"><img src="<?php echo get_template_directory_uri(); ?>/images/map.jpg" alt="Other Faires" /></a> 
 	<?php if ( !dynamic_sidebar( 'Maker Faire Calendar' ) ) : ?>
-		<h4><a href="http://makerfaire.com/map.csp">Upcoming Maker Faires</a></h4>
+		<h4><a href="http://makerfaire.com/map/">Upcoming Maker Faires</a></h4>
 		<ul>
 			<li><a href="http://makerfairesantiago.com/">Santiago Mini Maker Faire</a> (Chile): December 15 &amp; 16</li>
 			<li><a href="http://www.makerfairehouston.com/">Houston Mini Maker Faire</a> (TX): January 19</li>
@@ -13,7 +13,7 @@
 		</ul>
 	<?php endif; ?>
 	<p class="pull-right">
-	<a href="http://makerfaire.com/map.html">See Complete Calendar &rarr;</a> 
+	<a href="http://makerfaire.com/map/">See Complete Calendar &rarr;</a> 
 	</p>
 	<div class="clear"></div>
 </div>

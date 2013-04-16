@@ -75,6 +75,9 @@
 		jQuery('.dropdown-toggle').dropdown()
 		jQuery('#north').tab('show')
 		jQuery('#myModal').modal('hide')
+		jQuery('#featuredMakers').carousel({
+			interval: 5000
+		})
 		jQuery('.carousel').carousel({
 			interval: 4000
 		})
@@ -139,6 +142,7 @@ qacct:"p-c0y51yWFFvFCY"
 
 <script type="text/javascript">
 jQuery(document).ready(function(){
+	jQuery('.wp-navigation a').addClass('btn');
 	jQuery(".scroll").click(function(event){
 		//prevent the default action for the click event
 		event.preventDefault();

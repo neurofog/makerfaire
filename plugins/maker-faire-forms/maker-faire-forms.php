@@ -232,7 +232,7 @@ class MAKER_FAIRE_FORM {
 	* @access public
 	* =====================================================================*/
 	public function __construct() {
-		add_action( 'init',                           array( &$this, 'init' ), 9 );
+		add_action( 'init',                           array( &$this, 'init' ) );
 		add_action( 'admin_init', 		 			  array( &$this, 'admin_init' ) );
 		add_action( 'admin_menu',					  array( &$this, 'add_menus' ) );
 		add_action( 'add_meta_boxes', 	              array( &$this, 'add_meta_boxes' ) );
@@ -256,9 +256,10 @@ class MAKER_FAIRE_FORM {
 	* @access public
 	* =====================================================================*/
 	public function init() {
+
 		$labels = array( 
-			'name'               => _x( 'Maker Faire Bay Area 2013 Applications', 'post type general name' ),
-			'singular_name'      => _x( 'Applications', 'post type singular name' ),
+			'name'               => _x( 'Applications', 'post type general name' ),
+			'singular_name'      => _x( 'Application', 'post type singular name' ),
 			'add_new'            => _x( 'Add Application', 'mf_form' ),
 			'add_new_item'       => __( 'Add New Application' ),
 			'edit_item'          => __( 'Edit Applications' ),
@@ -285,7 +286,8 @@ class MAKER_FAIRE_FORM {
 			'menu_position'      => null,
 			'menu_icon'          => plugins_url( 'assets/i/admin-icon.png', __FILE__ ),
 			'supports'           => array( 'title' ),
-			'taxonomies'		 => array('category', 'post_tag')
+			'taxonomies'		 => array( 'category', 'post_tag' ),
+			'rewrite'            => array( 'slug' => 'makers', 'with_front' => false )
 		);
 
 		//REGISTER MF FORM CUSTOM POST TYPE
@@ -303,6 +305,12 @@ class MAKER_FAIRE_FORM {
 
 		if ( isset( $_GET['maker_csv'] ) )
 			$this->build_maker_export( $_GET['maker_csv'] );
+		
+		if ( isset( $_GET['comments_csv'] ) )
+			$this->build_comments_export();
+			
+		if ( isset( $_GET['presentation_csv'] ) )
+			$this->build_presentation_exports( $_GET['presentation_csv'] );
 			
 		$this->upgrade();	
 			
@@ -602,9 +610,13 @@ class MAKER_FAIRE_FORM {
 								<td valign="top">
 									<?php 
 										$cats = get_the_category();
+										$count = count($cats);
+										$i = 1;
 										if ( !empty( $cats ) ) {
 											foreach ( $cats as $cat ) {
-												echo $cat->name . ' ';
+												echo $cat->name;
+												echo $i != $count ?  ', ': ' ';
+												$i++;
 											}
 										}
 									?>
@@ -615,9 +627,13 @@ class MAKER_FAIRE_FORM {
 								<td valign="top">
 									<?php 
 										$tags = get_the_tags();
+										$count = count($tags);
+										$i = 1;
 										if ( !empty( $tags ) ) {
 											foreach ( $tags as $tag ) {
-												echo $tag->name  . ' ';
+												echo $tag->name;
+												echo $i != $count ?  ', ': ' ';
+												$i++;
 											}	
 										}
 									?>
@@ -644,13 +660,18 @@ class MAKER_FAIRE_FORM {
 			
 		} elseif ( $args['id'] == 'mf_maker' ) { 
 			
-			$photo = $data->{ $this->merge_fields( 'user_photo_thumb', $data->form_type ) };
+			$photo_thumb_key = $this->merge_fields( 'user_photo_thumb', $data->form_type );
+			$photo_key       = $this->merge_fields( 'user_photo', $data->form_type );
+			$bio_key         = $this->merge_fields( 'user_bio', $data->form_type );
+			
+			$photo = isset( $data->{ $photo_thumb_key } ) ? $data->{ $photo_thumb_key } : '';
+			
 			if( '' == $photo )
-				$photo = $data->{ $this->merge_fields( 'user_photo', $data->form_type ) };
+				$photo = isset( $data->{ $photo_key } ) ? $data->{ $photo_key } : '';
 			if( is_array( $photo ) )
 				$photo = $photo[0];
 				
-			$bio   = $data->{ $this->merge_fields( 'user_bio', $data->form_type ) };
+			$bio = isset( $data->{ $bio_key } ) ? $data->{ $bio_key } : '';
 			if( is_array( $bio ) )
 				$bio = $bio[0];
 		?>
@@ -1043,8 +1064,8 @@ class MAKER_FAIRE_FORM {
 			return false;
 
 		// Bail if post is auto-draft/revision/nav-menu item
-		// if ( wp_is_post_autosave( $id ) || wp_is_post_revision( $id ) || is_nav_menu_item( $id ) )
-		// 	return false;
+		if ( get_post_type( $id ) != 'mf_form' )
+			return false;
 
 		$form_type = sanitize_text_field( $_POST['form_type'] );
 
@@ -1155,8 +1176,8 @@ class MAKER_FAIRE_FORM {
 			
 			$current_user = wp_get_current_user();
 			$user_name    = $current_user->user_login;
-				
-			$date = date('m/d/y h:i a');
+
+			$date = date('m/d/y h:i a', time() - ( 3600 * 7 ) );
 
 			$extra = '';
 			if ( $post_status == 'waiting-for-info' ) {
@@ -1195,8 +1216,12 @@ class MAKER_FAIRE_FORM {
 			return;	
 		}
 
+		//DON'T SEND EMAIL IF DISABLE AUTORESPONDER IS CHECKED.
+		if( !isset( $_POST['_ef_editorial_meta_checkbox_email-notifications'] ) )
+			return;
+
 		// Get Project Name
-		$project_name = str_replace( '&amp;' , '&', sanitize_text_field( $form[$this->merge_fields( 'project_name', $form_type )] ) );
+		$project_name = htmlspecialchars_decode( sanitize_text_field( $form[$this->merge_fields( 'project_name', $form_type )] ) );
 
 
 		// set maker name
@@ -1254,6 +1279,11 @@ class MAKER_FAIRE_FORM {
 		}
 
 		$tos = array_merge( array( $maker_email ), $toss );
+		
+		
+		if( isset( $_SERVER['SERVER_ADDR_NAME'] ) && $_SERVER['SERVER_ADDR_NAME'] == 'iscrackweb1' ) {
+			$tos = array( 'matt@insourcecode.com' );	
+		}
 
 		// if contacts first name length is less than 2 chars or if tos array contains any emails set the name to User
 		if ( strlen( trim( $contact_first_name ) ) <= 2 || sizeof( $tos ) > 1 )
@@ -2309,7 +2339,7 @@ class MAKER_FAIRE_FORM {
 					</tbody>
 			</table>
 			<h1 style="margin-top:40px;">Sync with JDB</h1>
-			<?php if( $_SERVER['SERVER_ADDR_NAME'] != 'iscrackweb1' ) : ?>
+			<?php if( !isset( $_SERVER['SERVER_ADDR_NAME'] ) || $_SERVER['SERVER_ADDR_NAME'] != 'iscrackweb1' ) : ?>
 				Last Sync : <?php echo esc_html( get_option( 'mf_full_jdb_sync', 'NEVER' ) ); ?><br />
 				<form action="" method="post">
 					<p class="submit"><input type="submit" value="Sync With JDB Now" class="button button-primary button-large" /></p>
@@ -2339,6 +2369,14 @@ class MAKER_FAIRE_FORM {
 				
 				<h2 style="margin-top:40px;">Maker Reports</h2>
 				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&maker_csv=presenter', 'mf_export_check' ); ?>">Export All Makers</a></h3>
+				
+				<h2 style="margin-top:40px;">Editorial Comments Export</h2>
+				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&comments_csv', 'mf_export_check' ); ?>">Export Editorial Comments</a></h3>
+				
+				<h2 style="margin-top:40px;">Presentation Reports</h2>
+				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&presentation_csv=manager', 'mf_export_check' ); ?>">Stage Manager Report</a></h3>
+				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&presentation_csv=signage', 'mf_export_check' ); ?>">Stage Signage Report</a></h3>
+				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&presentation_csv=checkin', 'mf_export_check' ); ?>">Presenter CheckIn Report</a></h3>
 			</div>
 		</div>
 		<?php
@@ -2558,9 +2596,9 @@ class MAKER_FAIRE_FORM {
 			} else {
 				$ls = '';
 				foreach( $locations as $l ) {
-					$ls .= ', '.str_replace( '&amp;', '&', $l->name );	
+					$ls .= ','.htmlspecialchars_decode( $l->name );	
 				}
-				$line .= "\t".substr($ls, 2);
+				$line .= "\t".substr($ls, 1);
 			}	
 			$body .= substr( $line, 1)."\r\n";
 		}
@@ -2707,6 +2745,165 @@ class MAKER_FAIRE_FORM {
 		$time_offset = time() - ( 3600 * 7 );
 		$this->output_csv( 'ALLMAKERS_'.date('M-d-Y', $time_offset).'_'.date('G-i', $time_offset), $header.$body );
 	}
+	/* 
+	* Gathers and builds the output for EDITORIAL COMMENTS
+	*
+	* @access private
+	* =====================================================================*/
+	private function build_comments_export() {
+		
+		//NONCE CHECK
+		if ( isset( $_GET['_wpnonce'] ) && !wp_verify_nonce( $_GET['_wpnonce'], 'mf_export_check' ) )
+			return false;
+		//CAP CHECK
+		if ( !current_user_can( 'edit_others_posts' ) )
+			return false;
+		
+		global $wpdb;
+ 
+		$sql = "SELECT * FROM $wpdb->comments LEFT OUTER JOIN $wpdb->posts ON ($wpdb->comments.comment_post_ID = $wpdb->posts.ID) WHERE  comment_type = 'editorial-comment' AND post_type='mf_form' ORDER BY comment_date_gmt DESC LIMIT 999";
+ 
+		$comments        = $wpdb->get_results( $sql );
+		$output          = "Project ID\tProject Name\tUsers & Groups Flagged\tDate Timestamp\tUser Name\tComment Text\r\n";
+		$following_users = array();
+		
+		foreach( $comments as $comment ) {
+			
+			if( isset( $following_users[ $comment->ID ] ) ) {
+				$users = $following_users[ $comment->ID ];
+			} else {
+				$users = get_the_terms( $comment->ID, 'following_users' );
+				$following_users[ $comment->ID ] = $users;
+			}
+
+			$user_list = "";
+			foreach( $users as $user ) {
+				$uo = get_user_by( 'login', $user->name );
+				$user_list .= ", ".$uo->display_name;
+			}
+			
+			$txt = iconv( "UTF-8", "ISO-8859-1//TRANSLIT", $comment->comment_content );
+
+			$line  = intval( $comment->ID )."\t";
+			$line .= $comment->post_title."\t";
+			$line .= substr( $user_list, 2 )."\t";
+			$line .= $comment->comment_date."\t";
+			$line .= $comment->comment_author."\t";
+			$line .= '"'.$txt."\"\t";
+			
+			$output .= $line."\r\n";
+		}
+
+		$time_offset = time() - ( 3600 * 7 );
+		$this->output_csv( 'EDITORIAL_COMMENTS_'.date('M-d-Y', $time_offset).'_'.date('G-i', $time_offset), $output );
+	}
+	/* 
+	* Gathers and builds the output for PRESENTER EXPORTS
+	*
+	* @access private
+	* =====================================================================*/
+	private function build_presentation_exports( $type = 'manager' ) {
+		
+		//NONCE CHECK
+		if ( isset( $_GET['_wpnonce'] ) && !wp_verify_nonce( $_GET['_wpnonce'], 'mf_export_check' ) )
+			return false;
+		//CAP CHECK
+		if ( !current_user_can( 'edit_others_posts' ) )
+			return false;
+
+		//EXPORT TYPES
+		if( $type == 'manager' ) {
+			$output = "Start Time\tEnd Time\tDate\tLocation\tProject ID\tType\tFirst Name\tLast Name\tEmail\tPhone\tSpecial Requests\r\n";
+			$title  = 'MANAGER_REPORT_';
+		} elseif( $type == 'signage' ) {
+			$output = "Location\tStart Time\tEnd Time\tProject Title\tPresenter Name(s)\r\n";
+			$title  = 'STAGE_SIGNAGE_';
+		} elseif( $type == 'checkin' ) {
+			$output = "Presenter Last name\tPresenter First name\tProject Title\tLocation\tDate\tStart Time\tEnd Time\r\n";
+			$title  = 'PRESENTER_CHECKIN_';
+		} else {
+			return false;
+		}
+		
+		//GET PRESENTER FORMS
+		$args = array(
+			'posts_per_page' => 999,
+			'post_type' 	 => 'mf_form',
+			'meta_query' 	 => array( array( 'key' => '_mf_form_type', 'value' => 'presenter' ) )
+		);
+
+		$ps    = new WP_Query($args);
+		$forms = array();
+		
+		foreach( $ps->posts as $post ) {
+			$forms[ $post->ID ] = $post;	
+		}
+		
+		//GET EVENT ITEMS
+		$mfeis = get_posts( array( 'post_type' => 'event-items', 'numberposts' => 999 ) );
+
+		//BUILD THE 3 FORMS
+		foreach( $mfeis as $mfei ) {
+			
+			$data = get_post_custom( $mfei->ID );
+			
+			if( !isset( $forms[ $data['mfei_record'][0] ] ) )
+				continue;
+
+			$form  = (array) json_decode( str_replace( "\'", "'", $forms[ $data['mfei_record'][0] ]->post_content ) );
+			$locs  = get_the_terms( $mfei->ID, 'location' );
+			$locst = "";
+			
+			foreach( $locs as $loc ) {
+				$locst .= ", ".$loc->name;
+			}
+			
+			$locst = htmlspecialchars_decode( substr( $locst, 2 ) );
+			
+			$fname = substr( $form['name'], 0, strpos( $form['name'], ' ' ) );
+			$lname = substr( $form['name'], strpos( $form['name'], ' ' ) + 1 );
+			
+			if( $type == 'manager' ) {
+				$line  = $data['mfei_start'][0]."\t";
+				$line .= $data['mfei_stop'][0]."\t";
+				$line .= $data['mfei_day'][0]."\t";
+				$line .= $locst."\t";
+				$line .= intval( $data['mfei_record'][0] )."\t";
+				$line .= "Presentation\t";
+				$line .= $fname."\t";
+				$line .= $lname."\t";
+				$line .= $form['email']."\t";
+				$line .= $form['phone1']."\t";
+				$line .= '"'.$form['special_requests']."\"\t";
+				
+			} elseif( $type == 'signage' ) {
+				$line  = $locst."\t";
+				$line .= $data['mfei_start'][0]."\t";
+				$line .= $data['mfei_stop'][0]."\t";
+				$line .= $form['presentation_name']."\t";
+				$line .= ( is_array( $form['presenter_name'] ) ? implode( ',', $form['presenter_name'] ) : $form['presenter_name'] )."\t";
+				
+			} elseif( $type == 'checkin' ) {
+				$line  = $fname."\t";
+				$line .= $lname."\t";
+				$line .= $form['presentation_name']."\t";
+				$line .= $locst."\t";
+				$line .= $data['mfei_day'][0]."\t";
+				$line .= $data['mfei_start'][0]."\t";
+				$line .= $data['mfei_stop'][0]."\t";
+			} else {
+				return false;
+			}
+			
+			$output .= $line."\r\n";			 	
+		}
+		
+		$time_offset = time() - ( 3600 * 7 );
+		$this->output_csv( $title.date('M-d-Y', $time_offset).'_'.date('G-i', $time_offset), $output );
+	
+	}
+	
+	
 	/*
 	* Combines certain attributes into single for output
 	*

@@ -16,73 +16,27 @@ get_header(); ?>
 			<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
 				
 				<?php 
-
 					$content = get_the_content();
-					$json = json_decode($content);
-					
+					$json = json_decode( str_replace( "\'", "'", $content ) );
 				?>
 				
 				<article <?php post_class(); ?>>
 
-					<h5><small><?php echo mf_better_name( $json->maker_faire ); ?></small></h5>
+					<h5>
+						<small>
+							<?php 
+								if ( !empty( $json->maker_faire ) ) {
+									echo mf_better_name( $json->maker_faire );
+								}
+							?>
+						</small>
+					</h5>
 					
 					<h1><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h1>
 
-					<?php echo mf_location( get_the_ID() ); ?>
+					<?php // echo mf_location( get_the_ID() ); ?>
 					
-					<?php 
-
-						if (!empty($json->project_photo)) {
-							echo '<img src="'. wpcom_vip_get_resized_remote_image_url( $json->project_photo, 610, 400 ) . '" class="thumbnail" />';
-						}
-						if (!empty($json->private_description)) {
-							if (class_exists(Markdown)) {
-								echo Markdown( wp_kses_post( $json->private_description ) ) ;
-							} else {
-								echo '<p>' . wp_kses_post( $json->private_description ) . '</p>';
-							}
-							
-						}
-						
-						if (!empty($json->project_website)) {
-							echo '<a class="btn btn-mini btn-info" href="'. esc_url( $json->project_website ) . '"><i class="icon-home icon-white"></i> Website</a>';
-						}
-						if (!empty($json->project_video)) {
-							echo '<a class="btn btn-mini btn-info" href="'. esc_url( $json->project_video ) . '"><i class="icon-facetime-video icon-white"></i> Website</a>';
-						}
-
-						if (!empty($json->name)) {
-							echo '<h3>About the Makers</h3>';
-							echo '<div class="media">';
-							if (!empty($json->maker_photo)) {
-								echo '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->maker_photo, 64, 64, true ) . '" class="media-object thumbnail pull-left" />';
-							}
-							echo '<div class="media-body">';
-							echo '<h4>' . wp_kses_post( $json->name ) . '</h4>';
-							if (class_exists(Markdown)) {
-								echo Markdown( wp_kses_post( $json->maker_bio ) );	
-							} else {
-								echo '<p>' . wp_kses_post( $json->maker_bio ) . '</p>';
-							}
-							
-							echo '</div></div>';
-						}
-						if (!empty($json->group_name)) {
-							echo '<h3>Group Association</h3>';
-							echo '<div class="media">';
-							if (!empty($json->group_photo)) {
-								echo '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->group_photo, 130, 130, true ) . '" class="media-object thumbnail pull-left" />';
-							}
-							echo '<div class="media-body">';
-							echo '<h4>' . wp_kses_post( $json->group_name ) . '</h4>';
-							echo '<p>' . wp_kses_post( $json->group_bio ) . '</p>';
-							if (!empty($json->group_website)) {
-								echo '<a class="btn btn-mini btn-info" href="'.esc_url( $json->group_website ) . '"><i class="icon-home icon-white"></i> Website</a>';
-							}
-							echo '</div></div>';	
-						}
-
-					?>
+					<?php mf_public_blurb( $json ); ?>
 					
 
 					<div class="row">
