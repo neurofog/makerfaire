@@ -274,6 +274,27 @@ function the_mf_content() {
 		if (!empty($json->public_description)) {
 			echo Markdown( wp_kses_post( $json->public_description ) ) ;
 		}
+		echo '<ul class="unstyled">';
+		$tags = get_the_terms( get_the_ID(), 'post_tag' );
+		$cats = get_the_terms( get_the_ID(), 'category' );
+		$terms = null;
+		if ( is_array( $tags ) && is_array( $cats ) ) {
+			$terms = array_merge($cats, $tags);
+		} elseif ( is_array( $tags ) ) {
+			$terms = $tags;
+		} elseif ( is_array( $cats ) ) {
+			$terms = $cats;
+		}
+		if (!empty($terms)) {
+			echo '<li>Topics: ';
+			$output = null;
+			foreach ($terms as $idx => $term) {
+				$output .= ', <a href="' . get_term_link( $term ) . '">' . $term->name . '</a>';
+			}
+			echo substr( $output, 2 );
+			echo '</li>';
+		}
+		echo '</ul>';
 		echo '</div></div>';
 	} else {
 		the_title( '<h2><a href="' . get_permalink() . '">', '</a></h2>' );

@@ -301,16 +301,16 @@ class MAKER_FAIRE_FORM {
 	public function admin_init() {
 		
 		if ( isset( $_GET['form_csv'] ) )
-			$this->build_form_export( $_GET['form_csv'], ( isset( $_GET['form_status'] ) ? $_GET['form_status'] : 'all' ) );
+			$this->build_form_export( esc_attr( $_GET['form_csv'] ), ( isset( $_GET['form_status'] ) ? esc_attr( $_GET['form_status'] ) : 'all' ) );
 
 		if ( isset( $_GET['maker_csv'] ) )
-			$this->build_maker_export( $_GET['maker_csv'] );
+			$this->build_maker_export( esc_attr( $_GET['maker_csv'] ) );
 		
 		if ( isset( $_GET['comments_csv'] ) )
 			$this->build_comments_export();
 			
 		if ( isset( $_GET['presentation_csv'] ) )
-			$this->build_presentation_exports( $_GET['presentation_csv'] );
+			$this->build_presentation_exports( esc_attr( $_GET['presentation_csv'] ) );
 			
 		$this->upgrade();	
 			
@@ -2054,7 +2054,6 @@ class MAKER_FAIRE_FORM {
 		$request->setParam( 'query', "{$query}" );
 		$response = $request->send();
 
-
 		$response_array = array();
 		$users = array();
 		$user_count = 0;
@@ -2207,7 +2206,7 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	public function show_list_makers_page() {
 	
-		$makers = $this->gigya_search_users( 'select UID, profile.firstName, profile.lastName, profile.email, created from accounts' );
+		$makers = $this->gigya_search_users( 'select UID, profile.firstName, profile.lastName, profile.email, created from accounts order by created limit 800' );
 
 		$makers_list = array();
 		foreach ( $makers as $maker ) {
@@ -2482,7 +2481,7 @@ class MAKER_FAIRE_FORM {
 			}
 		}
 
-		$posts   = $this->get_all_forms(NULL, $status);
+		$posts   = $this->get_all_forms( NULL, $status );
 		$efterms = $this->get_editflow_terms();
 		$efdata  = $this->get_editflow_data( $efterms );
 		$efdef   = array(
@@ -2492,8 +2491,13 @@ class MAKER_FAIRE_FORM {
 		);
 
 		$res     = array();
+		$data    = array_keys( $data );
 
-		$header  = implode( "\t", array_keys( $data ) );
+		if( 'accepted' == $status ) {
+			array_splice( $data, 1, 0, 'accepted' );	
+		}
+
+		$header  = implode( "\t", $data );
 		$header  = strtoupper( str_replace( '_', ' ', $header ) );
 
 		foreach( $efterms as $efterm ) {
@@ -2528,7 +2532,7 @@ class MAKER_FAIRE_FORM {
 			);
 			
 			//SET POST DATA
-			foreach( $data as $key => $set ) {
+			foreach( $data as $key ) {
 				$data_key = $key;
 				if( $mkey = $this->merge_fields( $key, $form['form_type'] ) )
 					$key = $mkey;
@@ -2556,6 +2560,22 @@ class MAKER_FAIRE_FORM {
 						}
 					}
 				//CATCH ALL
+				} elseif( 'accepted' == $key ) {
+					
+					$log = get_post_meta( $post->ID, '_mf_log', true );
+
+					if( $log ) {
+						foreach( $log as $entry ) {
+							if( strpos( $entry, 'Accepted' ) !== false ) {
+								$entry_a = explode( ' ', $entry );
+								$line .= "\t".$entry_a[0]." ".$entry_a[1]." ". strtoupper( $entry_a[2] );
+								break;
+							}
+						}
+					} else {
+						$line .= "\tN/A";
+					}	
+					
 				} elseif( isset( $form[$key] ) ) {
 					$d = is_array( $form[$key] ) ? implode( ',', $form[$key] ) : $form[$key];
 					
@@ -2782,7 +2802,7 @@ class MAKER_FAIRE_FORM {
 				$user_list .= ", ".$uo->display_name;
 			}
 			
-			$txt = iconv( "UTF-8", "ISO-8859-1//TRANSLIT", $comment->comment_content );
+			$txt = str_replace( '"', '\'', iconv( "UTF-8", "ISO-8859-1//TRANSLIT", $comment->comment_content ) );
 
 			$line  = intval( $comment->ID )."\t";
 			$line .= $comment->post_title."\t";

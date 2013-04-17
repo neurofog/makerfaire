@@ -33,14 +33,15 @@ get_header(); ?>
 			if($my_query->have_posts()):
 				while($my_query->have_posts()):$my_query->the_post();
 					the_mf_content();
+					echo '<hr>';
 				endwhile;
 			?>
-			<div class="wp-navigation clearfix">
-				<div class="pull-left"><?php echo get_next_posts_link('<i class="icon-chevron-left"></i> Next', $my_query->max_num_pages); ?></div>
-				<div class="pull-right"><?php echo previous_posts_link('Previous <i class="icon-chevron-right"></i>', $my_query->max_num_pages); ?></div>
-			</div>
+			<ul class="pager">
+				<li class="previous"><?php previous_posts_link('&larr; Previous Page', $my_query->max_num_pages); ?></li>
+				<li class="next"><?php next_posts_link('Next Page &rarr;', $my_query->max_num_pages); ?></li>
+			</ul>
 			<?php endif; ?>
-			
+			<?php wp_reset_query(); ?>
 
 		
 		</div><!--Content-->
