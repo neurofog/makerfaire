@@ -587,7 +587,7 @@ class MAKER_FAIRE_FORM {
 					<tr>
 						<td style="width:210px;" valign="top"><img src="<?php echo esc_url( $photo ); ?>" height="200" width="200" /></td>
 						<td valign="top">
-						<p><?php echo esc_html( $data->public_description ); ?></p>
+						<p><?php echo Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $data->public_description, "\n" ) ) ) ); ?></p>
 						<table style="width:100%">
 							<tr>
 								<td style="width:80px;" valign="top"><strong>Status:</strong></td>
@@ -603,7 +603,12 @@ class MAKER_FAIRE_FORM {
 							</tr>
 							<tr>
 								<td valign="top"><strong>Video:</strong></td>
-								<td valign="top"><a href="<?php echo esc_url( $data->project_video ); ?>" target="_blank"><?php echo esc_url( $data->project_video ); ?></a></td>
+								<?php 
+									echo ( isset( $data->project_video ) ) ? '<td valign="top"><a href="' . esc_url( $data->project_video ) . '" target="_blank">' . esc_url( $data->project_video ) . '</a></td>' : null ;
+									echo ( isset( $data->performer_video ) ) ? '<td valign="top"><a href="' . esc_url( $data->performer_video ) . '" target="_blank">' . esc_url( $data->performer_video ) . '</a></td>' : null ;
+									echo ( isset( $data->video ) ) ? '<td valign="top"><a href="' . esc_url( $data->video ) . '" target="_blank">' . esc_url( $data->video ) . '</a></td>' : '<td></td>' ;
+								?>
+							
 							</tr>
 							<tr>
 								<td style="width:80px;" valign="top"><strong>Categories:</strong></td>
@@ -1217,7 +1222,7 @@ class MAKER_FAIRE_FORM {
 		}
 
 		//DON'T SEND EMAIL IF DISABLE AUTORESPONDER IS CHECKED.
-		if( !isset( $_POST['_ef_editorial_meta_checkbox_email-notifications'] ) )
+		if( isset( $_POST['_ef_editorial_meta_checkbox_email-notifications'] ) )
 			return;
 
 		// Get Project Name

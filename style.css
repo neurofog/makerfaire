@@ -15,6 +15,12 @@ License URI: license.txt
 	display: none;
 }
 
+.columns {
+	margin-left: 0px;
+	column-count: 5;
+	-moz-column-count: 5; /* Firefox */
+	-webkit-column-count: 5; /* Safari and Chrome */
+}
 
 .media-object.thumbnail.pull-left {
 	margin-right:20px;
