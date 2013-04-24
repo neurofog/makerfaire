@@ -385,8 +385,66 @@ add_shortcode('mf_cat_list', 'mf_merged_terms');
 
 
 function mf_schedule() {
-
-
+	$loc = get_terms( 'location', array(
+		'hide_empty' => true,
+		) 
+	);
+	foreach ($loc as $location) {
+		$args = array( 
+			'location' 		=> $location->name,
+			'post_type'		=> 'event-items',
+			'orderby' 		=> 'meta_value', 
+			'meta_key' 		=> strtotime('mfei_start')
+			);
+		$query = new WP_Query( $args );
+		echo '<h2>' . $location->name . '</h2>';
+		echo '<table class="table table-striped table-bordered">';
+		while ( $query->have_posts() ) : $query->the_post();
+		$meta = get_post_meta( get_the_ID());
+		$sched_post = get_post( $meta['mfei_record'][0] );
+		$json = json_decode( str_replace( "\'", "'", $sched_post->post_content ) );
+		$day = ($meta['mfei_day'][0]) ? $meta['mfei_day'][0] : null ;
+		$start = ($meta['mfei_start'][0]) ? $meta['mfei_start'][0] : null ;
+		$stop = ($meta['mfei_stop'][0]) ? $meta['mfei_stop'][0] : null ;
+		echo '<tr>';
+		echo '<td width="150">';
+		echo '<h5>' . $day . '</h5>';
+		echo '<p>' . $start . ' &mdash; ' . $stop . '</p>';
+		echo '<div class="pull-left thumbnail">';
+		mf_the_maker_image( $json );
+		echo '</div>';
+		echo '</td>';
+		echo '<td>';
+		echo '<h3>' . get_the_title( $sched_post->ID ) . '</h3>';
+		if (!empty($json->public_description)) {
+			echo Markdown( wp_kses_post( $json->public_description ) ) ;
+		}
+		echo '<ul class="unstyled">';
+		$tags = get_the_terms( $sched_post->ID, 'post_tag' );
+		$cats = get_the_terms( $sched_post->ID, 'category' );
+		$terms = null;
+		if ( is_array( $tags ) && is_array( $cats ) ) {
+			$terms = array_merge($cats, $tags);
+		} elseif ( is_array( $tags ) ) {
+			$terms = $tags;
+		} elseif ( is_array( $cats ) ) {
+			$terms = $cats;
+		}
+		if (!empty($terms)) {
+			echo '<li>Topics: ';
+			$output = null;
+			foreach ($terms as $idx => $term) {
+				$output .= ', <a href="' . get_term_link( $term ) . '">' . $term->name . '</a>';
+			}
+			echo substr( $output, 2 );
+			echo '</li>';
+		}
+		echo '</ul>';
+		echo '</td>';
+		echo '</tr>';
+		endwhile;
+		echo '</table>';
+	}
 
 }
 
