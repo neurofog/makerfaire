@@ -441,7 +441,7 @@ function mf_featured_makers_home() {
 	$output .= '</div>';
 	$output .= '<h4 class="blue"><a href="http://makerfaire2013.eventbrite.com/">Get Tickets</a></h4>';
 	$output .= '<h4 class="blue"><a href="http://makerfaire.com/alt">How to Get There</a></h4>';
-	$output .= '<h4 class="blue"><a href="http://makerfaire.com/bayarea-2013/maker-info/">Program</a> &amp; <a href="http://makerfaire.com/bayarea-2013/schedule/">Schedule</a></h4>';
+	$output .= '<h4 class="blue"><a href="http://makerfaire.com/bayarea-2013/schedule/">Program &amp; Schedule</a></h4>';
 	$output .= '</div>';
 	$output .= '<div class="carousel-inner">';
 	$i = 1;
