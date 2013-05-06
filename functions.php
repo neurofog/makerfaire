@@ -11,6 +11,7 @@ require_once( __DIR__ . '/plugins/public-pages/makers.php' );
 include_once dirname(__file__) . '/plugins/markdown/markdown.php';
 
 require_once( 'taxonomies/location.php' );
+require_once( 'taxonomies/group.php' );
 require_once( 'plugins/post-types/event-items.php' );
 if ( defined( 'WP_CLI' ) && WP_CLI )
 	require_once( 'plugins/wp-cli/wp-cli.php' );
@@ -240,7 +241,8 @@ add_action( 'widgets_init', 'makerfaire_widgets_init' );
 
 if ( function_exists( 'vip_redirects' ) ) {
 	vip_redirects( array(
-		'/mini/toolkit/'	=> 'https://www.dropbox.com/sh/ykbi3al0j4hatd2/hSN6Z9nXTU'
+		'/mini/toolkit/'	=> 'https://www.dropbox.com/sh/ykbi3al0j4hatd2/hSN6Z9nXTU',
+		'/alt'         => 'http://makerfaire.com/bayarea-2013/getting-to-maker-faire/'
 	) );
 }
 
@@ -269,3 +271,40 @@ function mf_clean_title( $title ) {
     return $title;
 }
 add_filter('the_title', 'mf_clean_title', 10, 2);
+
+
+function mf_release_shortcode() {
+	$request_id = (!empty($_REQUEST['id']) ? $_REQUEST['id'] : null);
+	$output = '<iframe src="' . esc_url( 'http://makedb.makezine.com/pa/' .  $request_id ) . '" width="620" height="2000" scrolling="auto" frameborder="0"> [Your user agent does not support frames or is currently configured not to display frames.] </iframe>';
+	return $output;
+}
+
+add_shortcode( 'release', 'mf_release_shortcode' );
+
+
+add_filter( 'wp_kses_allowed_html', 'mf_allow_data_atts', 10, 2 );
+function mf_allow_data_atts( $allowedposttags, $context ) {
+	$tags = array( 'div', 'a', 'li' );
+	$new_attributes = array( 'data-toggle' => true );
+ 
+	foreach ( $tags as $tag ) {
+		if ( isset( $allowedposttags[ $tag ] ) && is_array( $allowedposttags[ $tag ] ) )
+			$allowedposttags[ $tag ] = array_merge( $allowedposttags[ $tag ], $new_attributes );
+	}
+	
+	return $allowedposttags;
+}
+
+
+add_filter('tiny_mce_before_init', 'mf_filter_tiny_mce_before_init'); 
+function mf_filter_tiny_mce_before_init( $options ) { 
+
+	if ( ! isset( $options['extended_valid_elements'] ) ) 
+		$options['extended_valid_elements'] = ''; 
+
+	$options['extended_valid_elements'] .= ',a[data*|class|id|style|href]';
+	$options['extended_valid_elements'] .= ',li[data*|class|id|style]';
+	$options['extended_valid_elements'] .= ',div[data*|class|id|style]';
+
+	return $options; 
+}

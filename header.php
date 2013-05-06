@@ -6,7 +6,7 @@
 
 	<title><?php bloginfo('name'); ?> | <?php is_front_page() ? bloginfo('description') : wp_title(''); ?></title>
 	<meta name="description" content="<?php if ( is_single() ) {
-				echo wp_trim_words( strip_shortcodes( get_the_excerpt('...') ), 20 );
+				echo wp_trim_words( strip_shortcodes( get_the_content('...') ), 20 );
 			} else {
 				bloginfo( 'name' );
 				echo " - ";
@@ -105,7 +105,7 @@ Topbar
 			
 		</div>
 
-		<p class="tagline"><strong><em>A two-day, family-friendly festival of invention, creativity and resourcefulness, and a celebration of the Maker movement.</em></strong></p>
+		<p class="tagline"><strong><em>A family-friendly festival of invention, creativity and resourcefulness, and a celebration of the Maker movement.</em></strong></p>
 		
 			<div class="row">
 			

@@ -86,7 +86,7 @@
 
 				jQuery(document).ready(function() {
 					var newYear = new Date();
-					mfba = new Date(2013, 5-1, 18, 9, 00);
+					mfba = new Date(2013, 5-1, 18, 10, 00);
 					jQuery('.countdown').countdown({
 						until: mfba,
 						timezone: -7,
@@ -147,6 +147,8 @@
 
 			</div>
 			
+			<?php if ( !is_front_page() ) { ?>
+			
 			<div class="featured">
 			
 				<h3>Upcoming Featured Faires</h3>
@@ -202,6 +204,8 @@
 				</div>	
 				
 			</div>
+			
+			<?php } ?>
 			
 		</div>
 	

@@ -17,7 +17,8 @@ get_header(); ?>
 				
 				<?php 
 					$content = get_the_content();
-					$json = json_decode( str_replace( "\'", "'", $content ) );
+					// Adding the Ohm for one Maker... Will probably pull this out at somepoint.
+					$json = json_decode( str_replace( array("\'", "u03a9", "u2019"), array("'", '&#8486;', '&rsquo;'), $content ) );
 				?>
 				
 				<article <?php post_class(); ?>>
@@ -36,7 +37,11 @@ get_header(); ?>
 
 					<?php // echo mf_location( get_the_ID() ); ?>
 					
+					<?php echo mf_get_scheduled_item( get_the_ID() ); ?>
+					
 					<?php mf_public_blurb( $json ); ?>
+					
+					<hr>
 					
 					<?php if ( function_exists( 'sharing_display') ) echo sharing_display(); ?> 
 				

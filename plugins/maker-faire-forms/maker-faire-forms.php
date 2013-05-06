@@ -262,10 +262,10 @@ class MAKER_FAIRE_FORM {
 			'singular_name'      => _x( 'Application', 'post type singular name' ),
 			'add_new'            => _x( 'Add Application', 'mf_form' ),
 			'add_new_item'       => __( 'Add New Application' ),
-			'edit_item'          => __( 'Edit Applications' ),
+			'edit_item'          => __( 'Edit Application' ),
 			'new_item'           => __( 'New Application' ),
 			'all_items'          => __( 'All Applications' ),
-			'view_item'          => __( 'View Applications' ),
+			'view_item'          => __( 'View Application' ),
 			'search_items'       => __( 'Search Applications' ),
 			'not_found'          =>  __( 'No forms found' ),
 			'not_found_in_trash' => __( 'No forms found in Trash' ),
@@ -805,12 +805,18 @@ class MAKER_FAIRE_FORM {
 									exhibit : {
 										m_maker_name    : 'Add. Maker Name',
 										m_maker_email   : 'Add. Maker Email', 
-										m_maker_gigyaid : 'Add. Maker Gigyaid'
+										m_maker_gigyaid : 'Add. Maker Gigyaid',
+										m_maker_bio     : 'Add. Maker Bio',
+										m_maker_photo   : 'Add. Maker Photo URL'
 									},
 									presenter : {
 										presenter_name    : 'Add. Presenter Name',
 										presenter_email   : 'Add. Presenter Email', 
-										presenter_gigyaid : 'Add. Presenter Gigyaid'
+										presenter_gigyaid : 'Add. Presenter Gigyaid',
+										presenter_bio     : 'Add. Presenter Bio',
+										presenter_org     : 'Add. Presenter Organization',
+										presenter_title   : 'Add. Presenter Title',
+										presenter_photo   : 'Add. Presenter Photo URL'
 									}
 								};
 								
@@ -820,21 +826,23 @@ class MAKER_FAIRE_FORM {
 								}
 								html += '<tr class="remove-maker">'+
 											'<td colspan="2">'+
-												'<input type="button" value="Remove Maker Above" class="button button-primary button-large"></td></tr>';
+												'<input type="button" onclick="mf_remove_maker( this )" value="Remove Maker Above" class="button button-primary button-large"></td></tr>';
 								
 								$(html).insertAfter($('.add-maker-btn'));
-								
-								$('.remove-maker input[type=button]').unbind('click').click(function(){									
-									p = $( this ).parent().parent();									
-									for( i = 0; i < 3; i++ ) {
-										p.prev().remove();
-									}
-									p.remove();									
-								});
-								
+
 								num_makers++;
-							}											
+							}
 						} );
+						
+						function mf_remove_maker( el ) {
+							p = jQuery( el ).parent().parent();	
+							l = form_type == 'exhibit' ? 5 : 7;							
+							for( i = 0; i < l; i++ ) {
+								p.prev().remove();
+							}
+							p.remove();	
+						}
+						
 				</script>
 			<?php endif;
 		}
@@ -1028,12 +1036,19 @@ class MAKER_FAIRE_FORM {
 					'm_maker_name'   => array(
 						'm_maker_name'    => 'Add. Maker Name',
 						'm_maker_email'   => 'Add. Maker Email', 
-						'm_maker_gigyaid' => 'Add. Maker Gigyaid'
+						'm_maker_gigyaid' => 'Add. Maker Gigyaid',
+						'm_maker_bio'	  => 'Add. Maker Bio',
+						'm_maker_photo'   => 'Add. Maker Photo URL'
 					),
 					'presenter_name' => array(
 						'presenter_name'    => 'Add. Presenter Name',
 						'presenter_email'   => 'Add. Presenter Email', 
-						'presenter_gigyaid' => 'Add. Presenter Gigyaid'
+						'presenter_gigyaid' => 'Add. Presenter Gigyaid',
+						'presenter_bio'		=> 'Add. Presenter Bio',
+						'presenter_org'		=> 'Add. Presenter Organization',
+						'presenter_title'	=> 'Add. Presenter Title',
+						'presenter_photo'	=> 'Add. Presenter Photo',
+						'presenter_bio'		=> 'Add. Presenter Bio',
 					)
 				);
 
@@ -1048,7 +1063,7 @@ class MAKER_FAIRE_FORM {
 					<?php endforeach; ?>
 				<tr class="remove-maker">
 					<td colspan="2">
-						<input onclick="remove_maker(this, <?php echo intval( $i ); ?>);" type="button" value="Remove Maker Above" class="button button-primary button-large">
+						<input onclick="mf_remove_maker( this )" type="button" value="Remove Maker Above" class="button button-primary button-large">
 					</td>
 				</tr>
 			<?php endfor; endif; ?>
@@ -1175,6 +1190,8 @@ class MAKER_FAIRE_FORM {
 
 		$form = $_POST[ $form_type ];
 
+		if ( $_POST['original_post_status'] != $post_status )
+			$this->sync_status_jdb( $post_id, $post_status );
 
 		// if new status write the log
 		if ( $_POST['original_post_status'] != $post_status || ( $post_status == 'waiting-for-info' && isset( $_POST['mf_waitingquestion'] ) && $wf != $_POST['mf_waitingquestion'] ) ) {
@@ -2308,9 +2325,11 @@ class MAKER_FAIRE_FORM {
 	
 		if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
 			//NONCE CHECK
-			if ( isset( $_POST['_wpnonce'] ) && !wp_verify_nonce( $_GET['_wpnonce'], 'mf_syncjdb' ) )
-				return false;
-			$this->sync_jdb();
+			if ( isset( $_POST['mf_syncjdb'] ) && wp_verify_nonce( $_POST['mf_syncjdb'], 'mf_syncjdb' ) )
+				$this->sync_jdb();
+			elseif ( isset( $_POST['mf_syncstatusjdb'] ) && wp_verify_nonce( $_POST['mf_syncstatusjdb'], 'mf_syncstatusjdb' ) ) {
+				echo $this->sync_all_status_jdb( $_POST['offset'] );
+			}
 		}
 	
 		$stats = $this->get_reports_stats();
@@ -2342,6 +2361,24 @@ class MAKER_FAIRE_FORM {
 						<?php endforeach; ?>
 					</tbody>
 			</table>
+			<h1 style="margin-top:40px;">Sync Status with JDB</h1>
+			Syncs 100 applications at a time.<br />To do a full sync start at 0 and increase by 100 until you're done.
+			<form action="" method="post">
+				<p>
+					<div style="float:left; width:50px">
+						<strong>Start</strong><br />
+						<select name="offset">
+							<option value="0">0</option>
+							<?php foreach( range( 100, 1000, 100 ) as $v ) : ?>
+							<option value="<?php echo intval( $v ); ?>"><?php echo intval( $v ); ?></option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+				</p>
+				<div class="clear"></div>
+				<p class="submit"><input type="submit" value="Sync Statuses With JDB Now" class="button button-primary button-large" /></p>
+				<?php wp_nonce_field( 'mf_syncstatusjdb', 'mf_syncstatusjdb' ); ?>
+			</form>
 			<h1 style="margin-top:40px;">Sync with JDB</h1>
 			<?php if( !isset( $_SERVER['SERVER_ADDR_NAME'] ) || $_SERVER['SERVER_ADDR_NAME'] != 'iscrackweb1' ) : ?>
 				Last Sync : <?php echo esc_html( get_option( 'mf_full_jdb_sync', 'NEVER' ) ); ?><br />
@@ -2486,6 +2523,7 @@ class MAKER_FAIRE_FORM {
 			}
 		}
 
+
 		$posts   = $this->get_all_forms( NULL, $status );
 		$efterms = $this->get_editflow_terms();
 		$efdata  = $this->get_editflow_data( $efterms );
@@ -2509,6 +2547,7 @@ class MAKER_FAIRE_FORM {
 			$header .= "\t".$efterm['name'];
 		}
 		$header .= "\tLocation";
+		$header .= "\tList of Makers";
 		$header .= "\r\n";
 
 		$body    = "";
@@ -2624,7 +2663,20 @@ class MAKER_FAIRE_FORM {
 					$ls .= ','.htmlspecialchars_decode( $l->name );	
 				}
 				$line .= "\t".substr($ls, 1);
-			}	
+			}
+
+
+			// Set List of Makers
+			$makers = $form['m_maker_name'];
+			if( empty( $makers ) ) {
+				$line .= "\t";
+			} else {
+				$ls = '';
+				foreach( $makers as $maker ) {
+					$ls .= ', '.htmlspecialchars_decode( $maker );
+				}
+				$line .= "\t".substr($ls, 2);
+			}
 			$body .= substr( $line, 1)."\r\n";
 		}
 
@@ -2889,17 +2941,30 @@ class MAKER_FAIRE_FORM {
 			$lname = substr( $form['name'], strpos( $form['name'], ' ' ) + 1 );
 			
 			if( $type == 'manager' ) {
-				$line  = $data['mfei_start'][0]."\t";
-				$line .= $data['mfei_stop'][0]."\t";
-				$line .= $data['mfei_day'][0]."\t";
-				$line .= $locst."\t";
-				$line .= intval( $data['mfei_record'][0] )."\t";
-				$line .= "Presentation\t";
-				$line .= $fname."\t";
-				$line .= $lname."\t";
-				$line .= $form['email']."\t";
-				$line .= $form['phone1']."\t";
-				$line .= '"'.$form['special_requests']."\"\t";
+				
+				if( !is_array( $form['presenter_name'] ) )
+					$form['presenter_name'] = array( $form['presenter_name'] );
+					
+				$line = '';
+
+				foreach( $form['presenter_name'] as $name ) {				
+					$fname = substr( $name, 0, strpos( $name, ' ' ) );
+					$lname = substr( $name, strpos( $name, ' ' ) + 1 );
+				
+					$line .= $data['mfei_start'][0]."\t";
+					$line .= $data['mfei_stop'][0]."\t";
+					$line .= $data['mfei_day'][0]."\t";
+					$line .= $locst."\t";
+					$line .= intval( $data['mfei_record'][0] )."\t";
+					$line .= "Presentation\t";
+					$line .= $fname."\t";
+					$line .= $lname."\t";
+					$line .= $form['email']."\t";
+					$line .= $form['phone1']."\t";
+					$line .= '"'.$form['special_requests']."\"\r\n";				
+				}
+				
+				$line = substr( $line, 0, -4 );
 				
 			} elseif( $type == 'signage' ) {
 				$line  = $locst."\t";
@@ -2909,13 +2974,27 @@ class MAKER_FAIRE_FORM {
 				$line .= ( is_array( $form['presenter_name'] ) ? implode( ',', $form['presenter_name'] ) : $form['presenter_name'] )."\t";
 				
 			} elseif( $type == 'checkin' ) {
-				$line  = $fname."\t";
-				$line .= $lname."\t";
-				$line .= $form['presentation_name']."\t";
-				$line .= $locst."\t";
-				$line .= $data['mfei_day'][0]."\t";
-				$line .= $data['mfei_start'][0]."\t";
-				$line .= $data['mfei_stop'][0]."\t";
+				
+				if( !is_array( $form['presenter_name'] ) )
+					$form['presenter_name'] = array( $form['presenter_name'] );
+				
+				$line = '';
+
+				foreach( $form['presenter_name'] as $name ) {				
+					$fname = substr( $name, 0, strpos( $name, ' ' ) );
+					$lname = substr( $name, strpos( $name, ' ' ) + 1 );
+					
+					$line .= $fname."\t";
+					$line .= $lname."\t";
+					$line .= $form['presentation_name']."\t";
+					$line .= $locst."\t";
+					$line .= $data['mfei_day'][0]."\t";
+					$line .= $data['mfei_start'][0]."\t";
+					$line .= $data['mfei_stop'][0]."\r\n";
+				}
+				
+				$line = substr( $line, 0, -4 );
+				
 			} else {
 				return false;
 			}
@@ -3141,6 +3220,12 @@ class MAKER_FAIRE_FORM {
 			if( $post->post_type != 'mf_form' )
 				return false;
 			
+			//ABORT SYNC IF IT HAS ALREADY HAPPENED
+			$sync = get_post_meta( $id, 'mf_jdb_sync', true );
+			
+			if( $sync == '' )
+				return false;
+			
 			$posts = array( $post );
 		}
 		
@@ -3167,6 +3252,58 @@ class MAKER_FAIRE_FORM {
 		if( !$id )	
 			update_option( 'mf_full_jdb_sync', date( 'M jS, Y g:s A', ( time() - ( 3600 * 7 ) ) ) );
 	}
+	/*
+	* Sync MakerFiare Application Statuses
+	*
+	* @access private
+	* @param int $id Post id to SYNC
+	* @param string $status Post status
+	* =====================================================================*/
+	private function sync_status_jdb( $id = 0, $status = '' ) {
+
+		$res = wp_remote_post( 'http://makedb.makezine.com/updateExhibitStatusForJSON', array( 'body' => array( 'eid' => intval( $id ), 'status' => esc_attr( $status ) ) ) );	
+		$er  = 0; 
+		
+		if ( 200 == $res['response']['code'] ) {
+			$body = json_decode( $res['body'] );
+			if ( 'ERROR' != $body->status ) {
+				$er = time();
+			}
+		}
+		
+		update_post_meta( $id, 'mf_jdb_status_sync', $er );
+		
+		return $er;
+	}
+	/*
+	* Sync MakerFiare Application Statuses
+	*
+	* @access private
+	* @param int $offset Offset of posts to sync
+	* @param int $length Length of sync batch
+	* =====================================================================*/
+	private function sync_all_status_jdb( $offset = 0, $length = 100 ) {
+		
+		$args = array(
+			'posts_per_page' => intval( $length ),
+			'offset'         => intval( $offset ),
+			'post_type'      => 'mf_form'
+		);
+
+		$ps      = new WP_Query( $args );
+		$posts   = $ps->get_posts();
+		$success = 0;
+
+		foreach( $posts as $post ) {
+			$r = $this->sync_status_jdb( $post->ID, $post->post_status );	
+			
+			if( $r )
+				$success++;
+		}
+		
+		return $success;
+	}
+	
 	/*
 	* Updgrade plugin apporpriatly.
 	*

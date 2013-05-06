@@ -3,6 +3,8 @@
  * Template Name: Query
  */
 
+require_once 'plugins/public-pages/locations.php';
+
 // Simple API Keys. Basically, just XOMO needs this, and want to restrict access. Obviously not super secure, but doesn't need to be.
 $keys = array(
 		'make' => '4eqU!eT74!Exuca',
@@ -17,6 +19,7 @@ $type = (!empty($_REQUEST['type']) ? $_REQUEST['type'] : null);
 
 // If key doesn't exist, return nothing.
 if (!in_array($key, $keys)) {
+	header('HTTP/1.0 403 Forbidden');
 	return;
 }
 
@@ -62,7 +65,8 @@ if ($type == 'entity') {
 		}
 		
 		$jsonpost["id"] = get_the_ID();
-		$jsonpost["name"] = get_the_title();
+		$jsonpost["child_id_refs"] = get_the_ID();
+		$jsonpost["name"] = html_entity_decode( get_the_title(), ENT_COMPAT, 'utf-8' );
 		$jsonpost["original_id"] = get_the_ID();
 		$url = mf_get_the_maker_image( $exhibit );
 		if (!empty($url)) {
@@ -76,8 +80,13 @@ if ($type == 'entity') {
 		$jsonpost["thumb_img_url"] = $url;
 		$jsonpost["large_img_url"] = mf_get_the_maker_image( $exhibit );
 		$locs = get_the_terms( get_the_ID(), 'location' );
-		$term = array_shift( array_values( $locs ) );
-		$jsonpost["venue_id_ref"] = $term->term_id;
+		if ($locs) {
+			$term = array_shift( array_values( $locs ) );
+			$jsonpost["venue_id_ref"] = $term->term_id;
+		} else {
+			$jsonpost["venue_id_ref"] = null;
+		}
+		
 		
 		$cats = get_the_category( get_the_ID() );
 		$category_id_refs = array();
@@ -132,6 +141,7 @@ if ($type == 'entity') {
 	wp_reset_postdata();
 	
 } elseif( $type == 'venue') {
+
 	$terms = get_terms('location', array( 'hide_empty' => 0 ) );
 	// Start of the XOMO header
 	$header = array( 'header' =>
@@ -143,12 +153,15 @@ if ($type == 'entity') {
 	// Init the entities header
 	$venues = array();
 	foreach ( $terms as $term ) {
+
+		$term_id = intval( $term->term_id );
+		
 		$venue['id'] = $term->term_id;
 		$venue['original_id'] = $term->term_id;
 		$venue['name'] = $term->name;
 		$venue['description'] = $term->description;
-		$venue['latitude'] = null;
-		$venue['longitude'] = null;
+		$venue['latitide'] = (isset($loc_data[$term_id]['lat'])) ? $loc_data[$term_id]['lat'] : null;
+		$venue['longitude'] = (isset($loc_data[$term_id]['long'])) ? $loc_data[$term_id]['long'] : null;
 		array_push($venues, $venue);
 	}
 	
@@ -223,6 +236,7 @@ if ($type == 'entity') {
 		}
 
 		$jsonpost["id"] = $id;
+		$jsonpost["child_id_refs"] = $id;
 		$jsonpost["name"] = htmlspecialchars_decode( get_the_title( $id ) );
 		$jsonpost["original_id"] = $id;
 		$jsonpost["time_start"] = date( DATE_ATOM, strtotime( $date . $start ) );
@@ -275,8 +289,9 @@ if ($type == 'entity') {
 	// Loop through the posts
 	foreach ($posts as $post) {
 		$jsonpost = array();
-		$exhibit = json_decode( str_replace( "\'", "'", $post->post_content ));
+		$exhibit = json_decode( html_entity_decode( str_replace( array("\'", "u03a9"), array("'", '&#8486;'), $post->post_content ), ENT_COMPAT, 'utf-8' ) );
 		$jsonpost["id"] = get_the_ID();
+		$jsonpost["child_id_refs"] = get_the_ID();
 		if ( !isset( $exhibit->form_type ) ) {
 			continue;
 		}
@@ -362,6 +377,13 @@ if ($type == 'entity') {
 			$jsonpost['description'] = ($exhibit->public_description ? htmlspecialchars_decode( $exhibit->public_description ) : null);
 			$jsonpost['youtube_url'] = ($exhibit->performer_video ? $exhibit->performer_video  : null);
 		}		
+		$locs = get_the_terms( get_the_ID(), 'location' );
+		if ($locs) {
+			$term = array_shift( array_values( $locs ) );
+			$jsonpost["venue_id_ref"] = $term->term_id;
+		} else {
+			$jsonpost["venue_id_ref"] = null;
+		}
 		array_push($entities, $jsonpost);
 	}
 

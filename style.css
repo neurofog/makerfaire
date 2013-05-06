@@ -15,6 +15,68 @@ License URI: license.txt
 	display: none;
 }
 
+.meetthemakers {
+	background-color: #fff;
+	background: rgba(255, 255, 255, 0.8);
+	top:230px;
+	margin-left:0px;
+	position: relative;
+	z-index: 999;
+	width:163px;
+	padding:10px;
+	box-sizing:border-box;
+}
+
+#featuredMakers {
+	margin-top:-46px;
+}
+
+.banner {
+	height:230px;
+	background-color: #fff;
+	background: rgba(255, 255, 255, 0.8);
+	margin-bottom:-230px;
+	margin-left:420px;
+	position: relative;
+	z-index: 999;
+	width:200px;
+	padding:10px;
+	box-sizing:border-box;
+}
+
+.banner h3, .banner h4 {
+	line-height: 100%;
+}
+
+.banner h3.red {
+    font-size:19px;
+    margin-bottom:10px;
+}
+
+.banner .bordered {
+	border-top:2px solid #000;
+	border-bottom:2px solid #000;
+	margin-top:6px;
+	padding:5px 0;
+	margin-bottom:12px;
+}
+
+.banner .bordered h3 {
+    margin:0px 0 8px;
+    line-height:120%;
+}
+
+.banner .bordered h4 {
+    margin:0px 0 4px;
+}
+
+.banner h4.blue {
+    font-size:16px;
+    line-height:100%;
+    margin-bottom:0px;
+    margin-top:6px;
+}
+
 .columns {
 	margin-left: 0px;
 	column-count: 5;
@@ -119,7 +181,7 @@ License URI: license.txt
 	margin-left: 0;
 	padding-top: 5px;
 	padding-left: 0;
-	background-color: none;
+	background-color: transparent;
 }
 
 .countdown-numbers th {
@@ -424,7 +486,7 @@ header .blurb {
 	background:#0088cc;
 	text-decoration: none;
 }
-.navi .sub-menu .sub-heading{
+.navi .sub-menu .sub-heading, #menu-item-5925 {
 	font-weight:bold;
 	margin-left:-5px;
 }
@@ -910,220 +972,3 @@ h6.letter {
 	border:3px solid #EC0D29;
 	background-image:url('http://cdn.makezine.com/make/makerfaire/newyork/2012/images/kissingsm.jpg');
 	}
-
-/* @media (max-width: 1024px) {
-
-
-	
-body{
-	margin-top:0px; */
-	}
-
-}
-
-
-
-@media (min-width: 1200px) {
-
-.russ {
-
-/* width:370px; */
-
-/* height:244px; */
-
-/* border:3px solid #EC0D29; */
-	background-image:url('http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/russ.png');
-	}
-
-
-#house_ad {
-
-/* width:370px; */
-
-/* height:393px; */
-	background-image: url('http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/KitReview_Banner-3710.jpg');
-	}
-
-.sponsor {
-	margin:10px;
-	}
-	
-.sponsor_img img {
-	margin:0 35px;
-	}
-	
-header {
-	height:146px;
-	}
-
-.navi {
-	margin-top:38px;
-	}
-	
-.bm ul {
-
-/* margin-top:25px; */
-	margin-left:27px;
-	}
-	
-.bm ul li {
-	margin-right:20px;
-	}
-	
-.countdown-numbers {
-	margin-left:40px !important;
-
-}
-
-/* margin-right:40px !important; */
-
-/* padding-left:15px !important; */
-
-.count img {
-	display:block;
-	margin:0 auto;
-	width:296px;
-	}
-	
-.count h3 {
-	margin:25px 0 -10px;
-	text-align:center;
-	font-size:22px;
-	}
-	
-.countdown-numbers {
-	margin-top:15px;
-	margin-right:15px;
-	margin-left:15px;
-	padding-top:25px;
-	padding-bottom:10px;
-	padding-left:5px;
-	background-color:#fff;
-	}
-	
-	
-.countdown-numbers th {
-	color:#fc040c;
-	text-align:center;
-	font-weight:300;
-	font-size:42px;
-	font-family: "bebas-neue";	}
-
-tr.time {
-	height:45px;
-	color:#000;
-	text-align:center;
-	font-weight:300;
-	font-size:24px;
-	font-family: "bebas-neue";
-	}
-
-.separator {
-	color:#000 !important;
-	}
-	
-.featured .badge {
-	float:left;
-	margin-right:10px;
-	padding: 0px;
-	-webkit-border-radius: 0px;
-	-moz-border-radius: 0px;
-	border-radius: 0px;
-	background-color: transparent;
-	color: white;
-	white-space: nowrap;
-	font-weight: bold;
-	font-size: 12.025px;
-
-	}
-	
-	
-.call {
-	margin-bottom:20px;
-	width:620px;
-	}
-
-.forty {
-	font-size:33px;
-	}
-	
-.tab-content {
-	display: block !important;
-	}
-
-.sponsor {
-	margin: 20px 10px 0;
-	color: #333;
-	font-weight: 300;
-	font-size: 28px;
-	font-family: "bebas-neue",sans-serif;
-}
-
-.pt {
-padding-top: 10px;
-}
-
-.pr {
-padding-right: 10px;
-}
-
-.pb {
-padding-bottom: 10px;
-}
-
-.pl {
-padding-left: 10px;
-}
-
-.ptx {
-}
-
-.prx {
-padding-right: 20px;
-}
-
-.pbx {
-padding-bottom: 20px;
-}
-
-.plx {
-padding-left: 20px;
-}
-
-.adblock {
-	margin: 20px 10px 10px 10px;
-	padding: 10px;
-	border: 2px solid red;
-	text-align: center;}
-
-.adblock h3 {
-	font-weight: 800;
-	font-size: 28px;
-	font-family: sans-serif;
-	line-height: 30px;
-}
-
-.adblock p {
-	margin-top: 15px;
-	margin-bottom: 10px;
-	font-size: 22px;
-	line-height: 24px;
-}
-
-.count {
-	padding-bottom: 10px;
-	padding-left: 5px;
-}
-
-.topper {
-	border-top:2px solid #ca3e2a;
-	border-bottom:2px solid #ca3e2a;
-}
-
-.page-id-72 h3 {
-	margin:20px 0;
-}
-
-.page-id-72 ul.unstyled li a img {
-	margin-bottom:15px;
-}

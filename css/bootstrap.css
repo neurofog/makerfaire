@@ -330,7 +330,7 @@ p small {
   font-size: 11px;
   color: #999999;
 }
-.lead {
+.lead, .lead p {
   margin-bottom: 18px;
   font-size: 20px;
   font-weight: 200;

@@ -18,6 +18,8 @@ get_header(); ?>
 				
 			</div>
 			
+			<?php get_search_form(); ?>
+			
 			<?php
 			$paged = get_query_var('paged') ? get_query_var('paged') : 1;
 			$args = array(
