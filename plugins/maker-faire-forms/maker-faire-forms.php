@@ -406,7 +406,7 @@ class MAKER_FAIRE_FORM {
 		return $vars;
 	}
 	/* 
-	* Adds Custom Columnds to the MakerFaire Custom Post Type
+	* Adds Custom Columns to the MakerFaire Custom Post Type
 	*
 	* @access public
 	* @param string $c Column ID
@@ -2893,7 +2893,7 @@ class MAKER_FAIRE_FORM {
 			$output = "Start Time\tEnd Time\tDate\tLocation\tProject ID\tType\tFirst Name\tLast Name\tEmail\tPhone\tSpecial Requests\r\n";
 			$title  = 'MANAGER_REPORT_';
 		} elseif( $type == 'signage' ) {
-			$output = "Location\tStart Time\tEnd Time\tProject Title\tPresenter Name(s)\r\n";
+			$output = "Location\tStart Time\tEnd Time\tDay\tProject Title\tPresenter Name(s)\r\n";
 			$title  = 'STAGE_SIGNAGE_';
 		} elseif( $type == 'checkin' ) {
 			$output = "Presenter Last name\tPresenter First name\tProject Title\tLocation\tDate\tStart Time\tEnd Time\r\n";
@@ -2970,6 +2970,7 @@ class MAKER_FAIRE_FORM {
 				$line  = $locst."\t";
 				$line .= $data['mfei_start'][0]."\t";
 				$line .= $data['mfei_stop'][0]."\t";
+				$line .= $data['mfei_day'][0]."\t";
 				$line .= $form['presentation_name']."\t";
 				$line .= ( is_array( $form['presenter_name'] ) ? implode( ',', $form['presenter_name'] ) : $form['presenter_name'] )."\t";
 				
