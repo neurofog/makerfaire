@@ -234,6 +234,41 @@ function mf_public_blurb( $json ) {
 			echo '</p>';
 		}
 	}
+
+	// Let's get the grouped projects
+	$terms = get_the_terms( get_the_ID(), 'group' );
+	if ( $terms ) {
+		echo '<h4>Other exhibits in this group:</h4>';
+	}
+	foreach ( $terms as $term ) {
+		$args = array( 
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'group',
+					'field' => 'id',
+					'terms' => $term
+				),
+			),
+			'post_type'		=> 'mf_form',
+			'post_status'	=> 'accepted',
+			'post_per_page' => 100
+			);
+		$query = new WP_Query( $args );
+		$posts = $query->posts;
+		if( $query ) {
+			foreach ( $posts as $the_post ) {
+				$json = json_decode( html_entity_decode( mf_convert_newlines( str_replace( array("\'", "u03a9"), array("'", '&#8486;'), $the_post->post_content ), "\n"), ENT_COMPAT, 'utf-8' ) );
+				echo  '<div class="media">';
+				if ( !empty( $json->maker_photo ) ) {
+					echo  '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->project_photo, 130, 130, true ) . '" class="media-object thumbnail pull-left"/>';
+				}
+				echo  '<div class="media-body">';
+				echo  ( !empty( $json->project_name ) ) ? '<h4><a href="' . get_permalink( $the_post->ID ) . '">' . wp_kses_post( $json->project_name ) . '</a></h4>' : '' ;
+				echo  ( !empty( $json->public_description) ) ? Markdown( wp_kses_post( $json->public_description ) ) : '';
+				echo  '</div></div>';
+			}
+		}
+	}
 }
 
 /**

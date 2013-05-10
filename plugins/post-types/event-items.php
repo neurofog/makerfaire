@@ -32,7 +32,12 @@ add_action( 'init', 'event_items_init' );
 function event_items_updated_messages( $messages ) {
 	global $post;
 
-	$permalink = get_permalink( $post );
+	// Get the mfei_record from the post meta
+	$meta = get_post_meta( $post->ID, 'mfei_record', true );
+
+	// Get the right permalink for the application post the event is associated to, if it exists of course
+	if ( ! empty( $meta ) )
+		$permalink = get_permalink( $meta );
 
 	$messages['event-items'] = array(
 		0 => '', // Unused. Messages start at index 1.
