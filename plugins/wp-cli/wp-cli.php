@@ -372,8 +372,8 @@ class MAKE_CLI extends WP_CLI_Command {
 					}
 				}  elseif ( $exhibit->maker == 'A list of makers' ) {
 					WP_CLI::line('A list! A list! ' . get_the_ID() );
-
-					$maker_list = $exhibit->m_maker_name;
+					
+					$maker_list = ( isset( $exhibit->m_maker_name ) ) ? $exhibit->m_maker_name : null;
 					$i = 0;
 
 					if ( is_array( $maker_list ) ) {
@@ -389,7 +389,7 @@ class MAKE_CLI extends WP_CLI_Command {
 
 							if ( ! $maker ) {
 								// Setup post object...
-								$content = ($exhibit->m_maker_bio[ $i ] ? htmlspecialchars_decode( $exhibit->m_maker_bio[ $i ] ) : null);
+								$content = ( isset( $exhibit->m_maker_bio[ $i ] ) ? htmlspecialchars_decode( $exhibit->m_maker_bio[ $i ] ) : null);
 								$my_post = array(
 									'post_title'    => $title,
 									'post_content'  => $content,
@@ -459,7 +459,7 @@ class MAKE_CLI extends WP_CLI_Command {
 										WP_CLI::warning( 'mfei_record = ' . $post_id );
 									}
 								}
-								$photo_url = ( $exhibit->m_maker_photo[ $i ] ) ? $exhibit->m_maker_photo[ $i ] : null;
+								$photo_url = ( isset( $exhibit->m_maker_photo[ $i ] ) ) ? $exhibit->m_maker_photo[ $i ] : null;
 								if ( !empty( $photo_url ) ) {
 									$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
 									if ( !empty( $photo ) ) {
