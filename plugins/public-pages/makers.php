@@ -13,29 +13,19 @@ function mf_convert_newlines( $str, $replace = '<br />' ) {
  */
 function mf_location( $id ) {
 	$locs = get_the_terms( $id, 'location' );
-	$count = count($locs);
-	if ( empty($locs) )  {
-		return;
-	}
-	$output = '<ul class="breadcrumb">';
-	$i = 0;
-	foreach ( $locs as $loc ) {
-		$i++;
-		$output .= '<li>';
-		$link = get_term_link( $loc );
-		if ( !is_wp_error( $link ) ) {
-			$output .= '<a href="' . esc_url( $link ) . '">';
-			$output .= $loc->name;
-			$output .= '</a>';
-		} else {
-			$output .= $loc->name;
+	$booth = get_post_meta( $id, 'booth');
+	if ( !empty($locs) ) {
+		$output = '<ul class="breadcrumb">';
+		foreach ($locs as $loc) {
+			$output .= '<li><strong>Located in</strong>&nbsp;</li>';
+			$parent = get_term($loc->parent, 'location');
+			$output .= ( !is_wp_error( $parent ) ) ? '<li>' . $parent->name . '</li><span class="divider">/</span>' : '' ;
+			$output .= '<li>' . $loc->name . '</li>';
+			$output .= ( !empty( $booth[0] ) ) ? '<span class="divider">/</span><li>Booth: ' . esc_html( $booth[0] ) . '</li>' : '' ;
+
 		}
-		if ( $i != $count ) {
-			$output .= ' <span class="divider">/</span>';
-		}
-		$output .= '</li>';
+		$output .= '</ul>';	
 	}
-	$output .= '</ul>';
 	return $output;
 }
 
@@ -82,6 +72,10 @@ function mf_public_blurb( $json ) {
 			echo ( !empty( $json->project_website ) ) ? '<a class="btn btn-info" href="'. esc_url( $json->project_website ) . '"><i class="icon-home icon-white"></i> Website</a>' : null ;
 			echo ' ';
 			echo ( !empty( $json->project_video ) ) ? '<a class="btn btn-info" href="'. esc_url( $json->project_video ) . '"><i class="icon-facetime-video icon-white"></i> Video</a>' : null ;
+			if (!empty( $json->project_video ) ) {
+				echo '<hr />';
+				echo wpcom_vip_wp_oembed_get( esc_url( $json->project_video ), array( 'width'=>620 ) );
+			}
 			echo '<hr>';
 		}
 
@@ -95,14 +89,14 @@ function mf_public_blurb( $json ) {
 		}
 		
 		if ( $json->maker == 'One maker') {
-			if (!empty($json->name)) {
+			if (!empty($json->maker_name)) {
 				echo '<h3>About the Maker</h3>';
 				echo '<div class="media">';
 				if (!empty($json->maker_photo)) {
 					echo '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->maker_photo, 130, 130, true ) . '" class="media-object thumbnail pull-left"/>';
 				}
 				echo '<div class="media-body">';
-				echo '<h4>' . wp_kses_post( $json->name ) . '</h4>';
+				echo '<h4>' . wp_kses_post( $json->maker_name ) . '</h4>';
 				if (function_exists('Markdown')) {
 					echo $json->maker_bio ? Markdown( wp_kses_post( $json->maker_bio ) ) : '';
 				} else {
@@ -491,8 +485,13 @@ function mf_schedule( $atts ) {
 	$output = '';
 	$location = (isset($atts['location'])) ? sanitize_text_field( $atts['location'] ) : '';
 
-	if (!empty($location))
+	if (!empty($location)) {
 		$output .= '<h2>' . esc_html( $location ) . '</h2>';
+		$term = wpcom_vip_get_term_by( 'name', $location, 'location');
+		if ( !empty( $term->description ) ) {
+			$output .= '<div class="well well-small">' . Markdown( $term->description ) . '</div>';
+		}
+	}
 
 	$query = wp_cache_get( $location . '_saturday_schedule' );
 	if( $query == false ) {
@@ -526,7 +525,7 @@ function mf_schedule( $atts ) {
 		$output .= '<td width="150" style="max-width:150px;">';
 		$output .= '<h5>' . esc_html( $day ) . '</h5>';
 		$output .= '<p>' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</p>';
-		if (isset($json->presenter_photo)) {
+		if (isset($json->project_photo) or isset($json->presentation_photo) or isset($json->performer_photo) ) {
 			$output .= '<div class="pull-left thumbnail"><a href="';
 			$output .= get_permalink( $sched_post->ID) . '">';
 			$output .= '<img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 140, 140 ) . '" alt="' . get_the_title( $sched_post->ID ) .'" />';
@@ -535,21 +534,29 @@ function mf_schedule( $atts ) {
 		$output .= '</td>';
 		$output .= '<td>';
 		$output .= '<h3><a href="' . get_permalink( $sched_post->ID) . '">' . get_the_title( $sched_post->ID ) . '</a></h3>';
-		if (!empty($json->public_description)) {
-			$output .= Markdown( wp_kses_post( $json->public_description ) ) ;
-		}
-		$output .= '<ul class="unstyled">';
-		$terms = get_the_terms( $sched_post->ID, array( 'category', 'post_tag' ) );
-		if (!empty($terms)) {
-			$output .= '<li>Topics: ';
-			$the_terms = '';
-			foreach ($terms as $idx => $term) {
-				$the_terms .= ', <a href="' . esc_url( get_term_link( $term ) ) . '">' . $term->name . '</a>';
+		if ( !empty( $json->presenter_name ) ) {
+			$names = $json->presenter_name;
+			$names_output = '';
+			foreach ( $names as $name ) {
+				$names_output .= ', ' . $name;
 			}
-			$output .= substr( $the_terms, 2 );
-			$output .= '</li>';
+			$output .= '<h4>' . substr($names_output, 2) . '</h4>';
 		}
-		$output .= '</ul>';
+		if (!empty($json->public_description)) {
+			$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) ;
+		}
+		// $output .= '<ul class="unstyled">';
+		// $terms = get_the_terms( $sched_post->ID, array( 'category', 'post_tag' ) );
+		// if (!empty($terms)) {
+		// 	$output .= '<li>Topics: ';
+		// 	$the_terms = '';
+		// 	foreach ($terms as $idx => $term) {
+		// 		$the_terms .= ', <a href="' . esc_url( get_term_link( $term ) ) . '">' . $term->name . '</a>';
+		// 	}
+		// 	$output .= substr( $the_terms, 2 );
+		// 	$output .= '</li>';
+		// }
+		// $output .= '</ul>';
 		$output .= '</td>';
 		$output .= '</tr>';
 	endwhile;
@@ -589,7 +596,7 @@ function mf_schedule( $atts ) {
 		$output .= '<td width="150">';
 		$output .= '<h5>' . esc_html( $day ) . '</h5>';
 		$output .= '<p>' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</p>';
-		if (isset($json->presenter_photo)) {
+		if (isset($json->project_photo) or isset($json->presentation_photo) or isset($json->performer_photo) ) {
 			$output .= '<div class="pull-left thumbnail"><a href="';
 			$output .= get_permalink( $sched_post->ID) . '">';
 			$output .= '<img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 140, 140 ) . '" alt="' . get_the_title( $sched_post->ID ) .'" />';
@@ -598,21 +605,29 @@ function mf_schedule( $atts ) {
 		$output .= '</td>';
 		$output .= '<td>';
 		$output .= '<h3><a href="' . get_permalink( $sched_post->ID) . '">' . get_the_title( $sched_post->ID ) . '</a></h3>';
+		if ( !empty( $json->presenter_name ) ) {
+			$names = $json->presenter_name;
+			$names_output = '';
+			foreach ( $names as $name ) {
+				$names_output .= ', ' . $name;
+			}
+			$output .= '<h4>' . substr($names_output, 2) . '</h4>';
+		}
 		if (!empty($json->public_description)) {
 			$output .= Markdown( wp_kses_post( $json->public_description ) ) ;
 		}
-		$output .= '<ul class="unstyled">';
-		$terms = get_the_terms( $sched_post->ID, array( 'category', 'post_tag' ) );
-		if (!empty($terms)) {
-			$output .= '<li>Topics: ';
-			$the_terms = '';
-			foreach ($terms as $idx => $term) {
-				$the_terms .= ', <a href="' . get_term_link( $term ) . '">' . $term->name . '</a>';
-			}
-			$output .= substr( $the_terms, 2 );
-			$output .= '</li>';
-		}
-		$output .= '</ul>';
+		// $output .= '<ul class="unstyled">';
+		// $terms = get_the_terms( $sched_post->ID, array( 'category', 'post_tag' ) );
+		// if (!empty($terms)) {
+		// 	$output .= '<li>Topics: ';
+		// 	$the_terms = '';
+		// 	foreach ($terms as $idx => $term) {
+		// 		$the_terms .= ', <a href="' . get_term_link( $term ) . '">' . $term->name . '</a>';
+		// 	}
+		// 	$output .= substr( $the_terms, 2 );
+		// 	$output .= '</li>';
+		// }
+		// $output .= '</ul>';
 		$output .= '</td>';
 		$output .= '</tr>';
 	endwhile;
@@ -637,7 +652,7 @@ function mf_get_scheduled_item( $the_ID ) {
 				array(
 					'key' 	=> 'mfei_record',
 					'value'	=> $the_ID
-			   )
+				)
 			)
 			);
 		$query = new WP_Query( $args );

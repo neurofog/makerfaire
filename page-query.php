@@ -87,11 +87,12 @@ if ($type == 'entity') {
 			$jsonpost["venue_id_ref"] = null;
 		}
 		
-		
-		$cats = get_the_category( get_the_ID() );
+		$cats = get_the_terms( get_the_ID(), array( 'category', 'post_tag' ) );
 		$category_id_refs = array();
-		foreach ( $cats as $cat ) {
-			array_push( $category_id_refs, $cat->term_id);
+		if ($cats) {
+			foreach ( $cats as $cat ) {
+				array_push( $category_id_refs, $cat->term_id);
+			}
 		}
 		$jsonpost["category_id_refs"] = $category_id_refs;
 		if ( !empty($exhibit->public_description) ) {
@@ -141,7 +142,9 @@ if ($type == 'entity') {
 	wp_reset_postdata();
 	
 } elseif( $type == 'venue') {
-
+/**
+ * Venue Feed
+ */
 	$terms = get_terms('location', array( 'hide_empty' => 0 ) );
 	// Start of the XOMO header
 	$header = array( 'header' =>
@@ -155,10 +158,15 @@ if ($type == 'entity') {
 	foreach ( $terms as $term ) {
 
 		$term_id = intval( $term->term_id );
-		
 		$venue['id'] = $term->term_id;
 		$venue['original_id'] = $term->term_id;
-		$venue['name'] = $term->name;
+		if ( $term->parent == 0 ) {
+			$venue['name'] = str_replace( '&amp;', '&', $term->name );
+		} else {
+			$parent = get_term( $term->parent, 'location' );
+			$venue['name'] = str_replace( '&amp;', '&', $parent->name . ' » ' . $term->name );
+		}
+		//$venue['name'] = $term->name;
 		$venue['description'] = $term->description;
 		$venue['latitide'] = (isset($loc_data[$term_id]['lat'])) ? $loc_data[$term_id]['lat'] : null;
 		$venue['longitude'] = (isset($loc_data[$term_id]['long'])) ? $loc_data[$term_id]['long'] : null;
@@ -171,7 +179,7 @@ if ($type == 'entity') {
 	echo json_encode( $merged );
 	
 } elseif( $type == 'category') {
-	$terms = get_terms('category', array( 'hide_empty' => 0 ) );
+	$terms = get_terms(array( 'category', 'post_tag' ), array( 'hide_empty' => 0 ) );
 	// Start of the XOMO header
 	$header = array( 'header' =>
 		array(
@@ -193,6 +201,9 @@ if ($type == 'entity') {
 	echo json_encode( $merged );
 	
 } elseif ($type == 'schedule') {
+/**
+ * Schedule Feed
+ */
 
 	// Set the query args.
 	$args = array(
@@ -235,12 +246,12 @@ if ($type == 'entity') {
 			$date = '5/19/2013';
 		}
 
-		$jsonpost["id"] = $id;
-		$jsonpost["child_id_refs"] = $id;
-		$jsonpost["name"] = htmlspecialchars_decode( get_the_title( $id ) );
+		$jsonpost["id"] = get_the_ID();
+		$jsonpost["entity_id_refs"] = array( $id ); // Make this an array
+		$jsonpost["name"] = str_replace( array( '&#8217;', '&#038;'), array( '\'', '&'), htmlspecialchars_decode( get_the_title( $id ) ) );
 		$jsonpost["original_id"] = $id;
-		$jsonpost["time_start"] = date( DATE_ATOM, strtotime( $date . $start ) );
-		$jsonpost["time_stop"] = date( DATE_ATOM, strtotime( $date . $stop ) );
+		$jsonpost["time_start"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $start . ' PST' ) ) );
+		$jsonpost["time_stop"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $stop . ' PST') ) );
 		$locs = get_the_terms( get_the_ID(), 'location' );
 		$term = array_shift( array_values( $locs ) );
 		$jsonpost["venue_id_ref"] = $term->term_id;
@@ -259,6 +270,11 @@ if ($type == 'entity') {
 	wp_reset_postdata();
 	
 } elseif ($type == 'maker') {
+
+/**
+ * Maker Feed
+ */
+
 
 	// Set the query args.
 	$args = array(
@@ -300,7 +316,7 @@ if ($type == 'entity') {
 		if ( $exhibit->form_type == 'exhibit' ) {
 			// Let's tackle groups first
 			if ($exhibit->maker == 'A group or association' ) {
-				$jsonpost['name'] = ($exhibit->group_name ? $exhibit->group_name : $exhibit->name);
+				$jsonpost['name'] = ucwords( ( $exhibit->group_name ) ? $exhibit->group_name : $exhibit->name );
 				$url = $exhibit->group_photo;
 				if (!empty($url)) {
 					$url = add_query_arg( 'w', 80, $url );
@@ -315,7 +331,7 @@ if ($type == 'entity') {
 				$jsonpost['description'] = ($exhibit->group_bio ? htmlspecialchars_decode( $exhibit->group_bio ) : null);
 				$jsonpost['youtube_url'] = ($exhibit->project_video ? $exhibit->project_video  : null);
 			} elseif ($exhibit->maker == 'One maker') {
-				$jsonpost['name'] = ($exhibit->maker_name ? $exhibit->maker_name : $exhibit->name);
+				$jsonpost['name'] = ucwords( $exhibit->maker_name ? $exhibit->maker_name : $exhibit->name );
 				$url = $exhibit->maker_photo;
 				if (!empty($url)) {
 					$url = add_query_arg( 'w', 80, $url );
@@ -330,7 +346,7 @@ if ($type == 'entity') {
 				$jsonpost['description'] = ($exhibit->maker_bio ? htmlspecialchars_decode( $exhibit->maker_bio ) : null);
 				$jsonpost['youtube_url'] = ($exhibit->project_video ? $exhibit->project_video  : null);
 			} elseif ($exhibit->maker == 'A list of makers' || empty( $exhibit->maker ) ) {
-				$jsonpost['name'] = ($exhibit->maker_name ? $exhibit->maker_name : $exhibit->name);
+				$jsonpost['name'] = ucwords( $exhibit->maker_name ? $exhibit->maker_name : $exhibit->name );
 				$url = $exhibit->m_maker_photo_thumb;
 				if (!empty($url)) {
 					$url = add_query_arg( 'w', 80, $url );
@@ -347,7 +363,7 @@ if ($type == 'entity') {
 			}
 		// Move into Presentations
 		} elseif ( $exhibit->form_type == 'presenter' ) {
-			$jsonpost['name'] = ($exhibit->presenter_name ? $exhibit->presenter_name : $exhibit->name);
+			$jsonpost['name'] =  ucwords( $exhibit->presenter_name ? $exhibit->presenter_name : $exhibit->name );
 			$url = $exhibit->presenter_photo_thumb;
 			if (!empty($url)) {
 				$url = add_query_arg( 'w', 80, $url );
@@ -362,7 +378,7 @@ if ($type == 'entity') {
 			$jsonpost['description'] = ($exhibit->presenter_bio ? htmlspecialchars_decode( $exhibit->presenter_bio[0] ) : null);
 			$jsonpost['youtube_url'] = ($exhibit->video ? $exhibit->video  : null);
 		} elseif ( $exhibit->form_type == 'performer' ) {
-			$jsonpost['name'] = ($exhibit->performer_name ? $exhibit->performer_name : $exhibit->name);
+			$jsonpost['name'] = ucwords( $exhibit->performer_name ? $exhibit->performer_name : $exhibit->name );
 			$url = $exhibit->performer_photo;
 			if (!empty($url)) {
 				$url = add_query_arg( 'w', 80, $url );
@@ -388,7 +404,7 @@ if ($type == 'entity') {
 	}
 
 	// Merge the header and the entities
-	$merged = array_merge($header,array('entity' => $entities, ) );
+	$merged = array_merge( $header, array( 'entity' => $entities ) );
 
 	// Output the JSON
 	echo json_encode( $merged );

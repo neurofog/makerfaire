@@ -576,6 +576,7 @@ class MAKER_FAIRE_FORM {
 				$jdb = '[SUCCESS] : '.date( 'M jS, Y g:i A', $jdb_success - ( 7 * 3600 ) );	
 			}
 			
+
 			$photo = $data->{ $this->merge_fields( 'form_photo_thumb', $data->form_type ) };
 			if( '' == $photo )
 				$photo = $data->{ $this->merge_fields( 'form_photo', $data->form_type ) };
@@ -593,6 +594,66 @@ class MAKER_FAIRE_FORM {
 								<td style="width:80px;" valign="top"><strong>Status:</strong></td>
 								<td valign="top"><?php echo esc_attr( $post->post_status ); ?></td>
 							</tr>
+							<?php
+
+								// Jake's fancy cached events query found in 'plugins/public-pages/makers.php' in mf_get_scheduled_item()
+								// The function output things for the front-end and all we want is the data.
+								$get_events = wp_cache_get( $post->ID . '_schedule' );
+								if( $get_events == false ) {
+									$args = array( 
+										'post_type'		=> 'event-items',
+										'orderby' 		=> 'meta_value', 
+										'meta_key'		=> 'mfei_start',
+										'order'			=> 'asc',
+										'posts_per_page'=> '30',
+										'meta_query' => array(
+											array(
+												'key' 	=> 'mfei_record',
+												'value'	=> $post->ID
+										   )
+										)
+										);
+									$get_events = new WP_Query( $args );
+									wp_cache_set( $post->ID . '_schedule', $get_events, '', 300 );
+								}
+
+								// Check that we have returned our query of events
+								if ( $get_events->found_posts >= 1 ) {
+									// Loop through theme
+									while ( $get_events->have_posts() ) : $get_events->the_post();
+
+										// Get an array of our event data
+										$event_record = get_post_meta( get_the_ID() );
+
+										// Setup the edit URL and add an edit link to the admin area
+										$edit_event_url = get_edit_post_link();
+										echo '<span style="position:absolute; right:10px;"><a href="' . esc_url( $edit_event_url ) . '" target="_blank">Edit the Time and Date</a></span>';
+
+										// Check that fields are set, and display them as needed.
+										if ( ! empty( $event_record['mfei_day'][0] ) ) : ?>
+											<tr>
+												<td style="width:80px;" valign="top"><strong>Day:</strong></td>
+												<td valign="top"><?php echo esc_html( $event_record['mfei_day'][0] ); ?></td>
+											</tr>
+										<?php endif; if ( ! empty( $event_record['mfei_start'][0] ) ) : ?>
+											<tr>
+												<td style="width:80px;" valign="top"><strong>Start Time:</strong></td>
+												<td valign="top"><?php echo esc_html( $event_record['mfei_start'][0] ); ?></td>
+											</tr>
+										<?php endif; if ( ! empty( $event_record['mfei_stop'][0] ) ) : ?>
+											<tr>
+												<td style="width:80px;" valign="top"><strong>Stop Time:</strong></td>
+												<td valign="top"><?php echo esc_html( $event_record['mfei_stop'][0] ); ?></td>
+											</tr>
+										<?php endif; if ( !empty ( $event_record['mfei_schedule_completed'][0] ) ) : ?>
+											<tr>
+												<td style="width:80px;" valign="top"><strong>Schedule Completed:</strong></td>
+												<td valign="top"><?php echo esc_html( $event_record['mfei_schedule_completed'][0] ); ?></td>
+											</tr>
+										<?php endif;
+									endwhile;
+								}
+							?>
 							<?php 
 								$wkey = $this->merge_fields( 'project_website', $data->form_type );
 								$vkey = $this->merge_fields( 'project_video', $data->form_type );
@@ -2890,13 +2951,13 @@ class MAKER_FAIRE_FORM {
 
 		//EXPORT TYPES
 		if( $type == 'manager' ) {
-			$output = "Start Time\tEnd Time\tDate\tLocation\tProject ID\tType\tFirst Name\tLast Name\tEmail\tPhone\tSpecial Requests\r\n";
+			$output = "Start Time\tEnd Time\tDate\tLocation\tProject ID\tProject Name\tType\tFirst Name\tLast Name\tEmail\tPhone\tSpecial Requests\r\n";
 			$title  = 'MANAGER_REPORT_';
 		} elseif( $type == 'signage' ) {
 			$output = "Location\tStart Time\tEnd Time\tDay\tProject Title\tPresenter Name(s)\r\n";
 			$title  = 'STAGE_SIGNAGE_';
 		} elseif( $type == 'checkin' ) {
-			$output = "Presenter Last name\tPresenter First name\tProject Title\tLocation\tDate\tStart Time\tEnd Time\r\n";
+			$output = "Presenter ID\tPresenter Last name\tPresenter First name\tProject Title\tLocation\tDate\tStart Time\tEnd Time\r\n";
 			$title  = 'PRESENTER_CHECKIN_';
 		} else {
 			return false;
@@ -2956,6 +3017,7 @@ class MAKER_FAIRE_FORM {
 					$line .= $data['mfei_day'][0]."\t";
 					$line .= $locst."\t";
 					$line .= intval( $data['mfei_record'][0] )."\t";
+					$line .= $form['presentation_name'] . "\t";
 					$line .= "Presentation\t";
 					$line .= $fname."\t";
 					$line .= $lname."\t";
@@ -2985,6 +3047,7 @@ class MAKER_FAIRE_FORM {
 					$fname = substr( $name, 0, strpos( $name, ' ' ) );
 					$lname = substr( $name, strpos( $name, ' ' ) + 1 );
 					
+					$line .= intval( $data['mfei_record'][0] ) . "\t";
 					$line .= $fname."\t";
 					$line .= $lname."\t";
 					$line .= $form['presentation_name']."\t";

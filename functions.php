@@ -7,6 +7,9 @@ require_once( __DIR__ . '/plugins/maker-faire-forms/maker-faire-forms.php' );
 // include maker-faire-forms plugin
 require_once( __DIR__ . '/plugins/public-pages/makers.php' );
 
+// include maker-faire-forms plugin
+require_once( __DIR__ . '/post-types/maker.php' );
+
 // Markdown
 include_once dirname(__file__) . '/plugins/markdown/markdown.php';
 
@@ -308,3 +311,11 @@ function mf_filter_tiny_mce_before_init( $options ) {
 
 	return $options; 
 }
+
+
+function mf_allow_my_post_types( $allowed_post_types ) {
+	$allowed_post_types[] = 'mf_form';
+	return $allowed_post_types;
+}
+
+add_filter( 'rest_api_allowed_post_types', 'mf_allow_my_post_types');

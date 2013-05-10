@@ -111,7 +111,7 @@
 		
 		<div class="count">
 		
-			<h3 class="red">Maker Faire Sponsors</h3>
+			<h3><a class="red" href="http://makerfaire.com/sponsors/">Maker Faire Sponsors</a></h3>
 			<div id="myCarousel" class="carousel slide">
 				<div class="carousel-inner">
 					<?php 
@@ -152,19 +152,6 @@
 			<div class="featured">
 			
 				<h3>Upcoming Featured Faires</h3>
-				
-				<div class="row">
-					<div class="span1">
-						<img alt="Maker Faire UK" src="http://makerfaire.files.wordpress.com/2013/01/uk-mf-sq_logo.gif?w=75" width="75">
-					</div>
-					<div class="span3">
-						<h4 class="smaller"><a href="http://makerfaireuk.com">Maker Faire <small style="color:#0088cc;">UK</small></a></h4>
-						<ul class="unstyled">
-							<li>Date: April 27<sup>th</sup> and 28<sup>th</sup>, 2013</li>
-							<li>Centre for Life, Newcastle</li>
-						</ul>
-					</div>
-				</div>
 				<div class="row">
 					<div class="span1">
 						<img alt="Maker Faire Kansas City" src="http://makerfaire.files.wordpress.com/2013/01/kansascity-mf-sq-01_001.gif?w=75&amp;h=60" width="75" height="60">
@@ -202,7 +189,18 @@
 						</ul>
 					</div>
 				</div>	
-				
+				<div class="row">
+					<div class="span1">
+						<img alt="Maker Faire Tokyo" src="http://makerfaire.files.wordpress.com/2013/05/tokyo-mf-sq_logo.gif?w=75" width="75">
+					</div>
+					<div class="span3">
+						<h4 class="smaller"><a href="http://makezine.jp/">Maker Faire <small style="color:#0088cc;">Tokyo</small></a></h4>
+						<ul class="unstyled">
+							<li>Date: TBD 2013</li>
+							<li>Location: TBD</li>
+						</ul>
+					</div>
+				</div>	
 			</div>
 			
 			<?php } ?>

@@ -114,12 +114,18 @@ function makerfaire_meta_box( $post ) {
 * @param int $id Updated Post ID
 * =====================================================================*/
 function makerfaire_create_time( $val ) {
-	foreach( array( 'AM', 'PM' ) as $period ) :
-		foreach( range( 0, 11 ) as $hour ) :
-			foreach( range( 0, 55, 5 ) as $min ) : $time = esc_attr( ( !$hour ? 12 : $hour ).':'.str_pad( $min, 2, '0', STR_PAD_LEFT ).' '.$period ); ?>
-				<option value="<?php echo $time; ?>" <?php selected( $val, $time ); ?>><?php echo $time; ?></option>
-<?php 
-	endforeach; endforeach; endforeach;
+
+	// Set some variables. 
+	$start_time = "10:00:00"; // Time to start at...
+	$end_time = "10:00:00"; // Not sure why setting at or below 10 gives us the correct time frame...
+
+	while ( strtotime( $start_time ) >= strtotime( $end_time ) ) {
+		$time = date( 'g:i A', strtotime( $start_time ) );
+
+    	echo '<option value="' . $time . '"' . selected( $val, $time ) . '>' . date( 'g:i A', strtotime( $start_time ) ) . '</option>';
+
+    	$start_time = date( 'H:i:s', strtotime( "$start_time 5 minutes" ) );
+	}
 }
 /* ADD FORM TO EVENT ITEM */
 add_action( 'add_meta_boxes', 'makerfaire_add_meta_boxes' );

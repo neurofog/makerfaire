@@ -19,6 +19,7 @@ get_header(); ?>
 					$content = get_the_content();
 					// Adding the Ohm for one Maker... Will probably pull this out at somepoint.
 					$json = json_decode( str_replace( array("\'", "u03a9", "u2019"), array("'", '&#8486;', '&rsquo;'), $content ) );
+					var_dump($json);
 				?>
 				
 				<article <?php post_class(); ?>>
@@ -35,7 +36,7 @@ get_header(); ?>
 					
 					<h1><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h1>
 
-					<?php // echo mf_location( get_the_ID() ); ?>
+					<?php echo mf_location( get_the_ID() ); ?>
 					
 					<?php echo mf_get_scheduled_item( get_the_ID() ); ?>
 					
