@@ -372,102 +372,113 @@ class MAKE_CLI extends WP_CLI_Command {
 					}
 				}  elseif ( $exhibit->maker == 'A list of makers' ) {
 					WP_CLI::line('A list! A list! ' . get_the_ID() );
-					$the_title = $exhibit->maker_name ? $exhibit->maker_name : $exhibit->name;
 
-					$title = htmlspecialchars( $the_title );
+					$maker_list = $exhibit->m_maker_name;
+					$i = 0;
 
-					$maker = get_page_by_title( $title, OBJECT, 'maker' );
+					if ( is_array( $maker_list ) ) {
+						foreach ( $maker_list as $maker_name ) {
+							// We may need to revise this? If $exhibit->m_maker_name[ $i ] return false, we may end up generating multiple
+							// makers with the same title. If there are two empty maker name fields, that will generate dups.
+							// Any other good idea around this? - CG
+							$the_title = $exhibit->m_maker_name[ $i ] ? $exhibit->m_maker_name[ $i ] : $exhibit->project_name;
+							$title = htmlspecialchars( $the_title );
+							$maker = get_page_by_title( $title, OBJECT, 'maker' );
 
-					echo ( isset( $maker->post_title ) ) ? WP_CLI::success( 'Found: ' . $maker->post_title ) : WP_CLI::warning( 'no title...' ) ;
+							echo ( isset( $maker->post_title ) ) ? WP_CLI::success( 'Found: ' . $maker->post_title ) : WP_CLI::warning( 'no title...' ) ;
 
-					if ( !$maker ) {
-						// Setup post object...
-						$content = ($exhibit->maker_bio ? htmlspecialchars_decode( $exhibit->maker_bio ) : null);
-						$my_post = array(
-							'post_title'    => $title,
-							'post_content'  => $content,
-							'post_status'   => 'publish',
-							'post_type'		=> 'maker'
-						); 
-						$pid = wp_insert_post( $my_post );
-						if ( is_wp_error( $pid ) ) {
-							WP_CLI::warning( $title );
-						} else {
-							WP_CLI::success( $title );
-						}
-						$video = ( $exhibit->project_video ) ? $exhibit->project_video  : null;
-						if ( !empty( $video ) ) {
-							$vid = update_post_meta( $pid, 'video', $video );
-							if ( !empty( $vid ) ) {
-								WP_CLI::success( 'Video = ' .  $video );
+							if ( ! $maker ) {
+								// Setup post object...
+								$content = ($exhibit->m_maker_bio[ $i ] ? htmlspecialchars_decode( $exhibit->m_maker_bio[ $i ] ) : null);
+								$my_post = array(
+									'post_title'    => $title,
+									'post_content'  => $content,
+									'post_status'   => 'publish',
+									'post_type'		=> 'maker'
+								); 
+								$pid = wp_insert_post( $my_post );
+								if ( is_wp_error( $pid ) ) {
+									WP_CLI::warning( 'Maker Name: ' . $title );
+								} else {
+									WP_CLI::success( 'Maker Name: ' . $title );
+								}
+								$video = ( $exhibit->project_video ) ? $exhibit->project_video  : null;
+								if ( !empty( $video ) ) {
+									$vid = update_post_meta( $pid, 'video', $video );
+									if ( !empty( $vid ) ) {
+										WP_CLI::success( 'Video = ' .  $video );
+									} else {
+										WP_CLI::warning( 'Video = ' . $video );
+									}
+								}
+								$post_id = get_the_ID();
+								if ( !empty( $post_id ) ) {
+									$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id, true );
+									if ( !empty( $mfei_record ) ) {
+										WP_CLI::success( 'mfei_record = ' . $post_id );
+									} else {
+										WP_CLI::warning( 'mfei_record = ' . $post_id );
+									}
+								}
+								$photo_url = ( $exhibit->m_maker_photo[ $i ] ) ? $exhibit->m_maker_photo[ $i ] : null;
+								if ( !empty( $photo_url ) ) {
+									$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
+									if ( !empty( $photo ) ) {
+										WP_CLI::success( 'Photo = ' . $photo_url );
+									} else {
+										WP_CLI::warning( 'Photo = ' . $photo_url );
+									}
+								}
+								$mf = ( $exhibit->maker_faire ) ? $exhibit->maker_faire : null;
+								if ( !empty( $mf ) ) {
+									$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
+									if ( !empty( $photo ) ) {
+										WP_CLI::success( 'Maker Faire = ' . $mf );
+									} else {
+										WP_CLI::warning( 'Maker Faire = ' . $mf );
+									}
+								}
 							} else {
-								WP_CLI::warning( 'Video = ' . $video );
+								WP_CLI::line( 'Updating Meta...' );
+								$pid = $maker->ID;
+								$video = ( $exhibit->project_video ) ? $exhibit->project_video  : null;
+								if ( !empty( $video ) ) {
+									$vid = update_post_meta( $pid, 'video', $video );
+									if ( !empty( $vid ) ) {
+										WP_CLI::success( 'Video = ' .  $video );
+									} else {
+										WP_CLI::warning( 'Video = ' . $video );
+									}
+								}
+								$post_id = get_the_ID();
+								if ( !empty( $post_id ) ) {
+									$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id, true );
+									if ( !empty( $mfei_record ) ) {
+										WP_CLI::success( 'mfei_record = ' . $post_id );
+									} else {
+										WP_CLI::warning( 'mfei_record = ' . $post_id );
+									}
+								}
+								$photo_url = ( $exhibit->m_maker_photo[ $i ] ) ? $exhibit->m_maker_photo[ $i ] : null;
+								if ( !empty( $photo_url ) ) {
+									$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
+									if ( !empty( $photo ) ) {
+										WP_CLI::success( 'Photo = ' . $photo );
+									} else {
+										WP_CLI::warning( 'Photo = ' . $photo );
+									}
+								}
+								$mf = ( $exhibit->maker_faire ) ? $exhibit->maker_faire : null;
+								if ( !empty( $mf ) ) {
+									$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
+									if ( !empty( $photo ) ) {
+										WP_CLI::success( 'Maker Faire = ' . $mf );
+									} else {
+										WP_CLI::warning( 'Maker Faire = ' . $mf );
+									}
+								}
 							}
-						}
-						$post_id = get_the_ID();
-						if ( !empty( $post_id ) ) {
-							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id, true );
-							if ( !empty( $mfei_record ) ) {
-								WP_CLI::success( 'mfei_record = ' . $post_id );
-							} else {
-								WP_CLI::warning( 'mfei_record = ' . $post_id );
-							}
-						}
-						$photo_url = ( $exhibit->m_maker_photo_thumb ) ? $exhibit->m_maker_photo_thumb : null;
-						if ( !empty( $photo_url ) ) {
-							$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-							if ( !empty( $photo ) ) {
-								WP_CLI::success( 'Photo = ' . $photo_url );
-							} else {
-								WP_CLI::warning( 'Photo = ' . $photo_url );
-							}
-						}
-						$mf = ( $exhibit->maker_faire ) ? $exhibit->maker_faire : null;
-						if ( !empty( $mf ) ) {
-							$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-							if ( !empty( $photo ) ) {
-								WP_CLI::success( 'Maker Faire = ' . $mf );
-							} else {
-								WP_CLI::warning( 'Maker Faire = ' . $mf );
-							}
-						}
-					} else {
-						$pid = $maker->ID;
-						$video = ( $exhibit->project_video ) ? $exhibit->project_video  : null;
-						if ( !empty( $video ) ) {
-							$vid = update_post_meta( $pid, 'video', $video );
-							if ( !empty( $vid ) ) {
-								WP_CLI::success( 'Video = ' .  $video );
-							} else {
-								WP_CLI::warning( 'Video = ' . $video );
-							}
-						}
-						$post_id = get_the_ID();
-						if ( !empty( $post_id ) ) {
-							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id, true );
-							if ( !empty( $mfei_record ) ) {
-								WP_CLI::success( 'mfei_record = ' . $post_id );
-							} else {
-								WP_CLI::warning( 'mfei_record = ' . $post_id );
-							}
-						}
-						$photo_url = ( $exhibit->m_maker_photo_thumb ) ? $exhibit->m_maker_photo_thumb : null;
-						if ( !empty( $photo_url ) ) {
-							$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-							if ( !empty( $photo ) ) {
-								WP_CLI::success( 'Photo = ' . $photo );
-							} else {
-								WP_CLI::warning( 'Photo = ' . $photo );
-							}
-						}
-						$mf = ( $exhibit->maker_faire ) ? $exhibit->maker_faire : null;
-						if ( !empty( $mf ) ) {
-							$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-							if ( !empty( $photo ) ) {
-								WP_CLI::success( 'Maker Faire = ' . $mf );
-							} else {
-								WP_CLI::warning( 'Maker Faire = ' . $mf );
-							}
+							$i++;
 						}
 					}
 				}
