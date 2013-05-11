@@ -8,7 +8,7 @@ require_once( __DIR__ . '/plugins/maker-faire-forms/maker-faire-forms.php' );
 require_once( __DIR__ . '/plugins/public-pages/makers.php' );
 
 // include maker-faire-forms plugin
-//require_once( __DIR__ . '/post-types/maker.php' );
+require_once( __DIR__ . '/post-types/maker.php' );
 
 // Markdown
 include_once dirname(__file__) . '/plugins/markdown/markdown.php';

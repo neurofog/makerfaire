@@ -820,9 +820,9 @@ class MAKE_CLI extends WP_CLI_Command {
 						$web = update_post_meta( $pid, 'presentation_website', $website );
 
 						if ( ! empty( $web ) ) {
-							WP_CLI::success( 'Video = ' .  $presentation_website );
+							WP_CLI::success( 'Video = ' .  $website );
 						} else {
-							WP_CLI::warning( 'Video = ' . $presentation_website );
+							WP_CLI::warning( 'Video = ' . $website );
 						}
 					}
 
