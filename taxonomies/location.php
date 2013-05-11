@@ -1,8 +1,8 @@
 <?php
 
 function location_init() {
-	register_taxonomy( 'location', array( 'mf_form', 'event-items' ), array(
-		'hierarchical'            => true,
+	register_taxonomy( 'location', array( 'mf_form' ), array(
+		'hierarchical'            => false,
 		'public'                  => true,
 		'show_in_nav_menus'       => true,
 		'show_ui'                 => true,

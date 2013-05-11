@@ -246,12 +246,12 @@ function mf_public_blurb( $json ) {
 				array(
 					'taxonomy' => 'group',
 					'field' => 'id',
-					'terms' => $term
+					'terms' => $term->term_id
 				),
 			),
 			'post_type'		=> 'mf_form',
 			'post_status'	=> 'accepted',
-			'post_per_page' => 100
+			'posts_per_page' => 100
 			);
 		$query = new WP_Query( $args );
 		$posts = $query->posts;
@@ -265,7 +265,7 @@ function mf_public_blurb( $json ) {
 				echo  '<div class="media-body">';
 				echo  ( !empty( $json->project_name ) ) ? '<h4><a href="' . get_permalink( $the_post->ID ) . '">' . wp_kses_post( $json->project_name ) . '</a></h4>' : '' ;
 				echo  ( !empty( $json->public_description) ) ? Markdown( wp_kses_post( $json->public_description ) ) : '';
-				echo  '</div></div>';
+				echo  '</div></div><div class="clearfix"></div>';
 			}
 		}
 	}
