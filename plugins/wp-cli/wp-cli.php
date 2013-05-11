@@ -167,12 +167,12 @@ class MAKE_CLI extends WP_CLI_Command {
 
 		if ( $type == 'exhibit' ) {
 			WP_CLI::line( 'Exhibit' );
+
 			if ( $application->maker == 'A group or association' ) {
 				WP_CLI::line( 'A group or association | ID: ' . get_the_ID() );
+
 				$the_title = $application->group_name ? $application->group_name : $application->name;
-
 				$title = htmlspecialchars( $the_title );
-
 				$maker = get_page_by_title( $title, OBJECT, 'maker' );
 
 				echo ( isset( $maker->post_title ) ) ? WP_CLI::success( 'Found: ' . $maker->post_title ) : WP_CLI::warning( 'no title...' ) ;
@@ -197,6 +197,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$website = ( $application->project_website ) ? $application->project_website  : null;
 					if ( ! empty( $website ) ) {
 						$web = update_post_meta( $pid, 'website', $website );
+
 						if ( ! empty( $web ) ) {
 							WP_CLI::success( 'website = ' .  $website );
 						} else {
@@ -207,6 +208,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$video = ( $application->project_video ) ? $application->project_video  : null;
 					if ( ! empty( $video ) ) {
 						$vid = update_post_meta( $pid, 'video', $video );
+
 						if ( ! empty( $vid ) ) {
 							WP_CLI::success( 'Video = ' .  $video );
 						} else {
@@ -216,9 +218,7 @@ class MAKE_CLI extends WP_CLI_Command {
 
 					$post_id = get_the_ID();
 					if ( ! empty( $post_id ) ) {
-						// Check and see if our $post_id already exists in the post meta.
-						if ( get_post_meta( $pid, 'mfei_record' ) != $post_id )
-							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+						$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
 
 						if ( ! empty( $mfei_record ) ) {
 							WP_CLI::success( 'mfei_record = ' . $post_id );
@@ -230,6 +230,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$photo_url = ( $application->group_photo ) ? $application->group_photo : null;
 					if ( ! empty( $photo_url ) ) {
 						$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
+
 						if ( ! empty( $photo ) ) {
 							WP_CLI::success( 'Photo = ' . $photo_url );
 						} else {
@@ -240,6 +241,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
 					if ( ! empty( $mf ) ) {
 						$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
+
 						if ( ! empty( $photo ) ) {
 							WP_CLI::success( 'Maker Faire = ' . $mf );
 						} else {
@@ -252,6 +254,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$website = ( $application->project_website ) ? $application->project_website  : null;
 					if ( ! empty( $website ) ) {
 						$web = update_post_meta( $pid, 'website', $website );
+
 						if ( ! empty( $web ) ) {
 							WP_CLI::success( 'Website = ' .  $website );
 						} else {
@@ -262,6 +265,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$video = ( $application->project_video ) ? $application->project_video  : null;
 					if ( ! empty( $video ) ) {
 						$vid = update_post_meta( $pid, 'video', $video );
+
 						if ( ! empty( $vid ) ) {
 							WP_CLI::success( 'Video = ' .  $video );
 						} else {
@@ -271,9 +275,7 @@ class MAKE_CLI extends WP_CLI_Command {
 
 					$post_id = get_the_ID();
 					if ( ! empty( $post_id ) ) {
-						// Check and see if our $post_id already exists in the post meta.
-						if ( get_post_meta( $pid, 'mfei_record' ) != $post_id )
-							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+						$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
 
 						if ( ! empty( $mfei_record ) ) {
 							WP_CLI::success( 'mfei_record = ' . $post_id );
@@ -285,6 +287,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$photo_url = ( $application->group_photo ) ? $application->group_photo : null;
 					if ( ! empty( $photo_url ) ) {
 						$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
+
 						if ( ! empty( $photo ) ) {
 							WP_CLI::success( 'Photo = ' . $photo );
 						} else {
@@ -295,6 +298,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
 					if ( ! empty( $mf ) ) {
 						$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
+
 						if ( ! empty( $photo ) ) {
 							WP_CLI::success( 'Maker Faire = ' . $mf );
 						} else {
@@ -302,6 +306,7 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 					}
 				}
+			// Some users didn't select an maker type... so loop them here.
 			} elseif ( $application->maker == 'One maker' || $application->maker == '' ) {
 				WP_CLI::line( 'One Maker | ID: ' . get_the_ID() );
 
@@ -331,6 +336,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$website = ( $application->project_website ) ? $application->project_website  : null;
 					if ( ! empty( $website ) ) {
 						$web = update_post_meta( $pid, 'website', $website );
+
 						if ( ! empty( $web ) ) {
 							WP_CLI::success( 'Website = ' .  $website );
 						} else {
@@ -341,6 +347,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$video = ( $application->project_video ) ? $application->project_video  : null;
 					if ( ! empty( $video ) ) {
 						$vid = update_post_meta( $pid, 'video', $video );
+
 						if ( ! empty( $vid ) ) {
 							WP_CLI::success( 'Video = ' .  $video );
 						} else {
@@ -350,9 +357,7 @@ class MAKE_CLI extends WP_CLI_Command {
 
 					$post_id = get_the_ID();
 					if ( ! empty( $post_id ) ) {
-						// Check and see if our $post_id already exists in the post meta.
-						if ( get_post_meta( $pid, 'mfei_record' ) != $post_id )
-							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+						$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
 
 						if ( ! empty( $mfei_record ) ) {
 							WP_CLI::success( 'mfei_record = ' . $post_id );
@@ -364,6 +369,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$photo_url = ( $application->m_maker_photo_thumb ) ? $application->m_maker_photo_thumb : null;
 					if ( ! empty( $photo_url ) ) {
 						$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
+
 						if ( ! empty( $photo ) ) {
 							WP_CLI::success( 'Photo = ' . $photo_url );
 						} else {
@@ -374,6 +380,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
 					if ( !empty( $mf ) ) {
 						$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
+
 						if ( !empty( $photo ) ) {
 							WP_CLI::success( 'Maker Faire = ' . $mf );
 						} else {
@@ -386,6 +393,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$website = ( $application->project_website ) ? $application->project_website  : null;
 					if ( ! empty( $website ) ) {
 						$web = update_post_meta( $pid, 'website', $website );
+
 						if ( ! empty( $web ) ) {
 							WP_CLI::success( 'Website = ' .  $website );
 						} else {
@@ -396,6 +404,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$video = ( $application->project_video ) ? $application->project_video  : null;
 					if ( !empty( $video ) ) {
 						$vid = update_post_meta( $pid, 'video', $video );
+
 						if ( !empty( $vid ) ) {
 							WP_CLI::success( 'Video = ' .  $video );
 						} else {
@@ -404,9 +413,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					}
 					$post_id = get_the_ID();
 					if ( !empty( $post_id ) ) {
-						// Check and see if our $post_id already exists in the post meta.
-						if ( get_post_meta( $pid, 'mfei_record' ) != $post_id )
-							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+						$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
 
 						if ( !empty( $mfei_record ) ) {
 							WP_CLI::success( 'mfei_record = ' . $post_id );
@@ -417,6 +424,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$photo_url = ( $application->m_maker_photo_thumb ) ? $application->m_maker_photo_thumb : null;
 					if ( !empty( $photo_url ) ) {
 						$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
+
 						if ( !empty( $photo ) ) {
 							WP_CLI::success( 'Photo = ' . $photo );
 						} else {
@@ -426,6 +434,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
 					if ( !empty( $mf ) ) {
 						$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
+
 						if ( !empty( $photo ) ) {
 							WP_CLI::success( 'Maker Faire = ' . $mf );
 						} else {
@@ -455,7 +464,8 @@ class MAKE_CLI extends WP_CLI_Command {
 								'post_content'  => $content,
 								'post_status'   => 'publish',
 								'post_type'		=> 'maker'
-							); 
+							);
+
 							$pid = wp_insert_post( $my_post );
 							if ( is_wp_error( $pid ) ) {
 								WP_CLI::warning( 'Maker Name: ' . $title );
@@ -466,6 +476,7 @@ class MAKE_CLI extends WP_CLI_Command {
 							$website = ( $application->project_website ) ? $application->project_website  : null;
 							if ( ! empty( $website ) ) {
 								$web = update_post_meta( $pid, 'website', $website );
+
 								if ( ! empty( $web ) ) {
 									WP_CLI::success( 'Website = ' .  $website );
 								} else {
@@ -476,6 +487,7 @@ class MAKE_CLI extends WP_CLI_Command {
 							$video = ( $application->project_video ) ? $application->project_video  : null;
 							if ( ! empty( $video ) ) {
 								$vid = update_post_meta( $pid, 'video', $video );
+
 								if ( ! empty( $vid ) ) {
 									WP_CLI::success( 'Video = ' .  $video );
 								} else {
@@ -485,9 +497,7 @@ class MAKE_CLI extends WP_CLI_Command {
 
 							$post_id = get_the_ID();
 							if ( ! empty( $post_id ) ) {
-								// Check and see if our $post_id already exists in the post meta.
-								// if ( get_post_meta( $pid, 'mfei_record' ) != $post_id )
-									$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+								$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
 
 								if ( ! empty( $mfei_record ) ) {
 									WP_CLI::success( 'mfei_record = ' . $post_id );
@@ -499,15 +509,18 @@ class MAKE_CLI extends WP_CLI_Command {
 							$photo_url = ( $application->m_maker_photo[ $i ] ) ? $application->m_maker_photo[ $i ] : null;
 							if ( ! empty( $photo_url ) ) {
 								$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
+
 								if ( ! empty( $photo ) ) {
 									WP_CLI::success( 'Photo = ' . $photo_url );
 								} else {
 									WP_CLI::warning( 'Photo = ' . $photo_url );
 								}
 							}
+
 							$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
 							if ( ! empty( $mf ) ) {
 								$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
+
 								if ( ! empty( $photo ) ) {
 									WP_CLI::success( 'Maker Faire = ' . $mf );
 								} else {
@@ -521,6 +534,7 @@ class MAKE_CLI extends WP_CLI_Command {
 							$website = ( $application->project_website ) ? $application->project_website  : null;
 							if ( ! empty( $website ) ) {
 								$web = update_post_meta( $pid, 'website', $website );
+
 								if ( ! empty( $web ) ) {
 									WP_CLI::success( 'Website = ' .  $website );
 								} else {
@@ -531,6 +545,7 @@ class MAKE_CLI extends WP_CLI_Command {
 							$video = ( $application->project_video ) ? $application->project_video  : null;
 							if ( ! empty( $video ) ) {
 								$vid = update_post_meta( $pid, 'video', $video );
+
 								if ( ! empty( $vid ) ) {
 									WP_CLI::success( 'Video = ' .  $video );
 								} else {
@@ -540,9 +555,7 @@ class MAKE_CLI extends WP_CLI_Command {
 
 							$post_id = get_the_ID();
 							if ( ! empty( $post_id ) ) {
-								// Check and see if our $post_id already exists in the post meta.
-								// if ( get_post_meta( $pid, 'mfei_record' ) != $post_id )
-									$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+								$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
 
 								if ( ! empty( $mfei_record ) ) {
 									WP_CLI::success( 'mfei_record = ' . $post_id );
@@ -554,6 +567,7 @@ class MAKE_CLI extends WP_CLI_Command {
 							$photo_url = ( isset( $application->m_maker_photo[ $i ] ) ) ? $application->m_maker_photo[ $i ] : null;
 							if ( ! empty( $photo_url ) ) {
 								$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
+
 								if ( ! empty( $photo ) ) {
 									WP_CLI::success( 'Photo = ' . $photo );
 								} else {
@@ -564,6 +578,7 @@ class MAKE_CLI extends WP_CLI_Command {
 							$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
 							if ( ! empty( $mf ) ) {
 								$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
+
 								if ( ! empty( $photo ) ) {
 									WP_CLI::success( 'Maker Faire = ' . $mf );
 								} else {
@@ -589,7 +604,8 @@ class MAKE_CLI extends WP_CLI_Command {
 							'post_content'  => $content,
 							'post_status'   => 'publish',
 							'post_type'		=> 'maker'
-						); 
+						);
+
 						$pid = wp_insert_post( $my_post );
 						if ( is_wp_error( $pid ) ) {
 							WP_CLI::warning( 'Maker Name: ' . $title );
@@ -598,9 +614,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 
 						$website = ( $application->project_website ) ? $application->project_website  : null;
-						if ( !empty( $website ) ) {
+						if ( ! empty( $website ) ) {
 							$web = update_post_meta( $pid, 'website', $website );
-							if ( !empty( $web ) ) {
+
+							if ( ! empty( $web ) ) {
 								WP_CLI::success( 'Website = ' .  $website );
 							} else {
 								WP_CLI::warning( 'Website = ' . $website );
@@ -608,9 +625,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 
 						$video = ( $application->project_video ) ? $application->project_video  : null;
-						if ( !empty( $video ) ) {
+						if ( ! empty( $video ) ) {
 							$vid = update_post_meta( $pid, 'video', $video );
-							if ( !empty( $vid ) ) {
+
+							if ( ! empty( $vid ) ) {
 								WP_CLI::success( 'Video = ' .  $video );
 							} else {
 								WP_CLI::warning( 'Video = ' . $video );
@@ -618,12 +636,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 
 						$post_id = get_the_ID();
-						if ( !empty( $post_id ) ) {
-							// Check and see if our $post_id already exists in the post meta.
-							// if ( get_post_meta( $pid, 'mfei_record' ) != $post_id )
-								$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+						if ( ! empty( $post_id ) ) {
+							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
 
-							if ( !empty( $mfei_record ) ) {
+							if ( ! empty( $mfei_record ) ) {
 								WP_CLI::success( 'mfei_record = ' . $post_id );
 							} else {
 								WP_CLI::warning( 'mfei_record = ' . $post_id );
@@ -631,10 +647,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 
 						$photo_url = ( $application->m_maker_photo[0] ) ? $application->m_maker_photo[0] : null;
-						if ( !empty( $photo_url ) ) {
+						if ( ! empty( $photo_url ) ) {
 							$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
 
-							if ( !empty( $photo ) ) {
+							if ( ! empty( $photo ) ) {
 								WP_CLI::success( 'Photo = ' . $photo_url );
 							} else {
 								WP_CLI::warning( 'Photo = ' . $photo_url );
@@ -642,10 +658,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 
 						$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-						if ( !empty( $mf ) ) {
+						if ( ! empty( $mf ) ) {
 							$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
 
-							if ( !empty( $photo ) ) {
+							if ( ! empty( $photo ) ) {
 								WP_CLI::success( 'Maker Faire = ' . $mf );
 							} else {
 								WP_CLI::warning( 'Maker Faire = ' . $mf );
@@ -656,10 +672,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						$pid = $maker->ID;
 
 						$website = ( $application->project_website ) ? $application->project_website  : null;
-						if ( !empty( $website ) ) {
+						if ( ! empty( $website ) ) {
 							$web = update_post_meta( $pid, 'website', $website );
 
-							if ( !empty( $web ) ) {
+							if ( ! empty( $web ) ) {
 								WP_CLI::success( 'Website = ' .  $website );
 							} else {
 								WP_CLI::warning( 'Website = ' . $website );
@@ -667,39 +683,43 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 
 						$video = ( $application->project_video ) ? $application->project_video  : null;
-						if ( !empty( $video ) ) {
+						if ( ! empty( $video ) ) {
 							$vid = update_post_meta( $pid, 'video', $video );
-							if ( !empty( $vid ) ) {
+
+							if ( ! empty( $vid ) ) {
 								WP_CLI::success( 'Video = ' .  $video );
 							} else {
 								WP_CLI::warning( 'Video = ' . $video );
 							}
 						}
-						$post_id = get_the_ID();
-						if ( !empty( $post_id ) ) {
-							// Check and see if our $post_id already exists in the post meta.
-							// if ( get_post_meta( $pid, 'mfei_record' ) != $post_id )
-								$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
 
-							if ( !empty( $mfei_record ) ) {
+						$post_id = get_the_ID();
+						if ( ! empty( $post_id ) ) {
+							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+
+							if ( ! empty( $mfei_record ) ) {
 								WP_CLI::success( 'mfei_record = ' . $post_id );
 							} else {
 								WP_CLI::warning( 'mfei_record = ' . $post_id );
 							}
 						}
+
 						$photo_url = ( isset( $application->m_maker_photo[0] ) ) ? $application->m_maker_photo[0] : null;
-						if ( !empty( $photo_url ) ) {
+						if ( ! empty( $photo_url ) ) {
 							$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-							if ( !empty( $photo ) ) {
+
+							if ( ! empty( $photo ) ) {
 								WP_CLI::success( 'Photo = ' . $photo );
 							} else {
 								WP_CLI::warning( 'Photo = ' . $photo );
 							}
 						}
+
 						$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-						if ( !empty( $mf ) ) {
+						if ( ! empty( $mf ) ) {
 							$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-							if ( !empty( $photo ) ) {
+
+							if ( ! empty( $photo ) ) {
 								WP_CLI::success( 'Maker Faire = ' . $mf );
 							} else {
 								WP_CLI::warning( 'Maker Faire = ' . $mf );
@@ -728,7 +748,8 @@ class MAKE_CLI extends WP_CLI_Command {
 						'post_content'  => $content,
 						'post_status'   => 'publish',
 						'post_type'		=> 'maker'
-					); 
+					);
+
 					$pid = wp_insert_post( $my_post );
 					if ( is_wp_error( $pid ) ) {
 						WP_CLI::warning( $title );
@@ -736,7 +757,6 @@ class MAKE_CLI extends WP_CLI_Command {
 						WP_CLI::success( $title );
 					}
 
-					// Get Website URL
 					$website = ( $application->presentation_website ) ? $application->presentation_website  : null;
 					if ( ! empty( $website ) ) {
 						$web = update_post_meta( $pid, 'presentation_website', $website );
@@ -748,73 +768,11 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 					}
 
-					// Get Video URL
 					$video = ( $application->video ) ? $application->video  : null;
-					if ( !empty( $video ) ) {
+					if ( ! empty( $video ) ) {
 						$vid = update_post_meta( $pid, 'video', $video );
 
-						if ( !empty( $vid ) ) {
-							WP_CLI::success( 'Video = ' .  $video );
-						} else {
-							WP_CLI::warning( 'Video = ' . $video );
-						}
-					}
-
-					// Get Post ID
-					$post_id = get_the_ID();
-					if ( !empty( $post_id ) ) {
-						// Check and see if our $post_id already exists in the post meta.
-						WP_CLI::line( get_post_meta( $pid, 'mfei_record' ) );
-						if ( get_post_meta( $pid, 'mfei_record' ) != $post_id )
-							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-						if ( !empty( $mfei_record ) ) {
-							WP_CLI::success( 'mfei_record created = ' . $post_id );
-						} else {
-							WP_CLI::warning( 'mfei_record created = ' . $post_id );
-						}
-					}
-
-					// Get Photo URL
-					$photo_url = ( $application->presenter_photo[0] ) ? $application->presenter_photo[0] : null;
-					if ( !empty( $photo_url ) ) {
-						$photo = add_post_meta( $pid, 'presenter_photo', $photo_url, true );
-
-						if ( !empty( $photo ) ) {
-							WP_CLI::success( 'Photo = ' . $photo_url );
-						} else {
-							WP_CLI::warning( 'Photo = ' . $photo_url );
-						}
-					}
-
-					// Get the Maker Faire year
-					$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-					if ( !empty( $mf ) ) {
-						$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-						if ( !empty( $photo ) ) {
-							WP_CLI::success( 'Maker Faire = ' . $mf );
-						} else {
-							WP_CLI::warning( 'Maker Faire = ' . $mf );
-						}
-					}
-				} else {
-					WP_CLI::line( 'Updating Meta...' );
-					$pid = $maker->ID;
-
-					$website = ( $application->presentation_website ) ? $application->presentation_website  : null;
-					if ( !empty( $website ) ) {
-						$web = update_post_meta( $pid, 'presentation_website', $website );
-						if ( !empty( $web ) ) {
-							WP_CLI::success( 'Video = ' .  $presentation_website );
-						} else {
-							WP_CLI::warning( 'Video = ' . $presentation_website );
-						}
-					}
-
-					$video = ( $application->video ) ? $application->video  : null;
-					if ( !empty( $video ) ) {
-						$vid = update_post_meta( $pid, 'video', $video );
-						if ( !empty( $vid ) ) {
+						if ( ! empty( $vid ) ) {
 							WP_CLI::success( 'Video = ' .  $video );
 						} else {
 							WP_CLI::warning( 'Video = ' . $video );
@@ -823,9 +781,65 @@ class MAKE_CLI extends WP_CLI_Command {
 
 					$post_id = get_the_ID();
 					if ( ! empty( $post_id ) ) {
-						// Check and see if our $post_id already exists in the post meta.
-						if ( get_post_meta( $pid, 'mfei_record' ) != $post_id )
-							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+						$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+
+						if ( ! empty( $mfei_record ) ) {
+							WP_CLI::success( 'mfei_record = ' . $post_id );
+						} else {
+							WP_CLI::warning( 'mfei_record = ' . $post_id );
+						}
+					}
+
+					$photo_url = ( $application->presenter_photo[0] ) ? $application->presenter_photo[0] : null;
+					if ( ! empty( $photo_url ) ) {
+						$photo = add_post_meta( $pid, 'presenter_photo', $photo_url, true );
+
+						if ( ! empty( $photo ) ) {
+							WP_CLI::success( 'Photo = ' . $photo_url );
+						} else {
+							WP_CLI::warning( 'Photo = ' . $photo_url );
+						}
+					}
+
+					// Get the Maker Faire year
+					$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
+					if ( ! empty( $mf ) ) {
+						$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
+						if ( ! empty( $photo ) ) {
+							WP_CLI::success( 'Maker Faire = ' . $mf );
+						} else {
+							WP_CLI::warning( 'Maker Faire = ' . $mf );
+						}
+					}
+				} else {
+					WP_CLI::line( 'Updating Meta...' );
+					$pid = $presentation->ID;
+
+					$website = ( $application->presentation_website ) ? $application->presentation_website  : null;
+					if ( ! empty( $website ) ) {
+						$web = update_post_meta( $pid, 'presentation_website', $website );
+
+						if ( ! empty( $web ) ) {
+							WP_CLI::success( 'Video = ' .  $presentation_website );
+						} else {
+							WP_CLI::warning( 'Video = ' . $presentation_website );
+						}
+					}
+
+					$video = ( $application->video ) ? $application->video  : null;
+					if ( ! empty( $video ) ) {
+						$vid = update_post_meta( $pid, 'video', $video );
+
+						if ( ! empty( $vid ) ) {
+							WP_CLI::success( 'Video = ' .  $video );
+						} else {
+							WP_CLI::warning( 'Video = ' . $video );
+						}
+					}
+
+					$post_id = get_the_ID();
+					if ( ! empty( $post_id ) ) {
+						$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
 
 						if ( ! empty( $mfei_record ) ) {
 							WP_CLI::success( 'mfei_record updated = ' . $post_id );
@@ -835,9 +849,10 @@ class MAKE_CLI extends WP_CLI_Command {
 					}
 
 					$photo_url = ( $application->presenter_photo[0] ) ? $application->presenter_photo[0] : null;
-					if ( !empty( $photo_url ) ) {
+					if ( ! empty( $photo_url ) ) {
 						$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-						if ( !empty( $photo ) ) {
+
+						if ( ! empty( $photo ) ) {
 							WP_CLI::success( 'Photo = ' . $photo );
 						} else {
 							WP_CLI::warning( 'Photo = ' . $photo );
@@ -845,9 +860,10 @@ class MAKE_CLI extends WP_CLI_Command {
 					}
 
 					$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-					if ( !empty( $mf ) ) {
+					if ( ! empty( $mf ) ) {
 						$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-						if ( !empty( $photo ) ) {
+
+						if ( ! empty( $photo ) ) {
 							WP_CLI::success( 'Maker Faire = ' . $mf );
 						} else {
 							WP_CLI::warning( 'Maker Faire = ' . $mf );
@@ -879,7 +895,8 @@ class MAKE_CLI extends WP_CLI_Command {
 								'post_content'  => $content,
 								'post_status'   => 'publish',
 								'post_type'		=> 'maker'
-							); 
+							);
+
 							$pid = wp_insert_post( $my_post );
 							if ( is_wp_error( $pid ) ) {
 								WP_CLI::warning( 'Presenter Name: ' . $title );
@@ -888,9 +905,9 @@ class MAKE_CLI extends WP_CLI_Command {
 							}
 
 							$website = ( $application->presentation_website ) ? $application->presentation_website  : null;
-							if ( !empty( $website ) ) {
+							if ( ! empty( $website ) ) {
 								$web = update_post_meta( $pid, 'website', $website );
-								if ( !empty( $web ) ) {
+								if ( ! empty( $web ) ) {
 									WP_CLI::success( 'website = ' .  $website );
 								} else {
 									WP_CLI::warning( 'website = ' . $website );
@@ -898,9 +915,9 @@ class MAKE_CLI extends WP_CLI_Command {
 							}
 
 							$video = ( $application->video ) ? $application->video  : null;
-							if ( !empty( $video ) ) {
+							if ( ! empty( $video ) ) {
 								$vid = update_post_meta( $pid, 'video', $video );
-								if ( !empty( $vid ) ) {
+								if ( ! empty( $vid ) ) {
 									WP_CLI::success( 'Video = ' .  $video );
 								} else {
 									WP_CLI::warning( 'Video = ' . $video );
@@ -908,12 +925,10 @@ class MAKE_CLI extends WP_CLI_Command {
 							}
 
 							$post_id = get_the_ID();
-							if ( !empty( $post_id ) ) {
-								// Check and see if our $post_id already exists in the post meta.
-								if ( get_post_meta( $pid, 'mfei_record' ) != $post_id )
-									$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+							if ( ! empty( $post_id ) ) {
+								$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
 
-								if ( !empty( $mfei_record ) ) {
+								if ( ! empty( $mfei_record ) ) {
 									WP_CLI::success( 'mfei_record = ' . $post_id );
 								} else {
 									WP_CLI::warning( 'mfei_record = ' . $post_id );
@@ -921,9 +936,10 @@ class MAKE_CLI extends WP_CLI_Command {
 							}
 
 							$photo_url = ( $application->presenter_photo[ $i ] ) ? $application->presenter_photo[ $i ] : null;
-							if ( !empty( $photo_url ) ) {
+							if ( ! empty( $photo_url ) ) {
 								$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-								if ( !empty( $photo ) ) {
+
+								if ( ! empty( $photo ) ) {
 									WP_CLI::success( 'Photo = ' . $photo_url );
 								} else {
 									WP_CLI::warning( 'Photo = ' . $photo_url );
@@ -931,9 +947,10 @@ class MAKE_CLI extends WP_CLI_Command {
 							}
 
 							$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-							if ( !empty( $mf ) ) {
+							if ( ! empty( $mf ) ) {
 								$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-								if ( !empty( $photo ) ) {
+
+								if ( ! empty( $photo ) ) {
 									WP_CLI::success( 'Maker Faire = ' . $mf );
 								} else {
 									WP_CLI::warning( 'Maker Faire = ' . $mf );
@@ -944,9 +961,10 @@ class MAKE_CLI extends WP_CLI_Command {
 							$pid = $maker->ID;
 
 							$website = ( $application->presentation_website ) ? $application->presentation_website  : null;
-							if ( !empty( $website ) ) {
+							if ( ! empty( $website ) ) {
 								$web = update_post_meta( $pid, 'website', $website );
-								if ( !empty( $web ) ) {
+
+								if ( ! empty( $web ) ) {
 									WP_CLI::success( 'website = ' .  $website );
 								} else {
 									WP_CLI::warning( 'website = ' . $website );
@@ -954,9 +972,10 @@ class MAKE_CLI extends WP_CLI_Command {
 							}
 
 							$video = ( $application->video ) ? $application->video  : null;
-							if ( !empty( $video ) ) {
+							if ( ! empty( $video ) ) {
 								$vid = update_post_meta( $pid, 'video', $video );
-								if ( !empty( $vid ) ) {
+
+								if ( ! empty( $vid ) ) {
 									WP_CLI::success( 'Video = ' .  $video );
 								} else {
 									WP_CLI::warning( 'Video = ' . $video );
@@ -964,12 +983,10 @@ class MAKE_CLI extends WP_CLI_Command {
 							}
 
 							$post_id = get_the_ID();
-							if ( !empty( $post_id ) ) {
-								// Check and see if our $post_id already exists in the post meta.
-								if ( get_post_meta( $pid, 'mfei_record' ) != $post_id )
-									$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+							if ( ! empty( $post_id ) ) {
+								$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
 
-								if ( !empty( $mfei_record ) ) {
+								if ( ! empty( $mfei_record ) ) {
 									WP_CLI::success( 'mfei_record = ' . $post_id );
 								} else {
 									WP_CLI::warning( 'mfei_record = ' . $post_id );
@@ -977,9 +994,10 @@ class MAKE_CLI extends WP_CLI_Command {
 							}
 
 							$photo_url = ( isset( $application->presenter_photo[ $i ] ) ) ? $application->presenter_photo[ $i ] : null;
-							if ( !empty( $photo_url ) ) {
+							if ( ! empty( $photo_url ) ) {
 								$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-								if ( !empty( $photo ) ) {
+
+								if ( ! empty( $photo ) ) {
 									WP_CLI::success( 'Photo = ' . $photo );
 								} else {
 									WP_CLI::warning( 'Photo = ' . $photo );
@@ -987,9 +1005,10 @@ class MAKE_CLI extends WP_CLI_Command {
 							}
 
 							$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-							if ( !empty( $mf ) ) {
+							if ( ! empty( $mf ) ) {
 								$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-								if ( !empty( $photo ) ) {
+
+								if ( ! empty( $photo ) ) {
 									WP_CLI::success( 'Maker Faire = ' . $mf );
 								} else {
 									WP_CLI::warning( 'Maker Faire = ' . $mf );
@@ -1016,6 +1035,7 @@ class MAKE_CLI extends WP_CLI_Command {
 							'post_status'   => 'publish',
 							'post_type'		=> 'maker'
 						); 
+
 						$pid = wp_insert_post( $my_post );
 						if ( is_wp_error( $pid ) ) {
 							WP_CLI::warning( 'Presenter Name: ' . $title );
@@ -1024,9 +1044,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 
 						$website = ( $application->presentation_website ) ? $application->presentation_website  : null;
-						if ( !empty( $website ) ) {
+						if ( ! empty( $website ) ) {
 							$web = update_post_meta( $pid, 'website', $website );
-							if ( !empty( $web ) ) {
+
+							if ( ! empty( $web ) ) {
 								WP_CLI::success( 'website = ' .  $website );
 							} else {
 								WP_CLI::warning( 'website = ' . $website );
@@ -1034,9 +1055,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 
 						$video = ( $application->video ) ? $application->video  : null;
-						if ( !empty( $video ) ) {
+						if ( ! empty( $video ) ) {
 							$vid = update_post_meta( $pid, 'video', $video );
-							if ( !empty( $vid ) ) {
+
+							if ( ! empty( $vid ) ) {
 								WP_CLI::success( 'Video = ' .  $video );
 							} else {
 								WP_CLI::warning( 'Video = ' . $video );
@@ -1044,12 +1066,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 
 						$post_id = get_the_ID();
-						if ( !empty( $post_id ) ) {
-							// Check and see if our $post_id already exists in the post meta.
-							if ( get_post_meta( $pid, 'mfei_record' ) != $post_id )
-								$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+						if ( ! empty( $post_id ) ) {
+							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
 
-							if ( !empty( $mfei_record ) ) {
+							if ( ! empty( $mfei_record ) ) {
 								WP_CLI::success( 'mfei_record created = ' . $post_id );
 							} else {
 								WP_CLI::warning( 'mfei_record created = ' . $post_id );
@@ -1057,9 +1077,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 
 						$photo_url = ( $application->presenter_photo[0] ) ? $application->presenter_photo[0] : null;
-						if ( !empty( $photo_url ) ) {
+						if ( ! empty( $photo_url ) ) {
 							$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-							if ( !empty( $photo ) ) {
+
+							if ( ! empty( $photo ) ) {
 								WP_CLI::success( 'Photo = ' . $photo_url );
 							} else {
 								WP_CLI::warning( 'Photo = ' . $photo_url );
@@ -1067,9 +1088,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 
 						$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-						if ( !empty( $mf ) ) {
+						if ( ! empty( $mf ) ) {
 							$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-							if ( !empty( $photo ) ) {
+
+							if ( ! empty( $photo ) ) {
 								WP_CLI::success( 'Maker Faire = ' . $mf );
 							} else {
 								WP_CLI::warning( 'Maker Faire = ' . $mf );
@@ -1080,9 +1102,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						$pid = $maker->ID;
 
 						$website = ( $application->presentation_website ) ? $application->presentation_website  : null;
-						if ( !empty( $website ) ) {
+						if ( ! empty( $website ) ) {
 							$web = update_post_meta( $pid, 'website', $website );
-							if ( !empty( $web ) ) {
+
+							if ( ! empty( $web ) ) {
 								WP_CLI::success( 'website = ' .  $website );
 							} else {
 								WP_CLI::warning( 'website = ' . $website );
@@ -1090,9 +1113,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 
 						$video = ( $application->video ) ? $application->video  : null;
-						if ( !empty( $video ) ) {
+						if ( ! empty( $video ) ) {
 							$vid = update_post_meta( $pid, 'video', $video );
-							if ( !empty( $vid ) ) {
+
+							if ( ! empty( $vid ) ) {
 								WP_CLI::success( 'Video = ' .  $video );
 							} else {
 								WP_CLI::warning( 'Video = ' . $video );
@@ -1100,12 +1124,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 
 						$post_id = get_the_ID();
-						if ( !empty( $post_id ) ) {
-							// Check and see if our $post_id already exists in the post meta.
-							if ( get_post_meta( $pid, 'mfei_record' ) != $post_id )
-								$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+						if ( ! empty( $post_id ) ) {
+							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
 
-							if ( !empty( $mfei_record ) ) {
+							if ( ! empty( $mfei_record ) ) {
 								WP_CLI::success( 'mfei_record updated = ' . $post_id );
 							} else {
 								WP_CLI::warning( 'mfei_record updated = ' . $post_id );
@@ -1113,9 +1135,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 
 						$photo_url = ( isset( $application->presenter_photo[0] ) ) ? $application->presenter_photo[0] : null;
-						if ( !empty( $photo_url ) ) {
+						if ( ! empty( $photo_url ) ) {
 							$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-							if ( !empty( $photo ) ) {
+
+							if ( ! empty( $photo ) ) {
 								WP_CLI::success( 'Photo = ' . $photo );
 							} else {
 								WP_CLI::warning( 'Photo = ' . $photo );
@@ -1123,9 +1146,10 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 
 						$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-						if ( !empty( $mf ) ) {
+						if ( ! empty( $mf ) ) {
 							$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-							if ( !empty( $photo ) ) {
+
+							if ( ! empty( $photo ) ) {
 								WP_CLI::success( 'Maker Faire = ' . $mf );
 							} else {
 								WP_CLI::warning( 'Maker Faire = ' . $mf );
@@ -1151,7 +1175,8 @@ class MAKE_CLI extends WP_CLI_Command {
 					'post_content'  => $content,
 					'post_status'   => 'publish',
 					'post_type'		=> 'maker'
-				); 
+				);
+
 				$pid = wp_insert_post( $my_post );
 				if ( is_wp_error( $pid ) ) {
 					WP_CLI::warning( $title );
@@ -1173,10 +1198,10 @@ class MAKE_CLI extends WP_CLI_Command {
 
 				// Get Video URL
 				$video = ( $application->performer_video ) ? $application->performer_video  : null;
-				if ( !empty( $video ) ) {
+				if ( ! empty( $video ) ) {
 					$vid = update_post_meta( $pid, 'video', $video );
 
-					if ( !empty( $vid ) ) {
+					if ( ! empty( $vid ) ) {
 						WP_CLI::success( 'Video = ' .  $video );
 					} else {
 						WP_CLI::warning( 'Video = ' . $video );
@@ -1185,12 +1210,10 @@ class MAKE_CLI extends WP_CLI_Command {
 
 				// Get Post ID
 				$post_id = get_the_ID();
-				if ( !empty( $post_id ) ) {
-					// Check and see if our $post_id already exists in the post meta.
-					if ( get_post_meta( $pid, 'mfei_record' ) == $post_id )
-						$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+				if ( ! empty( $post_id ) ) {
+					$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
 
-					if ( !empty( $mfei_record ) ) {
+					if ( ! empty( $mfei_record ) ) {
 						WP_CLI::success( 'mfei_record = ' . $post_id );
 					} else {
 						WP_CLI::warning( 'mfei_record = ' . $post_id );
@@ -1199,10 +1222,10 @@ class MAKE_CLI extends WP_CLI_Command {
 
 				// Get Photo URL
 				$photo_url = ( $application->performer_photo ) ? $application->performer_photo : null;
-				if ( !empty( $photo_url ) ) {
+				if ( ! empty( $photo_url ) ) {
 					$photo = add_post_meta( $pid, 'presenter_photo', $photo_url, true );
 
-					if ( !empty( $photo ) ) {
+					if ( ! empty( $photo ) ) {
 						WP_CLI::success( 'Photo = ' . $photo_url );
 					} else {
 						WP_CLI::warning( 'Photo = ' . $photo_url );
@@ -1211,9 +1234,10 @@ class MAKE_CLI extends WP_CLI_Command {
 
 				// Get the Maker Faire year
 				$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-				if ( !empty( $mf ) ) {
+				if ( ! empty( $mf ) ) {
 					$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-					if ( !empty( $photo ) ) {
+
+					if ( ! empty( $photo ) ) {
 						WP_CLI::success( 'Maker Faire = ' . $mf );
 					} else {
 						WP_CLI::warning( 'Maker Faire = ' . $mf );
@@ -1221,11 +1245,12 @@ class MAKE_CLI extends WP_CLI_Command {
 				}
 			} else {
 				WP_CLI::line( 'Updating Meta...' );
-				$pid = $maker->ID;
+				$pid = $performer->ID;
 
 				$website = ( $application->performer_website ) ? $application->performer_website  : null;
 				if ( ! empty( $website ) ) {
 					$web = update_post_meta( $pid, 'performer_website', $website );
+
 					if ( ! empty( $web ) ) {
 						WP_CLI::success( 'Website = ' .  $website );
 					} else {
@@ -1236,6 +1261,7 @@ class MAKE_CLI extends WP_CLI_Command {
 				$video = ( $application->performer_video ) ? $application->performer_video  : null;
 				if ( ! empty( $video ) ) {
 					$vid = update_post_meta( $pid, 'video', $video );
+
 					if ( ! empty( $vid ) ) {
 						WP_CLI::success( 'Video = ' .  $video );
 					} else {
@@ -1245,9 +1271,7 @@ class MAKE_CLI extends WP_CLI_Command {
 
 				$post_id = get_the_ID();
 				if ( ! empty( $post_id ) ) {
-					// Check and see if our $post_id already exists in the post meta.
-					if ( get_post_meta( $pid, 'mfei_record' ) != $post_id )
-						$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
+					$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
 
 					if ( ! empty( $mfei_record ) ) {
 						WP_CLI::success( 'mfei_record = ' . $post_id );
@@ -1259,6 +1283,7 @@ class MAKE_CLI extends WP_CLI_Command {
 				$photo_url = ( $application->performer_photo ) ? $application->performer_photo : null;
 				if ( ! empty( $photo_url ) ) {
 					$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
+
 					if ( ! empty( $photo ) ) {
 						WP_CLI::success( 'Photo = ' . $photo );
 					} else {
@@ -1269,6 +1294,7 @@ class MAKE_CLI extends WP_CLI_Command {
 				$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
 				if ( ! empty( $mf ) ) {
 					$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
+
 					if ( ! empty( $photo ) ) {
 						WP_CLI::success( 'Maker Faire = ' . $mf );
 					} else {
