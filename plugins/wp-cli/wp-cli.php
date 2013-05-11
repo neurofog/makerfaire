@@ -742,7 +742,7 @@ class MAKE_CLI extends WP_CLI_Command {
 
 				if ( ! $presentation ) {
 					// Setup post object...
-					$content = ($application->presenter_bio[0] ? htmlspecialchars_decode( $application->presenter_bio[0] ) : null);
+					$content = ( $application->presenter_bio[0] ? htmlspecialchars_decode( $application->presenter_bio[0] ) : null );
 					$my_post = array(
 						'post_title'    => $title,
 						'post_content'  => $content,

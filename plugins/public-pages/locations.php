@@ -47,6 +47,5 @@ $loc_data = array(
   2256816 => array('id'=>34,'Name'=>'Bazaar Bizarre','Marker type'=>'','Description'=>'','lat'=>37.547729,'long'=>-122.304276,'Altitude (m)'=>-32.099998,'Bearing (deg)'=>269.500000,'Accuracy (m)'=>4,'Speed (m/s)'=>1.25,'Time'=>'2013-05-02 19:41:57'),
   44303668 => array('id'=>35,'Name'=>'Life Sized Mousetrap','Marker type'=>'','Description'=>'','lat'=>37.547283,'long'=>-122.303345,'Altitude (m)'=>-30.500000,'Bearing (deg)'=>118.699997,'Accuracy (m)'=>4,'Speed (m/s)'=>1.25,'Time'=>'2013-05-02 19:43:28'),
   2806 => array('id'=>36,'Name'=>'Art & Design','Marker type'=>'','Description'=>'','lat'=>null,'long'=>null,'Altitude (m)'=>null,'Bearing (deg)'=>null,'Accuracy (m)'=>null,'Speed (m/s)'=>null,'Time'=>'0000-00-00 00:00:00'),
-  10497639 => array('id'=>37,'Name'=>'Auto Row','Marker type'=>null,'Description'=>null,'lat'=>null,'long'=>null,'Altitude (m)'=>null,'Bearing (deg)'=>null,'Accuracy (m)'=>null,'Speed (m/s)'=>null,'Time'=>null),
-  183604 => array( 'lat'=>null,'long'=>null )
+  10497639 => array('id'=>37,'Name'=>'Auto Row','Marker type'=>null,'Description'=>null,'lat'=>null,'long'=>null,'Altitude (m)'=>null,'Bearing (deg)'=>null,'Accuracy (m)'=>null,'Speed (m/s)'=>null,'Time'=>null)
 );
