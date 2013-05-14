@@ -443,7 +443,7 @@ add_filter('the_title', function($title) {
 
 add_filter('the_content', function($content) { 
 	return str_replace('u03a9', '&#8486;', $content);
-	}
+}
 );
 
 
@@ -650,7 +650,9 @@ function mf_schedule( $atts ) {
 			$output .= '<h4>' . substr($names_output, 2) . '</h4>';
 		}
 		if (!empty($json->public_description)) {
-			$output .= Markdown( wp_kses_post( $json->public_description ) ) ;
+			$content_clean = str_replace('u2014', "&#8212;", $json->public_description );
+			
+			$output .= Markdown( wp_kses_post( $content_clean ) ) ;
 		}
 		// $output .= '<ul class="unstyled">';
 		// $terms = get_the_terms( $sched_post->ID, array( 'category', 'post_tag' ) );
