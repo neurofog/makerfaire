@@ -271,6 +271,11 @@ if ($type == 'entity') {
 
 		$jsonpost["id"] = get_the_ID();
 		$jsonpost["entity_id_refs"] = array( $id ); // Make this an array
+		$json = json_decode( get_page( $id )->post_content );
+		$url = mf_get_the_maker_image( $json );
+		$jsonpost["large_img_url"] = $url;
+		$size = array ( 'h' => '80', 'w' => '80', 'crop' => 1 );
+		$jsonpost["thumb_img_url"] = add_query_arg( $size, $url );
 		$jsonpost["name"] = str_replace( array( '&#8217;', '&#038;'), array( '\'', '&'), htmlspecialchars_decode( get_the_title( $id ) ) );
 		$jsonpost["original_id"] = $id;
 		$jsonpost["time_start"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $start . ' PST' ) ) );
