@@ -23,19 +23,16 @@ get_header(); ?>
 				
 				<article <?php post_class(); ?>>
 
-					<h5>
-						<small>
-							<?php 
-								if ( !empty( $json->maker_faire ) ) {
-									echo mf_better_name( $json->maker_faire );
-								}
-							?>
-						</small>
-					</h5>
+					
+					<?php echo ( !empty( $json->maker_faire ) ) ? '<h5><small>' . mf_better_name( $json->maker_faire ) . '</small></h5>' : ''; ?>
 					
 					<h1><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h1>
 
-					<?php echo mf_location( get_the_ID() ); ?>
+					<?php
+						if ($json->form_type == 'exhibit') {
+							echo mf_location( get_the_ID() );
+						}
+					?>
 					
 					<?php echo mf_get_scheduled_item( get_the_ID() ); ?>
 					

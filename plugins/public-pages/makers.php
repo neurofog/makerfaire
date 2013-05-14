@@ -239,33 +239,33 @@ function mf_public_blurb( $json ) {
 	$terms = get_the_terms( get_the_ID(), 'group' );
 	if ( $terms ) {
 		echo '<h4>Other exhibits in this group:</h4>';
-	}
-	foreach ( $terms as $term ) {
-		$args = array( 
-			'tax_query' => array(
-				array(
-					'taxonomy' => 'group',
-					'field' => 'id',
-					'terms' => $term->term_id
+		foreach ( $terms as $term ) {
+			$args = array( 
+				'tax_query' => array(
+					array(
+						'taxonomy' => 'group',
+						'field' => 'id',
+						'terms' => $term->term_id
+					),
 				),
-			),
-			'post_type'		=> 'mf_form',
-			'post_status'	=> 'accepted',
-			'posts_per_page' => 100
-			);
-		$query = new WP_Query( $args );
-		$posts = $query->posts;
-		if( $query ) {
-			foreach ( $posts as $the_post ) {
-				$json = json_decode( html_entity_decode( mf_convert_newlines( str_replace( array("\'", "u03a9"), array("'", '&#8486;'), $the_post->post_content ), "\n"), ENT_COMPAT, 'utf-8' ) );
-				echo  '<div class="media">';
-				if ( !empty( $json->maker_photo ) ) {
-					echo  '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->project_photo, 130, 130, true ) . '" class="media-object thumbnail pull-left"/>';
+				'post_type'		=> 'mf_form',
+				'post_status'	=> 'accepted',
+				'posts_per_page' => 100
+				);
+			$query = new WP_Query( $args );
+			$posts = $query->posts;
+			if( $query ) {
+				foreach ( $posts as $the_post ) {
+					$json = json_decode( html_entity_decode( mf_convert_newlines( str_replace( array("\'", "u03a9"), array("'", '&#8486;'), $the_post->post_content ), "\n"), ENT_COMPAT, 'utf-8' ) );
+					echo  '<div class="media">';
+					if ( !empty( $json->maker_photo ) ) {
+						echo  '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->project_photo, 130, 130, true ) . '" class="media-object thumbnail pull-left"/>';
+					}
+					echo  '<div class="media-body">';
+					echo  ( !empty( $json->project_name ) ) ? '<h4><a href="' . get_permalink( $the_post->ID ) . '">' . wp_kses_post( $json->project_name ) . '</a></h4>' : '' ;
+					echo  ( !empty( $json->public_description) ) ? Markdown( wp_kses_post( $json->public_description ) ) : '';
+					echo  '</div></div><div class="clearfix"></div>';
 				}
-				echo  '<div class="media-body">';
-				echo  ( !empty( $json->project_name ) ) ? '<h4><a href="' . get_permalink( $the_post->ID ) . '">' . wp_kses_post( $json->project_name ) . '</a></h4>' : '' ;
-				echo  ( !empty( $json->public_description) ) ? Markdown( wp_kses_post( $json->public_description ) ) : '';
-				echo  '</div></div><div class="clearfix"></div>';
 			}
 		}
 	}
@@ -471,6 +471,7 @@ function mf_featured_makers_home() {
 	$output .= '<h4 class="blue"><a href="http://makerfaire2013.eventbrite.com/">Get Tickets</a></h4>';
 	$output .= '<h4 class="blue"><a href="http://makerfaire.com/alt">How to Get There</a></h4>';
 	$output .= '<h4 class="blue"><a href="http://makerfaire.com/bayarea-2013/schedule/">Program &amp; Schedule</a></h4>';
+	$output .= '<h4 class="blue"><a href="http://app.net/makerfaire">Download the App</a></h4>';
 	$output .= '</div>';
 	$output .= '<div class="carousel-inner">';
 	$i = 1;
@@ -675,7 +676,7 @@ add_shortcode('mf_full_schedule', 'mf_schedule');
 
 
 function mf_get_scheduled_item( $the_ID ) {
-	$query = wp_cache_get( $the_ID . '_schedule' );
+	$query = wp_cache_get( $the_ID . '_saturday_schedule' );
 	if( $query == false ) {
 		$args = array( 
 			'post_type'		=> 'event-items',
@@ -687,15 +688,18 @@ function mf_get_scheduled_item( $the_ID ) {
 				array(
 					'key' 	=> 'mfei_record',
 					'value'	=> $the_ID
+				),
+				array(
+					'key' 	=> 'mfei_day',
+					'value'	=> 'Saturday'
 				)
 			)
 			);
 		$query = new WP_Query( $args );
-		wp_cache_set( $the_ID . '_schedule', $query, '', 300 );
+		wp_cache_set( $the_ID . '_saturday_schedule', $query, '', 300 );
 	}
-	$output = '';
+	$output = '<table class="table table-striped table-bordered">';
 	if ($query->found_posts >= 1 ) {
-		$output .= '<table class="table table-striped table-bordered">';
 		$output .= '<thead><tr class="info"><td><strong>Day</strong></td><td><strong>Start Time</strong></td><td><strong>End Time</strong></td><td><strong>Location</strong></td></tr></thead><tbody>';
 		while ( $query->have_posts() ) : $query->the_post();
 			$meta = get_post_meta( get_the_ID());
@@ -711,8 +715,48 @@ function mf_get_scheduled_item( $the_ID ) {
 			$output .= '<td>' . strip_tags( get_the_term_list( get_the_ID(), 'location' ) ) . '</td>';
 			$output .= '</tr>';
 		endwhile;
-		$output .= '<tbody></table>';
 	}
+	wp_reset_postdata();
+	$query = wp_cache_get( $the_ID . '_sunday_schedule' );
+	if( $query == false ) {
+		$args = array( 
+			'post_type'		=> 'event-items',
+			'orderby' 		=> 'meta_value', 
+			'meta_key'		=> 'mfei_start',
+			'order'			=> 'asc',
+			'posts_per_page'=> '30',
+			'meta_query' => array(
+				array(
+					'key' 	=> 'mfei_record',
+					'value'	=> $the_ID
+				),
+				array(
+					'key' 	=> 'mfei_day',
+					'value'	=> 'Sunday'
+				)
+			)
+			);
+		$query = new WP_Query( $args );
+		wp_cache_set( $the_ID . '_sunday_schedule', $query, '', 300 );
+	}
+	if ($query->found_posts >= 1 ) {
+		$output .= '<thead><tr class="info"><td><strong>Day</strong></td><td><strong>Start Time</strong></td><td><strong>End Time</strong></td><td><strong>Location</strong></td></tr></thead><tbody>';
+		while ( $query->have_posts() ) : $query->the_post();
+			$meta = get_post_meta( get_the_ID());
+			$sched_post = get_post( $meta['mfei_record'][0] );
+			$json = json_decode( str_replace( "\'", "'", $sched_post->post_content ) );
+			$day = ($meta['mfei_day'][0]) ? $meta['mfei_day'][0] : '' ;
+			$start = ($meta['mfei_start'][0]) ? $meta['mfei_start'][0] : '' ;
+			$stop = ($meta['mfei_stop'][0]) ? $meta['mfei_stop'][0] : '' ;
+			$output .= '<tr>';
+			$output .= '<td>' . esc_html( $day ) . '</td>';
+			$output .= '<td>' . esc_html( $start ) . '</td>';
+			$output .= '<td>' . esc_html( $stop ) . '</td>';
+			$output .= '<td>' . strip_tags( get_the_term_list( get_the_ID(), 'location' ) ) . '</td>';
+			$output .= '</tr>';
+		endwhile;
+	}
+	$output .= '<tbody></table>';
 	return $output;
 	wp_reset_postdata();
 

@@ -320,3 +320,17 @@ function mf_allow_my_post_types( $allowed_post_types ) {
 }
 
 add_filter( 'rest_api_allowed_post_types', 'mf_allow_my_post_types');
+
+
+add_filter( 'jetpack_open_graph_tags', function( $tags ) {
+	global $post;
+	if ($post->post_type == 'mf_form') {
+		$json = json_decode( $post->post_content );
+		$tags['og:description'] = $json->public_description;	
+	} else {
+		setup_postdata($post);
+		$tags['og:description'] = get_the_excerpt();
+	}
+	
+	return $tags;
+}, 10 );

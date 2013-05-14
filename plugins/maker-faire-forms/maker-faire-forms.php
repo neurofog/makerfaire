@@ -627,13 +627,12 @@ class MAKER_FAIRE_FORM {
 
 										// Setup the edit URL and add an edit link to the admin area
 										$edit_event_url = get_edit_post_link();
-										echo '<span style="position:absolute; right:10px;"><a href="' . esc_url( $edit_event_url ) . '" target="_blank">Edit the Time and Date</a></span>';
 
 										// Check that fields are set, and display them as needed.
 										if ( ! empty( $event_record['mfei_day'][0] ) ) : ?>
 											<tr>
 												<td style="width:80px;" valign="top"><strong>Day:</strong></td>
-												<td valign="top"><?php echo esc_html( $event_record['mfei_day'][0] ); ?></td>
+												<td valign="top"><?php echo esc_html( $event_record['mfei_day'][0] ); ?> &nbsp; &nbsp; &nbsp; <a href="<?php echo esc_url( $edit_event_url ); ?>" target="_blank">Edit the Time and Date</a></td>
 											</tr>
 										<?php endif; if ( ! empty( $event_record['mfei_start'][0] ) ) : ?>
 											<tr>
@@ -821,13 +820,20 @@ class MAKER_FAIRE_FORM {
 					<?php endif; ?>
 				<?php endforeach; ?>
 				</table>
-				<?php if( $args['id'] == 'mf_logistics' || $args['id'] == 'mf_presenter' ) : ?>
+				<?php if( $args['id'] == 'mf_logistics' || $args['id'] == 'mf_presenter' ) :
+					if ( isset( $data->m_maker_name ) && is_array( $data->m_maker_name ) ) {
+						$number_of_makers = count( $data->m_maker_name );
+					} elseif ( isset( $data->presenter_name ) && is_array( $data->presenter_name ) ) {
+						$number_of_makers = count( $data->presenter_name );
+					} else {
+						$number_of_makers = 1;
+					} ?>
 				<script type="text/javascript">
 
 						jQuery(function($) {
 							
 							form_type      = '<?php echo esc_html( $data->form_type ); ?>';
-							num_makers     = <?php echo intval( isset( $data->m_maker_name ) && is_array( $data->m_maker_name ) ? count( $data->m_maker_name ) + 1 : 1 ); ?>;
+							num_makers     = <?php echo intval( $number_of_makers ); ?>;
 							num_presenters = <?php echo intval( isset( $data->presenter_name ) && is_array( $data->presenter_name ) ? count( $data->presenter_name ) + 1 : 1 ); ?>;
 							
 							$('#maker input[type=radio]').click(function(){
@@ -883,7 +889,12 @@ class MAKER_FAIRE_FORM {
 								
 								html  = '';
 								for(i in fields[form_type]) {
-									html += '<tr class="mf-form-row add-maker"><td>'+fields[form_type][i]+':</td><td><input type="text" name="'+form_type+'['+i+']['+num_makers+']"></td></tr>';
+									if ( i === 'presenter_bio' || i === 'm_maker_bio' ) {
+										html += console.log(i);
+										html += '<tr class="mf-form-row add-maker"><td valign="top">'+fields[form_type][i]+':</td><td><textarea name="' + form_type + '[' + i + '][' + num_makers + ']" id="" cols="30" rows="10"></textarea></td></tr>';
+									} else {
+										html += '<tr class="mf-form-row add-maker"><td valign="top">'+fields[form_type][i]+':</td><td><input type="text" name="'+form_type+'['+i+']['+num_makers+']"></td></tr>';
+									}
 								}
 								html += '<tr class="remove-maker">'+
 											'<td colspan="2">'+
@@ -1087,7 +1098,11 @@ class MAKER_FAIRE_FORM {
 			?>
 			<tr class="mf-form-row <?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $fn ); ?>">
 				<td valign="top"><?php echo esc_html( ucwords( str_replace( '_', ' ', $fn ) ) ); ?>:</td>
-				<td><input style="width:100%;" name="<?php echo esc_attr( $type.'['.$fn.'][0]' ); ?>" value="<?php echo esc_attr( $data ); ?>" type="text" /></td>
+				<?php if ( $fn == 'm_maker_bio' || $fn == 'presenter_bio' ) : ?>
+					<td><textarea name="<?php echo esc_attr( $type . '[' . $fn . '][0]' ); ?>" id="<?php echo esc_attr( $type . '[' . $fn . '][0]' ); ?>" cols="30" rows="10"><?php echo ( ! empty( $data ) ) ? esc_attr( $data ) : ''; ?></textarea></td>
+				<?php else : ?>
+					<td><input style="width:100%;" name="<?php echo esc_attr( $type.'['.$fn.'][0]' ); ?>" value="<?php echo esc_attr( $data ); ?>" type="text" /></td>
+				<?php endif; ?>
 			</tr>
 			<?php endforeach; ?>
 			<?php 
@@ -1117,9 +1132,16 @@ class MAKER_FAIRE_FORM {
 					foreach( $add_fields[$key] as $fkey => $ftitle ) : ?>
 						<tr class="mf-form-row add-maker">
 							<td valign="top"><?php echo esc_html( $ftitle ); ?>:</td>
-							<td>
-								<input name="<?php echo esc_attr( $type.'['.$fkey.']['.$i.']' ); ?>" value="<?php echo esc_attr( isset( $all_data[$fkey][$i] ) ? $all_data[$fkey][$i] : '' ); ?>" type="text" />
-							</td>
+
+							<?php if ( $fkey == 'm_maker_bio' || $fkey == 'presenter_bio' ) : ?>
+								<td>
+									<textarea name="<?php echo esc_attr( $type.'['.$fkey.']['.$i.']' ); ?>" id="<?php echo esc_attr( $type.'['.$fkey.']['.$i.']' ); ?>" cols="30" rows="10"><?php echo esc_attr( isset( $all_data[$fkey][$i] ) ? $all_data[$fkey][$i] : '' ); ?></textarea>
+								</td>
+							<?php else : ?>
+								<td>
+									<input name="<?php echo esc_attr( $type.'['.$fkey.']['.$i.']' ); ?>" value="<?php echo esc_attr( isset( $all_data[$fkey][$i] ) ? $all_data[$fkey][$i] : '' ); ?>" type="text" />
+								</td>
+							<?php endif; ?>
 						</tr>
 					<?php endforeach; ?>
 				<tr class="remove-maker">
@@ -2763,7 +2785,7 @@ class MAKER_FAIRE_FORM {
 			$term_list .= ",'".sanitize_key( $meta_key )."'";
 
 		$res = array();
-		$pm  = $wpdb->get_results( $wpdb->prepare( "SELECT post_id, meta_key, meta_value FROM $wpdb->postmeta WHERE meta_key IN (".substr( $term_list, 1 ).") LIMIT 0,999") );
+		$pm  = $wpdb->get_results( $wpdb->prepare( "SELECT post_id, meta_key, meta_value FROM $wpdb->postmeta WHERE meta_key IN (".substr( $term_list, 1 ).") LIMIT 0,1999") );
 
 		foreach( $pm as $data ) {
 			if ( !isset( $res[ $data->post_id ] ) )
@@ -2899,7 +2921,7 @@ class MAKER_FAIRE_FORM {
 		
 		global $wpdb;
  
-		$sql = "SELECT * FROM $wpdb->comments LEFT OUTER JOIN $wpdb->posts ON ($wpdb->comments.comment_post_ID = $wpdb->posts.ID) WHERE  comment_type = 'editorial-comment' AND post_type='mf_form' ORDER BY comment_date_gmt DESC LIMIT 999";
+		$sql = "SELECT * FROM $wpdb->comments LEFT OUTER JOIN $wpdb->posts ON ($wpdb->comments.comment_post_ID = $wpdb->posts.ID) WHERE  comment_type = 'editorial-comment' AND post_type='mf_form' ORDER BY comment_date_gmt DESC LIMIT 1999";
  
 		$comments        = $wpdb->get_results( $sql );
 		$output          = "Project ID\tProject Name\tUsers & Groups Flagged\tDate Timestamp\tUser Name\tComment Text\r\n";
@@ -2965,7 +2987,7 @@ class MAKER_FAIRE_FORM {
 		
 		//GET PRESENTER FORMS
 		$args = array(
-			'posts_per_page' => 999,
+			'posts_per_page' => 1999,
 			'post_type' 	 => 'mf_form',
 			'meta_query' 	 => array( array( 'key' => '_mf_form_type', 'value' => 'presenter' ) )
 		);
@@ -2978,7 +3000,7 @@ class MAKER_FAIRE_FORM {
 		}
 		
 		//GET EVENT ITEMS
-		$mfeis = get_posts( array( 'post_type' => 'event-items', 'numberposts' => 999 ) );
+		$mfeis = get_posts( array( 'post_type' => 'event-items', 'numberposts' => 1999 ) );
 
 		//BUILD THE 3 FORMS
 		foreach( $mfeis as $mfei ) {
@@ -3161,7 +3183,7 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	private function get_all_forms( $sort = NULL, $status = 'all' ) {
 		$args = array(
-			'posts_per_page' => 999,
+			'posts_per_page' => 1999,
 			'post_type'      => 'mf_form'
 		);
 
@@ -3209,7 +3231,7 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	private function get_failed_syncs() {
 		$args = array(
-			'posts_per_page' => 999,
+			'posts_per_page' => 1999,
 			'post_type'      => 'mf_form',
 			'meta_key'       => 'mf_jdb_sync_fail'
 		);
