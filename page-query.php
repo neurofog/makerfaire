@@ -171,6 +171,7 @@ if ($type == 'entity') {
 		$venue['description'] = $term->description;
 		$venue['latitide'] = (isset($loc_data[$term_id]['lat'])) ? $loc_data[$term_id]['lat'] : null;
 		$venue['longitude'] = (isset($loc_data[$term_id]['long'])) ? $loc_data[$term_id]['long'] : null;
+		$venue['category_id_ref_list']  = array( 15429 );
 		array_push($venues, $venue);
 	}
 	
