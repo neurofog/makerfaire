@@ -175,9 +175,9 @@ if ($type == 'entity') {
 		$venue['longitude'] = (isset($loc_data[$term_id]['long'])) ? $loc_data[$term_id]['long'] : null;
 		$stages = array( 654896, 921378, 27475665, 36578739, 129846826, 156780557, 164745398, 164745444, 164745603, 164940502, 166795193, 166939701, 166956526, 166958578, 166958636, 166959119, 166959439 );
 		if ( in_array( $term->term_id, $stages) ) {
-			$venue['category_id_ref_list']  = array( 25517 ); // Stage
+			$venue['category_id_ref_list']  = array( 81264 ); // Stage
 		} else {
-			$venue['category_id_ref_list']  = array( 74140 ); // Exhibit
+			$venue['category_id_ref_list']  = array( 39727 ); // Exhibit
 		}
 		array_push($venues, $venue);
 	}
