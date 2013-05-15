@@ -702,7 +702,9 @@ function mf_get_scheduled_item( $the_ID ) {
 	}
 	$output = '<table class="table table-striped table-bordered">';
 	if ($query->found_posts >= 1 ) {
-		$output .= '<thead><tr class="info"><td><strong>Day</strong></td><td><strong>Start Time</strong></td><td><strong>End Time</strong></td><td><strong>Location</strong></td></tr></thead><tbody>';
+		// Set a variable we can use to see if Saturday events were found for the Sunday query
+		$has_saturday_events = true;
+		$output .= '<thead><tr class="info"><td><strong>Day</strong></td><td><strong>Start Time</strong></td><td><strong>End Time</strong></td><td><strong>Locations</strong></td></tr></thead><tbody>';
 		while ( $query->have_posts() ) : $query->the_post();
 			$meta = get_post_meta( get_the_ID());
 			$sched_post = get_post( $meta['mfei_record'][0] );
@@ -742,7 +744,8 @@ function mf_get_scheduled_item( $the_ID ) {
 		wp_cache_set( $the_ID . '_sunday_schedule', $query, '', 300 );
 	}
 	if ($query->found_posts >= 1 ) {
-		$output .= '<thead><tr class="info"><td><strong>Day</strong></td><td><strong>Start Time</strong></td><td><strong>End Time</strong></td><td><strong>Location</strong></td></tr></thead><tbody>';
+		if ( ! isset( $has_saturday_events ) )
+			$output .= '<thead><tr class="info"><td><strong>Day</strong></td><td><strong>Start Time</strong></td><td><strong>End Time</strong></td><td><strong>Location</strong></td></tr></thead><tbody>';
 		while ( $query->have_posts() ) : $query->the_post();
 			$meta = get_post_meta( get_the_ID());
 			$sched_post = get_post( $meta['mfei_record'][0] );

@@ -173,7 +173,12 @@ if ($type == 'entity') {
 		$venue['description'] = $term->description;
 		$venue['latitide'] = (isset($loc_data[$term_id]['lat'])) ? $loc_data[$term_id]['lat'] : null;
 		$venue['longitude'] = (isset($loc_data[$term_id]['long'])) ? $loc_data[$term_id]['long'] : null;
-		$venue['category_id_ref_list']  = array( 15429 );
+		$stages = array( 654896, 921378, 27475665, 36578739, 129846826, 156780557, 164745398, 164745444, 164745603, 164940502, 166795193, 166939701, 166956526, 166958578, 166958636, 166959119, 166959439 );
+		if ( in_array( $term->term_id, $stages) ) {
+			$venue['category_id_ref_list']  = array( 25517 ); // Stage
+		} else {
+			$venue['category_id_ref_list']  = array( 74140 ); // Exhibit
+		}
 		array_push($venues, $venue);
 	}
 	
