@@ -1,9 +1,9 @@
 	<div class="span4">
-
-	<div class="home-sidebar">
-		<div>
-			<a href="<?php echo get_permalink(6091); ?>"><img src="<?php echo get_stylesheet_directory_uri() . '/images/MakeYourOwnTee_banner-1.png'; ?>" title="Make Your Own T-Shirt!" alt="Make Your Own T-Shirt!" /></a><br />		
+	
+	<div style="margin-bottom:15px;">
+			<a href="<?php echo get_permalink(6091); ?>"><img src="<?php echo get_stylesheet_directory_uri() . '/images/MakeYourOwnTee_banner-1.png'; ?>" title="Make Your Own T-Shirt!" alt="Make Your Own T-Shirt!" /></a>
 		</div>
+	<div class="home-sidebar">
 		<div class="newsletter">
 			<div class="robot pull-left">
 				<img src="<?php echo get_template_directory_uri(); ?>/images/robot.png"/>

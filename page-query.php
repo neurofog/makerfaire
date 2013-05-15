@@ -161,11 +161,13 @@ if ($type == 'entity') {
 		$term_id = intval( $term->term_id );
 		$venue['id'] = $term->term_id;
 		$venue['original_id'] = $term->term_id;
+		$bad = array('$amp;', '&lt;' );
+		$good = array('&', '<' );
 		if ( $term->parent == 0 ) {
-			$venue['name'] = str_replace( '&amp;', '&', $term->name );
+			$venue['name'] = str_replace( $bad, $good, $term->name );
 		} else {
 			$parent = get_term( $term->parent, 'location' );
-			$venue['name'] = str_replace( '&amp;', '&', $parent->name . ' » ' . $term->name );
+			$venue['name'] = str_replace( $bad, $good, $parent->name . ' » ' . $term->name );
 		}
 		//$venue['name'] = $term->name;
 		$venue['description'] = $term->description;
@@ -193,7 +195,9 @@ if ($type == 'entity') {
 	$venues = array();
 	foreach ( $terms as $term ) {
 		$venue['id'] = $term->term_id;
-		$venue['name'] = str_replace( '&amp;', '&', $term->name );
+		$bad = array('$amp;', '&lt;' );
+		$good = array('&', '<' );
+		$venue['name'] = str_replace( $bad, $good, $term->name );
 		array_push($venues, $venue);
 	}
 	
