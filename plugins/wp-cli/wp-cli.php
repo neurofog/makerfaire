@@ -129,9 +129,9 @@ class MAKE_CLI extends WP_CLI_Command {
 		}
 	}
 
+
 	/**
-	 * Add tags and cats to posts.
-	 * Read the category and tag out of the JSON array, and then assign to the post.
+	 * Add makers to the maker custom post type from mf_form
 	 *
 	 * @subcommand makers
 	 * 
@@ -141,7 +141,7 @@ class MAKE_CLI extends WP_CLI_Command {
 		$args = array(
 			'posts_per_page' => 2000,
 			'post_type' => 'mf_form',
-			'post_status' => 'any',
+			'post_status' => 'accepted',
 
 			// Prevent new posts from affecting the order
 			'orderby' => 'ID',
@@ -1308,4 +1308,45 @@ class MAKE_CLI extends WP_CLI_Command {
 		endwhile;
 		WP_CLI::success( "Boom!" );
 	}
+
+	/**
+	 * Delete all of the Makers in the makers custom post type
+	 *
+	 * @subcommand mjolnir
+	 * 
+	 */
+	public function mf_delete_makers( $args, $assoc_args ) {
+
+		$args = array(
+			'posts_per_page' => 2000,
+			'post_type' => 'maker',
+			'post_status' => 'any',
+
+			// Prevent new posts from affecting the order
+			'orderby' => 'ID',
+			'order' => 'ASC',
+
+			// Speed this up
+			'no_found_rows' => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+		);
+
+		// Get the first set of posts
+		$query = new WP_Query( $args );
+
+		while ( $query->have_posts() ) : $query->the_post();
+		
+		$title = get_the_title( get_the_ID() );
+
+		$del = wp_delete_post( get_the_ID() );
+
+		if ( $del ) {
+			WP_CLI::success( 'Deleted ' . $title );
+		} else {
+			WP_CLI::warning( 'Failed to delete ' . $title );
+		}
+		endwhile;
+	}
+
 }
