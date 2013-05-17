@@ -202,7 +202,7 @@ if ($type == 'entity') {
 	$venues = array();
 	foreach ( $terms as $term ) {
 		$venue['id'] = $term->term_id;
-		$bad = array('$amp;', '&lt;' );
+		$bad = array('&amp;', '&lt;' );
 		$good = array('&', '<' );
 		$venue['name'] = str_replace( $bad, $good, $term->name );
 		array_push($venues, $venue);
