@@ -522,8 +522,8 @@ function mf_schedule( $atts ) {
 	$location = (isset($atts['location'])) ? sanitize_text_field( $atts['location'] ) : '';
 
 	if (!empty($location)) {
-		$output .= '<h2>' . esc_html( $location ) . '</h2>';
 		$term = wpcom_vip_get_term_by( 'name', $location, 'location');
+		$output .= '<h2><a href="'. get_term_link( $term, 'location' ) . '">' . esc_html( $location ) . '</a></h2>';
 		if ( !empty( $term->description ) ) {
 			$output .= '<div class="well well-small">' . Markdown( $term->description ) . '</div>';
 		}
