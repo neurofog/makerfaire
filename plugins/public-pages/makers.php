@@ -764,7 +764,7 @@ function mf_get_scheduled_item( $the_ID ) {
 			$output .= '<td>' . esc_html( $day ) . '</td>';
 			$output .= '<td>' . esc_html( $start ) . '</td>';
 			$output .= '<td>' . esc_html( $stop ) . '</td>';
-			$output .= '<td>' . strip_tags( get_the_term_list( get_the_ID(), 'location' ) ) . '</td>';
+			$output .= '<td>' . get_the_term_list( get_the_ID(), 'location' ) . '</td>';
 			$output .= '</tr>';
 		endwhile;
 	}
