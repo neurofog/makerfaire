@@ -31,6 +31,7 @@ if ( function_exists( 'wpcom_vip_load_plugin' ) ) {
 
 // add post-thumbnails support to theme
 add_theme_support( 'post-thumbnails' );
+add_image_size( 'schedule-thumb', 140, 140, true );
 
 if ( function_exists( 'wpcom_vip_enable_opengraph' ) ) {
 	wpcom_vip_enable_opengraph();
