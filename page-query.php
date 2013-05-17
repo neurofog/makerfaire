@@ -37,7 +37,7 @@ if ($type == 'entity') {
 		'no_found_rows' => true,
 		'post_type' =>'mf_form',
 		'post_status' => 'accepted',
-		'posts_per_page' => 1000
+		'posts_per_page' => 2000
 
 	);
 
@@ -112,11 +112,11 @@ if ($type == 'entity') {
 		} elseif ( isset( $exhibit->presentation_website ) ) {
 			$jsonpost["website_url"] = $exhibit->presentation_website;
 		}
-		if ( !empty( $exhibit->email ) ) {
-			$jsonpost["email"] = $exhibit->email;
-		} else {
+		// if ( !empty( $exhibit->email ) ) {
+			// $jsonpost["email"] = $exhibit->email;
+		// } else {
 			$jsonpost["email"] = null;
-		}
+		// }
 		$taggers = get_the_tags();
 		$tags = null;
 		if ( !empty( $taggers ) ) {
