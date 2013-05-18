@@ -23,6 +23,15 @@ if (!in_array($key, $keys)) {
 	return;
 }
 
+function mf_clean_content( $content ) {
+	$bad = array( '&#039;', "\'", '&#8217;', '&#38;', '&#038;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;' );
+	$good = array( "'", "'", "'", "&", "&", '"', '"', '–', '>', '...' );
+
+	$cleaned = str_replace( $bad, $good, htmlspecialchars_decode( mf_convert_newlines( $content ) ) );
+
+	return $cleaned;
+}
+
 // Set the JSON header
 header('Content-type: application/json');
 
@@ -59,7 +68,7 @@ if ($type == 'entity') {
 
 	// Loop through the posts
 	foreach ($posts as $post) {
-		$exhibit = json_decode( str_replace( "\'", "'", $post->post_content ) );
+		$exhibit = json_decode( mf_clean_content( $post->post_content ) );
 		if ( isset( $exhibit->form_type ) ) {
 			$jsonpost["type"] = $exhibit->form_type;
 		}
@@ -98,8 +107,6 @@ if ($type == 'entity') {
 		if ( !empty($exhibit->public_description) ) {
 			$booth = get_post_meta( get_the_ID(), 'booth', true );
 			$jsonpost["description"] = ( !empty( $booth ) ) ? '<strong>Location: ' . $booth . '</strong><br />' . $exhibit->public_description : $exhibit->public_description ;
-		} else {
-			$jsonpost["description"] = null;
 		}
 		//$jsonpost["featured"] = $exhibit->public_description;
 		if (isset($exhibit->project_video)) {
@@ -112,11 +119,11 @@ if ($type == 'entity') {
 		} elseif ( isset( $exhibit->presentation_website ) ) {
 			$jsonpost["website_url"] = $exhibit->presentation_website;
 		}
-		// if ( !empty( $exhibit->email ) ) {
-			// $jsonpost["email"] = $exhibit->email;
-		// } else {
+		if ( !empty( $exhibit->email ) ) {
+			$jsonpost["email"] = $exhibit->email;
+		} else {
 			$jsonpost["email"] = null;
-		// }
+		}
 		$taggers = get_the_tags();
 		$tags = null;
 		if ( !empty( $taggers ) ) {
@@ -163,16 +170,14 @@ if ($type == 'entity') {
 		$term_id = intval( $term->term_id );
 		$venue['id'] = $term->term_id;
 		$venue['original_id'] = $term->term_id;
-		$bad = array('$amp;', '&lt;' );
-		$good = array('&', '<' );
 		if ( $term->parent == 0 ) {
-			$venue['name'] = str_replace( $bad, $good, $term->name );
+			$venue['name'] = mf_clean_content( $term->name );
 		} else {
 			$parent = get_term( $term->parent, 'location' );
-			$venue['name'] = str_replace( $bad, $good, $parent->name . ' » ' . $term->name );
+			$venue['name'] = mf_clean_content( $parent->name . ' » ' . $term->name );
 		}
 		//$venue['name'] = $term->name;
-		$venue['description'] = $term->description;
+		$venue['description'] = mf_clean_content( $term->description );
 		$venue['latitide'] = (isset($loc_data[$term_id]['lat'])) ? $loc_data[$term_id]['lat'] : null;
 		$venue['longitude'] = (isset($loc_data[$term_id]['long'])) ? $loc_data[$term_id]['long'] : null;
 		$stages = array( 654896, 921378, 27475665, 36578739, 129846826, 156780557, 164745398, 164745444, 164745603, 164940502, 166795193, 166939701, 166956526, 166958578, 166958636, 166959119, 166959439 );
@@ -202,9 +207,7 @@ if ($type == 'entity') {
 	$venues = array();
 	foreach ( $terms as $term ) {
 		$venue['id'] = $term->term_id;
-		$bad = array('&amp;', '&lt;' );
-		$good = array('&', '<' );
-		$venue['name'] = str_replace( $bad, $good, $term->name );
+		$venue['name'] = mf_clean_content( $term->name );
 		array_push($venues, $venue);
 	}
 	
@@ -226,7 +229,7 @@ if ($type == 'entity') {
 	$venues = array();
 	foreach ( $terms as $term ) {
 		$venue['id'] = $term->term_id;
-		$venue['name'] = str_replace( '&amp;', '&', $term->name );
+		$venue['name'] = mf_clean_content( $term->name );
 		array_push($venues, $venue);
 	}
 	
@@ -283,7 +286,7 @@ if ($type == 'entity') {
 
 		$jsonpost["id"] = get_the_ID();
 		$jsonpost["entity_id_refs"] = array( $id ); // Make this an array
-		$json = json_decode( get_page( $id )->post_content );
+		$json = json_decode( mf_clean_content( get_page( $id )->post_content ) );
 		$url = mf_get_the_maker_image( $json );
 		$jsonpost["large_img_url"] = $url;
 		$size = array ( 'h' => '80', 'w' => '80', 'crop' => 1 );
@@ -482,7 +485,7 @@ if ($type == 'entity') {
 		$pid = get_the_ID();
 		$jsonpost["id"] = $pid;
 		$jsonpost["child_id_refs"] = array_unique( get_post_meta( $pid, 'mfei_record' ) );
-		$jsonpost['name'] = ucwords( get_the_title() );
+		$jsonpost['name'] = ucwords( mf_clean_content( get_the_title() ) );
 		$url = get_post_meta( $pid, 'photo_url', true );
 		$big = $url;
 		if ( strlen($url) > 1 ) {
@@ -495,7 +498,7 @@ if ($type == 'entity') {
 			$jsonpost["thumb_img_url"] = null;
 			$jsonpost["large_img_url"] = null;
 		}
-		$jsonpost['description'] = ( !empty( $post->post_content ) ) ? $post->post_content : null;
+		$jsonpost['description'] = ( !empty( $post->post_content ) ) ? mf_clean_content( $post->post_content ) : null;
 		$video = get_post_meta( $pid, 'video', true );
 		$jsonpost['youtube_url'] = ( !empty( $video ) ) ? $video : null ;
 		array_push($entities, $jsonpost);
