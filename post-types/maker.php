@@ -6,7 +6,7 @@ function maker_init() {
 		'public'              => true,
 		'show_in_nav_menus'   => true,
 		'show_ui'             => false,
-		'supports'            => array( 'title', 'editor' ),
+		'supports'            => array( 'title', 'editor', 'custom-fields' ),
 		'has_archive'         => true,
 		'query_var'           => true,
 		'rewrite'             => true,
