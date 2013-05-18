@@ -107,8 +107,9 @@ if ($type == 'entity') {
 		if ( !empty($exhibit->public_description) ) {
 			$booth = get_post_meta( get_the_ID(), 'booth', true );
 			$jsonpost["description"] = ( !empty( $booth ) ) ? '<strong>Location: ' . $booth . '</strong><br />' . $exhibit->public_description : $exhibit->public_description ;
+		} else {
+			$jsonpost["description"] = null;
 		}
-		//$jsonpost["featured"] = $exhibit->public_description;
 		if (isset($exhibit->project_video)) {
 			$jsonpost["youtube_url"] = ( $exhibit->project_video ) ? $exhibit->project_video : '';
 		}
@@ -119,11 +120,11 @@ if ($type == 'entity') {
 		} elseif ( isset( $exhibit->presentation_website ) ) {
 			$jsonpost["website_url"] = $exhibit->presentation_website;
 		}
-		if ( !empty( $exhibit->email ) ) {
-			$jsonpost["email"] = $exhibit->email;
-		} else {
+		// if ( !empty( $exhibit->email ) ) {
+		// 	$jsonpost["email"] = $exhibit->email;
+		// } else {
 			$jsonpost["email"] = null;
-		}
+		// }
 		$taggers = get_the_tags();
 		$tags = null;
 		if ( !empty( $taggers ) ) {

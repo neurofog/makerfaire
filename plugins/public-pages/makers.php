@@ -553,7 +553,7 @@ function mf_schedule( $atts ) {
 	while ( $query->have_posts() ) : $query->the_post();
 		$meta = get_post_meta( get_the_ID());
 		$sched_post = get_post( $meta['mfei_record'][0] );
-		$json = json_decode( str_replace( "\'", "'", $sched_post->post_content ) );
+		$json = json_decode( mf_convert_newlines( str_replace( "\'", "'", $sched_post->post_content ) ) );
 		$day = ($meta['mfei_day'][0]) ? $meta['mfei_day'][0] : '' ;
 		$start = ($meta['mfei_start'][0]) ? $meta['mfei_start'][0] : '' ;
 		$stop = ($meta['mfei_stop'][0]) ? $meta['mfei_stop'][0] : '' ;
@@ -657,7 +657,7 @@ function mf_schedule( $atts ) {
 			$output .= '<h4>' . substr($names_output, 2) . '</h4>';
 		}
 		if (!empty($json->public_description)) {
-			$content_clean = str_replace('u2014', "&#8212;", $json->public_description );
+			$content_clean = mf_convert_newlines( str_replace('u2014', "&#8212;", $json->public_description ) );
 			
 			$output .= Markdown( wp_kses_post( $content_clean ) ) ;
 		}
