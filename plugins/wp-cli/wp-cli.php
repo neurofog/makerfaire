@@ -310,13 +310,20 @@ class MAKE_CLI extends WP_CLI_Command {
 			} elseif ( $application->maker == 'One maker' || $application->maker == '' ) {
 				WP_CLI::line( 'One Maker | ID: ' . get_the_ID() );
 
-				$the_title = $application->maker_name ? $application->maker_name : $application->name;
+				if ( !empty( $application->maker_name ) ) {
+					$the_title = $application->maker_name;
+				} elseif ( !empty( $application->name ) ) {
+					$the_title = $application->name;
+				} else {
+					$the_title = 'broken';
+				}
 				$title = htmlspecialchars( $the_title );
 				$maker = get_page_by_title( $title, OBJECT, 'maker' );
 
 				echo ( isset( $maker->post_title ) ) ? WP_CLI::success( 'Found: ' . $maker->post_title ) : WP_CLI::warning( 'no title...' );
-
-				if ( ! $maker ) {
+				if ( $the_title == 'broken'  ) {
+					break;
+				} elseif ( ! $maker ) {
 					// Setup post object...
 					$content = ( $application->maker_bio ? htmlspecialchars_decode( $application->maker_bio ) : null );
 					$my_post = array(
@@ -442,7 +449,7 @@ class MAKE_CLI extends WP_CLI_Command {
 						}
 					}
 				}
-			}  elseif ( $application->maker == 'A list of makers' ) {
+			} elseif ( $application->maker == 'A list of makers' ) {
 				WP_CLI::line('A List of Makers | ID: ' . get_the_ID() );
 				
 				$maker_list = ( isset( $application->m_maker_name ) ) ? $application->m_maker_name : $application->project_name;
