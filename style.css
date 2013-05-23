@@ -15,6 +15,19 @@ License URI: license.txt
 	display: none;
 }
 
+#myCarousel-1234 .carousel-caption {
+	background-color: rgba( 0, 173, 239, 0.9 );
+	color:#fff;
+}
+
+#myCarousel-1234 .carousel-control {
+	top:70%;
+}
+
+#myCarousel-1234 .carousel-caption a:hover {
+	color:#fff;
+}
+
 .tab-content h3 {
 	line-height: 100%;
 }

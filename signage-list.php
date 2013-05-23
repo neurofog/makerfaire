@@ -28,7 +28,7 @@ function get_schedule_list( $location, $public_description = false, $day = '' ) 
                 'orderby'       => 'meta_value', 
                 'meta_key'      => 'mfei_start',
                 'order'         => 'asc',
-                'posts_per_page'=> '30',
+                'posts_per_page'=> '300',
                 'meta_query' => array(
                     array(
                         'key'   => 'mfei_day',
@@ -52,9 +52,16 @@ function get_schedule_list( $location, $public_description = false, $day = '' ) 
 
             $output .= '<tr>';
             $output .= '<td width="160" style="max-width:160px; padding:15px 0;" valign="top">';
+            if ( ! isset ( $location ) ) {
+                $output .= '<h4 style="margin-top:0;">' . strip_tags( get_the_term_list( get_the_ID(), 'location' ) ) . '</h4>'; 
+            }
             $output .= '<h2 style="font-size:.9em; color:#333; margin-top:3px;">' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</h2>';
             $output .= '</td>';
             $output .= '<td>';
+            if ( isset ( $location ) ) {
+                $stage = get_the_terms( $post->ID, 'location' );
+                $output .= '<h1 style="margin-top:0;">' . $stage . 'adsf</h1>'; 
+            }
             $output .= '<h3 style="margin-top:0;">' . get_the_title( $sched_post->ID ) . '</h3>';
             if ( ! empty( $json->presenter_name ) ) {
                 $names = $json->presenter_name;
@@ -83,7 +90,7 @@ function get_schedule_list( $location, $public_description = false, $day = '' ) 
                 'orderby'       => 'meta_value', 
                 'meta_key'      => 'mfei_start',
                 'order'         => 'asc',
-                'posts_per_page'=> '30',
+                'posts_per_page'=> '300',
                 'meta_query' => array(
                     array(
                         'key'   => 'mfei_day',
@@ -106,19 +113,22 @@ function get_schedule_list( $location, $public_description = false, $day = '' ) 
 
             $output .= '<tr>';
             $output .= '<td width="160" style="max-width:160px; padding:15px 0;" valign="top">';
-            $output .= '<h2 style="font-size:.9em; color:#666; margin-top:3px;">' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</h2>';
+            if ( ! isset ( $location ) ) {
+                $output .= '<h4 style="margin-top:0;">' . strip_tags( get_the_term_list( get_the_ID(), 'location' ) ) . '</h4>'; 
+            }
+            $output .= '<h2 style="font-size:.9em; color:#333; margin-top:3px;">' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</h2>';
             $output .= '</td>';
             $output .= '<td>';
             $output .= '<h3 style="margin-top:0;">' . get_the_title( $sched_post->ID ) . '</h3>';
-            if ( isset( $description ) && ! empty( $json->presenter_name ) ) {
+            if ( ! empty( $json->presenter_name ) ) {
                 $names = $json->presenter_name;
                 $names_output = '';
                 foreach ( $names as $name ) {
                     $names_output .= ', ' . $name;
                 }
-                $output .= '<h5 style="margin:5px 0 0; color:#444;">' . substr($names_output, 2) . '</h5>';
+                $output .= '<h5 style="margin:5px 0 0; color:#666;">' . substr($names_output, 2) . '</h5>';
             }
-            if ( $public_description == 'set' && !empty($json->public_description)) {
+            if ( isset( $public_description ) && ! empty( $json->public_description) ) {
                 $output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) ;
             }
             $output .= '<tr><td colspan="2"><div style="border-bottom:2px solid #ccc;"></div></td></tr>';

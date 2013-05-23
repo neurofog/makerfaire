@@ -609,6 +609,10 @@ h4 {
 	background: #333;
 	background: rgba(0, 0, 0, 0.75);
 }
+.carousel-caption.blue {
+	background: #00adef;
+	background: rgba(0, 123, 239, 0.75);
+}
 
 .post_thumb {
 	margin-right:10px;
