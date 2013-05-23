@@ -72,37 +72,7 @@
 				<li><a href="https://google.com/+MAKE/"><img src="http://cdn.makezine.com/make/google-plus-icon.jpg" alt="MAKE on Google+" height="32" width="32"></a></li>
 				<li><a href="http://blog.makezine.com/category/events-3/maker-faire-events/feed/"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/rss.png" alt="Maker Faire News Feed" /></a></li>
 			</ul>
-		</div>
-		
-		<h3 style="text-align:center;">Countdown until Bay Area!</h3>
-		
-		<div class="countdown">
-			
-			<script type="text/javascript">
-				// var newYear = new Date(); 
-				// newYear = new Date('2013-05-18 9:00 AM UTC -0800'); 
-				// jQuery('.countdown').countdown({until: newYear });
-
-				jQuery(document).ready(function() {
-					var newYear = new Date();
-					mfba = new Date(2013, 5-1, 18, 10, 00);
-					jQuery('.countdown').countdown({
-						until: mfba,
-						timezone: -7,
-						format: 'DHMS',
-						layout:'<div class="countdown-numbers"><table><tr><th>{dnn}</th><th>{sep}</td><th>{hnn}</th><th>{sep}</td><th>{mnn}</th><th>{sep}</td><th>{snn}</th></tr><tr class="time"><td>Days</td><td></td><td>Hours</td><td></td><td>Minutes</td><td></td><td>Seconds</td></tr></table></div>',
-						timeSeparator:'<span class="separator">:</span>',
-					});
-
-				});
-			</script>
-			
-		</div>
-		<div id="buy-ticket">
-			<a href="http://makerfaire2013.eventbrite.com/">
-				<img src="http://cdn.makezine.com/make/makerfaire/images/ticket.png" width="296" height="100" alt="Get your tickets today">
-			</a>
-		</div>
+		</div>	
 		
 		<div style="width:262px; margin: 0 auto;"><div data-an-widget-id="29q" data-an-size="3" data-an-button-theme="1" data-an-font-size="22" data-an-button-label="1" data-an-hover-card-direction="1" data-an-show-download-button="1" data-an-show-app-icon="1" data-an-hover-card="1" data-an-multi-platform="1" data-an-app-id="1578" class="an-widget-v3"></div>
 			<!-- if you include more than one widget on your site you should only include this script tag once -->
