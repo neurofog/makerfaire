@@ -5,7 +5,7 @@ function location_category_init() {
 		'hierarchical'            => false,
 		'public'                  => true,
 		'show_in_nav_menus'       => true,
-		'show_ui'                 => true,
+		'show_ui'                 => false,
 		'query_var'               => 'location_category',
 		'rewrite'                 => true,
 		'capabilities'            => array(

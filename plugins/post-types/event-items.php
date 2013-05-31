@@ -355,3 +355,23 @@ function makerfaire_manage_posts() {
 }
 /* CUSTOM FILTER HOOK */
 add_action('restrict_manage_posts','makerfaire_manage_posts');
+
+/* 
+* Add Location Taxonomy filter to posts
+* =====================================================================*/
+function makerfaire_manage_types() {
+	
+	if( !isset( $_GET['post_type'] ) || $_GET['post_type'] != 'mf_form' )
+		return;
+	
+    $args = array(
+        'show_option_all' => "View All Types",
+        'taxonomy'        => 'type',
+        'name'            => 'type',
+        'selected'        => intval( $_GET['type'] ),
+    );
+    wp_dropdown_categories($args); 
+	echo '<style>select[name="m"]{display:none}</style>';
+}
+/* CUSTOM FILTER HOOK */
+add_action('restrict_manage_posts','makerfaire_manage_types');

@@ -13,7 +13,9 @@ require_once( __DIR__ . '/post-types/maker.php' );
 // Markdown
 include_once dirname(__file__) . '/plugins/markdown/markdown.php';
 
+require_once( 'taxonomies/type.php' );
 require_once( 'taxonomies/location.php' );
+require_once( 'taxonomies/faire.php' );
 require_once( 'taxonomies/location_category.php' );
 require_once( 'taxonomies/group.php' );
 require_once( 'plugins/post-types/event-items.php' );
@@ -342,3 +344,31 @@ add_filter( 'jetpack_open_graph_tags', function( $tags ) {
 	
 	return $tags;
 }, 10 );
+
+
+/**
+ * Hide Maker Faire applications from past faires
+ *
+ * In the past, CS had a method for only selecting the current 
+ * faire for applications. We want to do the same here, and prevent
+ * all applications from showing up in the edit screen.
+ *
+ * @global $query
+ *
+ */
+function mf_hide_faires( $query ) {
+	if ( is_admin() && $query->is_main_query() && 'mf_form' == get_post_type() ) {
+		//$query->set( 'faire', '-328' );
+		$tax_query = array(
+			array(
+				'taxonomy'	=> 'faire',
+				'field'		=> 'ID',
+				'terms'		=> 328,
+				'operator'	=> 'NOT IN',
+			)
+		);
+		$query->set( 'tax_query', $tax_query );
+		return $query;
+	}
+}
+add_action( 'pre_get_posts', 'mf_hide_faires' );
