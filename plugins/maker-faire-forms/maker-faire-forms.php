@@ -13,14 +13,17 @@ License:  GPL2
 * MAKER_FAIRE_FORM CLASS
 * =====================================================================*/
 class MAKER_FAIRE_FORM {
+
 	/* 
 	* GIGYA API KEY
 	* =====================================================================*/
 	const GIGYA_API_KEY    = '3_nUMOBEBpLoLnfNUbwAo9FCwTqzd6vTjpVt3Ojd807EIT5IcF94eM9hoV8vcqjoe8';
+	
 	/* 
 	* GIGYA API SECRET
 	* =====================================================================*/
 	const GIGYA_SECRET_KEY = 'GlvZcbxIY6Oy7lnWJheh56DXj3wKAiG3yVqhv++VLZM=';
+
 	/* 
 	* All Form Keys with 1/0 for Required Field
 	* =====================================================================*/
@@ -208,6 +211,7 @@ class MAKER_FAIRE_FORM {
 	* Default Form Type
 	* =====================================================================*/
 	var $type        = 'exhibit';
+
 	/* 
 	* Default Form Values
 	* =====================================================================*/
@@ -218,14 +222,17 @@ class MAKER_FAIRE_FORM {
 		'tags'        => array(),
 		'cats'        => array()
 	);
+
 	/* 
 	* GIGYA USER
 	* =====================================================================*/
 	var $user;
+
 	/* 
 	* Post Meta save for Columns View
 	* =====================================================================*/
 	var $post_meta;
+
 	/* 
 	* Init the MakerFaire Class
 	*
@@ -250,6 +257,7 @@ class MAKER_FAIRE_FORM {
 		add_action( 'wp_enqueue_scripts',             array( &$this, 'enqueue' ) );
 		add_action( 'admin_enqueue_scripts',          array( &$this, 'admin_enqueue' ) );
 	}
+
 	/* 
 	* Callback for INIT - HOOK
 	*
@@ -267,7 +275,7 @@ class MAKER_FAIRE_FORM {
 			'all_items'          => __( 'All Applications' ),
 			'view_item'          => __( 'View Application' ),
 			'search_items'       => __( 'Search Applications' ),
-			'not_found'          =>  __( 'No forms found' ),
+			'not_found'          => __( 'No forms found' ),
 			'not_found_in_trash' => __( 'No forms found in Trash' ),
 			'parent_item_colon'  => '',
 			'menu_name'          => __( 'Applications' )
@@ -293,6 +301,8 @@ class MAKER_FAIRE_FORM {
 		//REGISTER MF FORM CUSTOM POST TYPE
 		register_post_type( 'mf_form', $args );
 	}
+
+
 	/* 
 	* Callback for ADMIN INIT - HOOK
 	*
@@ -325,6 +335,8 @@ class MAKER_FAIRE_FORM {
 		//REMOVE ABILITY TO EDIT FORM
 		remove_meta_box( 'submitdiv', 'mf_form', 'side' );
 	}
+
+
 	/* 
 	* Set Columns for the MakerFaire Custom Post Type
 	*
@@ -352,6 +364,8 @@ class MAKER_FAIRE_FORM {
 		);
 		return array_merge( $cs, $ncs );
 	}
+
+
 	/* 
 	* Set Sortable Columns
 	*
@@ -367,6 +381,8 @@ class MAKER_FAIRE_FORM {
 		
 		return $cs;
 	}
+
+
 	/* 
 	* Allow for sorting of custom colulmns
 	*
@@ -405,6 +421,8 @@ class MAKER_FAIRE_FORM {
 		}	 
 		return $vars;
 	}
+
+
 	/* 
 	* Adds Custom Columns to the MakerFaire Custom Post Type
 	*
@@ -437,6 +455,8 @@ class MAKER_FAIRE_FORM {
 				break;
 		}
 	}
+
+
 	/* 
 	* Adds submenu pages to the MakerFaire Custom Post Type
 	*
@@ -448,6 +468,8 @@ class MAKER_FAIRE_FORM {
 		add_submenu_page( 'edit.php?post_type=mf_form', 'Project Images', 'Project Images', 'edit_others_posts', 'mf_project_images', array( &$this, 'show_project_images' ) );
 		add_submenu_page( 'edit.php?post_type=mf_form', 'Reports', 'Reports', 'edit_others_posts', 'mf_reports', array( &$this, 'show_reports_page' ) );
 	}
+
+
 	/* 
 	* Inits all included meta boxes for the MakerFaire Custom Post Type
 	*
@@ -475,6 +497,8 @@ class MAKER_FAIRE_FORM {
 		if ( $post->post_status != 'auto-draft' )
 			add_meta_box( 'mf_maker', 'Maker Info', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
 	}
+
+
 	/* 
 	* Controller for all backend Meta Boxes
 	*
@@ -487,86 +511,93 @@ class MAKER_FAIRE_FORM {
 
 		if( $args['id'] == 'mf_save' ) { 
 			$wf = get_post_meta( $post->ID, '_mf_waiting_for', true );
-			$wf = $wf == '' ? 'Waiting on?' : $wf;
-		?>		
-				<?php wp_nonce_field( 'mf_nonce', 'mf_submit_nonce' ); ?>
-				<?php $post_status_types    = array( 'in-progress', 'proposed', 'waiting-for-info', 'accepted', 'rejected', 'cancelled' ); ?>
-				<input name="mf_form" type="hidden" value="1" />
-				<input id="id" name="id" type="hidden" value="<?php echo $post->post_status != 'auto-draft' ? intval( $post->ID ) : 0; ?>" />
-				<div id="misc-publishing-actions">
-					<div class="misc-pub-section">
-						<label for="post_status" style="display: inline;">Status:</label>
-						<select id="post_status" name="post_status">
-						<?php
-						global $edit_flow;
-						if ( is_object( $edit_flow ) && is_a( $edit_flow, 'edit_flow') ) :
-
-							foreach ( $edit_flow->custom_status->get_custom_statuses() as $cso ) {
-								?>
-								<option value="<?php echo esc_attr( $cso->slug ); ?>" title="<?php echo esc_attr( $cso->description ); ?>" <?php selected( $cso->slug, $post->post_status ); ?>>
-								<?php echo esc_attr( $cso->name ); ?></option>
+			$wf = $wf == '' ? 'Waiting on?' : $wf; ?>
+				<div class="submitbox" id="submitpost">
+					<?php wp_nonce_field( 'mf_nonce', 'mf_submit_nonce' ); ?>
+					<?php $post_status_types    = array( 'in-progress', 'proposed', 'waiting-for-info', 'accepted', 'rejected', 'cancelled' ); ?>
+					<input name="mf_form" type="hidden" value="1" />
+					<input id="id" name="id" type="hidden" value="<?php echo $post->post_status != 'auto-draft' ? intval( $post->ID ) : 0; ?>" />
+					<div id="misc-publishing-actions">
+						<div class="misc-pub-section">
+							<label for="post_status" style="display: inline;">Status:</label>
+							<select id="post_status" name="post_status">
 								<?php
-							}
-						
-						endif;
-						?>
-						</select>
+									// Get an array of our select options for setting the post status
+									global $edit_flow;
+
+									if ( is_object( $edit_flow ) && is_a( $edit_flow, 'edit_flow') ) :
+										foreach ( $edit_flow->custom_status->get_custom_statuses() as $cso ) { ?>
+											<option value="<?php echo esc_attr( $cso->slug ); ?>" title="<?php echo esc_attr( $cso->description ); ?>" <?php selected( $cso->slug, $post->post_status ); ?>>
+												<?php echo esc_attr( $cso->name ); ?>
+											</option>
+										<?php }
+									endif;
+								?>
+							</select>
+							<div id="mff-post-status-display" style="padding-top:5px;"></div>
+						</div>
+					</div><!--[END #misc-pub-section]-->
+					<div id="major-publishing-actions">
+						<div id="mfquestionwait"></div>
+						<div id="delete-action">
+							<a href="<?php echo get_delete_post_link( $post->ID ); ?>" class="submitdelete deletion">Move to Trash</a>
+						</div>
+						<div id="publishing-action">
+							<input type="submit" value="Save Application" accesskey="p" id="publish" class="button button-primary button-large" name="save">
+						</div>
 					</div>
-					<div id="mff-post-status-display"></div>
+					<div class="clear"></div>
+					<script type="text/javascript">
+						(function($){
+							$(document).ready(function() {
+
+								// Check if the post status is set, if not, go ahead and run this code.
+								if ( ! $('#mff-post-status-display').length )
+									return true;
+
+								$('#post_status').change(function() {
+									var postStatus = $('#post_status');
+									var origPost = $('#original_post_status');
+									var postStatusSelected = $('option:selected', postStatus);
+									var postStatusDisplay = $('#mff-post-status-display');
+									var origPostStatus =origPost.val();
+									var postStatusSelectedTitle=postStatusSelected.attr('title');
+									var newStatus=postStatus.val();
+
+									console.log('change: %s -> %s (%s)', origPostStatus, newStatus, postStatusSelected.val() );
+
+									postStatusDisplay.html(postStatusSelectedTitle);
+
+									if ( newStatus == 'waiting-for-info' ) {
+										$('#mfquestionwait').html('<textarea name="mf_waitingquestion" id="mf_waitingquestion" style="width:99%"><?php echo html_entity_decode( esc_textarea( $wf ) ); ?></textarea>');
+									} else {
+										$('#mfquestionwait').html('');
+									}
+
+								});
+
+								setTimeout(function(){$('#post_status').change();}, 10);
+							})
+						})(jQuery.noConflict());
+					</script>
 				</div>
-				<div class="clear"></div>
-				<div id="major-publishing-actions">
-					<div id="mfquestionwait"></div>
-					<div id="publishing-action"><input type="submit" value="Save Application" accesskey="p" id="publish" class="button button-primary button-large" name="save" style="display: inline;"></div>
-				</div>
-				<div class="clear"></div>
-				<script type="text/javascript">
-				(function($){
-					$(document).ready(function() {
-						if ( ! $('#mff-post-status-display').length )
-							return true;
+		<?php } elseif ( $args['id'] == 'mf_logs' ) {
+			$post_status_log = get_post_meta( $post->ID, '_mf_log', true );
 
-						$('#post_status').change(function() {
-							var postStatus = $('#post_status');
-							var origPost = $('#original_post_status');
-							var postStatusSelected = $('option:selected', postStatus);
-							var postStatusDisplay = $('#mff-post-status-display');
-							var origPostStatus =origPost.val();
-							var postStatusSelectedTitle=postStatusSelected.attr('title');
-							var newStatus=postStatus.val();
+			if ( ! is_array( $post_status_log ) || $post_status_log == false || sizeof( $post_status_log ) == 0 ) {
+				$post_status_log = array();
+				$post_status_log[] = mysql2date('m/d/y h:i a', $post->post_date) .' - Proposed';
+			}
 
-							console.log('change: %s -> %s (%s)', origPostStatus, newStatus, postStatusSelected.val() );
-
-							postStatusDisplay.html(postStatusSelectedTitle);
-
-							if ( newStatus == 'waiting-for-info' ) {
-								$('#mfquestionwait').html('<textarea name="mf_waitingquestion" id="mf_waitingquestion" style="width:99%"><?php echo esc_textarea( html_entity_decode( $wf ) ); ?></textarea>');
-							} else {
-								$('#mfquestionwait').html('');
-							}
-
-						});
-
-						setTimeout(function(){$('#post_status').change();}, 10);
-					})
-				})(jQuery.noConflict())
-				</script>
-				<?php
-		} elseif ( $args['id'] == 'mf_logs' ) {
-				$post_status_log = get_post_meta( $post->ID, '_mf_log', true );
-				if ( ! is_array( $post_status_log ) || $post_status_log == false || sizeof( $post_status_log ) == 0 ) {
-					$post_status_log = array();
-					$post_status_log[] = mysql2date('m/d/y h:i a', $post->post_date) .' - Proposed';
-				}
-
-				echo '<ul>';
-				foreach ( array_reverse( $post_status_log ) as $log ) {
-					echo '<li>'.esc_html( $log ).'</li>';
-				}
-				echo "</ul>";
+			echo '<ul>';
+			foreach ( array_reverse( $post_status_log ) as $log ) {
+				echo '<li>'.esc_html( $log ).'</li>';
+			}
+			echo "</ul>";
 		} elseif ( $args['id'] == 'mf_summary' ) { 
 		
 			$jdb_success = get_post_meta( $post->ID, 'mf_jdb_sync', true);
+
 			if( $jdb_success == '' ) {
 				$jdb_fail = get_post_meta( $post->ID, 'mf_jdb_sync_fail', true);
 				$jdb      = '[FAILED] : N/A';
@@ -576,12 +607,9 @@ class MAKER_FAIRE_FORM {
 				$jdb = '[SUCCESS] : '.date( 'M jS, Y g:i A', $jdb_success - ( 7 * 3600 ) );	
 			}
 			
-
 			$photo = $data->{ $this->merge_fields( 'form_photo_thumb', $data->form_type ) };
 			if( '' == $photo )
-				$photo = $data->{ $this->merge_fields( 'form_photo', $data->form_type ) };
-			
-		?>
+				$photo = $data->{ $this->merge_fields( 'form_photo', $data->form_type ) }; ?>
 					<h1><?php echo esc_html( $data->{ $this->merge_fields( 'project_name', $data->form_type ) } ); ?></h1>
 					<input name="form_type" type="hidden" value="<?php echo esc_attr( $data->form_type ); ?>" />
 					<table style="width:100%">
@@ -919,6 +947,8 @@ class MAKER_FAIRE_FORM {
 			<?php endif;
 		}
 	}
+
+
 	/* 
 	* Creates Backend MakerFaire Application Forms
 	*
@@ -1043,7 +1073,7 @@ class MAKER_FAIRE_FORM {
 		
 		if ( $this->is_textarea( $key ) ) : ?>
 		
-			<textarea name="<?php echo esc_attr( $type.'['.$key.']' ); ?>" /><?php echo esc_textarea( $this->convert_newlines( $value, "\n" ) ); ?></textarea>
+			<textarea name="<?php echo esc_attr( $type.'['.$key.']' ); ?>" /><?php echo htmlspecialchars_decode( esc_textarea( $this->convert_newlines( $value, "\n" ) ) ); ?></textarea>
 			
 		<?php elseif ( array_key_exists( $key, $checkboxes ) ) : ?>
 		
@@ -1155,6 +1185,8 @@ class MAKER_FAIRE_FORM {
 			<input name="<?php echo esc_attr( $type.'['.$key.']' ); ?>" value="<?php echo $san_value; ?>" type="text" />
 		<?php endif;
 	}
+
+
 	/* 
 	* Updates mf_form object content and post meta data
 	*
@@ -1163,56 +1195,69 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	public function update_post( $id ) {
 
-		if ( empty( $_POST ) || ( !isset( $_POST['mf_form'], $_POST['form_type'] ) && isset( $this->fields[$_POST['form_type']] ) ) || isset( $_POST['mf_updated'] ) )
+		if ( empty( $_POST ) || ( ! isset( $_POST['mf_form'], $_POST['form_type'] ) && isset( $this->fields[ $_POST['form_type'] ] ) ) || isset( $_POST['mf_updated'] ) )
 			return false;
 
 		// Bail if post is auto-draft/revision/nav-menu item
 		if ( get_post_type( $id ) != 'mf_form' )
 			return false;
 
-		$form_type = sanitize_text_field( $_POST['form_type'] );
-
+		// Set some variables yo.
+		$form_type  = sanitize_text_field( $_POST['form_type'] );
+		$is_trashed = $_POST['trash-post'];
 		$r = array(
 			'form_type'   => $form_type,
-			'maker_faire' => sanitize_text_field( $_POST[$form_type]['maker_faire'] ),
-			'uid'         => sanitize_text_field( $_POST[$form_type]['uid'] ),
-			'tags'        => sanitize_text_field( $_POST[$form_type]['tags'] ),
-			'cats'        => sanitize_text_field( $_POST[$form_type]['cats'] ),
+			'maker_faire' => sanitize_text_field( $_POST[ $form_type ]['maker_faire'] ),
+			'uid'         => sanitize_text_field( $_POST[ $form_type ]['uid'] ),
+			'tags'        => sanitize_text_field( $_POST[ $form_type ]['tags'] ),
+			'cats'        => sanitize_text_field( $_POST[ $form_type ]['cats'] ),
 		);
 
-		foreach ( $this->fields[$form_type] as $sn => $s ) {
+
+		// For starters, lets get all of our data into one bucket and clean things up.
+		foreach ( $this->fields[ $form_type ] as $sn => $s ) {
+
+			// Loop through each array in the $s variable
 			foreach ( array_keys( $s ) as $k ) { 
-				if ( is_array( $_POST[$form_type][$k] ) ) {
+
+				// Check if our data being submitted is in an array first, sanitize and add to the $r array.
+				// Then check if we are passing in a textarea or text field and sanitize those fields accordingly.
+				if ( is_array( $_POST[ $form_type ][ $k ] ) ) {
 					
-					$r[$k] = array();
+					// Add new keys that are not there by default to the $r array (e.g. m_maker_name, m_maker_email, etc etc)
+					$r[ $k ] = array();
 					
-					foreach (  $_POST[$form_type][$k] as $v ) {
+					// Loop through each key passed and their value to the $r array
+					foreach ( $_POST[ $form_type ][ $k ] as $v ) {
 						$r[$k][] = sanitize_text_field( $v );	
 					}
 				} elseif( $this->is_textarea( $k ) ) {
-					$r[$k] = wp_kses_post( nl2br( $_POST[$form_type][$k] ) );
+					// Sanitize our textareas for allowed HTML tags and then insert HTML line breaks before newlines.
+			 		$r[ $k ] = wp_kses_post( nl2br( $_POST[ $form_type ][ $k ] ) );
 				} else {
-					$r[$k] = sanitize_text_field( $_POST[$form_type][$k] );
-				}
+					// Sanitize the string in our text fields
+			 		$r[ $k ] = sanitize_text_field( $_POST[ $form_type ][ $k ] );
+			 	}
 			}
 		}
 
+		// Check if the $r array contains less than 3 fields. If so, we want to return false and stop the processing of the code below.
 		if ( count( $r ) < 3 )
 			return false;
 
 		$this->update_mf_form( $r['form_type'], $id, $r, 0 );
 		
 		//MAKE SURE ALL GIGA IDS ARE ASSOCIATED WITH THIS FORM
-		$connected_users = get_post_meta($id, 'mf_gigya_id');
+		$connected_users = get_post_meta( $id, 'mf_gigya_id' );
 		$new_gigya_ids   = array( $r['uid'] );
 			
-		if( ( $form_type == 'exhibit' && $_POST['exhibit']['maker'] == 'A list of makers' ) || $form_type == 'presenter' ) 
-			$new_gigya_ids = array_merge( $new_gigya_ids, $_POST[$form_type][( $form_type == 'presenter' ? 'presenter_gigyaid' : 'm_maker_gigyaid' )]);
+		if ( ( $form_type == 'exhibit' && $_POST['exhibit']['maker'] == 'A list of makers' ) || $form_type == 'presenter' ) 
+			$new_gigya_ids = array_merge( $new_gigya_ids, $_POST[$form_type][ ( $form_type == 'presenter' ? 'presenter_gigyaid' : 'm_maker_gigyaid' ) ]);
 		
 		//ADD GIGYA IDS
 		$add_ids = array_diff( $new_gigya_ids, $connected_users );
 			
-		foreach( $add_ids as $gigya_id ) {
+		foreach ( $add_ids as $gigya_id ) {
 			add_post_meta( $id, 'mf_gigya_id',  $gigya_id );	
 		}
 		
@@ -1229,6 +1274,7 @@ class MAKER_FAIRE_FORM {
 		if ( isset( $_POST['original_post_status'], $_POST['post_status'], $_POST['action'], $_POST['post_type'] ) )
 			$this->handle_post_status_change();
 	}
+
 	/* 
 	* Controller to deal with post status change
 	*
