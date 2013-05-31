@@ -103,3 +103,8 @@
 .mf-form-row textarea{height:150px;}
 
 .remove-maker td{background:#DDD; padding:5px;}
+#project-id-search { float:left; margin-right:20px; position:relative; }
+#project-id-search .search-error { position:absolute; top:-33px; color:#ff0000; background:rgba(255,0,0,.3); border:1px solid #ff0000; padding:5px; display:none; }
+#project-id { margin-right:4px; }
+#quickly #project-id-search { float:right; position:relative; top:8px; }
+#quickly #project-id-search .search-error { top:-44px; padding-bottom:6px; }

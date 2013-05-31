@@ -2181,14 +2181,22 @@ class MAKER_FAIRE_FORM {
 
 		wp_enqueue_style( 'mff_css', plugins_url( 'assets/css/style.css', __FILE__ ) );
 	}
+
 	/* 
-	* Queue up Admin CSS
+	* Queue up all Admin JS and CSS
 	*
 	* @access public
 	* =====================================================================*/
-	public function admin_enqueue() {
+	public function admin_enqueue( $hook ) {
+		global $post_type;
+    	
+    	// Load our custom search JS ONLY on the edit.php when viewing the mf_form CPT.
+		if ( ( 'edit.php' == $hook && $post_type == 'mf_form' ) || ( 'post.php' == $hook && $post_type == 'mf_form' ) )
+			wp_enqueue_script( 'mf-custom-search', plugins_url( 'assets/js/search-id.js', __FILE__ ), array( 'jquery' ), '1.0', true );
+
 		wp_enqueue_style( 'mff_css', plugins_url( 'assets/css/style.css', __FILE__ ) );
 	}
+
 	/* 
 	* Searches and retrieves data from Gigya's Accounts Storage using an SQL-like query.
 	*
