@@ -437,35 +437,35 @@ header .blurb {
 .navi .menu li.menu-item-type-custom{
 	position: relative;
 }
-.navi .menu > li:nth-child(1) > a{
+.navi .menu > li#menu-item-10013 > a{
 	background-image: url('images/whats-it-about.png');
 	background-repeat: no-repeat;
 	display:block;
 	height:65px;
 	width:95px;
 }
-.navi .menu > li:nth-child(2) > a{
+.navi .menu > li#menu-item-5562 > a{
 	background-image: url('images/check-out-the-program.png');
 	background-repeat: no-repeat;
 	display:block;
 	height:65px;
 	width:120px;
 }
-.navi .menu > li:nth-child(3) > a{
+.navi .menu > li#menu-item-899 > a{
 	background-image: url('images/how-to-participate.png');
 	background-repeat: no-repeat;
 	display:block;
 	height:65px;
 	width:160px;
 }
-.navi .menu > li:nth-child(4) > a{
+.navi .menu > li#menu-item-10011 > a{
 	background-image: url('images/nav_03.png');
 	background-repeat: no-repeat;
 	display:block;
 	height:65px;
 	width:85px;
 }
-.navi .menu > li:nth-child(5) > a{
+.navi .menu > li#menu-item-900 > a{
 	background-image: url('images/nav_04.png');
 	background-repeat: no-repeat;
 	display:block;
