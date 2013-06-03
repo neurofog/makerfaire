@@ -1921,6 +1921,8 @@ class MAKER_FAIRE_FORM {
 
 		add_post_meta( $pid, '_mf_form_type', $t );
 		add_post_meta( $pid, 'mf_gigya_id',  $r['uid'] );
+		wp_set_object_terms( $pid, $t, 'type' );
+		wp_set_object_terms( $pid, 'World Maker Faire New York 2013', 'faire' );
 
 		return $pid;
 	}
