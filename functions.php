@@ -354,17 +354,18 @@ add_filter( 'jetpack_open_graph_tags', function( $tags ) {
  * faire for applications. We want to do the same here, and prevent
  * all applications from showing up in the edit screen.
  *
+ * Have to use slug, RE: See http://core.trac.wordpress.org/ticket/13258
+ *
  * @global $query
  *
  */
 function mf_hide_faires( $query ) {
-	if ( is_admin() && $query->is_main_query() /*!has_term( 328 ) && has_term( , $taxonomy = '', $post = null ) */ ) {
-		//$query->set( 'faire', '-328' );
+	if ( is_admin() && $query->is_main_query() ) {
 		$tax_query = array(
 			array(
 				'taxonomy'	=> 'faire',
-				'field'		=> 'ID',
-				'terms'		=> 338,
+				'field'		=> 'slug',
+				'terms'		=> 'maker-faire-bay-area-2013',
 				'operator'	=> 'NOT IN',
 			)
 		);
