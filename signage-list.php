@@ -28,7 +28,7 @@ function get_schedule_list( $location, $public_description = false, $day = '' ) 
                 'orderby'       => 'meta_value', 
                 'meta_key'      => 'mfei_start',
                 'order'         => 'asc',
-                'posts_per_page'=> '300',
+                'posts_per_page'=> '30',
                 'meta_query' => array(
                     array(
                         'key'   => 'mfei_day',
@@ -90,7 +90,7 @@ function get_schedule_list( $location, $public_description = false, $day = '' ) 
                 'orderby'       => 'meta_value', 
                 'meta_key'      => 'mfei_start',
                 'order'         => 'asc',
-                'posts_per_page'=> '300',
+                'posts_per_page'=> '30',
                 'meta_query' => array(
                     array(
                         'key'   => 'mfei_day',
