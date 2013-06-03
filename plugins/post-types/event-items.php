@@ -39,22 +39,22 @@ function event_items_updated_messages( $messages ) {
 	if ( ! empty( $meta ) )
 		$permalink = get_permalink( $meta );
 
-	$messages['event-items'] = array(
-		0 => '', // Unused. Messages start at index 1.
-		1 => sprintf( __('Event items updated. <a target="_blank" href="%s">View event items</a>', 'makerfaire'), esc_url( $permalink ) ),
-		2 => __('Custom field updated.', 'makerfaire'),
-		3 => __('Custom field deleted.', 'makerfaire'),
-		4 => __('Event items updated.', 'makerfaire'),
-		/* translators: %s: date and time of the revision */
-		5 => isset($_GET['revision']) ? sprintf( __('Event items restored to revision from %s', 'makerfaire'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-		6 => sprintf( __('Event items published. <a href="%s">View event items</a>', 'makerfaire'), esc_url( $permalink ) ),
-		7 => __('Event items saved.', 'makerfaire'),
-		8 => sprintf( __('Event items submitted. <a target="_blank" href="%s">Preview event items</a>', 'makerfaire'), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
-		9 => sprintf( __('Event items scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview event items</a>', 'makerfaire'),
-		// translators: Publish box date format, see http://php.net/date
-		date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
-		10 => sprintf( __('Event items draft updated. <a target="_blank" href="%s">Preview event items</a>', 'makerfaire'), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
-	);
+	// $messages['event-items'] = array(
+	// 	0 => '', // Unused. Messages start at index 1.
+	// 	1 => sprintf( __('Event items updated. <a target="_blank" href="%s">View event items</a>', 'makerfaire'), esc_url( $permalink ) ),
+	// 	2 => __('Custom field updated.', 'makerfaire'),
+	// 	3 => __('Custom field deleted.', 'makerfaire'),
+	// 	4 => __('Event items updated.', 'makerfaire'),
+	// 	/* translators: %s: date and time of the revision */
+	// 	5 => isset($_GET['revision']) ? sprintf( __('Event items restored to revision from %s', 'makerfaire'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+	// 	6 => sprintf( __('Event items published. <a href="%s">View event items</a>', 'makerfaire'), esc_url( $permalink ) ),
+	// 	7 => __('Event items saved.', 'makerfaire'),
+	// 	8 => sprintf( __('Event items submitted. <a target="_blank" href="%s">Preview event items</a>', 'makerfaire'), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+	// 	9 => sprintf( __('Event items scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview event items</a>', 'makerfaire'),
+	// 	// translators: Publish box date format, see http://php.net/date
+	// 	date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
+	// 	10 => sprintf( __('Event items draft updated. <a target="_blank" href="%s">Preview event items</a>', 'makerfaire'), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+	// );
 
 	return $messages;
 }
@@ -372,13 +372,13 @@ function mf_restrict_listings_by_type() {
 			array(
 				'walker'			=> new SH_Walker_TaxonomyDropdown(),
 				'value'				=> 'slug',
-				'show_option_all'	=>  'View all types',
-				'taxonomy'			=>  'type',
-				'name'				=>  'type',
-				'orderby'			=>  'name',
-				'selected'			=>  $wp_query->query['type'],
-				'hierarchical'		=>  true,
-				'hide_empty'		=>  false
+				'show_option_all'	=> 'View All Types',
+				'taxonomy'			=> 'type',
+				'name'				=> 'type',
+				'orderby'			=> 'name',
+				'selected'			=> ( !empty( $wp_query->query['type'] ) ) ? $wp_query->query['type'] : '',
+				'hierarchical'		=> true,
+				'hide_empty'		=> false
 				)
 		);
 	}
@@ -402,11 +402,11 @@ function mf_restrict_listings_by_faire() {
 			array(
 				'walker'			=> new SH_Walker_TaxonomyDropdown(),
 				'value'				=> 'slug',
-				'show_option_all'	=>  'View all types',
+				'show_option_all'	=>  'View All Faires',
 				'taxonomy'			=>  'faire',
 				'name'				=>  'faire',
 				'orderby'			=>  'name',
-				'selected'			=>  $wp_query->query['faire'],
+				'selected'			=> ( !empty( $wp_query->query['faire'] ) ) ? $wp_query->query['faire'] : '',
 				'hierarchical'		=>  true,
 				'hide_empty'		=>  false
 				)
