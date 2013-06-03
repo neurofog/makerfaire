@@ -1,5 +1,5 @@
 <script>
-
+	
 	num = <?php echo intval(count($this->form['data[s2][m_maker_name]'])); ?>;
 
 	jQuery(function($) 
@@ -102,6 +102,12 @@
 	});
 </script>
 
+<!--[if lt IE 9]>
+	<div class="ms-error">
+		<p>This form does not support IE8 and lower. Please upgrade to a new version of <a href="http://windows.microsoft.com/ie" target="_blank">Internet Explorer</a> or use <a href="http://www.google.com/chrome" target="_blank">Google Chrome</a>, <a href="http://www.firefox.com/" target="_blank">Mozilla Firefox</a>, <a href="http://www.apple.com/safari/" target="_blank">Safari</a> or <a href="http://www.opera.com/" target="_blank">Opera</a> to fill out your application.</p>
+	</div>
+	<div class="ms-ie8-below">
+<![endif]-->
 <div class="mf-breadcrumbs">
 	<div>1</div>
     <div>2</div>
@@ -528,10 +534,16 @@
 	</div>
     <!--STEP 6 END-->
 	<div class="review" style="display:none">
-    <input type="button" class="mf-edit-app" value="Edit Application" /><input type="submit" value="Continue" />
-    <h1 style="margin:20px 0">Your Application:</h1>
-    <div class="inner"></div>
+    	<input type="button" class="mf-edit-app" value="Edit Application" /><input type="submit" value="Continue" />
+    	<h1 style="margin:20px 0">Your Application:</h1>
+    	<div class="inner"></div>
     </div>
 	<input type="button" class="mf-edit-app" value="Edit Application" /><input type="submit" value="Continue" /><br />
-    <div class="info">If you experience problems with this form, email <a href="mailto:webmaster@makezine.com">webmaster@makezine.com</a>.</div>
+    <div class="info">
+    	If you experience problems with this form, email <a href="mailto:webmaster@makezine.com">webmaster@makezine.com</a>.
+    </div>
 </form>
+
+<!--[if lt IE 9]>
+	</div>
+<![endif]-->
