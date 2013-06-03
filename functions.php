@@ -358,7 +358,7 @@ add_filter( 'jetpack_open_graph_tags', function( $tags ) {
  *
  */
 function mf_hide_faires( $query ) {
-	if ( is_admin() && $query->is_main_query() && 'mf_form' == get_post_type() ) {
+	if ( is_admin() && $query->is_main_query() /*!has_term( 328 ) && has_term( , $taxonomy = '', $post = null ) */ ) {
 		//$query->set( 'faire', '-328' );
 		$tax_query = array(
 			array(
@@ -369,7 +369,6 @@ function mf_hide_faires( $query ) {
 			)
 		);
 		$query->set( 'tax_query', $tax_query );
-		return $query;
 	}
 }
-add_action( 'pre_get_posts', 'mf_hide_faires' );
+// add_action( 'pre_get_posts', 'mf_hide_faires' );

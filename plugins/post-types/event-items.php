@@ -127,9 +127,9 @@ function makerfaire_create_time( $val ) {
 	while ( strtotime( $start_time ) >= strtotime( $end_time ) ) {
 		$time = date( 'g:i A', strtotime( $start_time ) );
 
-    	echo '<option value="' . $time . '"' . selected( $val, $time ) . '>' . date( 'g:i A', strtotime( $start_time ) ) . '</option>';
+		echo '<option value="' . $time . '"' . selected( $val, $time ) . '>' . date( 'g:i A', strtotime( $start_time ) ) . '</option>';
 
-    	$start_time = date( 'H:i:s', strtotime( "$start_time 5 minutes" ) );
+		$start_time = date( 'H:i:s', strtotime( "$start_time 5 minutes" ) );
 	}
 }
 /* ADD FORM TO EVENT ITEM */
@@ -344,34 +344,115 @@ function makerfaire_manage_posts() {
 	if( !isset( $_GET['post_type'] ) || $_GET['post_type'] != 'event-items' )
 		return;
 	
-    $args = array(
-        'show_option_all' => "View All Locations",
-        'taxonomy'        => 'location',
-        'name'            => 'location',
-        'selected'        => intval( $_GET['location'] ),
-    );
-    wp_dropdown_categories($args); 
+	$args = array(
+		'show_option_all' => "View All Locations",
+		'taxonomy'        => 'location',
+		'name'            => 'location',
+		'selected'        => intval( $_GET['location'] ),
+	);
+	wp_dropdown_categories($args); 
 	echo '<style>select[name="m"]{display:none}</style>';
 }
 /* CUSTOM FILTER HOOK */
 add_action('restrict_manage_posts','makerfaire_manage_posts');
 
-/* 
-* Add Location Taxonomy filter to posts
-* =====================================================================*/
-function makerfaire_manage_types() {
-	
-	if( !isset( $_GET['post_type'] ) || $_GET['post_type'] != 'mf_form' )
-		return;
-	
-    $args = array(
-        'show_option_all' => "View All Types",
-        'taxonomy'        => 'type',
-        'name'            => 'type',
-        'selected'        => intval( $_GET['type'] ),
-    );
-    wp_dropdown_categories($args); 
-	echo '<style>select[name="m"]{display:none}</style>';
+
+/**
+ * Add a type dropdown to the admin screen.
+ *
+ * Need a way to filter all of the different types of applications in the admin area.
+ *
+ */
+function mf_restrict_listings_by_type() {
+	global $typenow;
+	global $wp_query;
+
+	if ($typenow == 'mf_form' ) {
+		wp_dropdown_categories(
+			array(
+				'walker'			=> new SH_Walker_TaxonomyDropdown(),
+				'value'				=> 'slug',
+				'show_option_all'	=>  'View all types',
+				'taxonomy'			=>  'type',
+				'name'				=>  'type',
+				'orderby'			=>  'name',
+				'selected'			=>  $wp_query->query['type'],
+				'hierarchical'		=>  true,
+				'hide_empty'		=>  false
+				)
+		);
+	}
 }
-/* CUSTOM FILTER HOOK */
-add_action('restrict_manage_posts','makerfaire_manage_types');
+
+add_action('restrict_manage_posts','mf_restrict_listings_by_type');
+
+
+/**
+ * Add a faire dropdown to the admin screen.
+ *
+ * Need a way to filter all of the different faires the admin area.
+ *
+ */
+function mf_restrict_listings_by_faire() {
+	global $typenow;
+	global $wp_query;
+
+	if ($typenow == 'mf_form' ) {
+		wp_dropdown_categories(
+			array(
+				'walker'			=> new SH_Walker_TaxonomyDropdown(),
+				'value'				=> 'slug',
+				'show_option_all'	=>  'View all types',
+				'taxonomy'			=>  'faire',
+				'name'				=>  'faire',
+				'orderby'			=>  'name',
+				'selected'			=>  $wp_query->query['faire'],
+				'hierarchical'		=>  true,
+				'hide_empty'		=>  false
+				)
+		);
+	}
+}
+
+add_action('restrict_manage_posts','mf_restrict_listings_by_faire');
+
+/* 
+ * A walker class to use that extends wp_dropdown_categories and allows it to use the term's slug as a value rather than ID.
+ *
+ * See http://core.trac.wordpress.org/ticket/13258
+ *
+ * Usage, as normal:
+ * wp_dropdown_categories($args);
+ *
+ * But specify the custom walker class, and (optionally) a 'id' or 'slug' for the 'value' parameter:
+ * $args=array('walker'=> new SH_Walker_TaxonomyDropdown(), 'value'=>'slug', .... );
+ * wp_dropdown_categories($args);
+ * 
+ * If the 'value' parameter is not set it will use term ID for categories, and the term's slug for other taxonomies in the value attribute of the term's <option>.
+*/
+
+class SH_Walker_TaxonomyDropdown extends Walker_CategoryDropdown{
+
+	function start_el(&$output, $category, $depth, $args) {
+		$pad = str_repeat('&nbsp;', $depth * 3);
+		$cat_name = apply_filters('list_cats', $category->name, $category);
+
+		if( !isset($args['value']) ){
+			$args['value'] = ( $category->taxonomy != 'category' ? 'slug' : 'id' );
+		}
+
+		$value = ($args['value']=='slug' ? $category->slug : $category->term_id );
+
+		$output .= "\t<option class=\"level-$depth\" value=\"".$value."\"";
+		if ( $value === (string) $args['selected'] ){ 
+			$output .= ' selected="selected"';
+		}
+		$output .= '>';
+		$output .= $pad.$cat_name;
+		if ( $args['show_count'] )
+			$output .= '&nbsp;&nbsp;('. $category->count .')';
+
+		$output .= "</option>\n";
+		}
+
+}
