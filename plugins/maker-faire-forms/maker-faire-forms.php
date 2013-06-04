@@ -703,7 +703,7 @@ class MAKER_FAIRE_FORM {
 								} else { ?>
 									<tr>
 										<td style="width:80px;" valign="top"><strong>Scheduled:</strong></a></td>
-										<td valign="top"><a href="">Schedule This Event</a></td>
+										<td valign="top"><a href="<?php echo admin_url(); ?>post-new.php?post_type=event-items&amp;refer_id=<?php echo get_the_ID(); ?>">Schedule This Event</a></td>
 									</tr>
 								<?php }
 
