@@ -39,8 +39,15 @@ class MAKER_FAIRE_FORM {
 					'project_video'         => 0,
 					'food'                  => 1,
 					'food_details'          => 0,
+
+					'org_type'              => 1,
+					'large_non_profit'      => 0,
+					'supporting_documents'  => 0,
+
 					'sales'                 => 0,
 					'sales_details'         => 0,
+					'crowdsource_funding'	=> 0,
+					'cf_details'			=> 0,
 					'booth_size'            => 1,
 					'booth_size_details'    => 0,
 					'tables_chairs'         => 1,
@@ -101,10 +108,6 @@ class MAKER_FAIRE_FORM {
 					'private_country'     => 1
 					),
 				's3' => array(
-					'org_type'             => 1,
-					'large_non_profit'     => 0,
-					'supporting_documents' => 0,
-
 					'references'           => 0,
 					'referrals'            => 0,
 					'hear_about'           => 0,
@@ -769,9 +772,18 @@ class MAKER_FAIRE_FORM {
 					</tr>
 					</table>
 				<?php
-		} elseif ( $args['id'] == 'mf_details' ) { 
-		
-			echo stripslashes( wp_filter_post_kses( $this->convert_newlines( $data->private_description ) ) );
+		} elseif ( $args['id'] == 'mf_details' ) {
+
+			// Check if we are loading the private description or a long description
+			if ( isset( $data->private_description ) ) {
+				$details_description = $data->private_description;
+			} else if ( isset( $data->long_description ) ) {
+				$details_description = $data->long_description;
+			} else {
+				$details_description = '';
+			}
+			
+			echo stripslashes( wp_filter_post_kses( $this->convert_newlines( $details_description ) ) );
 			
 		} elseif ( $args['id'] == 'mf_maker' ) { 
 			
@@ -2022,9 +2034,9 @@ class MAKER_FAIRE_FORM {
 	private function send_maker_email( $r, $n, $id ) {
 
 		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>';
-		$m.='<p>Dear '.esc_html( ucfirst( $r['name'] ) ).',</p><p>Thanks for your interest in participating in World Maker Faire New York 2013! We have received your application for '.esc_html( $n ).'.</p>';
-		
-		$m.='<p>You can update your application anytime until March 15th the Call For Makers closes:</p>';
+		$m.='<p>'.esc_html( ucfirst( $r['name'] ) ).',</p>';
+		$m.='<p>Thanks for your interest in participating in World Maker Faire New York 2013! We have received your application for '.esc_html( $n ).'.</p>';
+		$m.='<p>You can update your application anytime until the Call For Makers closes:</p>';
 		$m.='<ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li>';
 		$m.='<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
 		$m.='<p>You will be notified as to the status of your application no later than August 5th.</p>';
@@ -2033,6 +2045,7 @@ class MAKER_FAIRE_FORM {
 		$m.='<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
 		$m.='<p>Maker Faire (<a href="http://makerfaire.com">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		$m.='<p>Maker Media, Inc.<br />1005 Gravenstein Hwy North<br />Sebastopol, CA 95472</p>';
+		$m.='<br /><br /><br /><p>Maker Faire ' . ' [' . esc_html( ucfirst( $r['form_type'] ) ) . $id . ']' . ' Application Received: ' . $app_name . '</p>';
 		$m.='</body></html>';
 
 		$app_name = str_replace( '&amp;', '&', esc_html( $n ) );

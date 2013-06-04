@@ -23,6 +23,13 @@
 				$('.dp-sales').hide();
 			}
 		});
+
+		$('input[name=data\\[s1\\]\\[crowdsource_funding\\]]').click(function() {
+			if($(this).val() == 'Yes')
+				$('.dp-cf').show();
+			else
+				$('.dp-cf').hide();
+		});
 		
 		$('input[name=data\\[s1\\]\\[booth_size\\]]').click(function() {
 			if($(this).val() == 'Other')											   
@@ -52,7 +59,7 @@
 				$('.dp-safety').hide();
 		});
 		
-		$('input[name=data\\[s3\\]\\[org_type\\]]').click(function() {
+		$('input[name=data\\[s1\\]\\[org_type\\]]').click(function() {
 			if($(this).val() == 'Non-profit' || $(this).val() == 'Cause or mission-based organization')											   
 				$('.dp-nfp').show();
 			else
@@ -134,7 +141,7 @@
         <div class="input">
             <label>Project Name *</label>
             <div class="info">Provide a short, catchy name for your project. Response limited to 50 characters</div>
-            <?php $this->text('data[s1][project_name]', array('maxlength'=>50, 'class'=>'mf-shorter-field')); ?>
+            <?php $this->text( 'data[s1][project_name]', array( 'maxlength'=>50 ) ); ?>
         </div>
         
         <div class="input">
@@ -180,6 +187,27 @@
             <label>Describe what type of food and any details.</label>
             <?php $this->textarea('data[s1][food_details]'); ?>
         </div>
+
+        <div class="input">
+            <label>Are you a: *</label>
+            <?php $this->radio('data[s1][org_type]', array('Non-profit', 'Cause or mission-based organization', 'Established company or commercial entity', 'None of the above')); ?>
+        </div>
+
+        <!-- If non-profit or cause/mission -->
+		<div class="input dp-nfp <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'profit') !== false || strpos($this->form['data[s1][booth_size]'], 'mission') !== false ? '' : 'h')); ?>">
+            <label>If your organization is a large non-profit or cause or mission-based organization, please tell us more about why you want to come to Maker Faire.</label>
+            <div class="info">Large non-profits and cause/mission based organizations can qualify for special reduced rates to participate in Maker Faire. Complete the rest of this form and someone from the Maker Faire team will contact you with details. This statement does not apply to makerspaces or hackerspaces, which receive free exhibit space at Maker Faire.</div>
+            <?php $this->textarea('data[s1][large_non_profit]'); ?>
+        </div>
+        
+		<!-- If company -->
+		<div class="dp-company <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'company') !== false ? '' : 'h')); ?>">Established companies and commercial entities do not qualify for free exhibit space, which is what this application form is for. We have great opportunities available at Maker Faire for companies, please contact <a href="mailto:sales@makerfaire.com">sales@makerfaire.com</a>. Do not complete the rest of this form.</div>
+		
+		<div class="input">
+			<label>Optional: Upload additional supporting documents.</label>
+            <div class="info">Upload anything else related to your exhibit you'd like to share with us.</div>
+            <?php $this->file('data[s1][supporting_documents]', 'supporting_documents'); ?>
+		</div>
 		
 		<div class="input">
             <label>Will you be selling or marketing a product at Maker Faire?</label>
@@ -187,11 +215,21 @@
         </div>
             
         <div class="input dp-sales <?php echo esc_attr((strpos($this->form['data[s1][sales]'], 'Yes') !== false ? '' : 'h')); ?>">
-        <div class="info">If you would like to sell or market your own creations at Maker Faire, you are a "Commercial Maker" and must pay a fee of $325, due May 1. All Commercial Maker spaces are tabletop or 10'x10' spaces and include 1 table and 2 chairs. Additional tables, chairs, and power can be purchased after acceptance during the payment process. Please continue to fill out this form.<br /><br />Established companies and commercial entities do not qualify as Commercial Makers. We have great opportunities available at Maker Faire for companies. Do not fill out this form, please contact <a href="mailto:sales@makerfaire.com">sales@makerfaire.com</a>.</div>
+        	<div class="info">If you would like to sell or market your own creations at Maker Faire, you are a "Commercial Maker" and must pay a fee of $300, due September 6. All Commercial Maker spaces are tabletop or 10'x10' spaces and include 1 table and 2 chairs. Additional tables, chairs, and power can be purchased after acceptance during the payment process. Please continue to fill out this form.<br /><br />Established companies and commercial entities do not qualify as Commercial Makers. We have great opportunities available at Maker Faire for companies. Do not fill out this form, please contact <a href="mailto:sales@makerfaire.com">sales@makerfaire.com</a>.</div>
             <label>What product will you be selling or marketing?</label>
             <div class="info">Describe and list the price range of your product(s).</div>
             <?php $this->textarea('data[s1][sales_details]'); ?>
-        </div> 
+        </div>
+
+        <div class="input">
+        	<label>At Maker Faire, will you soliciting any crowdsource funding (Kickstarter, Indiegogo, PiggyBackr, etc?)</label>
+        	<?php $this->radio( 'data[s1][crowdsource_funding]', array( 'Yes', 'No' ) ); ?>
+        </div>
+
+		<div class="input dp-cf <?php echo esc_attr( ( strpos( $this->form['data[s1][solicit]'], 'Yes' ) !== false ? '' : 'h' ) ); ?>">
+			<label>Please provide a link to your campaign, tell us more about how you plan to promote at Maker Faire, and provide the launch date or campaign window.</label>
+			<?php $this->textarea( 'data[s1][cf_details]' ); ?>
+		</div>
 		
 		<div class="input">
             <label>Space Size Request * </label>                     
@@ -200,7 +238,7 @@
 			<div><input name="data[s1][booth_size]" type="radio" value="10x10" <?php checked($this->form['data[s1][booth_size]'] == '10x10'); ?> /> 10' x 10'</div>
 			<div id="size-10x20"><input name="data[s1][booth_size]" type="radio" value="10x20" <?php checked($this->form['data[s1][booth_size]'] == '10x20'); ?> /> 10' x 20'</div>
 			<div id="size-other"><input name="data[s1][booth_size]" type="radio" value="Other" <?php checked($this->form['data[s1][booth_size]'] == 'Other'); ?> /> Other - Tell us your space size request below</div>
-            <div class="info dp-sales h">Makers who are selling or marketing products are considered Commercial Makers and can only have a mobile, tabletop or 10x10 space for the standard $325 fee. 10x20 spaces or larger are allowed through our sales team. Email sales@makerfaire.com.</div>
+            <div class="info dp-sales h">Makers who are selling or marketing products are considered Commercial Makers and can only have a mobile, tabletop or 10x10 space for the standard $300 fee. 10x20 spaces or larger are allowed through our sales team. Email sales@makerfaire.com.</div>
         </div>
 		
 		<div class="input dp-size <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'Other') !== false ? '' : 'h')); ?>">
@@ -209,7 +247,7 @@
         </div>
 		
 		<div class="input">
-            <label>Tables and Chairs * </label>          
+            <label>Tables and Chairs *</label>          
             <div class="info">Exhibits are typically allocated 1 table and 2 chairs.</div>
             <?php $this->radio('data[s1][tables_chairs]', array('None'=>'No tables or chairs needed', 'Standard'=>'1 table and 2 chairs', 'Special'=>'More than 1 table and 2 chairs. Specify your request below')); ?>
         </div>
@@ -238,7 +276,8 @@
         </div>
 		
 		<div class="input">
-            <label>Location *</label>    
+            <label>Location *</label>   
+            <div class="info">Important: If you request to be inside, spaces are very limited and non-uniform. Space will not exactly measure 10x10, 10x20, etc. Unless you note otherwise: if you are placed inside, we will interpret your space request above as approximate. Thank you in advance for your flexibility.</div> 
             <?php $this->radio('data[s1][booth_location]', array('Inside', 'Outside', 'Either')); ?>      
         </div>
 		
@@ -257,9 +296,9 @@
             <?php $this->radio('data[s1][noise]', array('Normal - does not interfere with normal conversation', 'Amplified - adjustable level of amplification', 'Repetitive or potentially annoying sound', 'Loud!')); ?>       
         </div>
 		
-		<h2>Electrical Requirements</h2>
 		<div class="input">
-            <label>Does your exhibit require an external power source? *</label>
+            <label>Electrical Requirements *</label>
+            <div class="info">Does your exhibit require an external power source?</div>
             <?php $this->radio('data[s1][power]', array('Yes', 'No')); ?>
         </div>
 		
@@ -271,10 +310,10 @@
 		<div class="input dp-power <?php echo esc_attr((strpos($this->form['data[s1][power]'], 'Yes') !== false ? '' : 'h')); ?>">
             <label>How much amperage do you need?</label>
 			<div class="info">To ensure you have adequate power onsite, it's essential we know the amount you need in advance.<br />To find the total amperage you require, find the amperage listing on the back of each piece of equipment you plan to use onsite and add up the amps from each item.  <br />
-			&nbsp;- All options below are for a 110v circuit (normal US house circuit.) <br />
-			&nbsp;- If you require a 220v circuit, explain your requirements in the comment box provided.
+			&nbsp;- All options below are for a 120V circuit (normal US house circuit.) <br />
+			&nbsp;- If you require a 208V or 240V circuit, explain your requirements in the comment box provided.
             </div>
-            <?php $this->radio('data[s1][amps]', array('5 amp circuit (0-500 watts, 110V)', '10 amp circuit (501-1000 watts, 110V)', '15 amp circuit (1001-1500 watts, 110V)', '20 amp circuit (1501-2000 watts, 110V)', 'My exhibit requires power, but I need help determining my total power amperage', 'Special power requirements noted below')); ?>
+            <?php $this->radio('data[s1][amps]', array('5 amp circuit (0-500 watts, 120V)', '10 amp circuit (501-1000 watts, 120V)', '15 amp circuit (1001-1500 watts, 120V)', '20 amp circuit (1501-2000 watts, 120V)', 'My exhibit requires power, but I need help determining my total power amperage', 'Special power requirements noted below')); ?>
         </div>
 		
 		<div class="input dp-power <?php echo esc_attr((strpos($this->form['data[s1][power]'], 'Yes') !== false ? '' : 'h')); ?>">
@@ -287,15 +326,15 @@
             <?php $this->radio('data[s1][internet]', array('No internet access needed', 'It would be nice to have WiFi internet access', 'My exhibit must have WiFi internet access to work')); ?>       
         </div>
 		
-		<h2>Radio Frequencies</h2>
 		<div class="input">
-            <label>Does your exhibit use or disrupt radio frequencies? *</label>
+            <label>Radio Frequencies *</label>
+            <div class="info">Does your exhibit use or disrupt radio frequencies?</div>
             <?php $this->radio('data[s1][radio]', array('Yes', 'No')); ?>
         </div>
 		
 		<div class="input dp-radio <?php echo esc_attr((strpos($this->form['data[s1][radio]'], 'Yes') !== false ? '' : 'h')); ?>">
             <label>My exhibit uses: (check all that apply)</label>    
-            <?php $this->checkbox('data[s1][radio_frequency]', array('Remote Control (enter frequency band below)', 'Amateur radio or CB', 'ZigBee on 900 MHz', 'ZigBee on 2.4 GHz', 'Telepathy', 'Bluetooth', 'WiFi Internet access', 'My own local WiFi cloud on 2.4 GHz', 'My own local WiFi cloud on 5 GHz', 'Something else on 900 MHz', 'Something else on 2.4 GHz', 'Something else on 5 GHz', 'Something with an antenna, but I have no idea what')); ?>      
+            <?php $this->checkbox('data[s1][radio_frequency]', array('Remote Control (enter frequency band below)', 'Robots', 'Drones', 'Amateur radio or CB', 'ZigBee on 900 MHz', 'ZigBee on 2.4 GHz', 'Telepathy', 'Bluetooth', 'WiFi Internet access', 'My own local WiFi cloud on 2.4 GHz', 'My own local WiFi cloud on 5 GHz (discouraged)', 'I would use a private WiFi cloud if you provided one', 'Something else on 900 MHz', 'Something else on 2.4 GHz', 'Something else on 5 GHz (discouraged, please explain below)', 'Something with an antenna, but I have no idea what')); ?>      
         </div>
 		
 		<div class="input dp-radio <?php echo esc_attr((strpos($this->form['data[s1][radio]'], 'Yes') !== false ? '' : 'h')); ?>">
@@ -303,9 +342,9 @@
             <?php $this->textarea('data[s1][radio_details]'); ?>
         </div>
 		
-		<h2>Safety</h2>
 		<div class="input">
-            <label>Does your exhibit contain fire (any size flame), chemicals, or other dangerous materials or tools (propane, welders, etc)?</label>
+            <label>Safety</label>
+            <div class="info">Does your exhibit contain fire (any size flame), chemicals, or other dangerous materials or tools (propane, welders, etc)?</div>
             <?php $this->radio('data[s1][fire]', array('Yes', 'No')); ?>
         </div>
 		
@@ -432,7 +471,7 @@
                         <?php $this->text('data[s2][group_website]'); ?>
                     </div>
                 </div>
-				<h2>Private Contact Information (for Maker staff use only)</h2>
+				<h2 style="margin-bottom:20px;">Private Contact Information <small>(for Maker staff use only)</small></h2>
                 <div class="input">
                     <label>Contact Phone Number *</label>
                     <?php $this->text('data[s2][phone1]', array('class'=>'mf-extra-short')); ?> <?php $this->select('data[s2][phone1_type]', array('mobile'=>'Mobile', 'home'=>'Home', 'work'=>'Work', 'other'=>'Other')); ?>
@@ -454,27 +493,6 @@
     <div class="step" id="step3">
         <h1>Step 3 of 4: Additional Details</h1>
         <hr />
-		
-		<div class="input">
-            <label>Are you a: *</label>
-            <?php $this->radio('data[s3][org_type]', array('Non-profit', 'Cause or mission-based organization', 'Established company or commercial entity', 'None of the above')); ?>
-        </div>
-        
-		<!-- If non-profit or cause/mission -->
-		<div class="input dp-nfp <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'profit') !== false || strpos($this->form['data[s1][booth_size]'], 'mission') !== false ? '' : 'h')); ?>">
-            <label>If your organization is a large non-profit or cause or mission-based organization, please tell us more about why you want to come to Maker Faire.</label>
-            <div class="info">Large non-profits and cause/mission based organizations can qualify for special reduced rates to participate in Maker Faire. Complete the rest of this form and someone from the Maker Faire team will contact you with details.</div>
-            <?php $this->textarea('data[s3][large_non_profit]'); ?>
-        </div>
-        
-		<!-- If company -->
-		<div class="dp-company <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'company') !== false ? '' : 'h')); ?>">Established companies and commercial entities do not qualify for free exhibit space, which is what this application form is for. We have great opportunities available at Maker Faire for companies, please contact <a href="mailto:sales@makerfaire.com">sales@makerfaire.com</a>. Do not complete the rest of this form.</div>
-		
-		<div class="input">
-			<label>Optional: Upload additional supporting documents.</label>
-            <div class="info">Upload anything else related to your exhibit you'd like to share with us.</div>
-            <?php $this->file('data[s3][supporting_documents]', 'supporting_documents'); ?>
-		</div>
 		
 		<h2>Topics</h2>
         <div>To help people find your exhibit on our website and at Maker Faire, please select all of the topics below which apply to your project.</div>
@@ -524,20 +542,26 @@
         <h1 style="color:red">Thank you!</h1>
         <hr />
         <p>Thanks for your interest in participating in Maker Faire.</p> 
+        <p style="font-weight:bold;">Important: Add makers@makerfaire.com to your contact list.</p>
+        <p>We will be sending all updates from that address, and adding us will prevent our messages from getting caught in spam.</p>
 		<p>Your application has been received. We're emailing you a confirmation right now.</p>
-        <p>If you don't receive it:</p>
+        <p>If you don't receive the confirmation:</p>
         <ul>
-        	<li>Check your spam folder and add makers@makerfaire.com to your contact list.</li>
-            <li>All future communications will be directed to the email address you provided. You can review your application to make sure that you typed in the correct email address by selecting "Your Account" in the header above.</li>
+        	<li>Check your spam folder.</li>
+        	<li>Add makers@makerfaire.com to your contact list.</li>
+            <li>Check to be sure you entered the correct address in your entry form. All future communications will be directed to the email address you provided. To check, select "Your Account" in the header above and click on the link to your application. The contact email you provided is in Step 2.</li>
         </ul>
-		<p>Stay tuned for more communication about participating in Maker Faire!</p>
+		<p>Stay tuned for more information about participating in Maker Faire!</p>
 		<p class="btn btn-large"><a href="<?php echo home_url(); ?>/makerprofile/">Preview your Profile</a></p>
 	</div>
     <!--STEP 6 END-->
 	<div class="review" style="display:none">
-    	<input type="button" class="mf-edit-app" value="Edit Application" /><input type="submit" value="Continue" />
+    	<input type="button" class="mf-edit-app" value="Edit Application" /><input type="submit" value="Submit Application" />
     	<h1 style="margin:20px 0">Your Application:</h1>
     	<div class="inner"></div>
+    </div>
+    <div class="ajax-loader" style="display:none;">
+        <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/ajax-loader.gif" alt="Loading..." class="ajax-loader"> Loading Next Step...
     </div>
 	<input type="button" class="mf-edit-app" value="Edit Application" /><input type="submit" value="Continue" /><br />
     <div class="info">

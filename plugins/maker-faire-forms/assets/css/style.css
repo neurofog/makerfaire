@@ -40,7 +40,8 @@
 	.mf-form textarea, .mf-editprofile textarea{width:75%; height:100px;}
 
 	.mf-form label, .mf-editprofile label{display:block; font-weight:bold; font-size:16px; } 
-	.mf-form h2, .mf-editprofile h2{margin-bottom:20px;}
+	.mf-form h2, .mf-editprofile { font-size:2.3em; }
+	.mf-form h2 + div, .mf-editprofile h2 + div { margin-bottom:20px !important; }
 	.mf-form h3, .mf-editprofile h3{font-weight:bold; font-size:12px; line-height:inherit !important;}
 	.mf-form .info, .mf-editprofile .info{color:#888; font-size:13px; margin-bottom:10px;} 
 	.mf-form .secondary-info, .mf-editprofile .secondary-info{margin-left:30px}
