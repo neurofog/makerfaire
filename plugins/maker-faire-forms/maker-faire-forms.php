@@ -1970,7 +1970,7 @@ class MAKER_FAIRE_FORM {
 			$this->sync_jdb( $id );
 
 			//SEND CONFIRMATION EMAIL TO MAKER
-			$this->send_maker_email( $r, $n );
+			$this->send_maker_email( $r, $n, $id );
 
 			//SEND EMAILS TO ADDITIONAL USERS
 			if ( $t == 'exhibit' || $t == 'presenter' ) {
@@ -1998,14 +1998,17 @@ class MAKER_FAIRE_FORM {
 	* @param string $n Name
 	* @return boolean if wp_mail was successful.
 	* =====================================================================*/
-	private function send_maker_email( $r, $n ) {
+	private function send_maker_email( $r, $n, $id ) {
 
 		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>';
-		$m.='<p>Dear '.esc_html( ucfirst( $r['name'] ) ).',</p><p>Thanks for your interest in participating in Maker Faire Bay Area 2013! We have received your application for '.esc_html( $n ).'.</p>';
-		$m.='<p>Please note that the deadline for Maker entries has passed. However, there are several ways that you can still participate!:</p><ol><li>We will consider your entry as a last-minute addition. Please note: If you do not receive an acceptance letter by May 1st, we were not able to find space for your exhibit. We will do our best to notify you before then.</li>';
-		$m.='<li>If you would like to volunteer your time and make an invaluable contribution to the success of Maker Faire, please sign up for our <a href="http://makerfaire.com/bayarea-2013-makercorpsatmftraining/">Maker Corps at Maker Faire Program</a>, which is a platform to enhance your skills and learn about the Maker Movement. You will have a behind-the-scenes experience, and help make the Greatest Show (and Tell) on Earth happen! Learn more at <a href="http://makerfaire.com/bayarea-2013-makercorpsatmftraining/">makerfaire.com</a>.</li>';
-		$m.='<li>Plan to come as an attendee, enjoy the show and support the Maker movement by <a href="http://makerfaire.com/bayarea-2013-ticketinfo/">purchasing your tickets</a> early!</li></ol>';
-		$m.='<p>Thank you for your interest in Maker Faire.</p>';
+		$m.='<p>Dear '.esc_html( ucfirst( $r['name'] ) ).',</p><p>Thanks for your interest in participating in World Maker Faire New York 2013! We have received your application for '.esc_html( $n ).'.</p>';
+		
+		$m.='<p>You can update your application anytime until March 15th the Call For Makers closes:</p>';
+		$m.='<ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li>';
+		$m.='<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
+		$m.='<p>You will be notified as to the status of your application no later than August 5th.</p>';
+		$m.='If your application is accepted, we have agreed to the concept of your exhibit, however, we are not able to  guarantee all of your requests at this time. What we can provide will be outlined in a confirmation letter before the event.';
+		$m.='Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.';
 		$m.='<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
 		$m.='<p>Maker Faire (<a href="http://makerfaire.com">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		$m.='<p>Maker Media, Inc.<br />1005 Gravenstein Hwy North<br />Sebastopol, CA 95472</p>';
@@ -2013,7 +2016,7 @@ class MAKER_FAIRE_FORM {
 
 		$app_name = str_replace( '&amp;', '&', esc_html( $n ) );
 
-		$r = wp_mail( $r['email'], 'Maker Faire ' . esc_html( ucfirst( $r['form_type'] ) ) . ' Application Received: ' . $app_name, $m, array( 'Content-Type: text/html', 'From: Maker Faire <makers@makerfaire.com>','Bcc: Maker Faire <makers@makerfaire.com>' ) );
+		$r = wp_mail( $r['email'], 'Maker Faire ' . ' [' . esc_html( ucfirst( $r['form_type'] ) ) . $id . ']' . ' Application Received: ' . $app_name, htmlspecialchars_decode( stripslashes( $m ) ), array( 'Content-Type: text/html', 'From: Maker Faire <makers@makerfaire.com>','Bcc: Maker Faire <makers@makerfaire.com>' ) );
 
 		return $r;
 	}

@@ -2,13 +2,13 @@
 
 	num = <?php echo intval(count($this->form['data[s2][presenter_name]'])); ?>;
 
-	jQuery(function($) 
-	{
+	jQuery(function($) {
 		$('input[name=data\\[s3\\]\\[asked_by_maker\\]]').click(function() {
-			if($(this).val() == 'Y')											   
+			if($(this).val() == 'Y') {									   
 				$('.dp-maker-ask').show();
-			else
+			} else {
 				$('.dp-maker-ask').hide();
+            }
 		});
 		
 		$('#add-maker').click(function() {
@@ -16,6 +16,7 @@
 			num++;						   
 									   
 			m = $('#m-maker-inner .maker:first-of-type').clone();
+
 			$('input, textarea', m).val('');
 
 			$('input, textarea', m).each(function() {
@@ -31,10 +32,14 @@
 			
 			$(m).prepend('<div class="del">[x] delete</div>');
 			$('#m-maker-inner').append(m);
-			$('.maker .del').click(function() {$(this).parent().remove();});
+			$('.maker .del').click(function() {
+                $(this).parent().remove();
+            });
 		});
 		
-		$('.maker .del').click(function() {$(this).parent().remove();});
+		$('.maker .del').click(function() {
+            $(this).parent().remove();
+        });
 	});
 </script>
 
