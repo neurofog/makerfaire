@@ -11,7 +11,7 @@ jQuery(function($) {
 	$('.topics input[type="checkbox"]').click(function() {
 		if($('.topics input[type="checkbox"]').filter(':checked').length > 5) {
 			$(this).removeAttr('checked');
-			alert('Only 5 Topics Maximum is Allowed');
+			alert('Please select no more than 5 topics');
 		}
 	});
 
