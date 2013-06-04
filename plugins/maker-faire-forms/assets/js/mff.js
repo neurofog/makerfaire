@@ -7,6 +7,15 @@ jQuery(function($) {
 		overwrite_file($(this));
 	});
 
+	// Limit the number of Topics an applicant can select
+	$('.topics input[type="checkbox"]').click(function() {
+		if($('.topics input[type="checkbox"]').filter(':checked').length > 5) {
+			$(this).removeAttr('checked');
+			alert('Only 5 Topics Maximum is Allowed');
+		}
+	});
+
+
 	$('.mf-edit-app').click(function(){
 		$('.mf-breadcrumbs div:first-of-type').click();
 	});

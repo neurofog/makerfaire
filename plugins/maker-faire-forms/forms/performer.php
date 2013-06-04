@@ -179,7 +179,9 @@
         <hr />
         
 		<h2>Topics</h2>
-		<h3>To help people find your performance on our website and at Maker Faire, please select all of the topics below which apply to your project.* </h3>
+		<h3>To help people find your presentation on our website and at Maker Faire, please select all of the topics below which apply to your project.</h3>
+
+        <p style="font-weight:bold;">Select up to 5 that are most applicable:</p>
         <?php include('tags.php'); ?>		
 		
 		<div class="input">
