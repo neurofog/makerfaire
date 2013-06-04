@@ -128,7 +128,7 @@
 
 	<!--STEP 2-->
     <div class="step" id="step2">
-        <h1>Step 2 of 4: Presenter & Primary Contact Information</h1>
+        <h1>Step 2 of 4: Presenter &amp; Primary Contact Information</h1>
         <div class="info">* Indicates a required field.</div>
         <hr />        
 		<div class="info">The Presenter Information below is specific to your Maker Faire Application. Changes you make will not affect your Maker Profile.</div>
@@ -184,13 +184,13 @@
 		<h3 style="margin-bottom:20px;">The presentation's primary contact information will be kept private and is for Maker Faire staff use only.</h3>
 		
 		<div class="input">
-            <label>Primary Contact Name</label>
+            <label>Primary Contact Name *</label>
             <h3 class="default-name"></h3>
-            <input type="hidden" class="default-name" name="data[s2][name]" value="<?php echo esc_attr($this->form['data[s2][name]']); ?>" />
+            <input type="text" class="default-name" name="data[s2][name]" value="<?php echo esc_attr($this->form['data[s2][name]']); ?>" />
         </div>
         
         <div class="input">
-            <label>Primary Contact Email</label>
+            <label>Primary Contact Email *</label>
             <input type="text" class="default-email" name="data[s2][email]" value="<?php echo esc_attr($this->form['data[s2][email]']); ?>" />
         </div>
         
