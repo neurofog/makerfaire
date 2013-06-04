@@ -70,7 +70,7 @@ $.fn.ajaxSubmit = function(options) {
         log('ajaxSubmit: skipping submit process - no element selected');
         return this;
     }
-    
+
     var method, action, url, $form = this;
 
     if (typeof options == 'function') {
@@ -112,7 +112,7 @@ $.fn.ajaxSubmit = function(options) {
     if ( traditional === undefined ) {
         traditional = $.ajaxSettings.traditional;
     }
-    
+
     var elements = [];
     var qx, a = this.formToArray(options.semantic, elements);
     if (options.data) {
@@ -136,7 +136,7 @@ $.fn.ajaxSubmit = function(options) {
     var q = $.param(a, traditional);
     if (qx) {
         q = ( q ? (q + '&' + qx) : qx );
-    }    
+    }
     if (options.type.toUpperCase() == 'GET') {
         options.url += (options.url.indexOf('?') >= 0 ? '&' : '?') + q;
         options.data = null;  // data is null for 'get'
@@ -176,7 +176,7 @@ $.fn.ajaxSubmit = function(options) {
 
     // [value] (issue #113), also see comment:
     // https://github.com/malsup/form/commit/588306aedba1de01388032d5f42a60159eea9228#commitcomment-2180219
-    var fileInputs = $('input[type=file]:enabled[value!=""]', this); 
+    var fileInputs = $('input[type=file]:enabled[value!=""]', this);
 
     var hasFileInputs = fileInputs.length > 0;
     var mp = 'multipart/form-data';
