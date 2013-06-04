@@ -39,8 +39,15 @@ class MAKER_FAIRE_FORM {
 					'project_video'         => 0,
 					'food'                  => 1,
 					'food_details'          => 0,
+
+					'org_type'              => 1,
+					'large_non_profit'      => 0,
+					'supporting_documents'  => 0,
+
 					'sales'                 => 0,
 					'sales_details'         => 0,
+					'crowdsource_funding'	=> 0,
+					'cf_details'			=> 0,
 					'booth_size'            => 1,
 					'booth_size_details'    => 0,
 					'tables_chairs'         => 1,
@@ -101,10 +108,6 @@ class MAKER_FAIRE_FORM {
 					'private_country'     => 1
 					),
 				's3' => array(
-					'org_type'             => 1,
-					'large_non_profit'     => 0,
-					'supporting_documents' => 0,
-
 					'references'           => 0,
 					'referrals'            => 0,
 					'hear_about'           => 0,
@@ -156,18 +159,34 @@ class MAKER_FAIRE_FORM {
 			),
 			'presenter' => array(
 				's1' => array(
-					'presentation_name'        => 1,
 					'presentation_type'        => 1,
-					'private_description'      => 1,
+					// 'private_description'	   => 1,
+					'length_presentation'	   => 0,
 					'availablity'              => 0,
 					'special_requests'         => 0,
-					'public_description'       => 1,
+					'presentation_name'        => 1,
+					'short_description'        => 1,
+					'long_description'		   => 1,
 					'presentation_photo'       => 1,
 					'presentation_photo_thumb' => 0,
 					'presentation_website'     => 0,
 					'video'                    => 0,
 				),
 				's2' => array(
+					'name'                  => 1,
+					'email'                 => 1,
+					'phone1'                => 1,
+					// 'phone1_type'           => 0,
+					'phone2'                => 0,
+					// 'phone2_type'           => 0,
+
+					'private_address'       => 1,
+					'private_address2'      => 0,
+					'private_city'          => 1,
+					'private_state'         => 0,
+					'private_zip'           => 0,
+					'private_country'       => 1,
+
 					'presenter_name'         => 1,
 					'presenter_email'        => 1,
 					'presenter_bio'          => 1,
@@ -177,21 +196,6 @@ class MAKER_FAIRE_FORM {
 					'presenter_photo'        => 1,
 					'presenter_photo_thumb'  => 0,
 					'presenter_gigyaid'      => 0,
-					
-					'email'                 => 1,
-					'name'                  => 1,
-
-					'phone1'                => 1,
-					'phone1_type'           => 1,
-					'phone2'                => 0,
-					'phone2_type'           => 0,
-
-					'private_address'       => 1,
-					'private_address2'      => 0,
-					'private_city'          => 1,
-					'private_state'         => 0,
-					'private_zip'           => 0,
-					'private_country'       => 1,
 				),
 				's3' => array(
 					'maker_ask'        => 0,
@@ -206,7 +210,7 @@ class MAKER_FAIRE_FORM {
 	/* 
 	* Default MakerFaire - PHASE 2 - MAKE THIS A SETTINGS OPTION
 	* =====================================================================*/
-	var $maker_faire = '2013_bayarea';
+	var $maker_faire = '2013_newyork';
 	/* 
 	* Default Form Type
 	* =====================================================================*/
@@ -218,7 +222,7 @@ class MAKER_FAIRE_FORM {
 	var $form        = array(
 		'id'          => 0,
 		'uid'         => 0,
-		'maker_faire' => '2013_bayarea',
+		'maker_faire' => '2013_newyork',
 		'tags'        => array(),
 		'cats'        => array()
 	);
@@ -596,27 +600,40 @@ class MAKER_FAIRE_FORM {
 			echo "</ul>";
 		} elseif ( $args['id'] == 'mf_summary' ) { 
 		
-			$jdb_success = get_post_meta( $post->ID, 'mf_jdb_sync', true);
+			$jdb_success = get_post_meta( $post->ID, 'mf_jdb_sync', true );
 
-			if( $jdb_success == '' ) {
-				$jdb_fail = get_post_meta( $post->ID, 'mf_jdb_sync_fail', true);
+			if ( $jdb_success == '' ) {
+				$jdb_fail = get_post_meta( $post->ID, 'mf_jdb_sync_fail', true );
 				$jdb      = '[FAILED] : N/A';
-				if( $jdb_success == '' )
-					$jdb      = '[FAILED] : '.date( 'M jS, Y g:i A', $jdb_fail - ( 7 * 3600 ) );
+				if ( $jdb_success == '' )
+					$jdb  = '[FAILED] : ' . date( 'M jS, Y g:i A', $jdb_fail - ( 7 * 3600 ) );
 			} else {
-				$jdb = '[SUCCESS] : '.date( 'M jS, Y g:i A', $jdb_success - ( 7 * 3600 ) );	
+				$jdb = '[SUCCESS] : ' . date( 'M jS, Y g:i A', $jdb_success - ( 7 * 3600 ) );	
 			}
 			
 			$photo = $data->{ $this->merge_fields( 'form_photo_thumb', $data->form_type ) };
-			if( '' == $photo )
-				$photo = $data->{ $this->merge_fields( 'form_photo', $data->form_type ) }; ?>
-					<h1><?php echo esc_html( $data->{ $this->merge_fields( 'project_name', $data->form_type ) } ); ?></h1>
-					<input name="form_type" type="hidden" value="<?php echo esc_attr( $data->form_type ); ?>" />
-					<table style="width:100%">
-					<tr>
-						<td style="width:210px;" valign="top"><img src="<?php echo esc_url( $photo ); ?>" height="200" width="200" /></td>
-						<td valign="top">
-						<p><?php echo Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $data->public_description, "\n" ) ) ) ); ?></p>
+
+			// Check if a photo exists
+			if ( '' == $photo )
+				$photo = $data->{ $this->merge_fields( 'form_photo', $data->form_type ) };
+
+			// Check if we are loading the public description or a short description
+			if ( isset( $data->public_description ) ) {
+				$main_description = $data->public_description;
+			} else if ( isset( $data->short_description ) ) {
+				$main_description = $data->short_description;
+			} else {
+				$main_description = '';
+			}
+
+			?>
+			<h1><?php echo esc_html( $data->{ $this->merge_fields( 'project_name', $data->form_type ) } ); ?></h1>
+			<input name="form_type" type="hidden" value="<?php echo esc_attr( $data->form_type ); ?>" />
+			<table style="width:100%">
+				<tr>
+					<td style="width:210px;" valign="top"><img src="<?php echo esc_url( $photo ); ?>" height="200" width="200" /></td>
+					<td valign="top">
+						<p><?php echo Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $main_description, "\n" ) ) ) ); ?></p>
 						<table style="width:100%">
 							<tr>
 								<td style="width:80px;" valign="top"><strong>Status:</strong></td>
@@ -627,27 +644,31 @@ class MAKER_FAIRE_FORM {
 								// Jake's fancy cached events query found in 'plugins/public-pages/makers.php' in mf_get_scheduled_item()
 								// The function output things for the front-end and all we want is the data.
 								$get_events = wp_cache_get( $post->ID . '_schedule' );
-								if( $get_events == false ) {
+								if ( $get_events == false ) {
 									$args = array( 
 										'post_type'		=> 'event-items',
 										'orderby' 		=> 'meta_value', 
 										'meta_key'		=> 'mfei_start',
 										'order'			=> 'asc',
 										'posts_per_page'=> '30',
-										'meta_query' => array(
+										'meta_query' 	=> array(
 											array(
 												'key' 	=> 'mfei_record',
 												'value'	=> $post->ID
-										   )
+										   ),
 										)
-										);
+									);
 									$get_events = new WP_Query( $args );
 									wp_cache_set( $post->ID . '_schedule', $get_events, '', 300 );
 								}
 
-								// Check that we have returned our query of events
-								if ( $get_events->found_posts >= 1 ) {
-									// Loop through theme
+								// Check that we have returned our query of events, if not, give the option to schedule the event
+								if ( $get_events->found_posts >= 1 ) { ?>
+									<tr>
+										<td style="width:80px;"><strong>Scheduled:</strong></td>
+										<td valign="top">Yes</a>
+									</tr>
+									<?php // Loop through theme
 									while ( $get_events->have_posts() ) : $get_events->the_post();
 
 										// Get an array of our event data
@@ -679,9 +700,13 @@ class MAKER_FAIRE_FORM {
 											</tr>
 										<?php endif;
 									endwhile;
-								}
-							?>
-							<?php 
+								} else { ?>
+									<tr>
+										<td style="width:80px;" valign="top"><strong>Scheduled:</strong></a></td>
+										<td valign="top"><a href="<?php echo admin_url(); ?>post-new.php?post_type=event-items&amp;refer_id=<?php echo get_the_ID(); ?>">Schedule This Event</a></td>
+									</tr>
+								<?php }
+
 								$wkey = $this->merge_fields( 'project_website', $data->form_type );
 								$vkey = $this->merge_fields( 'project_video', $data->form_type );
 							?>
@@ -747,9 +772,18 @@ class MAKER_FAIRE_FORM {
 					</tr>
 					</table>
 				<?php
-		} elseif ( $args['id'] == 'mf_details' ) { 
-		
-			echo stripslashes( wp_filter_post_kses( $this->convert_newlines( $data->private_description ) ) );
+		} elseif ( $args['id'] == 'mf_details' ) {
+
+			// Check if we are loading the private description or a long description
+			if ( isset( $data->private_description ) ) {
+				$details_description = $data->private_description;
+			} else if ( isset( $data->long_description ) ) {
+				$details_description = $data->long_description;
+			} else {
+				$details_description = '';
+			}
+			
+			echo stripslashes( wp_filter_post_kses( $this->convert_newlines( $details_description ) ) );
 			
 		} elseif ( $args['id'] == 'mf_maker' ) { 
 			
@@ -1218,7 +1252,7 @@ class MAKER_FAIRE_FORM {
 		foreach ( $this->fields[ $form_type ] as $sn => $s ) {
 
 			// Loop through each array in the $s variable
-			foreach ( array_keys( $s ) as $k ) { 
+			foreach ( array_keys( $s ) as $k ) {
 
 				// Check if our data being submitted is in an array first, sanitize and add to the $r array.
 				// Then check if we are passing in a textarea or text field and sanitize those fields accordingly.
@@ -1999,10 +2033,12 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	private function send_maker_email( $r, $n, $id ) {
 
+		$app_name = str_replace( '&amp;', '&', esc_html( $n ) );
+
 		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>';
-		$m.='<p>Dear '.esc_html( ucfirst( $r['name'] ) ).',</p><p>Thanks for your interest in participating in World Maker Faire New York 2013! We have received your application for '.esc_html( $n ).'.</p>';
-		
-		$m.='<p>You can update your application anytime until March 15th the Call For Makers closes:</p>';
+		$m.='<p>'.esc_html( ucfirst( $r['name'] ) ).',</p>';
+		$m.='<p>Thanks for your interest in participating in World Maker Faire New York 2013! We have received your application for '.esc_html( $n ).'.</p>';
+		$m.='<p>You can update your application anytime until the Call For Makers closes:</p>';
 		$m.='<ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li>';
 		$m.='<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
 		$m.='<p>You will be notified as to the status of your application no later than August 5th.</p>';
@@ -2011,11 +2047,12 @@ class MAKER_FAIRE_FORM {
 		$m.='<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
 		$m.='<p>Maker Faire (<a href="http://makerfaire.com">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		$m.='<p>Maker Media, Inc.<br />1005 Gravenstein Hwy North<br />Sebastopol, CA 95472</p>';
+		$m.='<br /><br /><br /><p>Maker Faire ' . ' [' . esc_html( ucfirst( $r['form_type'] ) ) . ' ' . $id . ']' . ' Application Received: ' . $app_name . '</p>';
 		$m.='</body></html>';
 
-		$app_name = str_replace( '&amp;', '&', esc_html( $n ) );
+		$subject = 'Maker Faire Application Received: ' . $app_name . ' [' . esc_html( ucfirst( $r['form_type'] ) ) .': '  . $id . ']';
 
-		$r = wp_mail( $r['email'], 'Maker Faire ' . ' [' . esc_html( ucfirst( $r['form_type'] ) ) . $id . ']' . ' Application Received: ' . $app_name, htmlspecialchars_decode( stripslashes( $m ) ), array( 'Content-Type: text/html', 'From: Maker Faire <makers@makerfaire.com>','Bcc: Maker Faire <makers@makerfaire.com>' ) );
+		$r = wp_mail( $r['email'], $subject , htmlspecialchars_decode( stripslashes( $m ) ), array( 'Content-Type: text/html', 'From: Maker Faire <makers@makerfaire.com>','Bcc: Maker Faire <makers@makerfaire.com>' ) );
 
 		return $r;
 	}

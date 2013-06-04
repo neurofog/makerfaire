@@ -2,51 +2,48 @@
 var step = 1;
 
 jQuery(function($) {
-	
-	$('.overwrite').click(function() { overwrite_file($(this));	});
-	$('.mf-edit-app').click(function(){ $('.mf-breadcrumbs div:first-of-type').click(); });
-	
-	function overwrite_file(el)
-	{
+
+	$('.overwrite').click(function() {
+		overwrite_file($(this));
+	});
+
+	$('.mf-edit-app').click(function(){
+		$('.mf-breadcrumbs div:first-of-type').click();
+	});
+
+	function overwrite_file(el) {
 		n = $(el).attr('id');
 		$(el).parent().append('<input name="'+n+'" type="file" />');
 
 		$('img, a, input[type=hidden]', $(el).parent()).remove();
 		$(el).remove();
 	}
-	
+
 	$('.mf-form, .mf-login').ajaxForm({
 		dataType:  'json',
-		success: function(r, s, xhr, $form)
-		{
+		success: function(r, s, xhr, $form) {
+
+			$('.ajax-loader').hide();
 			$('.mf-form input[type=submit]').show();
 			$('.mf-err, .message').remove();
 			$('input[type=text], input[type=password], select, textarea').css('border', '1px solid #CCC');
 			$('.mf-frm-err-top').remove();
-		
-		
-			if(r.status == 'ERROR')
-			{
+
+			if(r.status == 'ERROR') {
 				err = '<h3 class="mf-frm-err-top">Whoops! You left a required field blank or need to correct some information. Please scroll down and correct the fields marked in red.<ul>';
-				
-				for(i in r.errors)
-				{
-					for(j in r.errors[i])
-					{				
-						if(typeof r.errors[i][j] == 'object')
-						{
-							for(k in r.errors[i][j])
-							{
+
+				for(i in r.errors) {
+					for(j in r.errors[i]) {				
+						if(typeof r.errors[i][j] == 'object') {
+							for(k in r.errors[i][j]) {
 								n = '[name=data\\['+i+'\\]\\['+j+'\\]\\['+(parseInt(k) + 1)+'\\]]';
 								e = r.errors[i][j][k];
 								err += '<li>'+k.replace('_', ' ').toUpperCase()+' : '+e+'</li>';
-								
+
 								$('input'+n+', select'+n+', textarea'+n).css('border', '3px solid #EC1C23');
 								$('<div class="mf-err">'+e+'</div>').insertAfter($('label', $('input'+n+', select'+n+', textarea'+n).closest('.input')));
 							}
-						}
-						else
-						{
+						} else {
 							n = '[name=data\\['+i+'\\]\\['+j+'\\]]';
 							
 							if(j == 'presentation_photo' || j == 'performer_photo' || j == 'project_photo' || j == 'maker_photo' || j == 'group_photo' ||  j == 'presenter_photo' || j == 'm_maker_photo')
@@ -64,9 +61,7 @@ jQuery(function($) {
 				}
 				
 				$('.mf-form').prepend(err+'</ul></h3>');
-			}
-			else
-			{
+			} else {
 				$('#id').val(r.id);
 				
 				for(i in r.files)
@@ -96,25 +91,28 @@ jQuery(function($) {
 				
 				step++
 		
-				if(step == 5)
-				{
+				if(step == 5) {
 					$('.step, .mf-breadcrumbs, .mf-form input[type=submit], .review, .mf-edit-app').hide();
 					build_review();
 					$('#step5').show();
 					$(window).unbind('beforeunload');
-				}
-				else
-				{
+				} else {
 					enable_breadcrumb();
-					$('.mf-breadcrumbs div:nth-of-type('+step+')').click();
+					$('.mf-breadcrumbs div:nth-of-type(' + step + ')').click();
 				}
 			}
 			
 			window.scrollTo(0, 0);
 		}
 	}); 
-	
-	$('.mf-form input[type=submit]').click(function(){ $(this).hide(); });
+
+	$('.mf-form input[type=submit]').click(function() { 
+
+		console.log('Loading Next Step....');
+
+		$(this).hide();
+		$('.ajax-loader').show();
+	});
 	
 	enable_breadcrumb();
 	$('.mf-breadcrumbs div:nth-of-type('+step+')').click();

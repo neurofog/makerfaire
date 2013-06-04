@@ -102,7 +102,14 @@ function makerfaire_meta_box( $post ) {
 		<?php makerfaire_create_time( $meta['mfei_stop'][0] ); ?>
 	</select>
 	<label>Record Number - MUST BE VALID APPLICATION ID</label>
-	<input type="text" name="mfei_record" id="mfei_record" value="<?php echo esc_attr( $meta['mfei_record'][0] ); ?>" /> 
+	<?php
+		// Check if we are loading from a referring post and add that ID to our Record field
+		if ( isset( $_GET['refer_id'] ) && ! empty( $_GET['refer_id'] ) ) {
+			echo  '<input type="text" name="mfei_record" id="mfei_record" value="' . intval( $_GET['refer_id'] ) . '" />';
+		} else {
+			echo '<input type="text" name="mfei_record" id="mfei_record" value="' . esc_attr( $meta['mfei_record'][0] ) . '" />';
+		}
+	?>
 	<a title="Edit event items" href="#" class="post-edit-link">View Application</a> (opens new window with given application)
 	<label>Schedule Completed</label>
 	<input name="mfei_schedule_completed" type="checkbox" value="1" /> &nbsp; Event is Scheduled

@@ -235,7 +235,8 @@
         	<li>Check your spam folder and add makers@makerfaire.com to your contact list.</li>
             <li>All future communications will be directed to the email address you provided. You can review your application to make sure that you typed in the correct email address by selecting "Your Account" in the header above.</li>
         </ul>
-		<p>Stay tuned for more communication about participating in Maker Faire!</p> 
+		<p>Stay tuned for more communication about participating in Maker Faire!</p>
+        <p class="btn btn-large"><a href="<?php echo home_url(); ?>/makerprofile/">Preview your Profile</a></p>
 	</div>
     <!--STEP 6 END-->
 	<div class="review" style="display:none">
