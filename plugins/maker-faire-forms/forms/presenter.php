@@ -216,7 +216,7 @@
                             <div class="input">
                                 <label>Presenter Bio *</label>
                                 <div class="info">This bio will appear on your exhibit sign and on our website. Limited to 200 characters. If you have listed more than one presenter, we will link to the maker accounts you've listed and display each of their personal bios.</div>
-                                <textarea name="data[s2][presenter_bio][<?php echo esc_attr( ( $i + 1 ) ); ?>]" maxlength="200" class="default-bio"><?php echo esc_html( $this->form['data[s2][presenter_bio]'][ $i ] ); ?></textarea>
+                                <textarea name="data[s2][presenter_bio][<?php echo esc_attr( ( $i + 1 ) ); ?>]" maxlength="200" class="default-bio"><?php echo esc_textarea( $this->form['data[s2][presenter_bio]'][ $i ] ); ?></textarea>
                             </div> 
                             <div class="input">
                                 <label>Presenter Photo *</label>

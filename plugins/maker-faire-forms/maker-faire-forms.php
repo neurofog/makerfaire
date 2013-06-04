@@ -119,7 +119,7 @@ class MAKER_FAIRE_FORM {
 				's1' => array(
 					'performer_name'        => 1,
 					'private_description'   => 1,
-					'length'                => 0,
+					// 'length'                => 0,
 					'public_description'    => 1,
 					'performer_website'     => 0,
 					'performer_photo'       => 1,
@@ -134,8 +134,8 @@ class MAKER_FAIRE_FORM {
 					'guest_tickets'         => 1,
 				),
 				's2' => array(
-					'email'            => 1,
 					'name'             => 1,
+					'email'            => 1,
 
 					'phone1'           => 1,
 					'phone1_type'      => 1,
@@ -1772,6 +1772,9 @@ class MAKER_FAIRE_FORM {
 			foreach ( $f as $k => $r ) {
 				$v = isset( $_POST['data'][$s][$k] ) ? $_POST['data'][$s][$k] : '';
 
+				// if ( $s == 's2' && ! empty( $files[$_POST['form']][$s] ) )
+				// 	echo '<pre>' . $s . ': '; print_r( $files[$_POST['form']][$s] ); echo '</pre>';
+
 				if ( is_array( $v ) )
 					$v = array_values( $v );
 
@@ -1786,8 +1789,9 @@ class MAKER_FAIRE_FORM {
 								$errors[$s][$k][$i] = 'Valid Email Required.';
 							}
 						}
-					} elseif ( $r && ! in_array( $k, $files[$_POST['form']][$s] ) && $v == '' ) { //Empty / Not Set / Blank
-						$errors[$s][$k] = 'Required.';
+					} elseif ( is_array( $files[$_POST['form']][$s] ) ) { // Check that our data is an array first before sending it or else the form breakes.
+						if ( $r && ! in_array( $k, $files[$_POST['form']][$s] ) && $v == '' )  //Empty / Not Set / Blank
+							$errors[$s][$k] = 'Required.';
 					} elseif ( ( $k == 'public_description' && strlen( $v ) > 255 ) || ( ( $k == 'maker_bio' || $k == 'm_maker_bio' || $k == 'group_bio' ) && strlen( $v ) > 500 ) ) { //Input too many characters.
 						$errors[$s][$k] = 'Too Long.';
 					} elseif ( $r && $k == 'email' && ! is_email( $v ) ) { //Check Email

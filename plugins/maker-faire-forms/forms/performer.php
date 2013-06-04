@@ -49,19 +49,13 @@
         <div class="input">
             <label>Performer, Band, or Group Name *</label>
             <div class="info">Response limited to 50 characters</div>
-            <?php $this->text('data[s1][performer_name]', array('maxlength'=>50, 'class'=>'mf-shorter-field')); ?>
+            <?php $this->text( 'data[s1][performer_name]' ); ?>
         </div>
         
         <div class="input">
             <label>Tell us about your performance *</label>
             <div class="info">For the Maker Faire team, describe what your performance is like. If you are a band, include what type of music and where you normally play. This information will not be made public.</div>
             <?php $this->textarea('data[s1][private_description]'); ?>
-        </div>
-        
-        <div class="input">
-            <label>Length of Presentation.</label>  
-            <div class="info">Select all options that apply.</div>
-            <?php $this->checkbox('data[s1][length]', array('10 minutes', '20 minutes', '45 minutes')); ?>
         </div>
         
 		<h2>Public Performer Info:</h2>
@@ -93,8 +87,8 @@
 		<h2>Performance Schedule Preference</h2>
 		<div>At Maker Faire, we have music and stage performances all weekend! We will do our best to create a balanced schedule, so that there are great acts all day long. Thanks for being flexible about your performance time. 
 		<br /><br /><em><strong>Maker Faire Hours</strong> 
-		<br />Saturday, May 18: 10am - 8pm 
-		<br />Sunday, May 19: 10am - 6pm</em><br /><br /></div>
+		<br />Saturday, September 21: 10am - 7pm 
+		<br />Sunday, September 22: 10am - 6pm</em><br /><br /></div>
 		
 		<div class="input">
             <label>Which day(s) can you perform? Please pick the option that fits you best. *</label>
@@ -148,8 +142,7 @@
         <div class="info">The Performer Information below is specific to your Maker Faire Application. Changes you make will not affect your Maker Profile.</div>
 		<div class="input">
             <label>Contact Name</label>
-            <h3 class="default-name"></h3>
-            <input type="hidden" class="default-name" name="data[s2][name]" value="<?php echo esc_attr($this->form['data[s2][name]']); ?>" />
+            <input type="text" class="default-name" name="data[s2][name]" value="<?php echo esc_attr($this->form['data[s2][name]']); ?>" />
         </div>
         
         <div class="input">
@@ -229,23 +222,31 @@
         <h1 style="color:red">Thank you!</h1>
         <hr />
         <p>Thanks for your interest in participating in Maker Faire.</p> 
-		<p>Your application has been received. We're emailing you a confirmation right now.</p>
-        <p>If you don't receive it:</p>
+        <p style="font-weight:bold;">Important: Add makers@makerfaire.com to your email contact list.</p>
+        <p>We will be sending all updates from that address, and adding us will prevent our messages from getting caught in spam.</p>
+        <p>Your application has been received. We're emailing you a confirmation right now.</p>
+        <p>If you don't receive the confirmation:</p>
         <ul>
-        	<li>Check your spam folder and add makers@makerfaire.com to your contact list.</li>
-            <li>All future communications will be directed to the email address you provided. You can review your application to make sure that you typed in the correct email address by selecting "Your Account" in the header above.</li>
+            <li>Check your spam folder.</li>
+            <li>Add makers@makerfaire.com to your contact list.</li>
+            <li>Check to be sure you entered the correct address in your entry form. All future communications will be directed to the email address you provided. To check, select "Your Account" in the header above and click on the link to your application. The contact email you provided is in Step 2.</li>
         </ul>
-		<p>Stay tuned for more communication about participating in Maker Faire!</p>
+        <p>Stay tuned for more information about participating in Maker Faire!</p>
         <p class="btn btn-large"><a href="<?php echo home_url(); ?>/makerprofile/">Preview your Profile</a></p>
 	</div>
     <!--STEP 6 END-->
 	<div class="review" style="display:none">
-    <input type="button" class="mf-edit-app" value="Edit Application" /><input type="submit" value="Continue" />
-    <h1 style="margin:20px 0">Your Application:</h1>
-    <div class="inner"></div>
+        <input type="button" class="mf-edit-app" value="Edit Application" /><input type="submit" value="Submit Application" />
+        <h1 style="margin:20px 0">Your Application:</h1>
+        <div class="inner"></div>
     </div>
-	<input type="button" class="mf-edit-app" value="Edit Application" /><input type="submit" value="Continue" /><br />
-    <div class="info">If you experience problems with this form, email <a href="mailto:webmaster@makezine.com">webmaster@makezine.com</a>.</div>
+    <div class="ajax-loader" style="display:none;">
+        <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/ajax-loader.gif" alt="Loading..." class="ajax-loader"> Loading Next Step...
+    </div>
+    <input type="button" class="mf-edit-app" value="Edit Application" /><input type="submit" value="Continue" /><br />
+    <div class="info">
+        If you experience problems with this form, email <a href="mailto:webmaster@makezine.com">webmaster@makezine.com</a>.
+    </div>
 </form>
 
 <!--[if lt IE 9]>
