@@ -207,7 +207,7 @@ class MAKER_FAIRE_FORM {
 	/* 
 	* Default MakerFaire - PHASE 2 - MAKE THIS A SETTINGS OPTION
 	* =====================================================================*/
-	var $maker_faire = '2013_bayarea';
+	var $maker_faire = '2013_newyork';
 	/* 
 	* Default Form Type
 	* =====================================================================*/
@@ -219,7 +219,7 @@ class MAKER_FAIRE_FORM {
 	var $form        = array(
 		'id'          => 0,
 		'uid'         => 0,
-		'maker_faire' => '2013_bayarea',
+		'maker_faire' => '2013_newyork',
 		'tags'        => array(),
 		'cats'        => array()
 	);
@@ -597,27 +597,40 @@ class MAKER_FAIRE_FORM {
 			echo "</ul>";
 		} elseif ( $args['id'] == 'mf_summary' ) { 
 		
-			$jdb_success = get_post_meta( $post->ID, 'mf_jdb_sync', true);
+			$jdb_success = get_post_meta( $post->ID, 'mf_jdb_sync', true );
 
-			if( $jdb_success == '' ) {
-				$jdb_fail = get_post_meta( $post->ID, 'mf_jdb_sync_fail', true);
+			if ( $jdb_success == '' ) {
+				$jdb_fail = get_post_meta( $post->ID, 'mf_jdb_sync_fail', true );
 				$jdb      = '[FAILED] : N/A';
-				if( $jdb_success == '' )
-					$jdb      = '[FAILED] : '.date( 'M jS, Y g:i A', $jdb_fail - ( 7 * 3600 ) );
+				if ( $jdb_success == '' )
+					$jdb  = '[FAILED] : ' . date( 'M jS, Y g:i A', $jdb_fail - ( 7 * 3600 ) );
 			} else {
-				$jdb = '[SUCCESS] : '.date( 'M jS, Y g:i A', $jdb_success - ( 7 * 3600 ) );	
+				$jdb = '[SUCCESS] : ' . date( 'M jS, Y g:i A', $jdb_success - ( 7 * 3600 ) );	
 			}
 			
 			$photo = $data->{ $this->merge_fields( 'form_photo_thumb', $data->form_type ) };
-			if( '' == $photo )
-				$photo = $data->{ $this->merge_fields( 'form_photo', $data->form_type ) }; ?>
-					<h1><?php echo esc_html( $data->{ $this->merge_fields( 'project_name', $data->form_type ) } ); ?></h1>
-					<input name="form_type" type="hidden" value="<?php echo esc_attr( $data->form_type ); ?>" />
-					<table style="width:100%">
-					<tr>
-						<td style="width:210px;" valign="top"><img src="<?php echo esc_url( $photo ); ?>" height="200" width="200" /></td>
-						<td valign="top">
-						<p><?php echo Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $data->public_description, "\n" ) ) ) ); ?></p>
+
+			// Check if a photo exists
+			if ( '' == $photo )
+				$photo = $data->{ $this->merge_fields( 'form_photo', $data->form_type ) };
+
+			// Check if we are loading the public description or a short description
+			if ( isset( $data->public_description ) ) {
+				$main_description = $data->public_description;
+			} else if ( isset( $data->short_description ) ) {
+				$main_description = $data->short_description;
+			} else {
+				$main_description = '';
+			}
+
+			?>
+			<h1><?php echo esc_html( $data->{ $this->merge_fields( 'project_name', $data->form_type ) } ); ?></h1>
+			<input name="form_type" type="hidden" value="<?php echo esc_attr( $data->form_type ); ?>" />
+			<table style="width:100%">
+				<tr>
+					<td style="width:210px;" valign="top"><img src="<?php echo esc_url( $photo ); ?>" height="200" width="200" /></td>
+					<td valign="top">
+						<p><?php echo Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $main_description, "\n" ) ) ) ); ?></p>
 						<table style="width:100%">
 							<tr>
 								<td style="width:80px;" valign="top"><strong>Status:</strong></td>
@@ -628,27 +641,31 @@ class MAKER_FAIRE_FORM {
 								// Jake's fancy cached events query found in 'plugins/public-pages/makers.php' in mf_get_scheduled_item()
 								// The function output things for the front-end and all we want is the data.
 								$get_events = wp_cache_get( $post->ID . '_schedule' );
-								if( $get_events == false ) {
+								if ( $get_events == false ) {
 									$args = array( 
 										'post_type'		=> 'event-items',
 										'orderby' 		=> 'meta_value', 
 										'meta_key'		=> 'mfei_start',
 										'order'			=> 'asc',
 										'posts_per_page'=> '30',
-										'meta_query' => array(
+										'meta_query' 	=> array(
 											array(
 												'key' 	=> 'mfei_record',
 												'value'	=> $post->ID
-										   )
+										   ),
 										)
-										);
+									);
 									$get_events = new WP_Query( $args );
 									wp_cache_set( $post->ID . '_schedule', $get_events, '', 300 );
 								}
 
-								// Check that we have returned our query of events
-								if ( $get_events->found_posts >= 1 ) {
-									// Loop through theme
+								// Check that we have returned our query of events, if not, give the option to schedule the event
+								if ( $get_events->found_posts >= 1 ) { ?>
+									<tr>
+										<td style="width:80px;"><strong>Scheduled:</strong></td>
+										<td valign="top">Yes</a>
+									</tr>
+									<?php // Loop through theme
 									while ( $get_events->have_posts() ) : $get_events->the_post();
 
 										// Get an array of our event data
@@ -680,9 +697,13 @@ class MAKER_FAIRE_FORM {
 											</tr>
 										<?php endif;
 									endwhile;
-								}
-							?>
-							<?php 
+								} else { ?>
+									<tr>
+										<td style="width:80px;" valign="top"><strong>Scheduled:</strong></a></td>
+										<td valign="top"><a href="">Schedule This Event</a></td>
+									</tr>
+								<?php }
+
 								$wkey = $this->merge_fields( 'project_website', $data->form_type );
 								$vkey = $this->merge_fields( 'project_video', $data->form_type );
 							?>
@@ -1219,7 +1240,7 @@ class MAKER_FAIRE_FORM {
 		foreach ( $this->fields[ $form_type ] as $sn => $s ) {
 
 			// Loop through each array in the $s variable
-			foreach ( array_keys( $s ) as $k ) { 
+			foreach ( array_keys( $s ) as $k ) {
 
 				// Check if our data being submitted is in an array first, sanitize and add to the $r array.
 				// Then check if we are passing in a textarea or text field and sanitize those fields accordingly.
