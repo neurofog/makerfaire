@@ -2,12 +2,16 @@
 var step = 1;
 
 jQuery(function($) {
-	
-	$('.overwrite').click(function() { overwrite_file($(this));	});
-	$('.mf-edit-app').click(function(){ $('.mf-breadcrumbs div:first-of-type').click(); });
-	
-	function overwrite_file(el)
-	{
+
+	$('.overwrite').click(function() { 
+		overwrite_file($(this));
+	});
+
+	$('.mf-edit-app').click(function(){
+		$('.mf-breadcrumbs div:first-of-type').click();
+	});
+
+	function overwrite_file(el) {
 		n = $(el).attr('id');
 		$(el).parent().append('<input name="'+n+'" type="file" />');
 
@@ -17,8 +21,9 @@ jQuery(function($) {
 	
 	$('.mf-form, .mf-login').ajaxForm({
 		dataType:  'json',
-		success: function(r, s, xhr, $form)
-		{
+		success: function(r, s, xhr, $form) {
+
+			$('.ajax-loader').hide();
 			$('.mf-form input[type=submit]').show();
 			$('.mf-err, .message').remove();
 			$('input[type=text], input[type=password], select, textarea').css('border', '1px solid #CCC');
@@ -96,25 +101,28 @@ jQuery(function($) {
 				
 				step++
 		
-				if(step == 5)
-				{
+				if(step == 5) {
 					$('.step, .mf-breadcrumbs, .mf-form input[type=submit], .review, .mf-edit-app').hide();
 					build_review();
 					$('#step5').show();
 					$(window).unbind('beforeunload');
-				}
-				else
-				{
+				} else {
 					enable_breadcrumb();
-					$('.mf-breadcrumbs div:nth-of-type('+step+')').click();
+					$('.mf-breadcrumbs div:nth-of-type(' + step + ')').click();
 				}
 			}
 			
 			window.scrollTo(0, 0);
 		}
 	}); 
-	
-	$('.mf-form input[type=submit]').click(function(){ $(this).hide(); });
+
+	$('.mf-form input[type=submit]').click(function() { 
+
+		console.log('Loading Next Step....');
+
+		$(this).hide();
+		$('.ajax-loader').show();
+	});
 	
 	enable_breadcrumb();
 	$('.mf-breadcrumbs div:nth-of-type('+step+')').click();

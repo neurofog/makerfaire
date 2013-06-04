@@ -139,7 +139,7 @@
         
         <div class="input">
             <label>Tell us about your project *</label>
-            <div class="info">For the Maker Faire team, explain what your project is and describe what you will actually be bringing to Maker Faire. This information will not be made public. Be as descriptive as possible.</div>
+            <div class="info">For the Maker Faire team, explain what your project is and describe what you will actually be bringing to Maker Faire. This information will <u>not</u> be made public. Be as descriptive as possible.</div>
             <?php $this->textarea('data[s1][private_description]', array('class'=>'mf-extra-tall')); ?>
         </div>
         
@@ -530,7 +530,8 @@
         	<li>Check your spam folder and add makers@makerfaire.com to your contact list.</li>
             <li>All future communications will be directed to the email address you provided. You can review your application to make sure that you typed in the correct email address by selecting "Your Account" in the header above.</li>
         </ul>
-		<p>Stay tuned for more communication about participating in Maker Faire!</p> 
+		<p>Stay tuned for more communication about participating in Maker Faire!</p>
+		<p class="btn btn-large"><a href="<?php echo home_url(); ?>/makerprofile/">Preview your Profile</a></p>
 	</div>
     <!--STEP 6 END-->
 	<div class="review" style="display:none">
