@@ -42,7 +42,6 @@ class MAKER_FAIRE_FORM {
 
 					'org_type'              => 1,
 					'large_non_profit'      => 0,
-					'supporting_documents'  => 0,
 
 					'sales'                 => 0,
 					'sales_details'         => 0,
@@ -111,6 +110,7 @@ class MAKER_FAIRE_FORM {
 					'private_country'     => 1
 					),
 				's3' => array(
+					'supporting_documents' => 0,
 					'references'           => 0,
 					'referrals'            => 0,
 					'hear_about'           => 0,
@@ -1862,6 +1862,9 @@ class MAKER_FAIRE_FORM {
 							$thumbs_res[$n]   = $r['thumb'];
 							$res[$n]          = $r['url'];
 							$res[$n.'_thumb'] = $r['thumb'];
+						// TODO: Fix error reporting for non-supported files. - CG
+						// } elseif ( $_FILES[$n]['type'] != 'image/jpeg' || $_FILES[$n]['type'] != 'image/gif' || $_FILES[$n]['type'] != 'image/png') {
+						// 	$error['s' . $_POST['step']][$n] = 'Not an accepted file type.';
 						} else {
 							$errors['s'.$_POST['step']][$n] = 'Valid 500px or Wider Image Required.';
 						}
@@ -1897,8 +1900,9 @@ class MAKER_FAIRE_FORM {
 		if ( ! function_exists( 'wp_handle_upload' ) )
 			require_once( ABSPATH . 'wp-admin/includes/file.php' );
 
+		// Check our uploaded file types.
 		$info = pathinfo( $ufile['name'] );
-		if ( ! in_array( strtolower( $info["extension"] ), array( 'jpg', 'jpeg', 'gif', 'png', 'doc', 'docx', 'pdf', 'ai', 'psd' ) ) )
+		if ( ! in_array( strtolower( $info["extension"] ), array( 'jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'ppt', 'pptx', 'pps', 'ppsx', 'odt', 'xls', 'xlsx' ) ) )
 			return false;
 
 		if ( $require_size ) {

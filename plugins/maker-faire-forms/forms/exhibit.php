@@ -227,12 +227,6 @@
 		<div class="dp-company <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'company') !== false ? '' : 'h')); ?>">Established companies and commercial entities do not qualify for free exhibit space, which is what this application form is for. We have great opportunities available at Maker Faire for companies, please contact <a href="mailto:sales@makerfaire.com">sales@makerfaire.com</a>. Do not complete the rest of this form.</div>
 		
 		<div class="input">
-			<label>Optional: Upload additional supporting documents.</label>
-            <div class="info">Upload anything else related to your exhibit you'd like to share with us.</div>
-            <?php $this->file('data[s1][supporting_documents]', 'supporting_documents'); ?>
-		</div>
-		
-		<div class="input">
             <label>Will you be selling or marketing a product at Maker Faire?</label>
             <?php $this->radio('data[s1][sales]', array('Yes', 'No')); ?>
         </div>
@@ -537,6 +531,12 @@
 		<h2>Topics</h2>
         <div>To help people find your exhibit on our website and at Maker Faire, please please select a maximum of five topics below which apply to your project.</div>
         <?php include('tags.php'); ?>
+
+        <div class="input">
+			<label>Optional: Upload additional supporting documents.</label>
+            <div class="info">Upload anything else related to your exhibit you'd like to share with us.</div>
+            <?php $this->file('data[s3][supporting_documents]', 'supporting_documents'); ?>
+		</div>
 		
 		<div class="input">
             <label>Reference(s)</label>
