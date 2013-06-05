@@ -2041,7 +2041,7 @@ class MAKER_FAIRE_FORM {
 
 		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>';
 		$m.='<p>'.esc_html( ucfirst( $r['name'] ) ).',</p>';
-		$m.='<p>Thanks for your interest in participating in World Maker Faire New York 2013! We have received your application for '.esc_html( $n ).'.</p>';
+		$m.='<p>Thanks for your interest in participating in World Maker Faire New York 2013! We have received your application for: <strong>'.esc_html( $n ).'</strong> [' . esc_html( ucfirst( $r['form_type'] ) ) . ' ' . $id . '].</p>';
 		$m.='<p>You can update your application anytime until the Call For Makers closes:</p>';
 		$m.='<ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li>';
 		$m.='<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
@@ -2054,7 +2054,15 @@ class MAKER_FAIRE_FORM {
 		$m.='<br /><br /><br /><p>Maker Faire ' . ' [' . esc_html( ucfirst( $r['form_type'] ) ) . ' ' . $id . ']' . ' Application Received: ' . $app_name . '</p>';
 		$m.='</body></html>';
 
-		$r = wp_mail( $r['email'], 'Maker Faire Application Received: '.intval( $id ).': ' . $app_name, htmlspecialchars_decode( stripslashes( $m ) ), array( 'Content-Type: text/html', 'From: Maker Faire <makers@makerfaire.com>','Bcc: Maker Faire <makers@makerfaire.com>' ) );
+		$subject = 'Maker Faire Application Received: ';
+		$subject .= '&nbsp;[';
+		$subject .= esc_html( ucfirst( $r['form_type'] ) );
+		$subject .= '&nbsp;';
+		$subject .= intval( $id );
+		$subject .= $app_name;
+		$subject .= ']';
+
+		$r = wp_mail( $r['email'], $subject, htmlspecialchars_decode( stripslashes( $m ) ), array( 'Content-Type: text/html', 'From: Maker Faire <makers@makerfaire.com>','Bcc: Maker Faire <makers@makerfaire.com>' ) );
 		
 		return $r;
 	}

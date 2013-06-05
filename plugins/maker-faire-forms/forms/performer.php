@@ -125,7 +125,7 @@
         </div>
 		
 		<div class="input">
-            <label>Guest Ticket Request *</label>
+            <label>Ticket Request *</label>
 			<div class="info">Total should include performers and guests.</div>
             <?php $this->text('data[s1][guest_tickets]', array('maxlength'=>3, 'class'=>'mf-extra-extra-small')); ?>
         </div>
@@ -178,7 +178,7 @@
         <hr />
         
 		<h2>Topics</h2>
-		<h3>To help people find your presentation on our website and at Maker Faire, please select all of the topics below which apply to your project.</h3>
+		<h3>To help people find your presentation on our website and at Maker Faire, please select a maximum of 5 topics below which apply to your project.</h3>
 
         <p style="font-weight:bold;">Select up to 5 that are most applicable:</p>
         <?php include('tags.php'); ?>		
