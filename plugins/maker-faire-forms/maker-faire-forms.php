@@ -2211,7 +2211,7 @@ class MAKER_FAIRE_FORM {
 	*
 	* @access public
 	* @param string $n key of file path
-	* @param string $n real key of path
+	* @param string $rn real key of path
 	* =====================================================================*/
 	public function file( $n, $rn ) {
 		if ( $this->form[$n] == '' ) {
