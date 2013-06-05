@@ -178,11 +178,11 @@
             <?php $this->text( 'data[s2][phone1]', array( 'class'=>'mf-extra-short' ) ); ?> <?php //$this->select( 'data[s2][phone1_type]', array( 'mobile' => 'Mobile', 'home' => 'Home', 'work' => 'Work', 'other' => 'Other' ) ); ?>
         </div>
         
-        <div class="input">
+        <!-- <div class="input">
             <label>Onsite Phone Number *</label>
             <div class="info">Please provide a mobile phone number so that we are able to reach the presenter onsite during the event if the need arises. <strong><u>This number will only be used by Maker Faire staff</strong></u>.</div>
-            <?php $this->text( 'data[s2][phone2]', array( 'class'=>'mf-extra-short' ) ); ?>
-        </div>
+            <?php // ->text( 'data[s2][phone2]', array( 'class'=>'mf-extra-short' ) ); ?>
+        </div> -->
 
         <?php include('address.php'); ?>
 
