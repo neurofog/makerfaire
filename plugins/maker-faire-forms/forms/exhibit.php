@@ -364,15 +364,15 @@
             <div class="info">Does your exhibit contain fire (any size flame), chemicals, or other dangerous materials or tools (propane, welders, etc)?</div>
             <?php $this->radio('data[s1][fire]', array('Yes', 'No')); ?>
         </div>
+
+        <div class="input dp-safety <?php echo esc_attr(($this->form['data[s1][fire]'] == 'Yes' || $this->form['data[s1][hands_on]'] == 'Yes'  ? '' : 'h')); ?>">
+            <label>Describe any fire or safety issues</label>
+            <?php $this->textarea('data[s1][safety_details]'); ?>
+        </div>
 		
 		<div class="input">
             <label>Do you have a hands-on activity or interactive exhibit, including using tools of any kind, riding (bikes, go carts, swings, etc), climbing, etc?</label>
             <?php $this->radio('data[s1][hands_on]', array('Yes', 'No')); ?>
-        </div>
-		
-		<div class="input dp-safety <?php echo esc_attr(($this->form['data[s1][fire]'] == 'Yes' || $this->form['data[s1][hands_on]'] == 'Yes'  ? '' : 'h')); ?>">
-            <label>Describe any fire or safety issues</label>
-            <?php $this->textarea('data[s1][safety_details]'); ?>
         </div>
 		
     </div>
