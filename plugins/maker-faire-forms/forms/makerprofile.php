@@ -8,7 +8,7 @@
     <a href="#" onclick="gigya.accounts.showScreenSet({screenSet:'MakerFaire-Profile', onAfterSubmit:mf_update_profile});" />Edit Profile</a>
     </div>
     <div class="clear"></div><br /><br />
-	<input type="button" value="Apply for Maker Faire" onclick="document.location = '/bayarea-2013-callformakers';" />
+	<input type="button" value="Apply for Maker Faire" onclick="document.location = '/newyork-2013-call-for-makers/';" />
 	
     
 	<h3 style="margin-top:30px;">Your Current Applications</h3>
