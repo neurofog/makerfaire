@@ -31,7 +31,7 @@
             });
 
             // Remove all the extra fields if an image is already present
-            $('.presenter-photo', new_maker).remove();   
+            $('.presenter-photo, .presenter-bio > div', new_maker).remove();   
 
             // After all of that, let's add our new maker
             $('#m-maker-inner').append(new_maker);
@@ -190,7 +190,7 @@
 
         <div id="m-maker">
             <h2 style="margin-bottom:0px;">Presenter(s) Information</h2>
-            <div class="info">Names, bio title, organization, and photo <u>ONLY</u> will appear on the Maker Faire website and mobile app.</div>
+            <div class="info">Names, bio, title, organization, and photo <u>ONLY</u> will appear on the Maker Faire website and mobile app.</div>
             <div id="m-maker-inner">
 
                 <?php for ( $i=0; $i < count( $this->form['data[s2][presenter_name]'] ); $i++ ) : ?>
@@ -221,9 +221,11 @@
                             <input type="text" name="data[s2][presenter_title][<?php echo esc_attr( ( $i + 1 ) ); ?>]" value="<?php echo esc_attr( $this->form['data[s2][presenter_title]'][ $i ] ); ?>" />
                         </div>
 
-                        <div class="input">
+                        <div class="input presenter-bio">
                             <label>Presenter Bio *</label>
-                            <div class="info">This bio will appear on your exhibit sign and on our website. Limited to 200 characters. If you have listed more than one presenter, we will link to the maker accounts you've listed and display each of their personal bios.</div>
+                            <?php if ( $i == 0 ) : ?>
+                                <div class="info">This bio will appear on your exhibit sign and on our website. Limited to 200 characters. If you have listed more than one presenter, we will link to the maker accounts you've listed and display each of their personal bios.</div>
+                            <?php endif; ?>
                             <textarea name="data[s2][presenter_bio][<?php echo esc_attr( ( $i + 1 ) ); ?>]" maxlength="200" class="default-bio"><?php echo esc_textarea( $this->form['data[s2][presenter_bio]'][ $i ] ); ?></textarea>
                         </div>
 
@@ -235,7 +237,7 @@
 
                         <div class="input">
                             <label>Previous Presentation Experience</label>
-                            <div class="info">Share a URL to a video of you giving this same or another presentation. Or list where (events, schools, meetings, etc.) where you have presented previously.</div>
+                            <div class="info">Share a URL to a video of you giving this same or another presentation. Or list (events, schools, meetings, etc.) where you have presented previously.</div>
                              <input type="text" name="data[s2][presenter_previous][<?php echo esc_attr( ( $i + 1 ) ); ?>]" value="<?php echo esc_attr( $this->form['data[s2][presenter_previous]'][ $i ] ); ?>" />
                         </div>  
     
