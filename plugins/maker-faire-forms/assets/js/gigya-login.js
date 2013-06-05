@@ -82,21 +82,31 @@ function mf_is_loggedin(o)
 		{
 			if(o.profile.thumbnailURL != undefined && o.profile.thumbnailURL != 'undefined')
 				jQuery('.maker-image').attr('src', o.profile.thumbnailURL);
-				
+
 			jQuery('.maker-name span:first-of-type').html(o.profile.firstName);
 			jQuery('.maker-name span:last-of-type').html(o.profile.lastName);
 			jQuery('.mf-editforms .bio').html(o.data.bio);
-			
+
 			jQuery.post('/wp-admin/admin-ajax.php', {action: 'mfform_getforms', uid:o.UID, e:o.profile.email}, function(r){
-				
-				for(i in r.forms)
-				{
-					for(j in r.forms[i])
-					{
-						append = '<li>'+j+' - '+r.forms[i][j]['post_title']+' ('+r.forms[i][j]['post_status']+')</li>';
+
+				// Check if we are on a certain date or have passed
+				var now = new Date();
+				var end_date = new Date( '2013-07-28' ); // Set the end date here - YYYY-MM-DD
+
+
+				for(i in r.forms) {
+					for(j in r.forms[i]) {
+
+						// Check if the date right now is before our end date, 'July 28th, 2013', or else close the forms
+						if ( now.getTime() < end_date.getTime() ) {
+							append = '<li><a href="/'+i+'form/?id='+j+'">'+j+' - '+r.forms[i][j]['post_title']+' ('+r.forms[i][j]['post_status']+')</a></li>';
+						} else {
+							append = '<li>'+j+' - '+r.forms[i][j]['post_title']+' ('+r.forms[i][j]['post_status']+')</li>';
+						}
+
 						if (r.forms[i][j]['post_status'] == 'in-progress' )
 							append = '<li><a href="/'+i+'form/?id='+j+'">'+j+' - '+r.forms[i][j]['post_title']+' ('+r.forms[i][j]['post_status']+')</a></li>';
-						
+
 						jQuery('#'+i+' ul').append(append);
 					}
 				}

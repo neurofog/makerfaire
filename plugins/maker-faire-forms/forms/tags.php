@@ -2,8 +2,8 @@
 <ul class="columns topics">
 	<?php
 		$terms = get_terms( array( 'category', 'post_tag' ), array('hide_empty' => 0, ) );
-		if (!empty($terms)) {
-			foreach ($terms as $idx => $term) {
+		if ( ! empty( $terms ) ) {
+			foreach ( $terms as $idx => $term ) {
 				if ( $term->taxonomy == 'post_tag' ) { ?>
 					<li><label class="checkbox"><input name="tag[]" type="checkbox" value="<?php echo esc_attr($term->slug); ?>" <?php checked( in_array( $term->slug, $this->form['tags'] ) ); ?> /> <?php echo esc_html($term->name); ?></label></li>
 				<?php } else { ?>
