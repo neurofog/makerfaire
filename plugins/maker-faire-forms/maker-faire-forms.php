@@ -1888,12 +1888,14 @@ class MAKER_FAIRE_FORM {
 
 		die( json_encode( array( 'status'=>'OK', 'id' => $id, 'files' => $file_res, 'thumbs' => $thumbs_res ) ) );
 	}
+
 	/* 
 	* Upload images / documents and save as WP attachments
 	*
 	* @access public
-	* @param array $ufile File object $t Form type
-	* @param boolean $require_size Check if deminsions are valid
+	* @param  array   $ufile         File object $t Form type
+	* @param  boolean $require_size  Check if deminsions are valid
+	* 
 	* @return boolean|array False if error and upload array if valid
 	* =====================================================================*/
 	private function upload( $ufile, $require_size ) {
@@ -1940,12 +1942,14 @@ class MAKER_FAIRE_FORM {
 
 		return array( 'id' => $attach_id, 'url' => $file['url'], 'thumb'=>( $thumb ? $wp_upload_dir['url'].'/'.$thumb['file'] : $file['url'] ) );
 	}
+
 	/* 
 	* Create a MakerFAIRE Form
 	*
 	* @access public
-	* @param array $r Form data
+	* @param array  $r Form data
 	* @param string $t Form type
+	* 
 	* @return integer Form that's created's ID
 	* =====================================================================*/
 	private function create_mf_form( $r, $t ) {
@@ -1979,14 +1983,16 @@ class MAKER_FAIRE_FORM {
 
 		return $pid;
 	}
+
 	/* 
 	* Update a MakerFAIRE Form
 	*
 	* @access public
-	* @param string $t Form type
+	* @param string  $t  Form type
 	* @param integer $id Form ID
-	* @param array $r Form data
-	* @param integer $s From Step
+	* @param array   $r  Form data
+	* @param integer $s  From Step
+	* 
 	* @return integer Form that's updated ID
 	* =====================================================================*/
 	private function update_mf_form( $t, $id, $r, $s ) {
@@ -2042,6 +2048,7 @@ class MAKER_FAIRE_FORM {
 
 		return wp_update_post( $d );
 	}
+
 	/* 
 	* Sends a email to form submitter
 	*
@@ -2051,6 +2058,8 @@ class MAKER_FAIRE_FORM {
 	* @return boolean if wp_mail was successful.
 	* =====================================================================*/
 	private function send_maker_email( $r, $n, $id ) {
+		$bad = array( '&#039;', "\'", '&#8217;', '&#38;', '&#038;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;' );
+		$good = array( "'", "'", "'", "&", "&", '"', '"', '–', '>', '...' );
 
 		// Don't send if there's no email or no form type
 		if ( empty( $r['form_type'] ) || empty( $r['email'] ) )
@@ -2061,7 +2070,7 @@ class MAKER_FAIRE_FORM {
 		$app_info = esc_html( '[' . ucfirst( $r['form_type'] ) . ' ' . intval( $id ) . ']' );
 
 		// Subject
-		$subject  = str_replace( '&amp;', '&', sprintf( 'Maker Faire Application Submitted: %s %s', $app_name,  $app_info ) );
+		$subject  = str_replace( $bad, $good, sprintf( 'Maker Faire Application Submitted: %s %s', $app_name,  $app_info ) );
 
 		// Email Body
 		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>';
