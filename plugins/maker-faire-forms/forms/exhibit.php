@@ -238,7 +238,7 @@
 			<div><input name="data[s1][booth_size]" type="radio" value="10x10" <?php checked($this->form['data[s1][booth_size]'] == '10x10'); ?> /> 10' x 10'</div>
 			<div id="size-10x20"><input name="data[s1][booth_size]" type="radio" value="10x20" <?php checked($this->form['data[s1][booth_size]'] == '10x20'); ?> /> 10' x 20'</div>
 			<div id="size-other"><input name="data[s1][booth_size]" type="radio" value="Other" <?php checked($this->form['data[s1][booth_size]'] == 'Other'); ?> /> Other - Tell us your space size request below</div>
-            <div class="info dp-sales h">Makers who are selling or marketing products are considered Commercial Makers and can only have a mobile, tabletop or 10x10 space for the standard $300 fee. 10x20 spaces or larger are allowed through our sales team. Email sales@makerfaire.com.</div>
+            <div class="info dp-sales h">Makers who are selling or marketing products are considered Commercial Makers and can only have a mobile, tabletop or 10x10 space for the standard $300 fee. 10x20 spaces or larger are available for sponsors of Maker Faire. Please contact: sales@makerfaire.comfor more information.</div>
         </div>
 		
 		<div class="input dp-size <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'Other') !== false ? '' : 'h')); ?>">
@@ -495,7 +495,7 @@
         <hr />
 		
 		<h2>Topics</h2>
-        <div>To help people find your exhibit on our website and at Maker Faire, please select all of the topics below which apply to your project.</div>
+        <div>To help people find your exhibit on our website and at Maker Faire, please please select a maximum of five topics below which apply to your project.</div>
         <?php include('tags.php'); ?>
 		
 		<div class="input">

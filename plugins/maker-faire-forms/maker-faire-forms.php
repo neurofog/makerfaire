@@ -2046,8 +2046,8 @@ class MAKER_FAIRE_FORM {
 		$m.='<ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li>';
 		$m.='<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
 		$m.='<p>You will be notified as to the status of your application no later than August 5th.</p>';
-		$m.='If your application is accepted, we have agreed to the concept of your exhibit, however, we are not able to  guarantee all of your requests at this time. What we can provide will be outlined in a confirmation letter before the event.';
-		$m.='Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.';
+		$m.='<p>If your application is accepted, we have agreed to the concept of your exhibit, however, we are not able to  guarantee all of your requests at this time. What we can provide will be outlined in a confirmation letter before the event.</p>';
+		$m.='<p>Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.</p>';
 		$m.='<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
 		$m.='<p>Maker Faire (<a href="http://makerfaire.com">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		$m.='<p>Maker Media, Inc.<br />1005 Gravenstein Hwy North<br />Sebastopol, CA 95472</p>';

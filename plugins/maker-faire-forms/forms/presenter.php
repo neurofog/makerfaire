@@ -85,13 +85,13 @@
         </div> -->
         
         <div class="input">
-            <label>Length of Presentations.</label>  
-            <div class="info">Select the best options that apply.</div>
-            <?php $this->radio('data[s1][length_presentation]', array( '12 minutes', '25 minutes', '45 minutes (available only for some panel presentations)' ) ); ?>       
+            <label>Length of Presentation</label>  
+            <div class="info">Select all options that apply.</div>
+            <?php $this->checkbox('data[s1][length_presentation]', array( '12 minutes', '25 minutes', '45 minutes (available only for some panel presentations)' ) ); ?>       
         </div>
 
         <div class="input">
-            <label>Presentation Schedule Availability.</label>  
+            <label>Presentation Schedule Availability</label>
             <div class="info">Your flexibility is greatly appreciated.</div>
             <?php $this->radio('data[s1][availability]', array('Either Saturday or Sunday', 'Saturday only', 'Sunday only')); ?>       
         </div>
@@ -101,7 +101,7 @@
             <?php $this->textarea('data[s1][special_requests]'); ?>
         </div>
         
-        <h2>Public Presentation Info:</h2>
+        <h2>Public Presentation Info</h2>
         <div class="info">This information will be public and appear on our website and in publications.</div>
         
         <div class="input">
@@ -118,7 +118,7 @@
 
         <div class="input">
             <label>Long Presentation Description *</label>
-            <div class="info">Response limited to 650 characters or less.</div>
+            <div class="info">Can also be the same as Short Presentation Description. Response limited to 650 characters or less.</div>
             <?php $this->textarea( 'data[s1][long_description]', array( 'maxlength'=>650 ) ); ?>
         </div>
         
@@ -130,13 +130,13 @@
         
         <div class="input">
             <label>Presentation Website</label>
-            <div class="info">Related content. For Example: http://www.mygreatpresentation.com/</div>
+            <div class="info">Related content. For example: http://www.mygreatpresentation.com/</div>
             <?php $this->text( 'data[s1][presentation_website]' ); ?>
         </div>
         
         <div class="input">
             <label>Presentation Video</label>
-            <div class="info">Related content. For Example: http://www.youtube.com/watch?v=RD_JpGgUFQQ</div>
+            <div class="info">Related content. For example: http://www.youtube.com/watch?v=RD_JpGgUFQQ</div>
             <?php $this->text( 'data[s1][video]' ); ?>
          </div>   
              
@@ -166,7 +166,6 @@
         
         <div class="input">
             <label>Contact Phone Number *</label>
-            <div class="info">Please provide a mobile phone number so that we are able to reach the presenter onsite during the event if the need arises. <strong><u>This number will only be used by Maker Faire staff</u></strong>.</div>
             <?php $this->text( 'data[s2][phone1]', array( 'class'=>'mf-extra-short' ) ); ?> <?php //$this->select( 'data[s2][phone1_type]', array( 'mobile' => 'Mobile', 'home' => 'Home', 'work' => 'Work', 'other' => 'Other' ) ); ?>
         </div>
         
@@ -215,7 +214,7 @@
                         <?php if ( $i == 0 ) : ?>
                             <div class="input">
                                 <label>Presenter Bio *</label>
-                                <div class="info">This bio will appear on your exhibit sign and on our website. Limited to 200 characters. If you have listed more than one presenter, we will link to the maker accounts you've listed and display each of their personal bios.</div>
+                                <div class="info">This bio will appear on your exhibit sign and on our website. Limited to 200 characters.</div>
                                 <textarea name="data[s2][presenter_bio][<?php echo esc_attr( ( $i + 1 ) ); ?>]" maxlength="200" class="default-bio"><?php echo esc_textarea( $this->form['data[s2][presenter_bio]'][ $i ] ); ?></textarea>
                             </div> 
                             <div class="input">
@@ -228,6 +227,7 @@
                         <?php if ( $i == 0 ) : ?>
                             <div class="input">
                                 <label>Onsite Phone Number *</label>
+                                <div class="info">Please provide a mobile phone number so that we are able to reach the presenter onsite during the event if the need arises. <strong><u>This number will only be used by Maker Faire staff</strong></u>.</div>
                                 <input type="text" name="data[s2][presenter_onsite_phone][<?php echo esc_attr( ( $i + 1 ) ); ?>]" value="<?php echo esc_attr( $this->form['data[s2][presenter_onsite_phone]'][ $i ] ); ?>" />
                             </div>
                         <?php endif; ?>
@@ -250,7 +250,7 @@
         <hr />
         
         <div class="input">
-            <label>If you were asked to present by a member of Make or the Maker Faire team, who was it?</label>
+            <label>If you were asked to present by a member of MAKE or the Maker Faire team, who was it?</label>
             <?php $this->text('data[s3][maker_ask]'); ?>
         </div>
         
@@ -267,7 +267,7 @@
         </div>
         
         <h2>Topics</h2>
-        <h3>To help people find your presentation on our website and at Maker Faire, please select all of the topics below which apply to your project.* </h3>
+        <h3>To help people find your presentation on our website and at Maker Faire, please select a maximum of five topics below which apply to your project.* </h3>
         <?php include('tags.php'); ?>
         
         <div class="input">
@@ -287,7 +287,7 @@
         <h1>Step 4 of 4: Review and Submit</h1>
         <hr />
         <p style="font-weight:bold;">Please review your application for accuracy and click the numbered red steps above to make any changes. Your application is not complete until you click the "Submit Application" button below.</p>
-        <p>You can update your application anytime until the application deadline. You'll hear from us shortly afterwards. If we ccept your presentation, we'll do our best to accommodate all your requests but can't guarantee it. Presentation details will be confirmed in a follow-up letter after acceptance.</p> 
+        <p>You can update your application anytime until the application deadline. You'll hear from us shortly afterwards. If we accept your presentation, we'll do our best to accommodate all your requests but can't guarantee it. Presentation details will be confirmed in a follow-up letter after acceptance.</p> 
         <p style="font-weight:bold;">After clicking the final red “Submit Application” button, a “Thank you” page will appear and an email will be sent to the contact email you provided in Step 2.</p>
     </div>
     <!--STEP 4 END-->
