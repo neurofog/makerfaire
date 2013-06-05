@@ -2055,10 +2055,9 @@ class MAKER_FAIRE_FORM {
 		$m.='</body></html>';
 
 		$subject = 'Maker Faire Application Received: ';
-		$subject .= '&nbsp;[';
-		$subject .= esc_html( ucfirst( $r['form_type'] ) );
-		$subject .= '&nbsp;';
-		$subject .= intval( $id );
+		$subject .= '[';
+		$subject .= esc_html( ucfirst( $r['form_type'] ) ) . ' ';
+		$subject .= intval( $id ) . ' ';
 		$subject .= $app_name;
 		$subject .= ']';
 
