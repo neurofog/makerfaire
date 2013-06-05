@@ -78,19 +78,22 @@ class MAKER_FAIRE_FORM {
 
 					'maker_name'          => 0,
 					'maker_email'         => 0,
+					'maker_bio'           => 0,
+					'maker_twitter'		  => 0,
 					'maker_photo'         => 0,
 					'maker_photo_thumb'   => 0,
-					'maker_bio'           => 0,
 
 					'm_maker_name'        => 0,
 					'm_maker_email'       => 0,
 					'm_maker_photo'       => 0,
 					'm_maker_photo_thumb' => 0,
+					'm_maker_twitter'     => 0,
 					'm_maker_bio'         => 0,
 					'm_maker_gigyaid'     => 0,
 
 					'group_name'          => 0,
 					'group_bio'           => 0,
+					'group_twitter'		  => 0,
 					'group_photo'         => 0,
 					'group_photo_thumb'   => 0,
 					'group_website'       => 0,
@@ -191,6 +194,8 @@ class MAKER_FAIRE_FORM {
 					'presenter_email'        => 1,
 					'presenter_bio'          => 1,
 					'presenter_org'          => 0,
+					'presenter_twitter'		 => 0,
+					'presenter_previous'	 => 0,
 					'presenter_title'        => 0,
 					'presenter_onsite_phone' => 1,
 					'presenter_photo'        => 1,
@@ -1136,7 +1141,8 @@ class MAKER_FAIRE_FORM {
 					'm_maker_email', 
 					'm_maker_gigyaid', 
 					'm_maker_photo', 
-					'm_maker_bio' 
+					'm_maker_bio',
+					'm_maker_twitter',
 				),
 				'presenter_name' => array(
 					'presenter_gigyaid',
@@ -1145,7 +1151,9 @@ class MAKER_FAIRE_FORM {
 					'presenter_email',					 
 					'presenter_onsite_phone',
 					'presenter_org',
-					'presenter_title'
+					'presenter_title',
+					'presenter_twitter',
+					'presenter_previous',
 				)
 			);
 		
@@ -1178,7 +1186,8 @@ class MAKER_FAIRE_FORM {
 						'm_maker_email'   => 'Add. Maker Email', 
 						'm_maker_gigyaid' => 'Add. Maker Gigyaid',
 						'm_maker_bio'	  => 'Add. Maker Bio',
-						'm_maker_photo'   => 'Add. Maker Photo URL'
+						'm_maker_photo'   => 'Add. Maker Photo URL',
+						'm_maker_twitter' => 'Add. Maker Twitter Handle',
 					),
 					'presenter_name' => array(
 						'presenter_name'    => 'Add. Presenter Name',
@@ -1189,6 +1198,8 @@ class MAKER_FAIRE_FORM {
 						'presenter_title'	=> 'Add. Presenter Title',
 						'presenter_photo'	=> 'Add. Presenter Photo',
 						'presenter_bio'		=> 'Add. Presenter Bio',
+						'presenter_twitter' => 'Add. Presenter Twitter',
+						'presenter_previous'=> 'Add. Presenter Previous',
 					)
 				);
 

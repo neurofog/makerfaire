@@ -188,7 +188,7 @@
 
 
         <div id="m-maker">
-            <label>Presenter(s) Information</label>
+            <h2 style="margin-bottom:0px;">Presenter(s) Information</h2>
             <div class="info">Names, bio title, organization, and photo <u>ONLY</u> will appear on the Maker Faire website and mobile app.</div>
             <div id="m-maker-inner">
 
@@ -226,13 +226,19 @@
                             <textarea name="data[s2][presenter_bio][<?php echo esc_attr( ( $i + 1 ) ); ?>]" maxlength="200" class="default-bio"><?php echo esc_textarea( $this->form['data[s2][presenter_bio]'][ $i ] ); ?></textarea>
                         </div>
 
+                        <div class="input">
+                            <label>Presenter Twitter Handle</label>
+                            <div class="info">Enter your twitter username (e.g. @makerfaire).</div>
+                             <input type="text" name="data[s2][presenter_twitter][<?php echo esc_attr( ( $i + 1 ) ); ?>]" value="<?php echo esc_attr( $this->form['data[s2][presenter_twitter]'][ $i ] ); ?>" />
+                        </div>
+
+                        <div class="input">
+                            <label>Previous Presentation Experience</label>
+                            <div class="info">Share a URL to a video of you giving this same or another presentation. Or list where (events, schools, meetings, etc.) where you have presented previously.</div>
+                             <input type="text" name="data[s2][presenter_previous][<?php echo esc_attr( ( $i + 1 ) ); ?>]" value="<?php echo esc_attr( $this->form['data[s2][presenter_previous]'][ $i ] ); ?>" />
+                        </div>  
+    
                         <?php if ( $i == 0 ) : ?>
-                        
-                            <div class="input">
-                                <label>Presenter Bio *</label>
-                                <div class="info">This bio will appear on your exhibit sign and on our website. Limited to 200 characters.</div>
-                                <textarea name="data[s2][presenter_bio][<?php echo esc_attr( ( $i + 1 ) ); ?>]" maxlength="200" class="default-bio"><?php echo esc_textarea( $this->form['data[s2][presenter_bio]'][ $i ] ); ?></textarea>
-                            </div> 
 
                             <div class="input presenter-photo">
                                 <label>Presenter Photo *</label>

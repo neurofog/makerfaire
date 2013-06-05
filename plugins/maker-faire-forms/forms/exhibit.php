@@ -417,12 +417,18 @@
                         <label>Maker Bio *</label>
                         <div class="info">Limited to 200 characters or less.</div>
                          <?php $this->textarea('data[s2][maker_bio]', array('maxlength'=>200, 'class'=>'mf-shorter-field default-bio')); ?>
-                    </div>				
+                    </div>	
+                    <div class="input">
+                        <label>Maker Twitter Handle</label>
+                        <div class="info">Enter your twitter username (e.g. @makerfaire).</div>
+                        <?php $this->text( 'data[s2][maker_twitter]' ); ?>
+                    </div>			
                     <div class="input">
                         <label>Maker Photo *</label>
                         <div class="info">File must be at least 500px wide or larger. PNG, JPG or GIF formats only.</div>
                         <?php $this->file('data[s2][maker_photo]', 'maker_photo'); ?>
                     </div>
+                    
 				</div>
 				<!-- OPTION TWO: MAKER TEAM -->
                 <div id="m-maker" class="<?php echo esc_attr((strpos($this->form['data[s2][maker]'], 'list') !== false ? '' : 'h')); ?>">
@@ -445,6 +451,11 @@
 	                                <div class="info">This bio will appear on the Maker Faire website and mobile app. Limited to 200 characters. If you have listed more than one maker, we will link to the maker accounts you've listed above and display each of their personal bios.</div>
 	                                <textarea name="data[s2][m_maker_bio][<?php echo esc_attr(($i + 1)); ?>]" maxlength="200" class="mf-shorter-field default-bio"><?php echo esc_html($this->form['data[s2][m_maker_bio]'][$i]); ?></textarea>
 	                            </div>
+	                            <div class="input">
+			                        <label>Maker Twitter Handle</label>
+			                        <div class="info">Enter your twitter username (e.g. @makerfaire).</div>
+			                        <?php $this->text( 'data[s2][m_maker_twitter]' ); ?>
+			                    </div>	
 	                            <?php if($i == 0) : ?>			
 		                            <div class="input maker-photo">
 		                                <label>Maker Photo *</label>
@@ -462,7 +473,7 @@
 				
 				<!-- OPTION THREE: GROUP/ASSOCIATION -->
                 <div id="group-maker" class="<?php echo esc_attr((strpos($this->form['data[s2][maker]'], 'group') !== false ? '' : 'h')); ?>">
-                	<label>A Group or Association</label>
+                	<h2>A Group or Association</h2>
                     <div class="info">This name, bio and photo will appear on the Maker Faire website and mobile app.</div>
                     <div class="input">
                         <label>Group Name *</label>
@@ -486,6 +497,12 @@
                         <div class="info">Example: http://www.groupwebsite.com/</div>
                         <?php $this->text('data[s2][group_website]'); ?>
                     </div>
+
+                    <div class="input">
+                        <label>Group Twitter Handle</label>
+                        <div class="info">Enter your groups twitter username (e.g. @makerfaire).</div>
+                        <?php $this->text( 'data[s2][group_twitter]' ); ?>
+                    </div>	
                 </div>
 				<h2 style="margin-bottom:20px;">Private Contact Information <small>(for Maker staff use only)</small></h2>
                 <div class="input">
