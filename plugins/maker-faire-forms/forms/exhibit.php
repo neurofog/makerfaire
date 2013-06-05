@@ -73,7 +73,7 @@
 		});
 
 		$('input[name=data\\[s1\\]\\[booth_location\\]]').click(function() {
-			if($(this).val() == 'Outdoor' || $(this).val() == 'Either')
+			if( $(this).val() === 'Either' || $(this).val() === 'Outside' )
 				$('.dp-location').show();
 			else
 				$('.dp-location').hide();
