@@ -141,7 +141,7 @@ class MAKER_FAIRE_FORM {
 					'phone1_type'      => 1,
 					'phone2'           => 0,
 					'phone2_type'      => 0,
-					'onsite_phone'     => 1,
+					'onsite_phone'     => 0,
 
 					'private_address'  => 1,
 					'private_address2' => 0,
