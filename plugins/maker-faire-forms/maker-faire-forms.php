@@ -2069,21 +2069,21 @@ class MAKER_FAIRE_FORM {
 		$m.='<p>Thanks for your interest in participating in World Maker Faire New York 2013! We have received your application for: <strong>' . esc_html( $n ) . '</strong> ' . $app_info . '.</p>';
 		if (  $r['form_type'] == 'presenter' ) {
 			$m .= '<p><strong>You can update your presentation application anytime until August 1st</strong>. <em>(Note that those submitting panel presentation proposals are responsible for collecting and entering all bio information from proposed panelists—so please come back and finish your application if those fields are not yet complete.)</em></p>';
-			$m.='<ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li>';
-			$m.='<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
+			$m .= '<ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li>';
+			$m .= '<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
 			$m .= '<p>You will be notified as to the status of your application no later than August 12th.</p>';
 			$m .= '<p>If your presentation is accepted, we will do our best to accomodate your requests.  Please understand that your requests are not guaranteed. What we can provide will be confirmed in a follow-up letter after acceptance.';
 			$m .= '<p>Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.</p>';
 			$m .= '<p>Sabrina Merlo<br />Program Director<br />Maker Faire';
 		} else {
-			$m .='<p>You can update your application anytime until the Call For Makers closes:</p>';
-			$m.='<ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li>';
-			$m.='<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
-			$m .='<p>You will be notified as to the status of your application no later than August 5th.</p>';
-			$m.='<p>If your application is accepted, we have agreed to the concept of your exhibit, however, we are not able to  guarantee all of your requests at this time. What we can provide will be outlined in a confirmation letter before the event.</p>';
-			$m.='<p>Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.</p>';
-			$m.='<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
-			$m.='<p>Maker Faire (<a href="http://makerfaire.com">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
+			$m .= '<p>You can update your application anytime until the Call For Makers closes:</p>';
+			$m .= '<ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li>';
+			$m .= '<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
+			$m .= '<p>You will be notified as to the status of your application no later than August 5th.</p>';
+			$m .= '<p>If your application is accepted, we have agreed to the concept of your exhibit, however, we are not able to  guarantee all of your requests at this time. What we can provide will be outlined in a confirmation letter before the event.</p>';
+			$m .= '<p>Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.</p>';
+			$m .= '<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
+			$m .= '<p>Maker Faire (<a href="http://makerfaire.com">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		}
 		$m.='<p>Maker Media, Inc.<br />1005 Gravenstein Hwy North<br />Sebastopol, CA 95472</p>';
 		$m.='<br /><br /><br /><p>Maker Faire ' . $app_info . ' Application Received: ' . $app_name . '</p>';
