@@ -48,7 +48,6 @@
         
         <div class="input">
             <label>Performer, Band, or Group Name *</label>
-            <div class="info">Response limited to 50 characters</div>
             <?php $this->text( 'data[s1][performer_name]' ); ?>
         </div>
         
@@ -237,13 +236,17 @@
         <p class="btn btn-large"><a href="<?php echo home_url(); ?>/makerprofile/">Preview your Profile</a></p>
 	</div>
     <!--STEP 6 END-->
-	<div class="review" style="display:none">
-        <input type="button" class="mf-edit-app" value="Edit Application" /><input type="submit" value="Submit Application" />
+	<div class="review" style="display:none; position:relative;">
+        <input type="button" class="mf-edit-app" value="Edit Application" />
+        <div class="ajax-loader save" style="display:none; position:absolute; left:112px; top:0;">
+            <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/ajax-loader.gif" alt="Loading..."> Saving Application...
+        </div>
+        <input type="submit" class="submitt-app" value="Submit Application" />
         <h1 style="margin:20px 0">Your Application:</h1>
         <div class="inner"></div>
     </div>
     <div class="ajax-loader" style="display:none;">
-        <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/ajax-loader.gif" alt="Loading..." class="ajax-loader"> Loading Next Step...
+        <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/ajax-loader.gif" alt="Loading..."> Loading Next Step...
     </div>
     <input type="button" class="mf-edit-app" value="Edit Application" /><input type="submit" value="Continue" /><br />
     <div class="info">

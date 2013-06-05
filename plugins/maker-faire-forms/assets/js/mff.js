@@ -114,7 +114,9 @@ jQuery(function($) {
 			window.scrollTo(0, 0);
 		}
 	}); 
+	
 
+	// Load our loading screen when clicking the continue button
 	$('.mf-form input[type=submit]').click(function() { 
 
 		console.log('Loading Next Step....');
@@ -122,6 +124,16 @@ jQuery(function($) {
 		$(this).hide();
 		$('.ajax-loader').show();
 	});
+
+	// Show our loading screen when clicking the "Submit Application" button
+	$('.mf-form input[type=submit].save').click(function() {
+		console.log('Saving the Application....');
+
+		$(this).hide();
+		$('.ajax-loader').show();
+	});
+
+	
 	
 	enable_breadcrumb();
 	$('.mf-breadcrumbs div:nth-of-type('+step+')').click();

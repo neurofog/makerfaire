@@ -259,10 +259,9 @@
             <?php $this->radio('data[s3][first_makerfaire]', array('Yes', 'No')); ?>
         </div>
         
-        <h3>In addition to your presentation, if you're interested in having a related all-weekend exhibit, you can apply for an exhibit space.</h3>
-        
         <div class="input">
             <label>Have you already or will you submit an application for a related exhibit?</label>
+            <h3>In addition to your presentation, if you're interested in having a related all-weekend exhibit, you can apply for an exhibit space.</h3>
             <div class="info">If yes, please fill out the exhibit application in addition to submitting this one, and indicate in that form that you have also applied for a presenter slot.</div>
             <?php $this->radio('data[s3][exhibit]', array('Yes', 'No')); ?>
         </div>
@@ -308,13 +307,17 @@
         <p class="btn btn-large"><a href="<?php echo home_url(); ?>/makerprofile/">Preview your Profile</a></p>
     </div>
     <!--STEP 6 END-->
-    <div class="review" style="display:none">
-        <input type="button" class="mf-edit-app" value="Edit Application" /><input type="submit" value="Submit Application" />
+    <div class="review" style="display:none; position:relative;">
+        <input type="button" class="mf-edit-app" value="Edit Application" />
+        <div class="ajax-loader save" style="display:none; position:absolute; left:112px; top:0;">
+            <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/ajax-loader.gif" alt="Loading..."> Saving Application...
+        </div>
+        <input type="submit" class="submitt-app" value="Submit Application" />
         <h1 style="margin:20px 0">Your Application:</h1>
         <div class="inner"></div>
     </div>
     <div class="ajax-loader" style="display:none;">
-        <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/ajax-loader.gif" alt="Loading..." class="ajax-loader"> Loading Next Step...
+        <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/ajax-loader.gif" alt="Loading..."> Loading Next Step...
     </div>
     <input type="button" class="mf-edit-app" value="Edit Application" /><input type="submit" value="Continue" /><br />
     <div class="info">
