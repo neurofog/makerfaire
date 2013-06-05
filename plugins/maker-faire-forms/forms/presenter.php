@@ -1,5 +1,6 @@
 <script>
-
+    
+    // Count how many presenters we have listed
     num = <?php echo intval(count($this->form['data[s2][presenter_name]'])); ?>;
 
     jQuery(function($) {
@@ -12,31 +13,39 @@
         });
         
         $('#add-maker').click(function() {
-                                       
-            num++;                         
-                                       
-            m = $('#m-maker-inner .maker:first-of-type').clone();
 
-            $('input, textarea', m).val('');
+            // increase our number yo
+            num++;
+                                       
+            new_maker = $('#m-maker-inner > .maker:first').clone();
 
-            $('input, textarea', m).each(function() {
-                n = $(this).attr('name');
-                n = n.replace(/\[[0-9]\]/g, '['+num+']');
-                $(this).attr('name', n);
+            // Clear the values for our cloned maker
+            $('input, textarea', new_maker).val('');
+
+            // Replace the array key for the new maker with a higher number
+            $('input, textarea', new_maker).each(function() {
+                name = $(this).attr('name');
+                name = name.replace(/\[[0-9]\]/g, '[' + num + ']');
+
+                $(this).attr('name', name);
             });
 
-            $('.input', m).each(function() {
-                if( !$('input', $(this)).hasClass('default-name') && !$('input', $(this)).hasClass('default-email') )
-                    $(this).remove();
-            });         
-            
-            $(m).prepend('<div class="del">[x] delete</div>');
-            $('#m-maker-inner').append(m);
+            // Remove all the extra fields if an image is already present
+            $('.presenter-photo', new_maker).remove();   
+
+            // After all of that, let's add our new maker
+            $('#m-maker-inner').append(new_maker);
+
+            // Add our delete button
+            $(new_maker).prepend('<div class="del">[x] delete</div>');
+
+            // Delete our maker if we click the button, this is needed for the newly created elements
             $('.maker .del').click(function() {
                 $(this).parent().remove();
             });
         });
         
+        // Delete our maker if we click the button
         $('.maker .del').click(function() {
             $(this).parent().remove();
         });
@@ -211,26 +220,32 @@
                             <input type="text" name="data[s2][presenter_title][<?php echo esc_attr( ( $i + 1 ) ); ?>]" value="<?php echo esc_attr( $this->form['data[s2][presenter_title]'][ $i ] ); ?>" />
                         </div>
 
+                        <div class="input">
+                            <label>Presenter Bio *</label>
+                            <div class="info">This bio will appear on your exhibit sign and on our website. Limited to 200 characters. If you have listed more than one presenter, we will link to the maker accounts you've listed and display each of their personal bios.</div>
+                            <textarea name="data[s2][presenter_bio][<?php echo esc_attr( ( $i + 1 ) ); ?>]" maxlength="200" class="default-bio"><?php echo esc_textarea( $this->form['data[s2][presenter_bio]'][ $i ] ); ?></textarea>
+                        </div>
+
                         <?php if ( $i == 0 ) : ?>
+                        
                             <div class="input">
                                 <label>Presenter Bio *</label>
                                 <div class="info">This bio will appear on your exhibit sign and on our website. Limited to 200 characters.</div>
                                 <textarea name="data[s2][presenter_bio][<?php echo esc_attr( ( $i + 1 ) ); ?>]" maxlength="200" class="default-bio"><?php echo esc_textarea( $this->form['data[s2][presenter_bio]'][ $i ] ); ?></textarea>
                             </div> 
-                            <div class="input">
+
+                            <div class="input presenter-photo">
                                 <label>Presenter Photo *</label>
                                 <div class="info">Headshot Preferred. File must be at least 500px wide or larger. PNG, JPG or GIF formats only.</div>
                                 <?php $this->file( 'data[s2][presenter_photo]', 'presenter_photo' ); ?>
                             </div>
                         <?php endif; ?>
- 
-                        <?php if ( $i == 0 ) : ?>
-                            <div class="input">
-                                <label>Onsite Phone Number *</label>
-                                <div class="info">Please provide a mobile phone number so that we are able to reach the presenter onsite during the event if the need arises. <strong><u>This number will only be used by Maker Faire staff</strong></u>.</div>
-                                <input type="text" name="data[s2][presenter_onsite_phone][<?php echo esc_attr( ( $i + 1 ) ); ?>]" value="<?php echo esc_attr( $this->form['data[s2][presenter_onsite_phone]'][ $i ] ); ?>" />
-                            </div>
-                        <?php endif; ?>
+
+                        <div class="input">
+                            <label>Onsite Phone Number *</label>
+                            <div class="info">Please provide a mobile phone number so that we are able to reach the presenter onsite during the event if the need arises. <strong><u>This number will only be used by Maker Faire staff</strong></u>.</div>
+                            <input type="text" name="data[s2][presenter_onsite_phone][<?php echo esc_attr( ( $i + 1 ) ); ?>]" value="<?php echo esc_attr( $this->form['data[s2][presenter_onsite_phone]'][ $i ] ); ?>" />
+                        </div>
 
                     </div>
 
