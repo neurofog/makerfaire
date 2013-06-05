@@ -2054,7 +2054,7 @@ class MAKER_FAIRE_FORM {
 		$m.='<br /><br /><br /><p>Maker Faire ' . ' [' . esc_html( ucfirst( $r['form_type'] ) ) . ' ' . $id . ']' . ' Application Received: ' . $app_name . '</p>';
 		$m.='</body></html>';
 
-		$subject = 'Maker Faire Application Received: ' . $app_name . ' [' . esc_attr( ucfirst( $r['form_type'] ) ) .': '  . $id . ']';
+		$subject = 'Maker Faire Application Received: ' . $app_name . ' ['  . $id . ']';
 
 		$r = wp_mail( $r['email'], $subject, htmlspecialchars_decode( stripslashes( $m ) ), array( 'Content-Type: text/html', 'From: Maker Faire <makers@makerfaire.com>','Bcc: Maker Faire <makers@makerfaire.com>' ) );
 		

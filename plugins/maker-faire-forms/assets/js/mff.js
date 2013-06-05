@@ -118,17 +118,12 @@ jQuery(function($) {
 
 	// Load our loading screen when clicking the continue button
 	$('.mf-form input[type=submit]').click(function() { 
-
-		console.log('Loading Next Step....');
-
 		$(this).hide();
 		$('.ajax-loader').show();
 	});
 
 	// Show our loading screen when clicking the "Submit Application" button
 	$('.mf-form input[type=submit].save').click(function() {
-		console.log('Saving the Application....');
-
 		$(this).hide();
 		$('.ajax-loader').show();
 	});
