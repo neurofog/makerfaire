@@ -359,9 +359,9 @@
             <?php $this->textarea('data[s1][radio_details]'); ?>
         </div>
 		
+		<h2>Saftey</h3>
 		<div class="input">
-            <label>Safety</label>
-            <div class="info">Does your exhibit contain fire (any size flame), chemicals, or other dangerous materials or tools (propane, welders, etc)?</div>
+            <label>Does your exhibit contain fire (any size flame), chemicals, or other dangerous materials or tools (propane, welders, etc)?</label>
             <?php $this->radio('data[s1][fire]', array('Yes', 'No')); ?>
         </div>
 

@@ -2125,11 +2125,12 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	private function send_maker_invite_email( $id, $emails, $r, $n ) {
 		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>';
-		$m.='<p>Thanks for your interest in participating in Maker Faire Bay Area 2013!</p><br />';
-		$m.='<p>'.esc_html( ucwords( $r['name'] ) ).' has submitted an application and indicated you were part of their exhibit or presentation. We need you to create a maker account at ';
-		$m.='<a href="'.home_url().'/?register=1" alt="Maker Faire">makerfaire.com</a> and provide some additional details that we can include about you.</p>';
-		$m.='<br /><p>Spread the word - Like us on <a href="http://facebook.com/makerfaire" alt="Like Maker Faire Facebook">Facebook</a> and follow us on ';
-		$m.='<a href="https://twitter.com/#%21/makerfaire" alt="Follow Maker Faire Twitter">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts" alt="Maker Faire Google+">G+</a></p>';
+		$m .= '<p>Thanks for your interest in participating in World Maker Faire New York 2013!</p><br />';
+		$m .= '<p>'.esc_html( ucwords( $r['name'] ) ).' has submitted an application and indicated you were part of their exhibit or presentation. We need you to create a maker account at ';
+		$m .= '<a href="'.home_url().'/?register=1" alt="Maker Faire">makerfaire.com</a> and provide some additional details that we can include about you.</p>';
+		$m .= '<p>Create an account by selecting “Register” in the header.</p>';
+		$m .= '<br /><p>Spread the word - Like us on <a href="http://facebook.com/makerfaire" alt="Like Maker Faire Facebook">Facebook</a> and follow us on ';
+		$m .= '<a href="https://twitter.com/#%21/makerfaire" alt="Follow Maker Faire Twitter">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts" alt="Maker Faire Google+">G+</a></p>';
 
 		$app_name = str_replace( '&amp;', '&', esc_html( $n ) );
 
