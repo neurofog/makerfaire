@@ -1,5 +1,6 @@
 <script>
 	
+	// Count how many presenters we have listed
 	num = <?php echo intval(count($this->form['data[s2][m_maker_name]'])); ?>;
 
 	jQuery(function($) 
@@ -84,27 +85,42 @@
 		});
 		
 		$('#add-maker').click(function() {
-			
-			num++;
-			
-			m = $('#m-maker-inner .maker:first-of-type').clone();
-			$('input, textarea', m).val('');
-			
-			$('input, textarea', m).each(function() {
-				n = $(this).attr('name');
-				n = n.replace(/\[[0-9]\]/g, '['+num+']');
-				$(this).attr('name', n);
-			});
-			
-			$('.input', m).each(function() {
-				if($(this).index() > 1)
-					$(this).remove();
-			});
-			
-			$(m).prepend('<div class="del">[x] delete</div>');
-			$('#m-maker-inner').append(m);
-			$('.maker .del').click(function() {$(this).parent().remove();});
-		});
+
+            // increase our number yo
+            num++;
+                                       
+            new_maker = $('#m-maker-inner > .maker:first').clone();
+
+            // Clear the values for our cloned maker
+            $('input, textarea', new_maker).val('');
+
+            // Replace the array key for the new maker with a higher number
+            $('input, textarea', new_maker).each(function() {
+                name = $(this).attr('name');
+                name = name.replace(/\[[0-9]\]/g, '[' + num + ']');
+
+                $(this).attr('name', name);
+            });
+
+            // Remove all the extra fields if an image is already present
+            $('.maker-photo', new_maker).remove();   
+
+            // After all of that, let's add our new maker
+            $('#m-maker-inner').append(new_maker);
+
+            // Add our delete button
+            $(new_maker).prepend('<div class="del">[x] delete</div>');
+
+            // Delete our maker if we click the button, this is needed for the newly created elements
+            $('.maker .del').click(function() {
+                $(this).parent().remove();
+            });
+        });
+        
+        // Delete our maker if we click the button
+        $('.maker .del').click(function() {
+            $(this).parent().remove();
+        });
 		
 	});
 </script>
@@ -414,29 +430,29 @@
                     <div class="info">These names, bio and photo will appear on the Maker Faire website and mobile app.</div>
                     <div id="m-maker-inner">
                     	<?php for($i=0; $i < count($this->form['data[s2][m_maker_name]']); $i++ ) : ?>
-                    	<div class="maker">
-                        	<?php if($i) : ?><div class="del">[x] delete</div><?php endif; ?>
-                            <div class="input">
-                                <label>Maker Name *</label>
-                                <input type="text" class="default-name"  name="data[s2][m_maker_name][<?php echo esc_attr(($i + 1)); ?>]" value="<?php echo esc_attr($this->form['data[s2][m_maker_name]'][$i]); ?>" />
-                            </div> 
-                            <div class="input">
-                                <label>Maker Email *</label>
-                                <input type="text" class="default-email"  name="data[s2][m_maker_email][<?php echo esc_attr(($i + 1)); ?>]" value="<?php echo esc_attr($this->form['data[s2][m_maker_email]'][$i]); ?>" />
-                            </div> 
-                            <?php if($i == 0) : ?>
-                            <div class="input">
-                                <label>Maker Bio *</label>
-                                <div class="info">This bio will appear on the Maker Faire website and mobile app. Limited to 200 characters. If you have listed more than one maker, we will link to the maker accounts you've listed above and display each of their personal bios.</div>
-                                <textarea name="data[s2][m_maker_bio][<?php echo esc_attr(($i + 1)); ?>]" maxlength="200" class="mf-shorter-field default-bio"><?php echo esc_html($this->form['data[s2][m_maker_bio]'][$i]); ?></textarea>
-                            </div>				
-                            <div class="input">
-                                <label>Maker Photo *</label>
-                                <div class="info">File must be at least 500px wide or larger. PNG, JPG or GIF formats only.</div>
-                                <?php $this->file('data[s2][m_maker_photo]', 'm_maker_photo'); ?>
-                            </div>
-                            <?php endif; ?>
-                        </div>
+	                    	<div class="maker">
+	                        	<?php if($i) : ?><div class="del">[x] delete</div><?php endif; ?>
+	                            <div class="input">
+	                                <label>Maker Name *</label>
+	                                <input type="text" class="default-name"  name="data[s2][m_maker_name][<?php echo esc_attr(($i + 1)); ?>]" value="<?php echo esc_attr($this->form['data[s2][m_maker_name]'][$i]); ?>" />
+	                            </div> 
+	                            <div class="input">
+	                                <label>Maker Email *</label>
+	                                <input type="text" class="default-email"  name="data[s2][m_maker_email][<?php echo esc_attr(($i + 1)); ?>]" value="<?php echo esc_attr($this->form['data[s2][m_maker_email]'][$i]); ?>" />
+	                            </div> 
+	                            <div class="input">
+	                                <label>Maker Bio *</label>
+	                                <div class="info">This bio will appear on the Maker Faire website and mobile app. Limited to 200 characters. If you have listed more than one maker, we will link to the maker accounts you've listed above and display each of their personal bios.</div>
+	                                <textarea name="data[s2][m_maker_bio][<?php echo esc_attr(($i + 1)); ?>]" maxlength="200" class="mf-shorter-field default-bio"><?php echo esc_html($this->form['data[s2][m_maker_bio]'][$i]); ?></textarea>
+	                            </div>
+	                            <?php if($i == 0) : ?>			
+		                            <div class="input maker-photo">
+		                                <label>Maker Photo *</label>
+		                                <div class="info">File must be at least 500px wide or larger. PNG, JPG or GIF formats only.</div>
+		                                <?php $this->file('data[s2][m_maker_photo]', 'm_maker_photo'); ?>
+		                            </div>
+	                            <?php endif; ?>
+	                        </div>
                         <?php endfor; ?>
                     </div>
                     <div id="add-maker">+ Add Maker</div>
