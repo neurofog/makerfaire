@@ -2052,11 +2052,21 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	private function send_maker_email( $r, $n, $id ) {
 
-		$app_name = str_replace( '&amp;', '&', esc_html( $n ) );
+		// Don't send if there's no email or no form type
+		if ( empty( $r['form_type'] ) || empty( $r['email'] ) )
+			return false;
 
+		// Setup app info
+		$app_name = str_replace( '&amp;', '&', esc_html( $n ) );
+		$app_info = '[' . esc_html( ucfirst( $r['form_type'] ) ) . ' ' . intval( $id ) . ']';
+
+		// Subject
+		$subject  = 'Maker Faire Application Received: ' . $app_name . ' ' . $app_info;
+
+		// Email Body
 		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>';
-		$m.='<p>'.esc_html( ucfirst( $r['name'] ) ).',</p>';
-		$m.='<p>Thanks for your interest in participating in World Maker Faire New York 2013! We have received your application for: <strong>'.esc_html( $n ).'</strong> [' . esc_html( ucfirst( $r['form_type'] ) ) . ' ' . $id . '].</p>';
+		$m.='<p>' . esc_html( ucfirst( $r['name'] ) ) . ',</p>';
+		$m.='<p>Thanks for your interest in participating in World Maker Faire New York 2013! We have received your application for: <strong>' . esc_html( $n ) . '</strong> ' . $app_info . '.</p>';
 		$m.='<p>You can update your application anytime until the Call For Makers closes:</p>';
 		$m.='<ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li>';
 		$m.='<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
@@ -2066,17 +2076,20 @@ class MAKER_FAIRE_FORM {
 		$m.='<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
 		$m.='<p>Maker Faire (<a href="http://makerfaire.com">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		$m.='<p>Maker Media, Inc.<br />1005 Gravenstein Hwy North<br />Sebastopol, CA 95472</p>';
-		$m.='<br /><br /><br /><p>Maker Faire ' . ' [' . esc_html( ucfirst( $r['form_type'] ) ) . ' ' . $id . ']' . ' Application Received: ' . $app_name . '</p>';
+		$m.='<br /><br /><br /><p>Maker Faire ' . $app_info . ' Application Received: ' . $app_name . '</p>';
 		$m.='</body></html>';
 
-		$subject = 'Maker Faire Application Received: ';
-		$subject .= '[';
-		$subject .= esc_html( ucfirst( $r['form_type'] ) ) . ' ';
-		$subject .= intval( $id ) . ' ';
-		$subject .= $app_name;
-		$subject .= ']';
+		$body = htmlspecialchars_decode( stripslashes( $m ) );
 
-		$r = wp_mail( $r['email'], $subject, htmlspecialchars_decode( stripslashes( $m ) ), array( 'Content-Type: text/html', 'From: Maker Faire <makers@makerfaire.com>','Bcc: Maker Faire <makers@makerfaire.com>' ) );
+		// Headers
+		$headers = array(
+			'Content-Type: text/html',
+			'From: Maker Faire <makers@makerfaire.com>',
+			'Bcc: Maker Faire <makers@makerfaire.com>'
+		);
+
+		// Send the email
+		$r = wp_mail( $r['email'], $subject, $body, $headers );
 		
 		return $r;
 	}
