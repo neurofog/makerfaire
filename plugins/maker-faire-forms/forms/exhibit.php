@@ -71,6 +71,13 @@
 			else
 				$('.dp-company').hide();
 		});
+
+		$('input[name=data\\[s1\\]\\[booth_location\\]]').click(function() {
+			if( $(this).val() === 'Either' || $(this).val() === 'Outside' )
+				$('.dp-location').show();
+			else
+				$('.dp-location').hide();
+		});
 		
 		$('input[name=data\\[s2\\]\\[maker\\]]').click(function() {
 																
@@ -297,7 +304,7 @@
             <?php $this->radio('data[s1][booth_location]', array('Inside', 'Outside', 'Either')); ?>      
         </div>
 		
-		<div class="input">
+		<div class="input dp-location <?php echo esc_attr((strpos($this->form['data[s1][booth_location]'], 'Inside') !== false ? '' : 'h')); ?>">
             <label>For outdoor exhibits, please mark all options that could work for you.</label>  
             <?php $this->checkbox('data[s1][booth_options]', array('With other Makers under a large tent', 'Open air', 'I can bring a tent/canopy with weights', 'Asphalt', 'Grass')); ?>
         </div>
