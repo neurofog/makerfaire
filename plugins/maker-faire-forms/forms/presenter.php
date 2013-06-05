@@ -175,6 +175,7 @@
         
         <div class="input">
             <label>Contact Phone Number *</label>
+            <div class="info">Please provide the best contact number for questions we may have during the planning process.</div>
             <?php $this->text( 'data[s2][phone1]', array( 'class'=>'mf-extra-short' ) ); ?> <?php //$this->select( 'data[s2][phone1_type]', array( 'mobile' => 'Mobile', 'home' => 'Home', 'work' => 'Work', 'other' => 'Other' ) ); ?>
         </div>
         
