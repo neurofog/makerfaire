@@ -2066,7 +2066,7 @@ class MAKER_FAIRE_FORM {
 		// Email Body
 		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>';
 		$m.='<p>' . esc_html( ucfirst( $r['name'] ) ) . ',</p>';
-		$m.='<p>Thanks for your interest in participating in World Maker Faire New York 2013! We have received your application for: <strong>' . esc_html( $n ) . '</strong> ' . $app_info . '.</p>';
+		$m.='<p>Thanks for your interest in participating in World Maker Faire New York 2013! We have received your application for: <strong>' . $app_name . '</strong> ' . $app_info . '.</p>';
 		if (  $r['form_type'] == 'presenter' ) {
 			$m .= '<p><strong>You can update your presentation application anytime until August 1st</strong>. <em>(Note that those submitting panel presentation proposals are responsible for collecting and entering all bio information from proposed panelists—so please come back and finish your application if those fields are not yet complete.)</em></p>';
 			$m .= '<ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li>';
