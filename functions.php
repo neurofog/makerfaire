@@ -373,3 +373,43 @@ function mf_hide_faires( $query ) {
 	}
 }
 // add_action( 'pre_get_posts', 'mf_hide_faires' );
+
+
+
+/**
+ * Counts the post numbers for the Dashboard.
+ */
+function mf_add_magazine_article_counts() {
+		if ( !post_type_exists( 'mf_form' ) ) {
+			 return;
+		}
+
+		$num_posts = wp_count_posts( 'mf_form' );
+		$num = number_format_i18n( $num_posts->accepted );
+		$text = _n( 'Application', 'Applications', intval($num_posts->accepted) );
+		if ( current_user_can( 'edit_posts' ) ) {
+			$url = admin_url( 'edit.php?post_type=mf_form' );
+			$num = '<a href="'.$url.'">'.$num.'</a>';
+			$text = '<a href="'.$url.'">'.$text.'</a>';
+		}
+		echo '<td class="first b b-mf_form">' . $num . '</td>';
+		echo '<td class="t mf_form">' . $text . '</td>';
+
+		echo '</tr>';
+
+		if ($num_posts->proposed > 0) {
+			$num = number_format_i18n( $num_posts->proposed );
+			$text = _n( 'Applications Pending', 'Applications Pending', intval($num_posts->proposed) );
+			if ( current_user_can( 'edit_posts' ) ) {
+				$url = admin_url( 'edit.php?post_status=proposed&post_type=mf_form' );
+				$num = '<a href="' . $url . '">' . $num . '</a>';
+				$text = '<a href="' . $url . '">' . $text . '</a>';
+			}
+			echo '<td class="first b b-recipes">' . $num . '</td>';
+			echo '<td class="t recipes">' . $text . '</td>';
+
+			echo '</tr>';
+		}
+}
+
+add_action('right_now_content_table_end', 'mf_add_magazine_article_counts');
