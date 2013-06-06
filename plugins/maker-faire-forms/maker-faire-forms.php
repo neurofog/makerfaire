@@ -2058,8 +2058,8 @@ class MAKER_FAIRE_FORM {
 	* @return boolean if wp_mail was successful.
 	* =====================================================================*/
 	private function send_maker_email( $r, $n, $id ) {
-		$bad = array( '&#039;', "\'", '&#8217;', '&#38;', '&#038;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;' );
-		$good = array( "'", "'", "'", "&", "&", '"', '"', '–', '>', '...' );
+		$bad  = array( '&#039;', "\'", '&#8217;', '&#38;', '&#038;', '&amp;', '&quot;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;', );
+		$good = array( "'",      "'",  "'",       "&",     "&",      '&',     '"',      "'",     '"',      '–',       '>',    '...',     );
 
 		// Don't send if there's no email or no form type
 		if ( empty( $r['form_type'] ) || empty( $r['email'] ) )
@@ -2070,7 +2070,7 @@ class MAKER_FAIRE_FORM {
 		$app_info = esc_html( '[' . ucfirst( $r['form_type'] ) . ' ' . intval( $id ) . ']' );
 
 		// Subject
-		$subject  = str_replace( $bad, $good, sprintf( 'Maker Faire Application Submitted: %s %s', $app_name,  $app_info ) );
+		$subject  = str_replace( $bad, $good, stripslashes( sprintf( 'Maker Faire Application Submitted: %s %s', $app_name , $app_info ) ) );
 
 		// Email Body
 		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>';
