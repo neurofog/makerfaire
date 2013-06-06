@@ -516,7 +516,9 @@ class MAKER_FAIRE_FORM {
 	* @param array $args Include arguments for the meta box.
 	* =====================================================================*/
 	public function meta_box( $post, $args ) {
-		$data = json_decode( str_replace( "\'", "'", $post->post_content ) );
+		$bad  = array( '&#039;', "\'", '&#8217;', '&#38;', '&#038;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;', 'u2018', 'u2019' );
+   		$good = array( "'",      "'",  "'",       "&",     "&",      '"',     '"',      '–',       '>',    '...',     "'",     "'",    );
+		$data = json_decode( str_replace( $bad, $good, $post->post_content ) );
 
 		if( $args['id'] == 'mf_save' ) { 
 			$wf = get_post_meta( $post->ID, '_mf_waiting_for', true );
@@ -929,7 +931,7 @@ class MAKER_FAIRE_FORM {
 											'</td>'+
 										'</tr>';
 								
-								$(html).insertAfter( $('#m_maker_bio, #presenter_title') );
+								$(html).insertAfter( $('#m_maker_bio, #presenter_previous') );
 								$('.add-maker-btn .button').unbind('click').click(mf_add_maker);
 							}
 							
@@ -941,16 +943,19 @@ class MAKER_FAIRE_FORM {
 										m_maker_email   : 'Add. Maker Email', 
 										m_maker_gigyaid : 'Add. Maker Gigyaid',
 										m_maker_bio     : 'Add. Maker Bio',
+										m_maker_twitter : 'Add. Maker Twitter',
 										m_maker_photo   : 'Add. Maker Photo URL'
 									},
 									presenter : {
-										presenter_name    : 'Add. Presenter Name',
-										presenter_email   : 'Add. Presenter Email', 
-										presenter_gigyaid : 'Add. Presenter Gigyaid',
-										presenter_bio     : 'Add. Presenter Bio',
-										presenter_org     : 'Add. Presenter Organization',
-										presenter_title   : 'Add. Presenter Title',
-										presenter_photo   : 'Add. Presenter Photo URL'
+										presenter_name     : 'Add. Presenter Name',
+										presenter_email    : 'Add. Presenter Email', 
+										presenter_gigyaid  : 'Add. Presenter Gigyaid',
+										presenter_bio      : 'Add. Presenter Bio',
+										presenter_org      : 'Add. Presenter Organization',
+										presenter_title    : 'Add. Presenter Title',
+										presenter_photo    : 'Add. Presenter Photo URL',
+										presenter_twitter  : 'Add. Presenter Twitter',
+										presenter_previous : 'Add. Presenter Previous'
 									}
 								};
 								
@@ -992,20 +997,21 @@ class MAKER_FAIRE_FORM {
 	* Creates Backend MakerFaire Application Forms
 	*
 	* @access public
-	* @param string $type Form type
-	* @param string $key Key for this field
-	* @param string $value Value of this field
-	* @param array $all_data All the data from the form
+	* 
+	* @param string $type     Form type
+	* @param string $key      Key for this field
+	* @param string $value    Value of this field
+	* @param array  $all_data All the data from the form
 	* =====================================================================*/
 	public function display_edit_field( $type, $key, $value, $all_data ) {
 		
 		$checkboxes = array( 
-			'booth_options'   => array(
+			'booth_options' => array(
 				'With other Makers under a large tent', 
 				'Open air', 
 				'I can bring a tent/canopy with weights', 
 				'Asphalt', 
-				'Grass'
+				'Grass',
 			),
 			'radio_frequency' => array(
 				'Remote Control (enter frequency band below)',
@@ -1021,90 +1027,95 @@ class MAKER_FAIRE_FORM {
 				'Something else on 2.4 GHz', 
 				'Something else on 5 GHz', 
 				'Something with an antenna, but I have no idea what'),
-			'length'          => array(
+			'length' => array(
 				'10 minutes', 
 				'20 minutes', 
-				'45 minutes'
-			)
+				'45 minutes',
+			),
+			'length_presentation' => array(
+				'12 minutes', 
+				'20 minutes', 
+				'45 minutes',
+			),
 		);
-		$radios     = array( 
-			'food'              => array('Yes', 'No'), 
-			'sales'             => array('Yes', 'No'), 
-			'activity'          => array('Yes', 'No'), 
-			'power'             => array('Yes', 'No'), 
-			'radio'             => array('Yes', 'No'), 
-			'fire'              => array('Yes', 'No'), 
-			'hands_on'          => array('Yes', 'No'), 
-			'first_time'        => array('Yes', 'No'), 
-			'first_makerfaire'  => array('Yes', 'No'), 
-			'exhibit'           => array('Yes', 'No'), 
+		$radios = array( 
+			'food'              => array( 'Yes', 'No' ), 
+			'sales'             => array( 'Yes', 'No' ), 
+			'activity'          => array( 'Yes', 'No' ), 
+			'power'             => array( 'Yes', 'No' ), 
+			'radio'             => array( 'Yes', 'No' ), 
+			'fire'              => array( 'Yes', 'No' ), 
+			'hands_on'          => array( 'Yes', 'No' ), 
+			'first_time'        => array( 'Yes', 'No' ), 
+			'first_makerfaire'  => array( 'Yes', 'No' ), 
+			'exhibit'           => array( 'Yes', 'No' ), 
 			'tables_chairs'     => array(
-				'None'     =>'No tables or chairs needed', 
-				'Standard' =>'1 table and 2 chairs', 
-				'Special'  =>'More than 1 table and 2 chairs. Specify your request below'
+				'None'     => 'No tables or chairs needed', 
+				'Standard' => '1 table and 2 chairs', 
+				'Special'  => 'More than 1 table and 2 chairs. Specify your request below',
 			), 
-			'booth_size'        => array(
+			'booth_size' => array(
 				'Mobile'   => 'My exhibit is mobile (no fixed exhibit space needed)',
 				'Tabletop' => 'Tabletop',
 				'10x10'    => '10\' x 10\'',
 				'10x20'    => '10\' x 20\'',
-				'Other'    => 'Other - Tell us your space size request below'
+				'Other'    => 'Other - Tell us your space size request below',
 			),
-			'booth_location'    => array(
+			'booth_location' => array(
 				'Inside', 
 				'Outside', 
-				'Either'
+				'Either',
 			), 
-			'lighting'          => array('Normal', 'Dark'), 
-			'noise'             => array(
+			'lighting' => array( 'Normal', 'Dark' ), 
+			'noise' => array(
 				'Normal - does not interfere with normal conversation', 
 				'Amplified - adjustable level of amplification', 
-				'Repetitive or potentially annoying sound', 'Loud!'
+				'Repetitive or potentially annoying sound', 'Loud!',
 			), 
-			'amps'              => array(
+			'amps' => array(
 				'5 amp circuit (0-500 watts, 110V)', 
 				'10 amp circuit (501-1000 watts, 110V)', 
 				'15 amp circuit (1001-1500 watts, 110V)', 
 				'20 amp circuit (1501-2000 watts, 110V)', 
 				'My exhibit requires power, but I need help determining my total power amperage', 
-				'Special power requirements noted below'
+				'Special power requirements noted below',
 			), 
-			'internet'          => array(
+			'internet'=> array(
 				'No internet access needed', 
 				'It would be nice to have WiFi internet access', 
-				'My exhibit must have WiFi internet access to work'
+				'My exhibit must have WiFi internet access to work',
 			), 
-			'maker'             => array(
+			'maker' => array(
 				'One maker', 
 				'A list of makers',
-				'A group or association'
+				'A group or association',
 			), 
-			'org_type'          => array(
+			'org_type' => array(
 				'Non-profit',
 				'Cause or mission-based organization',
 				'Established company or commercial entity',
-				'None of the above'
+				'None of the above',
 			), 
-			'performance_time'  => array(
+			'performance_time' => array(
 				'Saturday Only', 
 				'Sunday Only', 
 				'Either Saturday or Sunday; We\'re flexible but prefer to play only once.', 
 				'Both Saturday and Sunday; We\'d love to play both days if there\'s space and time in the schedule.', 
-				'All Weekend! We have our own separate setup and would like to play all weekend, if possible.'
+				'All Weekend! We have our own separate setup and would like to play all weekend, if possible.',
 			), 
 			'compensation_type' => array(
 				'Thanks for the opportunity to play! We are happy to play without financial compensation.', 
 				'We will play for guest tickets only.', 
-				'$ amount'
+				'$ amount',
 			), 
 			'presentation_type' => array(
 				'Presentation', 
-				'Panel Presentation'
+				'Panel Presentation',
 			), 
 			'availability'      => array(
 				'Either Saturday or Sunday', 
 				'Saturday only', 
-				'Sunday only'
+				'Sunday only',
 			)			
 		);
 		
@@ -1112,37 +1123,35 @@ class MAKER_FAIRE_FORM {
 		
 		if ( $this->is_textarea( $key ) ) : ?>
 		
-			<textarea name="<?php echo esc_attr( $type.'['.$key.']' ); ?>" /><?php echo htmlspecialchars_decode( esc_textarea( $this->convert_newlines( $value, "\n" ) ) ); ?></textarea>
+			<textarea name="<?php echo esc_attr( $type . '[' . $key . ']' ); ?>" /><?php echo htmlspecialchars_decode( esc_textarea( $this->convert_newlines( $value, "\n" ) ) ); ?></textarea>
 			
 		<?php elseif ( array_key_exists( $key, $checkboxes ) ) : ?>
 		
-			<?php foreach( $checkboxes[$key] as $dkey => $data ) : $dkey = !is_int( $dkey ) ? $dkey : $data; ?>
-			<div>
-				<input name="<?php echo esc_attr( $type.'['.$key.']' ); ?>[]" type="checkbox" value="<?php echo esc_attr( $dkey ); ?>" <?php checked( in_array( $dkey, (array) $value ) ); ?> /> 
-				<?php echo esc_html( $data ) ?>
-			</div>
+			<?php foreach( $checkboxes[$key] as $dkey => $data ) : $dkey = ! is_int( $dkey ) ? $dkey : $data; ?>
+				<div>
+					<input name="<?php echo esc_attr( $type.'['.$key.']' ); ?>[]" type="checkbox" value="<?php echo esc_attr( $dkey ); ?>" <?php checked( in_array( $dkey, (array) $value ) ); ?> /> 
+					<?php echo esc_html( $data ) ?>
+				</div>
 			<?php endforeach; ?>
 			
 		<?php elseif ( array_key_exists( $key, $radios ) ) : ?>
 		
-			<?php foreach( $radios[$key] as $dkey => $data ) : $dkey = !is_int( $dkey ) ? $dkey : $data; ?>
-			<div>
-				<input name="<?php echo esc_attr( $type.'['.$key.']' ); ?>" type="radio" value="<?php echo esc_attr( $dkey ); ?>" <?php checked( $dkey == $value ); ?> /> 
-				<?php echo esc_html( $data ) ?>
-			</div>
+			<?php foreach( $radios[ $key ] as $dkey => $data ) : $dkey = ! is_int( $dkey ) ? $dkey : $data; ?>
+				<div>
+					<input name="<?php echo esc_attr( $type . '[' . $key . ']' ); ?>" type="radio" value="<?php echo esc_attr( $dkey ); ?>" <?php checked( $dkey == $value ); ?> /> 
+					<?php echo esc_html( $data ) ?>
+				</div>
 			<?php endforeach; ?>
 			
-		<?php 
-			
-			elseif ( $key == 'm_maker_name' || $key == 'presenter_name' ) : 
+		<?php elseif ( $key == 'm_maker_name' || $key == 'presenter_name' ) : 
 			
 			$init_fields = array(
 				'm_maker_name'   => array(
 					'm_maker_email', 
 					'm_maker_gigyaid', 
-					'm_maker_photo', 
+					'm_maker_photo',
+					'm_maker_twitter', 
 					'm_maker_bio',
-					'm_maker_twitter',
 				),
 				'presenter_name' => array(
 					'presenter_gigyaid',
@@ -1152,33 +1161,32 @@ class MAKER_FAIRE_FORM {
 					'presenter_onsite_phone',
 					'presenter_org',
 					'presenter_title',
-					'presenter_twitter',
-					'presenter_previous',
 				)
-			);
+			); ?>
 		
-		?>
-		
-			<input name="<?php echo esc_attr( $type.'['.$key.'][0]' ); ?>" value="<?php echo esc_attr( isset( $all_data[$key][0] ) ? $all_data[$key][0] : '' ); ?>" type="text" />
+			<input name="<?php echo esc_attr( $type . '[' . $key . '][0]' ); ?>" value="<?php echo esc_attr( isset( $all_data[ $key ][0] ) ? $all_data[ $key ][0] : '' ); ?>" type="text" />
 			</td></tr>
-			<?php 
-				foreach( $init_fields[$key] as $fn ) : 
-					$data = isset( $all_data[$fn][0] ) ? $all_data[$fn][0] : ''; 
-					
-					if( ( $fn == 'm_maker_gigyaid' || $fn == 'presenter_gigyaid' ) && $data == '' && isset( $all_data['uid'] ) )
-						$data = $all_data['uid'];
-			?>
-			<tr class="mf-form-row <?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $fn ); ?>">
-				<td valign="top"><?php echo esc_html( ucwords( str_replace( '_', ' ', $fn ) ) ); ?>:</td>
-				<?php if ( $fn == 'm_maker_bio' || $fn == 'presenter_bio' ) : ?>
-					<td><textarea name="<?php echo esc_attr( $type . '[' . $fn . '][0]' ); ?>" id="<?php echo esc_attr( $type . '[' . $fn . '][0]' ); ?>" cols="30" rows="10"><?php echo ( ! empty( $data ) ) ? esc_attr( $data ) : ''; ?></textarea></td>
-				<?php else : ?>
-					<td><input style="width:100%;" name="<?php echo esc_attr( $type.'['.$fn.'][0]' ); ?>" value="<?php echo esc_attr( $data ); ?>" type="text" /></td>
-				<?php endif; ?>
-			</tr>
-			<?php endforeach; ?>
-			<?php 
-			if ( is_array( $all_data[$key] ) ) :
+			<?php foreach( $init_fields[ $key ] as $fn ) : 
+				$data = isset( $all_data[ $fn ][0] ) ? $all_data[ $fn ][0] : ''; 
+				
+				if ( ( $fn == 'm_maker_gigyaid' || $fn == 'presenter_gigyaid' ) && $data == '' && isset( $all_data['uid'] ) )
+					$data = $all_data['uid']; ?>
+
+				<tr class="mf-form-row <?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $fn ); ?>">
+					<td valign="top"><?php echo esc_html( ucwords( str_replace( '_', ' ', $fn ) ) ); ?>:</td>
+
+					<?php if ( $fn == 'm_maker_bio' || $fn == 'presenter_bio' ) : ?>
+						<td><textarea name="<?php echo esc_attr( $type . '[' . $fn . '][0]' ); ?>" id="<?php echo esc_attr( $type . '[' . $fn . '][0]' ); ?>" cols="30" rows="10"><?php echo ( ! empty( $data ) ) ? esc_attr( $data ) : ''; ?></textarea></td>
+					<?php else : ?>
+						<td><input style="width:100%;" name="<?php echo esc_attr( $type . '[' . $fn . '][0]' ); ?>" value="<?php echo esc_attr( $data ); ?>" type="text" /></td>
+					<?php endif; ?>
+
+				</tr>
+			<?php endforeach;
+			
+
+			// If the data passed is an 'additional' maker
+			if ( is_array( $all_data[ $key ] ) ) :
 			
 				$add_fields = array(
 					'm_maker_name'   => array(
@@ -1186,48 +1194,49 @@ class MAKER_FAIRE_FORM {
 						'm_maker_email'   => 'Add. Maker Email', 
 						'm_maker_gigyaid' => 'Add. Maker Gigyaid',
 						'm_maker_bio'	  => 'Add. Maker Bio',
-						'm_maker_photo'   => 'Add. Maker Photo URL',
 						'm_maker_twitter' => 'Add. Maker Twitter Handle',
+						'm_maker_photo'   => 'Add. Maker Photo URL',
 					),
 					'presenter_name' => array(
-						'presenter_name'    => 'Add. Presenter Name',
-						'presenter_email'   => 'Add. Presenter Email', 
-						'presenter_gigyaid' => 'Add. Presenter Gigyaid',
-						'presenter_bio'		=> 'Add. Presenter Bio',
-						'presenter_org'		=> 'Add. Presenter Organization',
-						'presenter_title'	=> 'Add. Presenter Title',
-						'presenter_photo'	=> 'Add. Presenter Photo',
-						'presenter_bio'		=> 'Add. Presenter Bio',
-						'presenter_twitter' => 'Add. Presenter Twitter',
-						'presenter_previous'=> 'Add. Presenter Previous',
+						'presenter_name'     => 'Add. Presenter Name',
+						'presenter_email'    => 'Add. Presenter Email', 
+						'presenter_gigyaid'  => 'Add. Presenter Gigyaid',
+						'presenter_bio'		 => 'Add. Presenter Bio',
+						'presenter_org'		 => 'Add. Presenter Organization',
+						'presenter_title'	 => 'Add. Presenter Title',
+						'presenter_photo'	 => 'Add. Presenter Photo',
+						'presenter_bio'		 => 'Add. Presenter Bio',
+						'presenter_twitter'  => 'Add. Presenter Twitter',
+						'presenter_previous' => 'Add. Presenter Previous',
 					)
 				);
 
-				for($i = 1; $i < count($all_data[$key]); $i++) : 
-					foreach( $add_fields[$key] as $fkey => $ftitle ) : ?>
+				for ( $i = 1; $i < count( $all_data[ $key ] ); $i++ ) : 
+					foreach( $add_fields[ $key ] as $fkey => $ftitle ) : ?>
 						<tr class="mf-form-row add-maker">
 							<td valign="top"><?php echo esc_html( $ftitle ); ?>:</td>
 
 							<?php if ( $fkey == 'm_maker_bio' || $fkey == 'presenter_bio' ) : ?>
 								<td>
-									<textarea name="<?php echo esc_attr( $type.'['.$fkey.']['.$i.']' ); ?>" id="<?php echo esc_attr( $type.'['.$fkey.']['.$i.']' ); ?>" cols="30" rows="10"><?php echo esc_attr( isset( $all_data[$fkey][$i] ) ? $all_data[$fkey][$i] : '' ); ?></textarea>
+									<textarea name="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" id="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" cols="30" rows="10"><?php echo esc_attr( isset( $all_data[ $fkey ][ $i ] ) ? $all_data[ $fkey ][ $i ] : '' ); ?></textarea>
 								</td>
 							<?php else : ?>
 								<td>
-									<input name="<?php echo esc_attr( $type.'['.$fkey.']['.$i.']' ); ?>" value="<?php echo esc_attr( isset( $all_data[$fkey][$i] ) ? $all_data[$fkey][$i] : '' ); ?>" type="text" />
+									<input name="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" value="<?php echo esc_attr( isset( $all_data[ $fkey ][ $i ] ) ? $all_data[ $fkey ][ $i ] : '' ); ?>" type="text" />
 								</td>
 							<?php endif; ?>
 						</tr>
 					<?php endforeach; ?>
-				<tr class="remove-maker">
-					<td colspan="2">
-						<input onclick="mf_remove_maker( this )" type="button" value="Remove Maker Above" class="button button-primary button-large">
-					</td>
-				</tr>
-			<?php endfor; endif; ?>
+					<tr class="remove-maker">
+						<td colspan="2">
+							<input onclick="mf_remove_maker(this)" type="button" value="Remove Maker Above" class="button button-primary button-large">
+						</td>
+					</tr>
+				<?php endfor;
+			endif; ?>
 			
 		<?php else : ?>
-			<input name="<?php echo esc_attr( $type.'['.$key.']' ); ?>" value="<?php echo $san_value; ?>" type="text" />
+			<input name="<?php echo esc_attr( $type . '[' . $key . ']' ); ?>" value="<?php echo $san_value; ?>" type="text" />
 		<?php endif;
 	}
 

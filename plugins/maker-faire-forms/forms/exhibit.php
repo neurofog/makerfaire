@@ -388,8 +388,7 @@
 			<div class="information-inner">				
                 <div class="input">
                     <label>Contact Name</label>
-                    <h3 class="default-name"></h3>
-                    <input type="hidden" class="default-name" name="data[s2][name]" value="<?php echo esc_attr($this->form['data[s2][name]']); ?>" />
+                    <input type="text" class="default-name" name="data[s2][name]" value="<?php echo esc_attr($this->form['data[s2][name]']); ?>" />
                 </div>
                 
                 <div class="input">
