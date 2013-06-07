@@ -413,3 +413,22 @@ function mf_add_magazine_article_counts() {
 }
 
 add_action('right_now_content_table_end', 'mf_add_magazine_article_counts');
+
+function mf_send_hipchat_notification( $message = 'Default Message', $from = 'MakeBot' ) {
+	$base 		= 'https://api.hipchat.com/v1/rooms/message';
+	$auth_token = '9f4f9113e8eeb3754da520d295ca59';
+	$room 		= 198932;
+	$notify 	= 1;
+
+	$opts = array( 
+		'auth_token'=> $auth_token, 
+		'room_id'	=> $room, 
+		'from' 		=> $from, 
+		'notify' 	=> $notify,
+		'message'	=> urlencode( $message ),
+		'color'		=> 'green'
+	);
+
+	$url = add_query_arg( $opts, $base );
+	$json = wpcom_vip_file_get_contents( $url );
+}
