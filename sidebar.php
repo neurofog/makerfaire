@@ -74,17 +74,10 @@
 			</ul>
 		</div>	
 		
-		<div style="width:262px; margin: 0 auto;"><div data-an-widget-id="29q" data-an-size="3" data-an-button-theme="1" data-an-font-size="22" data-an-button-label="1" data-an-hover-card-direction="1" data-an-show-download-button="1" data-an-show-app-icon="1" data-an-hover-card="1" data-an-multi-platform="1" data-an-app-id="1578" class="an-widget-v3"></div>
-			<!-- if you include more than one widget on your site you should only include this script tag once -->
-			<script type='text/javascript'>
-				(function(d, s, id) {
-				  var js, fjs = d.getElementsByTagName(s)[0];
-				  if (d.getElementById(id)) return;
-				  js = d.createElement(s); js.id = id;
-				  js.src = "//d2c01jv13s9if1.cloudfront.net/w/widget_v3.js"; js.async = !0;
-				  fjs.parentNode.insertBefore(js, fjs);
-				}(document, 'script', 'tapp-jssdk'));
-			</script>
+		<div style="text-align:center">
+			<a href="http://makerfaire.com/newyork-2013-call-for-makers/">
+				<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/CalltoMakers_280px.png" alt="Call for Makers">
+			</a>
 		</div>
 		
 	</div>
