@@ -13,6 +13,9 @@ require_once( __DIR__ . '/post-types/maker.php' );
 // Markdown
 include_once dirname(__file__) . '/plugins/markdown/markdown.php';
 
+// Status Board
+include_once dirname(__file__) . '/plugins/status-board/status-board.php';
+
 require_once( 'taxonomies/type.php' );
 require_once( 'taxonomies/location.php' );
 require_once( 'taxonomies/faire.php' );
