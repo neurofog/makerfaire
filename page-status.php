@@ -5,10 +5,9 @@
 
 header('Content-type: application/json');
 
-// Simple API Keys. Basically, just XOMO needs this, and want to restrict access. Obviously not super secure, but doesn't need to be.
+// Simple API Keys. Basically, just let us see it with some simple authentication.
 $keys = array(
 		'make' => '4eqU!eT74!Exuca',
-		'xomo' => 'V_2az7na7RacrAp',
 		);
 $key = (!empty($_REQUEST['key']) ? $_REQUEST['key'] : null);
 

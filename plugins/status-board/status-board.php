@@ -3,22 +3,23 @@
  * Get the amount of new posts over the last five days for pending and accepted Maker Faire Applications
  */
 function mf_get_post_count() {
-	$today = getdate();
 	$accepted = array();
 	$output = array();
 	for ( $count = 0; $count <= 10; $count++ ) {
 		$query = wp_cache_get( 'today_posts_' . $count );
 		if ( $query == false ) {
+			$time = date( 'F jS, Y', strtotime( '-' . $count . ' days' ) );
+			$date = new DateTime( $time );
 			$args = array(
-				'year'			=> $today["year"],
-				'monthnum' 		=> $today["mon"],
-				'day'			=> $today["mday"] - $count,
+				'year'			=> $date->format('Y'),
+				'monthnum' 		=> $date->format('m'),
+				'day'			=> $date->format('d'),
 				'post_type'		=> 'mf_form',
 				'post_status'	=> 'accepted'
 				);
 			$query = new WP_Query( $args );
+			// var_dump( $query->query );
 			wp_cache_set( 'today_posts_' . $count, $query, '', 300 );
-			$time = date( 'F jS, Y', strtotime( '-' . $count . ' day', strtotime( $today['month'] . '-' . $today['wday'] . '-' . $today['year'] ) ) );
 			$the = array( 'title' => $time, 'value' => $query->post_count );
 			array_push( $accepted, $the );
 		}
@@ -27,26 +28,27 @@ function mf_get_post_count() {
 	for ( $count = 0; $count <= 10; $count++ ) {
 		$query = wp_cache_get( 'pending_today_posts_' . $count );
 		if ( $query == false ) {
+			$time = date( 'F jS, Y', strtotime( '-' . $count . ' days' ) );
+			$date = new DateTime( $time );
 			$args = array(
-				'year'			=> $today["year"],
-				'monthnum' 		=> $today["mon"],
-				'day'			=> $today["mday"] - $count,
+				'year'			=> $date->format('Y'),
+				'monthnum' 		=> $date->format('m'),
+				'day'			=> $date->format('d'),
 				'post_type'		=> 'mf_form',
-				'post_status'	=> 'pending'
+				'post_status'	=> 'proposed'
 				);
 			$query = new WP_Query( $args );
 			wp_cache_set( 'pending_today_posts_' . $count, $query, '', 300 );
-			$time = date( 'F jS, Y', strtotime( '-' . $count . ' day', strtotime( $today['month'] . '-' . $today['wday'] . '-' . $today['year'] ) ) );
 			$the = array( 'title' => $time, 'value' => $query->post_count );
 			array_push( $pending, $the );
 		}
 	}
 	$datasequences = array( 
 		array( 
-			'title' => 'Pending', 
+			'title' => 'Accepted', 
 			'datapoints' => $accepted
 		), array (
-			'title' => 'Accepted', 
+			'title' => 'Pending', 
 			'datapoints' => $pending
 		)
 	);
