@@ -18,7 +18,6 @@ function mf_get_post_count() {
 				'post_status'	=> 'accepted'
 				);
 			$query = new WP_Query( $args );
-			// var_dump( $query->query );
 			wp_cache_set( 'today_posts_' . $count, $query, '', 300 );
 			$the = array( 'title' => $time, 'value' => $query->post_count );
 			array_push( $accepted, $the );
