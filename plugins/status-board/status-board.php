@@ -58,7 +58,6 @@ function mf_get_post_count() {
  * Generate the array of data for Status Board.
  */
 function mf_application_stats( $output ) {
-
 	$graph = array( 
 		'graph' => array( 
 			'title' => 'Maker Faire Applications',
