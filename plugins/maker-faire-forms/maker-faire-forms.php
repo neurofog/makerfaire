@@ -705,17 +705,16 @@ class MAKER_FAIRE_FORM {
 												<td style="width:80px;" valign="top"><strong>Schedule Completed:</strong></td>
 												<td valign="top"><?php echo esc_html( $event_record['mfei_schedule_completed'][0] ); ?></td>
 											</tr>
-										<?php endif; if ( ! empty( $event_record['mfei_coverage'][0] ) ) : ?>
-											<tr>
-												<td style="width:80px;" valign="middle"><strong>Video:</strong></td>
-												<td valign="top">
-													<input type="text" id="video-coverage" name="video-coverage" style="width:25%;" value="<?php echo esc_url( $event_record['mfei_coverage'][0] ); ?>" />
-													<input type="hidden" name="event-id" value="<?php echo get_the_ID(); ?>" />
-												</td>
-											</tr>
-										<?php endif;
+										<?php endif; ?>
 
-									endwhile;
+										<tr>
+											<td style="width:80px;" valign="middle"><strong>Event Video:</strong></td>
+											<td valign="top">
+												<input type="text" id="video-coverage" name="video-coverage" style="width:25%;" value="<?php echo esc_url( $event_record['mfei_coverage'][0] ); ?>" />
+												<input type="hidden" name="event-id" value="<?php echo get_the_ID(); ?>" />
+											</td>
+										</tr>
+									<?php endwhile;
 								} else { ?>
 									<tr>
 										<td style="width:80px;" valign="top"><strong>Scheduled:</strong></a></td>
