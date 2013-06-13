@@ -541,17 +541,17 @@ function mf_schedule( $atts ) {
 			'meta_query' => array(
 				array(
 					'key' 	=> 'mfei_day',
-					'value'	=> 'Saturday'
-			   )
-			)
-			);
+					'value'	=> 'Saturday',
+				),
+			),
+		);
 		$query = new WP_Query( $args );
 		wp_cache_set( $location . '_saturday_schedule', $query, '', 300 );
 	}
 
 	$output .= '<table class="table table-striped table-bordered">';
 	while ( $query->have_posts() ) : $query->the_post();
-		$meta = get_post_meta( get_the_ID());
+		$meta = get_post_meta( get_the_ID() );
 		$sched_post = get_post( $meta['mfei_record'][0] );
 		$json = json_decode( mf_convert_newlines( str_replace( "\'", "'", $sched_post->post_content ) ) );
 		$day = ($meta['mfei_day'][0]) ? $meta['mfei_day'][0] : '' ;
@@ -588,6 +588,9 @@ function mf_schedule( $atts ) {
 		if (!empty($json->public_description)) {
 			$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) ;
 		}
+
+		if ( ! empty( $meta['mfei_coverage'][0] ) )
+			$output .= '<p><a href="' . esc_url( $meta['mfei_coverage'][0] ) . '" class="button">Watch Video</a></p>';
 		// $output .= '<ul class="unstyled">';
 		// $terms = get_the_terms( $sched_post->ID, array( 'category', 'post_tag' ) );
 		// if (!empty($terms)) {
@@ -661,6 +664,9 @@ function mf_schedule( $atts ) {
 			
 			$output .= Markdown( wp_kses_post( $content_clean ) ) ;
 		}
+		
+		if ( ! empty( $meta['mfei_coverage'][0] ) )
+			$output .= '<p><a href="' . esc_url( $meta['mfei_coverage'][0] ) . '" class="button">Watch Video</a></p>';
 		// $output .= '<ul class="unstyled">';
 		// $terms = get_the_terms( $sched_post->ID, array( 'category', 'post_tag' ) );
 		// if (!empty($terms)) {

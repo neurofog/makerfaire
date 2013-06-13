@@ -76,16 +76,16 @@ function makerfaire_add_meta_boxes() {
 function makerfaire_meta_box( $post ) {
 	
 	$meta = array(
-		'mfei_day'    => 'Saturday',
-		'mfei_start'  => '8:00 AM',
-		'mfei_stop'   => '8:30 AM',
-		'mfei_record' => ''
+		'mfei_day'    	=> 'Saturday',
+		'mfei_start'  	=> '8:00 AM',
+		'mfei_stop'   	=> '8:30 AM',
+		'mfei_record' 	=> '',
+		'mfei_coverage'	=> '',
 	);
 	
 	if( $post->post_status == 'publish' ) 
-		$meta = get_post_custom( $post->ID );
+		$meta = get_post_custom( $post->ID ); ?>
 
-	?>
 	<style>#ei-details label{font-weight:bold; display:block; margin:15px 0 5px 0;} #ei-details select,#ei-details input[type=text]{width:200px}</style>
 	<?php wp_nonce_field('mfei_nonce', 'mfei_submit_nonce'); ?>
 	<label>Day</label>
@@ -101,6 +101,8 @@ function makerfaire_meta_box( $post ) {
 	<select name="mfei_stop">
 		<?php makerfaire_create_time( $meta['mfei_stop'][0] ); ?>
 	</select>
+	<label>Coverage Video Link</label>
+	<input type="text" name="mfei_coverage" id="mfei_coverage" value="<?php echo esc_url ( $meta['mfei_coverage'][0] ); ?>" />
 	<label>Record Number - MUST BE VALID APPLICATION ID</label>
 	<?php
 		// Check if we are loading from a referring post and add that ID to our Record field
@@ -115,7 +117,7 @@ function makerfaire_meta_box( $post ) {
 	<input name="mfei_schedule_completed" type="checkbox" value="1" /> &nbsp; Event is Scheduled
 	<script>		
 		jQuery( '#ei-details a' ).click( function() {
-			window.open('/wp-admin/post.php?post='+ jQuery( '#mfei_record' ).val() +'&action=edit', '_blank');
+			window.open('/wp-admin/post.php?post=' + jQuery( '#mfei_record' ).val() + '&action=edit', '_blank');
 		});
 	</script>
 <?php	
@@ -164,7 +166,8 @@ function makerfaire_update_event( $id ) {
 		'mfei_day'    => sanitize_text_field( $_POST['mfei_day'] ),
 		'mfei_start'  => sanitize_text_field( $_POST['mfei_start'] ),
 		'mfei_stop'   => sanitize_text_field( $_POST['mfei_stop'] ),
-		'mfei_record' => $is_mf_form ? intval( $_POST['mfei_record'] ) : 0
+		'mfei_record' => $is_mf_form ? intval( $_POST['mfei_record'] ) : 0,
+		'mfei_coverage' => esc_url( $_POST['mfei_coverage'] ),
 	);
 
 	foreach( $meta as $meta_key => $meta_value ) {

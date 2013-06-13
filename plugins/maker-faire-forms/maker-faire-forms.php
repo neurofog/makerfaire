@@ -122,7 +122,7 @@ class MAKER_FAIRE_FORM {
 				's1' => array(
 					'performer_name'        => 1,
 					'private_description'   => 1,
-					// 'length'                => 0,
+					'length'                => 0,
 					'public_description'    => 1,
 					'performer_website'     => 0,
 					'performer_photo'       => 1,
@@ -163,7 +163,7 @@ class MAKER_FAIRE_FORM {
 			'presenter' => array(
 				's1' => array(
 					'presentation_type'        => 1,
-					// 'private_description'	   => 1,
+					'private_description'	   => 0,
 					'length_presentation'	   => 0,
 					'availablity'              => 0,
 					'special_requests'         => 0,
@@ -179,9 +179,9 @@ class MAKER_FAIRE_FORM {
 					'name'                  => 1,
 					'email'                 => 1,
 					'phone1'                => 1,
-					// 'phone1_type'           => 0,
+					'phone1_type'           => 0,
 					'phone2'                => 0,
-					// 'phone2_type'           => 0,
+					'phone2_type'           => 0,
 
 					'private_address'       => 1,
 					'private_address2'      => 0,
@@ -700,12 +700,21 @@ class MAKER_FAIRE_FORM {
 												<td style="width:80px;" valign="top"><strong>Stop Time:</strong></td>
 												<td valign="top"><?php echo esc_html( $event_record['mfei_stop'][0] ); ?></td>
 											</tr>
-										<?php endif; if ( !empty ( $event_record['mfei_schedule_completed'][0] ) ) : ?>
+										<?php endif; if ( ! empty( $event_record['mfei_schedule_completed'][0] ) ) : ?>
 											<tr>
 												<td style="width:80px;" valign="top"><strong>Schedule Completed:</strong></td>
 												<td valign="top"><?php echo esc_html( $event_record['mfei_schedule_completed'][0] ); ?></td>
 											</tr>
+										<?php endif; if ( ! empty( $event_record['mfei_coverage'][0] ) ) : ?>
+											<tr>
+												<td style="width:80px;" valign="middle"><strong>Video:</strong></td>
+												<td valign="top">
+													<input type="text" id="video-coverage" name="video-coverage" style="width:25%;" value="<?php echo esc_url( $event_record['mfei_coverage'][0] ); ?>" />
+													<input type="hidden" name="event-id" value="<?php echo get_the_ID(); ?>" />
+												</td>
+											</tr>
 										<?php endif;
+
 									endwhile;
 								} else { ?>
 									<tr>
@@ -807,77 +816,79 @@ class MAKER_FAIRE_FORM {
 				
 			$bio = isset( $data->{ $bio_key } ) ? $data->{ $bio_key } : '';
 			if( is_array( $bio ) )
-				$bio = $bio[0];
-		?>
+				$bio = $bio[0]; ?>
 
-				<img src="<?php echo esc_url( $photo ); ?>" style="float:left; margin-right:10px;" height="75" width="75" />
-				<div style="float:left; width:150px;">
-					<strong><?php echo esc_html( $data->name ); ?></strong><br />
-					<?php echo esc_html( $data->phone1 ); ?><br />
-					<?php echo esc_html( $data->email ); ?>
-				</div>
-				<div style="clear:both; height:15px;"></div>
-				<strong>ADDRESS</strong><br />
-				<?php echo esc_html( $data->private_address.' '.$data->private_address2 ); ?><br />
-				<?php echo esc_html( $data->private_city.', '.$data->private_state.' '.$data->private_zip.' '.$data->private_country ); ?><br /><br />
-				<strong>Bio</strong><br />
-				<?php echo esc_html( $bio ); ?>
-				<?php
-		} elseif ( $args['id'] == 'mf_form_type' ) { ?>
-				<input class="mf_form_type" name="form_type" type="radio" value="exhibit" /> &nbsp; Exhibit Application &nbsp;
-				<input class="mf_form_type" name="form_type" type="radio" value="performer" /> &nbsp; Performer Application &nbsp;
-				<input class="mf_form_type" name="form_type" type="radio" value="presenter" /> &nbsp; Presenter Application
-				<script type="text/javascript">
-					(function($){
-						$(document).ready(function() {
+			<img src="<?php echo esc_url( $photo ); ?>" style="float:left; margin-right:10px;" height="75" width="75" />
+			<div style="float:left; width:150px;">
+				<strong><?php echo esc_html( $data->name ); ?></strong><br />
+				<?php echo esc_html( $data->phone1 ); ?><br />
+				<?php echo esc_html( $data->email ); ?>
+			</div>
+			<div style="clear:both; height:15px;"></div>
+			<strong>ADDRESS</strong><br />
+			<?php echo esc_html( $data->private_address.' '.$data->private_address2 ); ?><br />
+			<?php echo esc_html( $data->private_city.', '.$data->private_state.' '.$data->private_zip.' '.$data->private_country ); ?><br /><br />
+			<strong>Bio</strong><br />
+			<?php echo esc_html( $bio ); ?>
+
+		<?php } elseif ( $args['id'] == 'mf_form_type' ) { ?>
+
+			<input class="mf_form_type" name="form_type" type="radio" value="exhibit" /> &nbsp; Exhibit Application &nbsp;
+			<input class="mf_form_type" name="form_type" type="radio" value="performer" /> &nbsp; Performer Application &nbsp;
+			<input class="mf_form_type" name="form_type" type="radio" value="presenter" /> &nbsp; Presenter Application
+			<script type="text/javascript">
+				(function($){
+					$(document).ready(function() {
+						$('#mf_exhibit, #mf_performer, #mf_presenter').hide();
+						$('.mf_form_type').click(function(){
 							$('#mf_exhibit, #mf_performer, #mf_presenter').hide();
-							$('.mf_form_type').click(function(){
-								$('#mf_exhibit, #mf_performer, #mf_presenter').hide();
-								form_type = $(this).val();
-								
-								if ( form_type == 'exhibit' )
-									$( '#maker input[value="One maker"]' ).click();
-								
-								$('#mf_'+form_type).show();
-							} );
+							form_type = $(this).val();
+							
+							if ( form_type == 'exhibit' )
+								$( '#maker input[value="One maker"]' ).click();
+							
+							$('#mf_'+form_type).show();
 						} );
-					} )(jQuery.noConflict())
-				</script>
-		<?php
-		} elseif ( in_array( $args['id'], array( 'mf_exhibit', 'mf_performer', 'mf_presenter', 'mf_logistics' ) ) ) {
-				if ( $args['id'] != 'mf_logistics' ) {
-					$data = array( 'form_type' => $args['args']['type'], 'maker_faire' => $this->maker_faire );
-					foreach ( $this->fields[$args['args']['type']] as $sn => $s ) {
-						foreach ( array_keys( $s ) as $k ) {
-							$data[$k] = '';
-						}
-					}
+					} );
+				} )(jQuery.noConflict())
+			</script>
 
-					$data = (object) $data;
+		<?php } elseif ( in_array( $args['id'], array( 'mf_exhibit', 'mf_performer', 'mf_presenter', 'mf_logistics' ) ) ) {
+
+			if ( $args['id'] != 'mf_logistics' ) {
+				$data = array( 'form_type' => $args['args']['type'], 'maker_faire' => $this->maker_faire );
+				foreach ( $this->fields[$args['args']['type']] as $sn => $s ) {
+					foreach ( array_keys( $s ) as $k ) {
+						$data[$k] = '';
+					}
 				}
+
+				$data = (object) $data;
+			}
 				
-				if( !isset( $data->cats ) )
-					$data = (object) array_merge( array( 'cats' => '' ), (array) $data);
-				if( !isset( $data->tags ) )
-					$data = (object) array_merge( array( 'tags' => '' ), (array) $data);
-				if( !isset( $data->uid ) )
-					$data = (object) array_merge( array( 'uid' => '' ), (array) $data);
+			if( !isset( $data->cats ) )
+				$data = (object) array_merge( array( 'cats' => '' ), (array) $data);
+			if( !isset( $data->tags ) )
+				$data = (object) array_merge( array( 'tags' => '' ), (array) $data);
+			if( !isset( $data->uid ) )
+				$data = (object) array_merge( array( 'uid' => '' ), (array) $data);
 				
-				$cont = array(
-					'm_maker_email', 
-					'm_maker_gigyaid', 
-					'm_maker_photo', 
-					'm_maker_bio',
-					'presenter_email',
-					'presenter_gigyaid', 
-					'presenter_bio',
-					'presenter_onsite_phone',
-					'presenter_org',
-					'presenter_title',
-					'presenter_photo'
-				); 
-			 ?>
-				<table style="width:100%">
+			$cont = array(
+				'm_maker_email', 
+				'm_maker_gigyaid', 
+				'm_maker_photo', 
+				'm_maker_bio',
+				'presenter_email',
+				'presenter_gigyaid', 
+				'presenter_bio',
+				'presenter_onsite_phone',
+				'presenter_org',
+				'presenter_title',
+				'presenter_photo'
+			); ?>
+
+			<table style="width:100%">
+
 				<?php foreach( (array) $data as $k => $v ) : if ( in_array( $k, $cont ) ) continue; ?>
 					<tr class="mf-form-row" id="<?php echo esc_attr( $k ); ?>" <?php if ( strpos( $k, '_thumb' ) !== false ): ?>style="display:none"<?php endif; ?>>
 					<td valign="top"><?php echo esc_html( ucwords( str_replace( '_', ' ', $k ) ) ); ?>:</td>
@@ -888,107 +899,113 @@ class MAKER_FAIRE_FORM {
 					</tr>
 					<?php endif; ?>
 				<?php endforeach; ?>
-				</table>
-				<?php if( $args['id'] == 'mf_logistics' || $args['id'] == 'mf_presenter' ) :
-					if ( isset( $data->m_maker_name ) && is_array( $data->m_maker_name ) ) {
-						$number_of_makers = count( $data->m_maker_name );
-					} elseif ( isset( $data->presenter_name ) && is_array( $data->presenter_name ) ) {
-						$number_of_makers = count( $data->presenter_name );
-					} else {
-						$number_of_makers = 1;
-					} ?>
+				<tr>
+					<td></td>
+				</tr>
+
+			</table>
+			
+			<?php if( $args['id'] == 'mf_logistics' || $args['id'] == 'mf_presenter' ) :
+				if ( isset( $data->m_maker_name ) && is_array( $data->m_maker_name ) ) {
+					$number_of_makers = count( $data->m_maker_name );
+				} elseif ( isset( $data->presenter_name ) && is_array( $data->presenter_name ) ) {
+					$number_of_makers = count( $data->presenter_name );
+				} else {
+					$number_of_makers = 1;
+				} ?>
 				<script type="text/javascript">
 
-						jQuery(function($) {
-							
-							form_type      = '<?php echo esc_html( $data->form_type ); ?>';
-							num_makers     = <?php echo intval( $number_of_makers ); ?>;
-							num_presenters = <?php echo intval( isset( $data->presenter_name ) && is_array( $data->presenter_name ) ? count( $data->presenter_name ) + 1 : 1 ); ?>;
-							
-							$('#maker input[type=radio]').click(function(){
-								$('#maker_name, #maker_email, #maker_photo, #maker_bio, #m_maker_name, .m_maker_name, .add-maker, #group_name, #group_website, #group_photo, #group_bio, .remove-maker').hide();
-								if ( $(this).val() == 'One maker' ) {
-									$('#maker_name, #maker_email, #maker_photo, #maker_bio').show();
-								} else if ( $(this).val() == 'A list of makers' ) {
-									$('#m_maker_name, .m_maker_name, .add-maker, .remove-maker').show();
-								} else {
-									$('#group_name, #group_website, #group_photo, #group_bio').show();
-								}
-							} );
-							
-							mf_insert_add_maker_btn();
-							
-							if( form_type == 'exhibit' ) {							
-								$( '#maker input[value="<?php echo esc_attr( isset( $data->maker ) ? $data->maker : 'One maker' ); ?>"]' ).click();
-							}
-							
-							function mf_insert_add_maker_btn()
-							{
-								html = '<tr id="'+form_type+'-add-maker" class="mf-form-row add-maker add-maker-btn">'+
-											'<td colspan="2">'+
-												'<input type="button" value="+Add Maker" class="button button-primary button-large"> '+
-												'<div style="float:right"><a href="edit.php?post_type=mf_form&page=isc_mm_list_makers" target="_blank">Lookup GIGYA ID</a></div>'+
-											'</td>'+
-										'</tr>';
-								
-								$(html).insertAfter( $('#m_maker_bio, #presenter_previous') );
-								$('.add-maker-btn .button').unbind('click').click(mf_add_maker);
-							}
-							
-							function mf_add_maker() {
-	
-								fields = {
-									exhibit : {
-										m_maker_name    : 'Add. Maker Name',
-										m_maker_email   : 'Add. Maker Email', 
-										m_maker_gigyaid : 'Add. Maker Gigyaid',
-										m_maker_bio     : 'Add. Maker Bio',
-										m_maker_twitter : 'Add. Maker Twitter',
-										m_maker_photo   : 'Add. Maker Photo URL'
-									},
-									presenter : {
-										presenter_name     : 'Add. Presenter Name',
-										presenter_email    : 'Add. Presenter Email', 
-										presenter_gigyaid  : 'Add. Presenter Gigyaid',
-										presenter_bio      : 'Add. Presenter Bio',
-										presenter_org      : 'Add. Presenter Organization',
-										presenter_title    : 'Add. Presenter Title',
-										presenter_photo    : 'Add. Presenter Photo URL',
-										presenter_twitter  : 'Add. Presenter Twitter',
-										presenter_previous : 'Add. Presenter Previous'
-									}
-								};
-								
-								html  = '';
-								for(i in fields[form_type]) {
-									if ( i === 'presenter_bio' || i === 'm_maker_bio' ) {
-										html += console.log(i);
-										html += '<tr class="mf-form-row add-maker"><td valign="top">'+fields[form_type][i]+':</td><td><textarea name="' + form_type + '[' + i + '][' + num_makers + ']" id="" cols="30" rows="10"></textarea></td></tr>';
-									} else {
-										html += '<tr class="mf-form-row add-maker"><td valign="top">'+fields[form_type][i]+':</td><td><input type="text" name="'+form_type+'['+i+']['+num_makers+']"></td></tr>';
-									}
-								}
-								html += '<tr class="remove-maker">'+
-											'<td colspan="2">'+
-												'<input type="button" onclick="mf_remove_maker( this )" value="Remove Maker Above" class="button button-primary button-large"></td></tr>';
-								
-								$(html).insertAfter($('.add-maker-btn'));
-
-								num_makers++;
+					jQuery(function($) {
+						
+						form_type      = '<?php echo esc_html( $data->form_type ); ?>';
+						num_makers     = <?php echo intval( $number_of_makers ); ?>;
+						num_presenters = <?php echo intval( isset( $data->presenter_name ) && is_array( $data->presenter_name ) ? count( $data->presenter_name ) + 1 : 1 ); ?>;
+						
+						$('#maker input[type=radio]').click(function(){
+							$('#maker_name, #maker_email, #maker_photo, #maker_bio, #m_maker_name, .m_maker_name, .add-maker, #group_name, #group_website, #group_photo, #group_bio, .remove-maker').hide();
+							if ( $(this).val() == 'One maker' ) {
+								$('#maker_name, #maker_email, #maker_photo, #maker_bio').show();
+							} else if ( $(this).val() == 'A list of makers' ) {
+								$('#m_maker_name, .m_maker_name, .add-maker, .remove-maker').show();
+							} else {
+								$('#group_name, #group_website, #group_photo, #group_bio').show();
 							}
 						} );
 						
-						function mf_remove_maker( el ) {
-							p = jQuery( el ).parent().parent();	
-							l = form_type == 'exhibit' ? 5 : 7;							
-							for( i = 0; i < l; i++ ) {
-								p.prev().remove();
-							}
-							p.remove();	
+						mf_insert_add_maker_btn();
+						
+						if( form_type == 'exhibit' ) {							
+							$( '#maker input[value="<?php echo esc_attr( isset( $data->maker ) ? $data->maker : 'One maker' ); ?>"]' ).click();
 						}
+						
+						function mf_insert_add_maker_btn()
+						{
+							html = '<tr id="'+form_type+'-add-maker" class="mf-form-row add-maker add-maker-btn">'+
+										'<td colspan="2">'+
+											'<input type="button" value="+Add Maker" class="button button-primary button-large"> '+
+											'<div style="float:right"><a href="edit.php?post_type=mf_form&page=isc_mm_list_makers" target="_blank">Lookup GIGYA ID</a></div>'+
+										'</td>'+
+									'</tr>';
+							
+							$(html).insertAfter( $('#m_maker_bio, #presenter_previous') );
+							$('.add-maker-btn .button').unbind('click').click(mf_add_maker);
+						}
+						
+						function mf_add_maker() {
+
+							fields = {
+								exhibit : {
+									m_maker_name    : 'Add. Maker Name',
+									m_maker_email   : 'Add. Maker Email', 
+									m_maker_gigyaid : 'Add. Maker Gigyaid',
+									m_maker_bio     : 'Add. Maker Bio',
+									m_maker_twitter : 'Add. Maker Twitter',
+									m_maker_photo   : 'Add. Maker Photo URL'
+								},
+								presenter : {
+									presenter_name     : 'Add. Presenter Name',
+									presenter_email    : 'Add. Presenter Email', 
+									presenter_gigyaid  : 'Add. Presenter Gigyaid',
+									presenter_bio      : 'Add. Presenter Bio',
+									presenter_org      : 'Add. Presenter Organization',
+									presenter_title    : 'Add. Presenter Title',
+									presenter_photo    : 'Add. Presenter Photo URL',
+									presenter_twitter  : 'Add. Presenter Twitter',
+									presenter_previous : 'Add. Presenter Previous'
+								}
+							};
+							
+							html  = '';
+							for(i in fields[form_type]) {
+								if ( i === 'presenter_bio' || i === 'm_maker_bio' ) {
+									html += console.log(i);
+									html += '<tr class="mf-form-row add-maker"><td valign="top">'+fields[form_type][i]+':</td><td><textarea name="' + form_type + '[' + i + '][' + num_makers + ']" id="" cols="30" rows="10"></textarea></td></tr>';
+								} else {
+									html += '<tr class="mf-form-row add-maker"><td valign="top">'+fields[form_type][i]+':</td><td><input type="text" name="'+form_type+'['+i+']['+num_makers+']"></td></tr>';
+								}
+							}
+							html += '<tr class="remove-maker">'+
+										'<td colspan="2">'+
+											'<input type="button" onclick="mf_remove_maker( this )" value="Remove Maker Above" class="button button-primary button-large"></td></tr>';
+							
+							$(html).insertAfter($('.add-maker-btn'));
+
+							num_makers++;
+						}
+					} );
+					
+					function mf_remove_maker( el ) {
+						p = jQuery( el ).parent().parent();	
+						l = form_type == 'exhibit' ? 5 : 7;							
+						for( i = 0; i < l; i++ ) {
+							p.prev().remove();
+						}
+						p.remove();	
+					}
 						
 				</script>
 			<?php endif;
+
 		}
 	}
 
@@ -1283,7 +1300,7 @@ class MAKER_FAIRE_FORM {
 					
 					// Loop through each key passed and their value to the $r array
 					foreach ( $_POST[ $form_type ][ $k ] as $v ) {
-						$r[$k][] = sanitize_text_field( $v );	
+						$r[ $k ][] = sanitize_text_field( $v );	
 					}
 				} elseif( $this->is_textarea( $k ) ) {
 					// Sanitize our textareas for allowed HTML tags and then insert HTML line breaks before newlines.
@@ -1293,7 +1310,22 @@ class MAKER_FAIRE_FORM {
 			 		$r[ $k ] = sanitize_text_field( $_POST[ $form_type ][ $k ] );
 			 	}
 			}
+
+			// Create a fallback for the public description field and repurpose it to the short_description field.
+			// This is in place because in the presenter we removed this field, this will ensure older applications will be updated.
+			if ( isset( $_POST['presenter']['public_description'] ) ) {
+				$r[ 'short_description' ] = sanitize_text_field( $_POST['presenter']['public_description'] );
+			}
+
+			// Save our coverage video link if its set and save it into the Event Post Type post
+			if ( ! empty( $_POST['video-coverage'] ) && ! empty( $_POST['event-id'] ) ) {
+				$video_url = ( ! empty( $_POST['video-coverage'] ) ) ? esc_url( $_POST['video-coverage'] ) : '';
+
+				update_post_meta( intval( $_POST['event-id'] ), 'mfei_coverage', esc_url( $_POST['video-coverage'] ) );
+			}
 		}
+
+		
 
 		// Check if the $r array contains less than 3 fields. If so, we want to return false and stop the processing of the code below.
 		if ( count( $r ) < 3 )
