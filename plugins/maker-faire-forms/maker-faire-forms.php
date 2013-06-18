@@ -707,6 +707,8 @@ class MAKER_FAIRE_FORM {
 											</tr>
 										<?php endif; ?>
 
+									<?php endwhile; ?>
+									
 										<tr>
 											<td style="width:80px;" valign="middle"><strong>Event Video:</strong></td>
 											<td valign="top">
@@ -714,8 +716,8 @@ class MAKER_FAIRE_FORM {
 												<input type="hidden" name="event-id" value="<?php echo get_the_ID(); ?>" />
 											</td>
 										</tr>
-									<?php endwhile;
-								} else { ?>
+
+								<?php } else { ?>
 									<tr>
 										<td style="width:80px;" valign="top"><strong>Scheduled:</strong></a></td>
 										<td valign="top"><a href="<?php echo admin_url(); ?>post-new.php?post_type=event-items&amp;refer_id=<?php echo get_the_ID(); ?>">Schedule This Event</a></td>
