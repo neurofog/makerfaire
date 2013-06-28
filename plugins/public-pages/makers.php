@@ -731,7 +731,7 @@ function mf_get_scheduled_item( $the_ID ) {
 			$output .= '<td>' . esc_html( $start ) . '</td>';
 			$output .= '<td>' . esc_html( $stop ) . '</td>';
 			$output .= '<td>' . get_the_term_list( get_the_ID(), 'location' ) . '</td>';
-			if ( isset( $coverage ) ) {
+			if ( ! empty( $coverage ) ) {
 				$output .= '<td><a href="' . esc_url( $coverage ) . '" class="btn btn-mini btn-primary">Watch Video</a></td>';
 			} else {
 				$output .= '<td>No Video Available</td>';
@@ -779,7 +779,7 @@ function mf_get_scheduled_item( $the_ID ) {
 			$output .= '<td>' . esc_html( $start ) . '</td>';
 			$output .= '<td>' . esc_html( $stop ) . '</td>';
 			$output .= '<td>' . get_the_term_list( get_the_ID(), 'location' ) . '</td>';
-			if ( isset( $coverage ) ) {
+			if ( ! empty( $coverage ) ) {
 				$output .= '<td><a href="' . esc_url( $coverage ) . '" class="btn btn-mini btn-primary">Watch Video</a></td>';
 			} else {
 				$output .= '<td>No Video Available</td>';
