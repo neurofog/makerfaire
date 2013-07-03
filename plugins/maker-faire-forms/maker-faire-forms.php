@@ -2133,6 +2133,7 @@ class MAKER_FAIRE_FORM {
 			$m .= '<p>You will be notified as to the status of your application no later than August 5th.</p>';
 			$m .= '<p>If your application is accepted, we have agreed to the concept of your exhibit, however, we are not able to  guarantee all of your requests at this time. What we can provide will be outlined in a confirmation letter before the event.</p>';
 			$m .= '<p>Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.</p>';
+			$m .= '<p>Lastly, the Road to Maker Faire Challenge, presented by Esurance, will award one lucky maker $2,500 to bring their project to World Maker Faire. You may apply with the same project you are submitting to Maker Faire, and applications must be completed no later than 11:59pm PT on August 5th. <a href="http://makezine.com/road-to-maker-faire-challenge">Enter Now</a>!</p>'
 			$m .= '<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
 			$m .= '<p>Maker Faire (<a href="http://makerfaire.com">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		}
