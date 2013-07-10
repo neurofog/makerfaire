@@ -44,10 +44,10 @@ if ($type == 'entity') {
 
 	// Set the query args.
 	$args = array(
-		'no_found_rows' 	=> true,
-		'post_type' 		=>'mf_form',
-		'post_status' 		=> 'accepted',
-		'posts_per_page' 	=> 2000,
+		'no_found_rows'		=> true,
+		'post_type'			=>'mf_form',
+		'post_status'		=> 'accepted',
+		'posts_per_page'	=> 2000,
 		'faire'				=> $faire
 
 	);
