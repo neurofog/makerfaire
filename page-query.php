@@ -16,7 +16,6 @@ $keys = array(
 // Init the $key variable
 $key = (!empty($_REQUEST['key']) ? $_REQUEST['key'] : null);
 $type = (!empty($_REQUEST['type']) ? $_REQUEST['type'] : null);
-$faire = (!empty($_REQUEST['faire']) ? $_REQUEST['faire'] : null);
 
 // If key doesn't exist, return nothing.
 if (!in_array($key, $keys)) {
@@ -44,11 +43,10 @@ if ($type == 'entity') {
 
 	// Set the query args.
 	$args = array(
-		'no_found_rows' 	=> true,
-		'post_type' 		=>'mf_form',
-		'post_status' 		=> 'accepted',
-		'posts_per_page' 	=> 2000,
-		'faire'				=> $faire
+		'no_found_rows' => true,
+		'post_type' =>'mf_form',
+		'post_status' => 'accepted',
+		'posts_per_page' => 2000
 
 	);
 
@@ -248,11 +246,11 @@ if ($type == 'entity') {
 
 	// Set the query args.
 	$args = array(
-		'no_found_rows' 	=> true,
-		'post_type' 		=> 'event-items',
-		'post_status' 		=> 'publish',
-		'posts_per_page' 	=> 1000,
-		'faire'				=> $faire
+		'no_found_rows' => true,
+		'post_type' =>'event-items',
+		'post_status' => 'publish',
+		'posts_per_page' => 1000
+
 	);
 
 
@@ -324,11 +322,11 @@ if ($type == 'entity') {
 
 	// Set the query args.
 	$args = array(
-		'no_found_rows' 	=> true,
-		'post_type'			=> 'mf_form',
-		'post_status'		=> 'accepted',
-		'posts_per_page'	=> 1000,
-		'faire'				=> $faire
+		'no_found_rows' => true,
+		'post_type' =>'mf_form',
+		'post_status' => 'accepted',
+		'posts_per_page' => 1000,
+		// 'offset'		=> 400
 
 	);
 
@@ -461,11 +459,10 @@ if ($type == 'entity') {
 } elseif( $type == 'new_maker' ) {
 	// Set the query args.
 	$args = array(
-		'no_found_rows'		=> true,
-		'post_type'			=> 'maker',
-		'post_status'		=> 'any',
-		'posts_per_page'	=> 2000,
-		'faire'				=> $faire,
+		'no_found_rows' => true,
+		'post_type' =>'maker',
+		'post_status' => 'any',
+		'posts_per_page' => 2000,
 	);
 
 
