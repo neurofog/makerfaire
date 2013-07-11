@@ -373,7 +373,7 @@ add_action('restrict_manage_posts','makerfaire_manage_posts');
  * Need a way to filter all of the different types of applications in the admin area.
  *
  */
-function mf_restrict_listings_by_type() {
+function mf_restrict_listings_by_type( $type ) {
 	global $typenow;
 	global $wp_query;
 
@@ -386,7 +386,7 @@ function mf_restrict_listings_by_type() {
 				'taxonomy'			=> 'type',
 				'name'				=> 'type',
 				'orderby'			=> 'name',
-				'selected'			=> ( !empty( $wp_query->query['type'] ) ) ? $wp_query->query['type'] : '',
+				'selected'			=> $type,
 				'hierarchical'		=> true,
 				'hide_empty'		=> false
 				)
@@ -465,4 +465,20 @@ class SH_Walker_TaxonomyDropdown extends Walker_CategoryDropdown{
 		$output .= "</option>\n";
 		}
 
+}
+
+/**
+ * Wrapper for wp_dropdown_categories to easily add new dropdowns.
+ */
+function mf_generate_dropdown( $tax, $selected ) {
+	wp_dropdown_categories(
+		array(
+			'show_option_all'	=> 'View All',
+			'taxonomy'			=> $tax,
+			'orderby'			=> 'name',
+			'selected'			=> $selected,
+			'hierarchical'		=> true,
+			'hide_empty'		=> false
+			)
+	);	
 }
