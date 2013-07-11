@@ -712,7 +712,7 @@ class MAKER_FAIRE_FORM {
 										<tr>
 											<td style="width:80px;" valign="middle"><strong>Event Video:</strong></td>
 											<td valign="top">
-												<input type="text" id="video-coverage" name="video-coverage" style="width:25%;" value="<?php echo esc_url( $event_record['mfei_coverage'][0] ); ?>" />
+												<input type="text" id="video-coverage" name="video-coverage" style="width:25%;" value="<?php echo !empty( $event_record['mfei_coverage'][0] ) ? esc_url( $event_record['mfei_coverage'][0] ) : ''; ?>" />
 												<input type="hidden" name="event-id" value="<?php echo get_the_ID(); ?>" />
 											</td>
 										</tr>
