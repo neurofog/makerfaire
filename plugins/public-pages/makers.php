@@ -725,7 +725,7 @@ function mf_get_scheduled_item( $the_ID ) {
 			$day = ($meta['mfei_day'][0]) ? $meta['mfei_day'][0] : '' ;
 			$start = ($meta['mfei_start'][0]) ? $meta['mfei_start'][0] : '' ;
 			$stop = ($meta['mfei_stop'][0]) ? $meta['mfei_stop'][0] : '' ;
-			$coverage = ($meta['mfei_coverage'][0]) ? $meta['mfei_coverage'][0] : '';
+			$coverage = ( !empty( $meta['mfei_coverage'][0] ) ) ? $meta['mfei_coverage'][0] : '';
 			$output .= '<tr>';
 			$output .= '<td>' . esc_html( $day ) . '</td>';
 			$output .= '<td>' . esc_html( $start ) . '</td>';
