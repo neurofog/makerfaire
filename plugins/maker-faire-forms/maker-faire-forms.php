@@ -2640,7 +2640,7 @@ class MAKER_FAIRE_FORM {
 						<?php // endforeach; ?>
 					</tbody>
 				</table>-->
-			<h1 style="margin-top:40px;">Sync Status with JDB</h1>
+			<h1 style="margin-top:20px;">Sync Status with JDB</h1>
 			Syncs 100 applications at a time.<br />To do a full sync start at 0 and increase by 100 until you're done.
 			<form action="" method="post">
 				<p>
