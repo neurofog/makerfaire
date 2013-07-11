@@ -368,14 +368,15 @@ function mf_hide_faires( $query ) {
 			array(
 				'taxonomy'	=> 'faire',
 				'field'		=> 'slug',
-				'terms'		=> 'maker-faire-bay-area-2013',
-				'operator'	=> 'NOT IN',
+				'terms'		=> 'world-maker-faire-new-york-2013',
+				'operator'	=> 'IN',
 			)
 		);
 		$query->set( 'tax_query', $tax_query );
 	}
 }
-// add_action( 'pre_get_posts', 'mf_hide_faires' );
+
+add_action( 'pre_get_posts', 'mf_hide_faires' );
 
 
 
