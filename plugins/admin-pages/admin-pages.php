@@ -80,13 +80,11 @@ function makerfaire_current_faire_page() {
 	if (!current_user_can('manage_options')) {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}
-
-	// Start the WordPress Page
-
-	$paged = ( isset( $_GET['paged'] ) ) ? intval( $_GET['paged'] ) : 1;
+	
+	$paged = ( isset( $_GET['paged'] ) ) ? absint( $_GET['paged'] ) : 1;
 	$post_status = ( isset( $_GET['post_status'] ) ) ? sanitize_title( $_GET['post_status'] ) : '';
 	$type = ( isset( $_GET['type'] ) ) ? sanitize_title( $_GET['type'] ) : '';
-	$cat = ( isset( $_GET['cat'] ) ) ? intval( $_GET['cat'] ) : '';
+	$cat = ( isset( $_GET['cat'] ) ) ? absint( $_GET['cat'] ) : '';
 	$s = ( isset( $_GET['s'] ) ) ? sanitize_text_field( $_GET['s'] ) : '';
 
 	$args = array( 
@@ -178,6 +176,7 @@ function makerfaire_current_faire_page() {
 									<div class="row-actions">
 										<span class="inline hide-if-no-js"><a href="' . get_permalink( $id ) . '">View</a></span>
 										<span class="trash"><a class="submitdelete" href="' . get_delete_post_link( $id ) . '">Trash</a></span>
+										<span class="edit"><a href="' . get_edit_post_link( $id ) . '">Edit</a></span>
 									</div>
 								</td>';
 								echo (!empty($json->name)) ? '<td>' . $json->name .'</td>' : '<td></td>';
