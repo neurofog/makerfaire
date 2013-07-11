@@ -57,6 +57,19 @@ function mf_get_pagination_links( $total, $paged ) {
 	return $links;
 }
 
+/**
+ * Post Status Drop Down
+ */
+function mf_post_status_dropdown() {
+	$stati = get_post_stati();
+	$output = '<select name="post_status" id="post_Status">';
+	$output .= '<option value="">Application Status</option>';
+	foreach ($stati as $status) {
+		$output .= '<option value="' . $status . '">' . $status . '</option>';
+	}
+	$output .= '</select>';
+	return $output;
+}
 
 /**
  * Current Faire Page
@@ -111,6 +124,7 @@ function makerfaire_current_faire_page() {
 				<input type="hidden" name="post_type" value="mf_form" />
 				<?php echo mf_restrict_listings_by_type( $type ); ?>
 				<?php echo mf_generate_dropdown( 'category', $cat ); ?>
+				<?php echo mf_post_status_dropdown(); ?>
 				<label class="screen-reader-text" for="post-search-input">Search Applications:</label>
 				<input type="search" id="post-search-input" name="s" placeholder="<?php echo !empty( $s ) ? esc_html( $s ) : ''; ?>" value="">
 				<input type="submit" name="" id="search-submit" class="button" value="Search Applications"></p>
