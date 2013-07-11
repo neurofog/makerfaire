@@ -135,13 +135,13 @@ function makerfaire_current_faire_page() {
 		<table class="wp-list-table widefat fixed pages">
 			<thead>
 				<tr>
+					<th scope="col" id="" class="manage-column" style="">Photo</th>
 					<th scope="col" id="" class="manage-column" style="">ID</th>
 					<th scope="col" id="" class="manage-column" style="">Post Status</th>
 					<th scope="col" id="" class="manage-column" style="">Name</th>
 					<th scope="col" id="" class="manage-column" style="">Maker Name</th>
 					<th scope="col" id="" class="manage-column" style="">Type</th>
 					<th scope="col" id="" class="manage-column" style="">Description</th>
-					<th scope="col" id="" class="manage-column" style="">Photo</th>
 					<th scope="col" id="" class="manage-column" style="">Categories</th>
 					<th scope="col" id="" class="manage-column" style="">Tags</th>
 					<th scope="col" id="" class="manage-column" style="">Featured Maker</th>
@@ -150,13 +150,13 @@ function makerfaire_current_faire_page() {
 			</thead>
 			<tfoot>
 				<tr>
+					<th scope="col" id="" class="manage-column" style="">Photo</th>
 					<th scope="col" id="" class="manage-column" style="">ID</th>
 					<th scope="col" id="" class="manage-column" style="">Post Status</th>
 					<th scope="col" id="" class="manage-column" style="">Name</th>
 					<th scope="col" id="" class="manage-column" style="">Maker Name</th>
 					<th scope="col" id="" class="manage-column" style="">Type</th>
 					<th scope="col" id="" class="manage-column" style="">Description</th>
-					<th scope="col" id="" class="manage-column" style="">Photo</th>
 					<th scope="col" id="" class="manage-column" style="">Categories</th>
 					<th scope="col" id="" class="manage-column" style="">Tags</th>
 					<th scope="col" id="" class="manage-column" style="">Featured Maker</th>
@@ -171,6 +171,7 @@ function makerfaire_current_faire_page() {
 							$json = json_decode( html_entity_decode( mf_convert_newlines( str_replace( array("\'", "u03a9"), array("'", '&#8486;'), $the_post->post_content ), "\n"), ENT_COMPAT, 'utf-8' ) );
 							$id = $the_post->ID;
 							echo '<tr>';
+								echo '<td><img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 130, 130, true ) . '" class="media-object thumbnail pull-left"/></td>';
 								echo '<td>' . $id . '</td>';
 								echo '<td>' . $the_post->post_status .'</td>';
 								echo '<td><strong><a href="' . get_edit_post_link( $id ) . '">' . get_the_title( $id ) . '</a></strong>
@@ -181,8 +182,7 @@ function makerfaire_current_faire_page() {
 								</td>';
 								echo (!empty($json->name)) ? '<td>' . $json->name .'</td>' : '<td></td>';
 								echo '<td>' . get_the_term_list( $id, 'type', '', ', ', '' ) . '</td>';
-								echo  ( !empty( $json->public_description) ) ? '<td>' . Markdown( wp_kses_post( $json->public_description ) ) . '</td>': '<td></td>';
-								echo '<td><img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 130, 130, true ) . '" class="media-object thumbnail pull-left"/></td>';
+								echo  ( !empty( $json->public_description) ) ? '<td>' . wp_trim_words( Markdown( wp_kses_post( $json->public_description ) ), 15 ) . '</td>': '<td></td>';
 								echo '<td>' . get_the_term_list( $id, 'post_tag', '', ', ', '' ) . '</td>';
 								echo '<td>' . get_the_term_list( $id, 'category', '', ', ', '' ) . '</td>';
 								$featured = get_post_meta( $id, '_ef_editorial_meta_checkbox_featured', true );
