@@ -54,7 +54,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					if ( !empty( $result ) ) {
 						WP_CLI::success( $cat );
 					} else {
-						WP_CLI::error( $cat );
+						WP_CLI::warning( $cat );
 					}
 				}
 			}
@@ -76,7 +76,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					if ( !empty( $result ) ) {
 						WP_CLI::success( $tag );
 					} else {
-						WP_CLI::error( $tag );
+						WP_CLI::warning( $tag );
 					}
 				}
 			}
