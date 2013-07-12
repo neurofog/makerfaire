@@ -102,7 +102,7 @@ function makerfaire_meta_box( $post ) {
 		<?php makerfaire_create_time( $meta['mfei_stop'][0] ); ?>
 	</select>
 	<label>Coverage Video Link</label>
-	<input type="text" name="mfei_coverage" id="mfei_coverage" value="<?php echo esc_url ( $meta['mfei_coverage'][0] ); ?>" />
+	<input type="text" name="mfei_coverage" id="mfei_coverage" value="<?php echo ( !empty( $meta['mfei_coverage'][0] ) ) ? esc_url ( $meta['mfei_coverage'][0] ) : ''; ?>" />
 	<label>Record Number - MUST BE VALID APPLICATION ID</label>
 	<?php
 		// Check if we are loading from a referring post and add that ID to our Record field
@@ -350,7 +350,7 @@ add_filter( 'request', 'makerfaire_columns_orderby' );
 * Add Location Taxonomy filter to posts
 * =====================================================================*/
 function makerfaire_manage_posts() {
-	
+	$location = ( !empty( $_GET['location'] ) ) ? intval( $_GET['location'] ) : '';
 	if( !isset( $_GET['post_type'] ) || $_GET['post_type'] != 'event-items' )
 		return;
 	
@@ -358,7 +358,7 @@ function makerfaire_manage_posts() {
 		'show_option_all' => "View All Locations",
 		'taxonomy'        => 'location',
 		'name'            => 'location',
-		'selected'        => intval( $_GET['location'] ),
+		'selected'        => $location,
 	);
 	wp_dropdown_categories($args); 
 	echo '<style>select[name="m"]{display:none}</style>';
