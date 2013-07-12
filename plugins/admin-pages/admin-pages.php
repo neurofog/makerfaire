@@ -76,19 +76,42 @@ function mf_post_status_dropdown() {
 	$output .= '</select>';
 	return $output;
 }
+/**
+ * Check to see if it is a valid orderby statement
+ */
+function mf_is_valid_orderby( $orderby ) {
+	$valid = array( 'title', 'name', 'date', 'modified' );
+	// Check to make sure that it is a valid orderby term.
+	if ( !in_array( $orderby, $valid ) ) {
+		$orderby = 'title';
+	}
+	return $orderby;
+}
+
+/**
+ * Check to see if it is a valid order statement
+ */
+function mf_is_valid_order( $order ) {
+	$valid = array( 'ASC', 'DSC' );
+	// Check to make sure that it is a valid orderby term.
+	if ( !in_array( $order, $valid ) ) {
+		$order = 'ASC';
+	}
+	return $order;
+}
 
 /**
  * Orderby Drop Down
  */
-function mf_orderby_dropdown() {
-	$orderby = ( isset( $_GET['orderby'] ) ) ? sanitize_title( $_GET['orderby'] ) : '';
+function mf_orderby_dropdown( $orderby ) {
+	$orderby = mf_is_valid_orderby( $orderby );
 	$output = '<select name="orderby" id="orderby">';
 	if ($orderby) {
 		$output .= '<option value="' . $orderby . '">Orderby: ' . ucwords( str_replace( '-', ' ', $orderby ) ) . '</option>';
 	} else {
 		$output .= '<option value="">Orderby</option>';
 	}
-	$orders = array( 'title', 'date', 'modified' );
+	$orders = array( 'title', 'date', 'modified', 'name' );
 	foreach ($orders as $order) {
 		$output .= '<option value="' . $order . '">' . ucwords( str_replace( '-', ' ', $order ) ) . '</option>';
 	}
@@ -99,8 +122,8 @@ function mf_orderby_dropdown() {
 /**
  * Order Dropdown
  */
-function mf_order_dropdown() {
-	$order = ( isset( $_GET['order'] ) ) ? sanitize_title( $_GET['order'] ) : '';
+function mf_order_dropdown( $order ) {
+	$order = mf_is_valid_order( $order );
 	$output = '<select name="order" id="order">';
 	if ($order) {
 		$output .= '<option value="' . $order . '">Sort Order: ' . ucwords( str_replace( '-', ' ', $order ) ) . '</option>';
@@ -129,7 +152,7 @@ function makerfaire_current_faire_page() {
 	$cat 			= ( isset( $_GET['cat'] ) ) ? absint( $_GET['cat'] ) : '';
 	$s 				= ( isset( $_GET['s'] ) ) ? sanitize_text_field( $_GET['s'] ) : '';
 	$p 				= ( isset( $_GET['p'] ) ) ? absint( $_GET['p'] ) : '';
-	$orderby 		= ( isset( $_GET['orderby'] ) ) ? sanitize_text_field( $_GET['orderby'] ) : '';
+	$orderby 		= ( isset( $_GET['orderby'] ) ) ? sanitize_sql_orderby( $_GET['orderby'] ) : '';
 	$order 			= ( isset( $_GET['order'] ) ) ? sanitize_text_field( $_GET['order'] ) : '';
 	$posts_per_page = ( isset( $_GET['posts_per_page'] ) ) ? absint( $_GET['posts_per_page'] ) : '';
 
@@ -172,8 +195,8 @@ function makerfaire_current_faire_page() {
 				<?php echo mf_restrict_listings_by_type( $type ); ?>
 				<?php echo mf_generate_dropdown( 'category', $cat ); ?>
 				<?php echo mf_post_status_dropdown(); ?>
-				<?php echo mf_orderby_dropdown(); ?>
-				<?php echo mf_order_dropdown(); ?>
+				<?php echo mf_orderby_dropdown( $orderby ); ?>
+				<?php echo mf_order_dropdown( $order ); ?>
 				<label class="screen-reader-text" for="post-search-input">Search Applications:</label>
 				<input type="number" id="post-search-input" name="posts_per_page" min="1" value="<?php echo !empty( $posts_per_page ) ? esc_attr( $posts_per_page ) : ''; ?>" value="">
 				<input type="search" id="post-search-input" name="s" placeholder="Search" value="<?php echo !empty( $s ) ? esc_attr( $s ) : ''; ?>" value="">
