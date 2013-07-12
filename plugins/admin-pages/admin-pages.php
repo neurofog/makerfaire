@@ -11,8 +11,8 @@
 /**
  * Declare the current faire, globally here...
  */
-// $GLOBALS['current_faire'] = 'world-maker-faire-new-york-2013';
-$GLOBALS['current_faire'] = 'maker-faire-bay-area-2013';
+$GLOBALS['current_faire'] = 'world-maker-faire-new-york-2013';
+// $GLOBALS['current_faire'] = 'maker-faire-bay-area-2013';
 
 /**
  * Function to count the statuses of Maker Faire applications
