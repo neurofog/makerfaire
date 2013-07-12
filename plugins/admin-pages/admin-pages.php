@@ -11,8 +11,8 @@
 /**
  * Declare the current faire, globally here...
  */
-// $GLOBALS['current_faire'] = 'world-maker-faire-new-york-2013';
-$GLOBALS['current_faire'] = 'maker-faire-bay-area-2013';
+$GLOBALS['current_faire'] = 'world-maker-faire-new-york-2013';
+// $GLOBALS['current_faire'] = 'maker-faire-bay-area-2013';
 
 /**
  * Function to count the statuses of Maker Faire applications
@@ -77,11 +77,14 @@ function mf_post_status_dropdown() {
 	return $output;
 }
 
+/**
+ * Orderby Drop Down
+ */
 function mf_orderby_dropdown() {
 	$orderby = ( isset( $_GET['orderby'] ) ) ? sanitize_title( $_GET['orderby'] ) : '';
 	$output = '<select name="orderby" id="orderby">';
 	if ($orderby) {
-		$output .= '<option value="' . $orderby . '">' . ucwords( str_replace( '-', ' ', $orderby ) ) . '</option>';
+		$output .= '<option value="' . $orderby . '">Orderby: ' . ucwords( str_replace( '-', ' ', $orderby ) ) . '</option>';
 	} else {
 		$output .= '<option value="">Orderby</option>';
 	}
@@ -89,6 +92,23 @@ function mf_orderby_dropdown() {
 	foreach ($orders as $order) {
 		$output .= '<option value="' . $order . '">' . ucwords( str_replace( '-', ' ', $order ) ) . '</option>';
 	}
+	$output .= '</select>';
+	return $output;
+}
+
+/**
+ * Order Dropdown
+ */
+function mf_order_dropdown() {
+	$order = ( isset( $_GET['order'] ) ) ? sanitize_title( $_GET['order'] ) : '';
+	$output = '<select name="order" id="order">';
+	if ($order) {
+		$output .= '<option value="' . $order . '">Sort Order: ' . ucwords( str_replace( '-', ' ', $order ) ) . '</option>';
+	} else {
+		$output .= '<option value="">Sort Order</option>';
+	}
+	$output .= '<option value="ASC">Ascending</option>';
+	$output .= '<option value="DSC">Descending</option>';
 	$output .= '</select>';
 	return $output;
 }
@@ -110,6 +130,7 @@ function makerfaire_current_faire_page() {
 	$s = ( isset( $_GET['s'] ) ) ? sanitize_text_field( $_GET['s'] ) : '';
 	$p = ( isset( $_GET['p'] ) ) ? absint( $_GET['p'] ) : '';
 	$orderby = ( isset( $_GET['orderby'] ) ) ? sanitize_text_field( $_GET['orderby'] ) : '';
+	$order = ( isset( $_GET['order'] ) ) ? sanitize_text_field( $_GET['order'] ) : '';
 
 	$args = array( 
 		'post_type'			=> 'mf_form',
@@ -122,7 +143,8 @@ function makerfaire_current_faire_page() {
 		'cat'				=> $cat,
 		's'					=> $s,
 		'p'					=> $p,
-		'orderby'			=> $orderby
+		'orderby'			=> $orderby,
+		'order'				=> $order,
 		);
 	$query = new WP_Query( $args );
 
@@ -150,6 +172,7 @@ function makerfaire_current_faire_page() {
 				<?php echo mf_generate_dropdown( 'category', $cat ); ?>
 				<?php echo mf_post_status_dropdown(); ?>
 				<?php echo mf_orderby_dropdown(); ?>
+				<?php echo mf_order_dropdown(); ?>
 				<label class="screen-reader-text" for="post-search-input">Search Applications:</label>
 				<input type="search" id="post-search-input" name="s" placeholder="Search" value="<?php echo !empty( $s ) ? esc_attr( $s ) : ''; ?>" value="">
 				<input type="search" id="post-search-input" name="p" placeholder="Project ID" value="<?php echo !empty( $p ) ? esc_attr( $p ) : ''; ?>" value="">
@@ -172,7 +195,7 @@ function makerfaire_current_faire_page() {
 					<th scope="col" id="" class="manage-column" style="">Tags</th>
 					<th scope="col" id="" class="manage-column" style="">Location</th>
 					<th scope="col" id="" class="manage-column" style="">Featured Maker</th>
-					<th scope="col" id="" class="manage-column" style="">Submitted</th>
+					<th scope="col" id="" class="manage-column" style="">Modified Date</th>
 				</tr>
 			</thead>
 			<tfoot>
@@ -188,7 +211,7 @@ function makerfaire_current_faire_page() {
 					<th scope="col" id="" class="manage-column" style="">Tags</th>
 					<th scope="col" id="" class="manage-column" style="">Location</th>
 					<th scope="col" id="" class="manage-column" style="">Featured Maker</th>
-					<th scope="col" id="" class="manage-column" style="">Submitted</th>
+					<th scope="col" id="" class="manage-column" style="">Modified Date</th>
 				</tr>
 			</tfoot>
 			<tbody id="the-list">
