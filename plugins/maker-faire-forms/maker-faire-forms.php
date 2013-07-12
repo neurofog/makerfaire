@@ -2582,10 +2582,14 @@ class MAKER_FAIRE_FORM {
 				foreach( $list as $id => $form ) :
 				?>
 					<div style="float:left; width:400px; margin:20px; height:500px;">
-						<img src="<?php echo esc_url( $form['form_photo_thumb'] ); ?>" style="max-width:400px; max-height:400px; margin-bottom:10px;" />
+						<a href="<?php edit_post_link(); ?>">
+							<img src="<?php echo esc_url( $form['form_photo_thumb'] ); ?>" style="max-width:400px; max-height:400px; margin-bottom:10px;" />
+						</a>
 						<div style="font-size:12px;">
-						<?php echo esc_html( ucwords( $form['form_type'] ) ); ?> : <?php echo esc_html( $form[ 'project_name' ] ); ?> (<?php echo intval( $id ); ?>)<br />
-						Maker: <?php echo esc_html( $form['name'] ); ?>
+							<a href="<?php edit_post_link(); ?>">
+								<?php echo esc_html( ucwords( $form['form_type'] ) ); ?> : <?php echo esc_html( $form[ 'project_name' ] ); ?> (<?php echo intval( $id ); ?>)<br />
+							</a>
+							Maker: <?php echo esc_html( $form['name'] ); ?>
 						</div>
 					</div>
 				<?php
