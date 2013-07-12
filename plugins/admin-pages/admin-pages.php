@@ -66,7 +66,7 @@ function mf_post_status_dropdown() {
 	$post_status = ( isset( $_GET['post_status'] ) ) ? sanitize_title( $_GET['post_status'] ) : '';
 	$output = '<select name="post_status" id="post_Status">';
 	if ($post_status) {
-		$output .= '<option value="' . $post_status . '">' . ucwords( str_replace( '-', ' ', $post_status ) ) . '</option>';
+		$output .= '<option value="' . esc_attr( $post_status ) . '">' . esc_attr( ucwords( str_replace( '-', ' ', $post_status ) ) ) . '</option>';
 	} else {
 		$output .= '<option value="">Application Status</option>';
 	}
@@ -158,7 +158,6 @@ function makerfaire_current_faire_page() {
 
 	$args = array( 
 		'post_type'			=> 'mf_form',
-		'post_status'		=> 'any',
 		'faire'				=> $GLOBALS['current_faire'],
 		'paged'				=> $paged,
 		'post_status'		=> $post_status,
