@@ -123,19 +123,19 @@ function makerfaire_current_faire_page() {
 		wp_die( __('You do not have sufficient permissions to access this page.') );
 	}
 	
-	$paged = ( isset( $_GET['paged'] ) ) ? absint( $_GET['paged'] ) : 1;
-	$post_status = ( isset( $_GET['post_status'] ) ) ? sanitize_title( $_GET['post_status'] ) : '';
-	$type = ( isset( $_GET['type'] ) ) ? sanitize_title( $_GET['type'] ) : '';
-	$cat = ( isset( $_GET['cat'] ) ) ? absint( $_GET['cat'] ) : '';
-	$s = ( isset( $_GET['s'] ) ) ? sanitize_text_field( $_GET['s'] ) : '';
-	$p = ( isset( $_GET['p'] ) ) ? absint( $_GET['p'] ) : '';
-	$orderby = ( isset( $_GET['orderby'] ) ) ? sanitize_text_field( $_GET['orderby'] ) : '';
-	$order = ( isset( $_GET['order'] ) ) ? sanitize_text_field( $_GET['order'] ) : '';
+	$paged 			= ( isset( $_GET['paged'] ) ) ? absint( $_GET['paged'] ) : 1;
+	$post_status 	= ( isset( $_GET['post_status'] ) ) ? sanitize_title( $_GET['post_status'] ) : '';
+	$type 			= ( isset( $_GET['type'] ) ) ? sanitize_title( $_GET['type'] ) : '';
+	$cat 			= ( isset( $_GET['cat'] ) ) ? absint( $_GET['cat'] ) : '';
+	$s 				= ( isset( $_GET['s'] ) ) ? sanitize_text_field( $_GET['s'] ) : '';
+	$p 				= ( isset( $_GET['p'] ) ) ? absint( $_GET['p'] ) : '';
+	$orderby 		= ( isset( $_GET['orderby'] ) ) ? sanitize_text_field( $_GET['orderby'] ) : '';
+	$order 			= ( isset( $_GET['order'] ) ) ? sanitize_text_field( $_GET['order'] ) : '';
+	$posts_per_page = ( isset( $_GET['posts_per_page'] ) ) ? absint( $_GET['posts_per_page'] ) : '';
 
 	$args = array( 
 		'post_type'			=> 'mf_form',
 		'post_status'		=> 'any',
-		'posts_per_page' 	=> 100,
 		'faire'				=> $GLOBALS['current_faire'],
 		'paged'				=> $paged,
 		'post_status'		=> $post_status,
@@ -145,6 +145,7 @@ function makerfaire_current_faire_page() {
 		'p'					=> $p,
 		'orderby'			=> $orderby,
 		'order'				=> $order,
+		'posts_per_page'	=> $posts_per_page,
 		);
 	$query = new WP_Query( $args );
 
@@ -174,6 +175,7 @@ function makerfaire_current_faire_page() {
 				<?php echo mf_orderby_dropdown(); ?>
 				<?php echo mf_order_dropdown(); ?>
 				<label class="screen-reader-text" for="post-search-input">Search Applications:</label>
+				<input type="number" id="post-search-input" name="posts_per_page" min="1" value="<?php echo !empty( $posts_per_page ) ? esc_attr( $posts_per_page ) : ''; ?>" value="">
 				<input type="search" id="post-search-input" name="s" placeholder="Search" value="<?php echo !empty( $s ) ? esc_attr( $s ) : ''; ?>" value="">
 				<input type="search" id="post-search-input" name="p" placeholder="Project ID" value="<?php echo !empty( $p ) ? esc_attr( $p ) : ''; ?>" value="">
 				<input type="submit" name="" id="search-submit" class="button" value="Search Applications"></p>
