@@ -3381,10 +3381,11 @@ class MAKER_FAIRE_FORM {
 	* @param string $status The status of the application
 	* @return array Maker Faire Forms
 	* =====================================================================*/
-	private function get_all_forms( $sort = NULL, $status = 'all' ) {
+	private function get_all_forms( $sort = NULL, $status = 'all', $faire = 'world-maker-faire-new-york-2013' ) {
 		$args = array(
 			'posts_per_page' => 1999,
-			'post_type'      => 'mf_form'
+			'post_type'      => 'mf_form',
+			'faire'			 => $faire
 		);
 
 		if( $status != 'all' )
