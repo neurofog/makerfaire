@@ -11,8 +11,8 @@
 /**
  * Declare the current faire, globally here...
  */
-$GLOBALS['current_faire'] = 'world-maker-faire-new-york-2013';
-// $GLOBALS['current_faire'] = 'maker-faire-bay-area-2013';
+// $GLOBALS['current_faire'] = 'world-maker-faire-new-york-2013';
+$GLOBALS['current_faire'] = 'maker-faire-bay-area-2013';
 
 /**
  * Function to count the statuses of Maker Faire applications
@@ -62,10 +62,16 @@ function mf_get_pagination_links( $total, $paged ) {
  */
 function mf_post_status_dropdown() {
 	$stati = get_post_stati();
+	sort( $stati );
+	$post_status = ( isset( $_GET['post_status'] ) ) ? sanitize_title( $_GET['post_status'] ) : '';
 	$output = '<select name="post_status" id="post_Status">';
-	$output .= '<option value="">Application Status</option>';
+	if ($post_status) {
+		$output .= '<option value="' . $post_status . '">' . ucwords( str_replace( '-', ' ', $post_status ) ) . '</option>';
+	} else {
+		$output .= '<option value="">Application Status</option>';
+	}
 	foreach ($stati as $status) {
-		$output .= '<option value="' . $status . '">' . $status . '</option>';
+		$output .= '<option value="' . $status . '">' . ucwords( str_replace( '-', ' ', $status ) ) . '</option>';
 	}
 	$output .= '</select>';
 	return $output;
@@ -86,6 +92,7 @@ function makerfaire_current_faire_page() {
 	$type = ( isset( $_GET['type'] ) ) ? sanitize_title( $_GET['type'] ) : '';
 	$cat = ( isset( $_GET['cat'] ) ) ? absint( $_GET['cat'] ) : '';
 	$s = ( isset( $_GET['s'] ) ) ? sanitize_text_field( $_GET['s'] ) : '';
+	$p = ( isset( $_GET['p'] ) ) ? absint( $_GET['p'] ) : '';
 
 	$args = array( 
 		'post_type'			=> 'mf_form',
@@ -96,7 +103,8 @@ function makerfaire_current_faire_page() {
 		'post_status'		=> $post_status,
 		'type'				=> $type,
 		'cat'				=> $cat,
-		's'					=> $s
+		's'					=> $s,
+		'p'					=> $p,
 		);
 	$query = new WP_Query( $args );
 
@@ -124,7 +132,8 @@ function makerfaire_current_faire_page() {
 				<?php echo mf_generate_dropdown( 'category', $cat ); ?>
 				<?php echo mf_post_status_dropdown(); ?>
 				<label class="screen-reader-text" for="post-search-input">Search Applications:</label>
-				<input type="search" id="post-search-input" name="s" placeholder="<?php echo !empty( $s ) ? esc_attr( $s ) : ''; ?>" value="">
+				<input type="search" id="post-search-input" name="s" placeholder="Search" value="<?php echo !empty( $s ) ? esc_attr( $s ) : ''; ?>" value="">
+				<input type="search" id="post-search-input" name="p" placeholder="Project ID" value="<?php echo !empty( $p ) ? esc_attr( $p ) : ''; ?>" value="">
 				<input type="submit" name="" id="search-submit" class="button" value="Search Applications"></p>
 			</form>
 			
@@ -142,6 +151,7 @@ function makerfaire_current_faire_page() {
 					<th scope="col" id="" class="manage-column" style="">Description</th>
 					<th scope="col" id="" class="manage-column" style="">Categories</th>
 					<th scope="col" id="" class="manage-column" style="">Tags</th>
+					<th scope="col" id="" class="manage-column" style="">Location</th>
 					<th scope="col" id="" class="manage-column" style="">Featured Maker</th>
 					<th scope="col" id="" class="manage-column" style="">Submitted</th>
 				</tr>
@@ -157,6 +167,7 @@ function makerfaire_current_faire_page() {
 					<th scope="col" id="" class="manage-column" style="">Description</th>
 					<th scope="col" id="" class="manage-column" style="">Categories</th>
 					<th scope="col" id="" class="manage-column" style="">Tags</th>
+					<th scope="col" id="" class="manage-column" style="">Location</th>
 					<th scope="col" id="" class="manage-column" style="">Featured Maker</th>
 					<th scope="col" id="" class="manage-column" style="">Submitted</th>
 				</tr>
@@ -184,6 +195,7 @@ function makerfaire_current_faire_page() {
 								echo  ( !empty( $json->public_description) ) ? '<td>' . wp_trim_words( Markdown( wp_kses_post( $json->public_description ) ), 15 ) . '</td>': '<td></td>';
 								echo '<td>' . get_the_term_list( $id, 'post_tag', '', ', ', '' ) . '</td>';
 								echo '<td>' . get_the_term_list( $id, 'category', '', ', ', '' ) . '</td>';
+								echo '<td>' . get_the_term_list( $id, 'location', '', ', ', '' ) . '</td>';
 								$featured = get_post_meta( $id, '_ef_editorial_meta_checkbox_featured', true );
 								if ( $featured ) {
 									echo '<td>Yes</td>';
@@ -197,6 +209,26 @@ function makerfaire_current_faire_page() {
 			</tbody>
 			
 		</table>
+		
+		<div class="tablenav top">
+
+			<div class="tablenav-pages one-page">
+				<span class="displaying-num"><?php echo esc_html( $query->found_posts ); ?></span>
+				<?php echo mf_get_pagination_links( $query->max_num_pages, $paged ); ?>
+			</div>
+			
+			<form class="" type="get">
+				<input type="hidden" name="page" value="<?php echo esc_attr( $_REQUEST['page'] ); ?>" />
+				<input type="hidden" name="post_type" value="mf_form" />
+				<?php echo mf_restrict_listings_by_type( $type ); ?>
+				<?php echo mf_generate_dropdown( 'category', $cat ); ?>
+				<?php echo mf_post_status_dropdown(); ?>
+				<label class="screen-reader-text" for="post-search-input">Search Applications:</label>
+				<input type="search" id="post-search-input" name="s" placeholder="<?php echo !empty( $s ) ? esc_attr( $s ) : ''; ?>" value="">
+				<input type="submit" name="" id="search-submit" class="button" value="Search Applications"></p>
+			</form>
+			
+		</div>
 		
 	</div>
 
