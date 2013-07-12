@@ -19,7 +19,7 @@ $GLOBALS['current_faire'] = 'maker-faire-bay-area-2013';
  */
 function mf_count_post_statuses() {
 	$types = array( 
-		'Any' 				=> 'any', 
+		'All' 				=> 'any', 
 		'Accepted'			=> 'accepted', 
 		'Draft'				=> 'draft', 
 		'In Progress'		=> 'in-progress', 
@@ -77,6 +77,22 @@ function mf_post_status_dropdown() {
 	return $output;
 }
 
+function mf_orderby_dropdown() {
+	$orderby = ( isset( $_GET['orderby'] ) ) ? sanitize_title( $_GET['orderby'] ) : '';
+	$output = '<select name="orderby" id="orderby">';
+	if ($orderby) {
+		$output .= '<option value="' . $orderby . '">' . ucwords( str_replace( '-', ' ', $orderby ) ) . '</option>';
+	} else {
+		$output .= '<option value="">Orderby</option>';
+	}
+	$orders = array( 'title', 'date', 'modified' );
+	foreach ($orders as $order) {
+		$output .= '<option value="' . $order . '">' . ucwords( str_replace( '-', ' ', $order ) ) . '</option>';
+	}
+	$output .= '</select>';
+	return $output;
+}
+
 /**
  * Current Faire Page
  */
@@ -93,6 +109,7 @@ function makerfaire_current_faire_page() {
 	$cat = ( isset( $_GET['cat'] ) ) ? absint( $_GET['cat'] ) : '';
 	$s = ( isset( $_GET['s'] ) ) ? sanitize_text_field( $_GET['s'] ) : '';
 	$p = ( isset( $_GET['p'] ) ) ? absint( $_GET['p'] ) : '';
+	$orderby = ( isset( $_GET['orderby'] ) ) ? sanitize_text_field( $_GET['orderby'] ) : '';
 
 	$args = array( 
 		'post_type'			=> 'mf_form',
@@ -105,6 +122,7 @@ function makerfaire_current_faire_page() {
 		'cat'				=> $cat,
 		's'					=> $s,
 		'p'					=> $p,
+		'orderby'			=> $orderby
 		);
 	$query = new WP_Query( $args );
 
@@ -131,6 +149,7 @@ function makerfaire_current_faire_page() {
 				<?php echo mf_restrict_listings_by_type( $type ); ?>
 				<?php echo mf_generate_dropdown( 'category', $cat ); ?>
 				<?php echo mf_post_status_dropdown(); ?>
+				<?php echo mf_orderby_dropdown(); ?>
 				<label class="screen-reader-text" for="post-search-input">Search Applications:</label>
 				<input type="search" id="post-search-input" name="s" placeholder="Search" value="<?php echo !empty( $s ) ? esc_attr( $s ) : ''; ?>" value="">
 				<input type="search" id="post-search-input" name="p" placeholder="Project ID" value="<?php echo !empty( $p ) ? esc_attr( $p ) : ''; ?>" value="">
@@ -174,16 +193,18 @@ function makerfaire_current_faire_page() {
 			</tfoot>
 			<tbody id="the-list">
 				<?php
+					global $post;
 					$posts = $query->posts;
 					if( $query ) {
-						foreach ( $posts as $the_post ) {
-							$json = json_decode( html_entity_decode( mf_convert_newlines( str_replace( array("\'", "u03a9"), array("'", '&#8486;'), $the_post->post_content ), "\n"), ENT_COMPAT, 'utf-8' ) );
-							$id = $the_post->ID;
+						foreach ( $posts as $post ) {
+							setup_postdata( $post );
+							$json = json_decode( html_entity_decode( mf_convert_newlines( str_replace( array("\'", "u03a9"), array("'", '&#8486;'), $post->post_content ), "\n"), ENT_COMPAT, 'utf-8' ) );
+							$id = $post->ID;
 							echo '<tr>';
 								echo '<td><img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 130, 130, true ) . '" class="media-object thumbnail pull-left"/></td>';
 								echo '<td>' . $id . '</td>';
-								echo '<td>' . $the_post->post_status .'</td>';
-								echo '<td><strong><a href="' . get_edit_post_link( $id ) . '">' . get_the_title( $id ) . '</a></strong>
+								echo '<td>' . $post->post_status .'</td>';
+								echo '<td><strong><a href="' . get_edit_post_link( $id ) . '">' . get_the_title() . '</a></strong>
 									<div class="row-actions">
 										<span class="inline hide-if-no-js"><a href="' . get_permalink( $id ) . '">View</a></span>
 										<span class="trash"><a class="submitdelete" href="' . get_delete_post_link( $id ) . '">Trash</a></span>
@@ -202,7 +223,8 @@ function makerfaire_current_faire_page() {
 								} else {
 									echo '<td>No</td>';
 								}
-								echo '<td>' . get_the_time( 'F jS, Y', $id ) . '</td>';
+								// echo '<td>' . get_the_time( 'F jS, Y', $id ) . '</td>';
+								echo '<td>' . get_the_modified_date( 'F jS, Y' ) . '</td>';
 							echo '</tr>';
 						}
 					}?>
