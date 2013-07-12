@@ -32,13 +32,13 @@ function mf_count_post_statuses() {
 		$args = array( 
 			'post_type'			=> 'mf_form',
 			'post_status'		=> 'any',
-			'posts_per_page' 	=> 1500,
+			'posts_per_page' 	=> 1,
 			'faire'				=> $GLOBALS['current_faire'],
 			'post_status'		=> $type,
 			'return_fields'		=> 'ids',
 			);
 		$query = new WP_Query( $args );
-		$output .= '| <li><a href="edit.php?post_type=mf_form&page=current_faire&post_status=' . $type . '">' . $k . '</a> <span class="count">(' . $query->post_count . ' )</span></li>';
+		$output .= '| <li><a href="edit.php?post_type=mf_form&page=current_faire&post_status=' . $type . '">' . $k . '</a> <span class="count">(' . $query->found_posts . ' )</span></li>';
 	}
 	return substr($output, 2);
 }
