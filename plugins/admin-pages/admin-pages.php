@@ -104,7 +104,7 @@ function makerfaire_current_faire_page() {
 	
 	<div class="wrap">
 	
-		<h1>Current Faire - <?php echo get_term_by( 'slug', $GLOBALS['current_faire'], 'faire')->name; ?></h1>
+		<h1>Current Faire - <?php echo esc_html( get_term_by( 'slug', $GLOBALS['current_faire'], 'faire')->name ); ?></h1>
 		
 		<ul class="subsubsub">
 			<?php echo mf_count_post_statuses(); ?>
@@ -113,18 +113,18 @@ function makerfaire_current_faire_page() {
 		<div class="tablenav top">
 
 			<div class="tablenav-pages one-page">
-				<span class="displaying-num"><?php echo $query->found_posts; ?></span>
+				<span class="displaying-num"><?php echo esc_html( $query->found_posts ); ?></span>
 				<?php echo mf_get_pagination_links( $query->max_num_pages, $paged ); ?>
 			</div>
 			
 			<form class="" type="get">
-				<input type="hidden" name="page" value="<?php echo $_REQUEST['page']; ?>" />
+				<input type="hidden" name="page" value="<?php echo esc_attr( $_REQUEST['page'] ); ?>" />
 				<input type="hidden" name="post_type" value="mf_form" />
 				<?php echo mf_restrict_listings_by_type( $type ); ?>
 				<?php echo mf_generate_dropdown( 'category', $cat ); ?>
 				<?php echo mf_post_status_dropdown(); ?>
 				<label class="screen-reader-text" for="post-search-input">Search Applications:</label>
-				<input type="search" id="post-search-input" name="s" placeholder="<?php echo !empty( $s ) ? esc_html( $s ) : ''; ?>" value="">
+				<input type="search" id="post-search-input" name="s" placeholder="<?php echo !empty( $s ) ? esc_attr( $s ) : ''; ?>" value="">
 				<input type="submit" name="" id="search-submit" class="button" value="Search Applications"></p>
 			</form>
 			
@@ -179,7 +179,7 @@ function makerfaire_current_faire_page() {
 										<span class="edit"><a href="' . get_edit_post_link( $id ) . '">Edit</a></span>
 									</div>
 								</td>';
-								echo (!empty($json->name)) ? '<td>' . $json->name .'</td>' : '<td></td>';
+								echo (!empty($json->name)) ? '<td>' . esc_html( $json->name ) .'</td>' : '<td></td>';
 								echo '<td>' . get_the_term_list( $id, 'type', '', ', ', '' ) . '</td>';
 								echo  ( !empty( $json->public_description) ) ? '<td>' . wp_trim_words( Markdown( wp_kses_post( $json->public_description ) ), 15 ) . '</td>': '<td></td>';
 								echo '<td>' . get_the_term_list( $id, 'post_tag', '', ', ', '' ) . '</td>';
