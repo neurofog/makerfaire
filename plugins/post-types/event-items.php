@@ -382,7 +382,7 @@ function mf_restrict_listings_by_type( $type ) {
 			array(
 				'walker'			=> new SH_Walker_TaxonomyDropdown(),
 				'value'				=> 'slug',
-				'show_option_all'	=> 'View All Types',
+				'show_option_all'	=> 'Types',
 				'taxonomy'			=> 'type',
 				'name'				=> 'type',
 				'orderby'			=> 'name',
@@ -473,7 +473,7 @@ class SH_Walker_TaxonomyDropdown extends Walker_CategoryDropdown{
 function mf_generate_dropdown( $tax, $selected ) {
 	wp_dropdown_categories(
 		array(
-			'show_option_all'	=> 'View All',
+			'show_option_all'	=> ucwords( $tax ),
 			'taxonomy'			=> $tax,
 			'orderby'			=> 'name',
 			'selected'			=> $selected,

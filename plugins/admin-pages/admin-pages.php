@@ -69,7 +69,7 @@ function mf_post_status_dropdown() {
 	if ($post_status) {
 		$output .= '<option value="' . esc_attr( $post_status ) . '">' . esc_attr( ucwords( str_replace( '-', ' ', $post_status ) ) ) . '</option>';
 	} else {
-		$output .= '<option value="">Application Status</option>';
+		$output .= '<option value="">Status</option>';
 	}
 	foreach ($the_good as $status) {
 		$output .= '<option value="' . $status . '">' . ucwords( str_replace( '-', ' ', $status ) ) . '</option>';
