@@ -112,16 +112,14 @@ function mf_orderby_dropdown( $orderby ) {
 	} else {
 		$output .= '<option value="">Orderby</option>';
 	}
-	$orders = array( 'title', 'date', 'modified', 'name' );
-	foreach ($orders as $order) {
-		if ( $order == 'modified' ) {
-			$output .= '<option value="' . $order . '">' . ucwords( str_replace( '-', ' ', $order ) ) . ' Date</option>';
-		} elseif ( $order == 'date' ) {
-			$output .= '<option value="' . $order . '">Submission ' . ucwords( str_replace( '-', ' ', $order ) ) . '</option>';
-		} else {
-			$output .= '<option value="' . $order . '">' . ucwords( str_replace( '-', ' ', $order ) ) . '</option>';
-		}
-		
+	$orders = array( 
+		'title' 	=> 'title',
+		'date'		=> 'submission date',
+		'modified'	=> 'modified date',
+		'name'		=> 'name',
+		);
+	foreach ($orders as $order => $v) {
+		$output .= '<option value="' . $order . '">' . ucwords( str_replace( '-', ' ', $v ) ) . '</option>';
 	}
 	$output .= '</select>';
 	return $output;
