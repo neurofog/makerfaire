@@ -158,6 +158,7 @@ function makerfaire_current_faire_page() {
 	$post_status 	= ( isset( $_GET['post_status'] ) ) ? sanitize_title( $_GET['post_status'] ) : '';
 	$type 			= ( isset( $_GET['type'] ) ) ? sanitize_title( $_GET['type'] ) : '';
 	$cat 			= ( isset( $_GET['cat'] ) ) ? absint( $_GET['cat'] ) : '';
+	$post_tag 		= ( isset( $_GET['post_tag'] ) ) ? absint( $_GET['post_tag'] ) : '';
 	$s 				= ( isset( $_GET['s'] ) ) ? sanitize_text_field( $_GET['s'] ) : '';
 	$p 				= ( isset( $_GET['p'] ) ) ? absint( $_GET['p'] ) : '';
 	$orderby 		= ( isset( $_GET['orderby'] ) ) ? sanitize_sql_orderby( $_GET['orderby'] ) : '';
@@ -176,6 +177,7 @@ function makerfaire_current_faire_page() {
 		'orderby'			=> $orderby,
 		'order'				=> $order,
 		'posts_per_page'	=> $posts_per_page,
+		'tag'				=> $post_tag,
 		);
 	$query = new WP_Query( $args );
 
@@ -209,6 +211,7 @@ function makerfaire_current_faire_page() {
 				<input type="hidden" name="post_type" value="mf_form" />
 				<?php echo mf_restrict_listings_by_type( $type ); ?>
 				<?php echo mf_generate_dropdown( 'category', $cat ); ?>
+				<?php echo mf_generate_dropdown( 'post_tag', $post_tag ); ?>
 				<?php echo mf_post_status_dropdown(); ?>
 				<?php echo mf_orderby_dropdown( $orderby ); ?>
 				<?php echo mf_order_dropdown( $order ); ?>
@@ -307,6 +310,7 @@ function makerfaire_current_faire_page() {
 				<input type="hidden" name="post_type" value="mf_form" />
 				<?php echo mf_restrict_listings_by_type( $type ); ?>
 				<?php echo mf_generate_dropdown( 'category', $cat ); ?>
+				<?php echo mf_generate_dropdown( 'post_tag', $post_tag ); ?>
 				<?php echo mf_post_status_dropdown(); ?>
 				<label class="screen-reader-text" for="post-search-input">Search Applications:</label>
 				<input type="search" id="post-search-input" name="s" placeholder="<?php echo !empty( $s ) ? esc_attr( $s ) : ''; ?>" value="">

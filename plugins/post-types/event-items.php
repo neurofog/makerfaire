@@ -471,14 +471,18 @@ class SH_Walker_TaxonomyDropdown extends Walker_CategoryDropdown{
  * Wrapper for wp_dropdown_categories to easily add new dropdowns.
  */
 function mf_generate_dropdown( $tax, $selected ) {
+	if ($tax == 'post_tag') {
+		# code...
+	}
 	wp_dropdown_categories(
 		array(
-			'show_option_all'	=> ucwords( $tax ),
+			'show_option_all'	=> ( $tax == 'post_tag' ) ? 'Tag' : ucwords( $tax ),
 			'taxonomy'			=> $tax,
 			'orderby'			=> 'name',
 			'selected'			=> $selected,
 			'hierarchical'		=> true,
-			'hide_empty'		=> false
+			'hide_empty'		=> false,
+			'name'				=> $tax,
 			)
 	);	
 }
