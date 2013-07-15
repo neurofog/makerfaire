@@ -181,6 +181,14 @@ function makerfaire_current_faire_page() {
 			<?php echo mf_count_post_statuses(); ?>
 		</ul>
 		
+		<style>
+
+			.tablenav {
+				height: inherit;
+			}
+
+		</style>
+		
 		<div class="tablenav top">
 
 			<div class="tablenav-pages one-page">
@@ -211,7 +219,7 @@ function makerfaire_current_faire_page() {
 					<th scope="col" id="" class="manage-column" style="">Photo</th>
 					<th scope="col" id="" class="manage-column" style="">ID</th>
 					<th scope="col" id="" class="manage-column" style="">Post Status</th>
-					<th scope="col" id="" class="manage-column" style="">Name</th>
+					<th scope="col" id="" class="manage-column" style="">Project Name</th>
 					<th scope="col" id="" class="manage-column" style="">Maker Name</th>
 					<th scope="col" id="" class="manage-column" style="">Type</th>
 					<th scope="col" id="" class="manage-column" style="">Description</th>
@@ -227,7 +235,7 @@ function makerfaire_current_faire_page() {
 					<th scope="col" id="" class="manage-column" style="">Photo</th>
 					<th scope="col" id="" class="manage-column" style="">ID</th>
 					<th scope="col" id="" class="manage-column" style="">Post Status</th>
-					<th scope="col" id="" class="manage-column" style="">Name</th>
+					<th scope="col" id="" class="manage-column" style="">Project Name</th>
 					<th scope="col" id="" class="manage-column" style="">Maker Name</th>
 					<th scope="col" id="" class="manage-column" style="">Type</th>
 					<th scope="col" id="" class="manage-column" style="">Description</th>
