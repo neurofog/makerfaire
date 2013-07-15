@@ -61,8 +61,9 @@ function mf_get_pagination_links( $total, $paged ) {
  * Post Status Drop Down
  */
 function mf_post_status_dropdown() {
-	$stati = get_post_stati();
-	sort( $stati );
+	// $stati = get_post_stati();
+	// sort( $stati );
+	$the_good = array( 'accepted', 'draft', 'in-progress', 'proposed', 'rejected', 'waiting-for-info' );
 	$post_status = ( isset( $_GET['post_status'] ) ) ? sanitize_title( $_GET['post_status'] ) : '';
 	$output = '<select name="post_status" id="post_Status">';
 	if ($post_status) {
@@ -70,7 +71,7 @@ function mf_post_status_dropdown() {
 	} else {
 		$output .= '<option value="">Application Status</option>';
 	}
-	foreach ($stati as $status) {
+	foreach ($the_good as $status) {
 		$output .= '<option value="' . $status . '">' . ucwords( str_replace( '-', ' ', $status ) ) . '</option>';
 	}
 	$output .= '</select>';
