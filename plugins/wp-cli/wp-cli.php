@@ -13,18 +13,19 @@ class MAKE_CLI extends WP_CLI_Command {
 	public function copy_category_to_tag( $args, $assoc_args ) {
 
 		$args = array(
-			'posts_per_page' => 1000,
-			'post_type' => 'mf_form',
-			'post_status' => 'any',
+			'posts_per_page'			=> 2000,
+			'post_type'					=> 'mf_form',
+			'post_status'				=> 'any',
+			'faire'						=> $GLOBALS['current_faire'],
 
 			// Prevent new posts from affecting the order
-			'orderby' => 'ID',
-			'order' => 'ASC',
+			'orderby' 					=> 'ID',
+			'order' 					=> 'ASC',
 
 			// Speed this up
 			'no_found_rows' => true,
-			'update_post_meta_cache' => false,
-			'update_post_term_cache' => false,
+			'update_post_meta_cache'	=> false,
+			'update_post_term_cache'	=> false,
 		);
 
 		// Get the first set of posts
