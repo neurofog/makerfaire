@@ -155,7 +155,7 @@ function makerfaire_current_faire_page() {
 	$paged 			= ( isset( $_GET['paged'] ) ) ? absint( $_GET['paged'] ) : 1;
 	$post_status 	= ( isset( $_GET['post_status'] ) ) ? sanitize_title( $_GET['post_status'] ) : '';
 	$type 			= ( isset( $_GET['type'] ) ) ? sanitize_title( $_GET['type'] ) : '';
-	$cat 			= ( isset( $_GET['cat'] ) ) ? absint( $_GET['cat'] ) : '';
+	$cat 			= ( isset( $_GET['category'] ) ) ? absint( $_GET['category'] ) : '';
 	$post_tag 		= ( isset( $_GET['post_tag'] ) ) ? absint( $_GET['post_tag'] ) : '';
 	$s 				= ( isset( $_GET['s'] ) ) ? sanitize_text_field( $_GET['s'] ) : '';
 	$p 				= ( isset( $_GET['p'] ) ) ? absint( $_GET['p'] ) : '';
