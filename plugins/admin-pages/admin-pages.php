@@ -278,8 +278,8 @@ function makerfaire_current_faire_page() {
 								echo (!empty($json->name)) ? '<td>' . esc_html( $json->name ) .'</td>' : '<td></td>';
 								echo '<td>' . get_the_term_list( $id, 'type', '', ', ', '' ) . '</td>';
 								echo  ( !empty( $json->public_description) ) ? '<td>' . wp_trim_words( Markdown( wp_kses_post( $json->public_description ) ), 15 ) . '</td>': '<td></td>';
-								echo '<td>' . get_the_term_list( $id, 'post_tag', '', ', ', '' ) . '</td>';
 								echo '<td>' . get_the_term_list( $id, 'category', '', ', ', '' ) . '</td>';
+								echo '<td>' . get_the_term_list( $id, 'post_tag', '', ', ', '' ) . '</td>';
 								echo '<td>' . get_the_term_list( $id, 'location', '', ', ', '' ) . '</td>';
 								$featured = get_post_meta( $id, '_ef_editorial_meta_checkbox_featured', true );
 								if ( $featured ) {
