@@ -2567,7 +2567,7 @@ class MAKER_FAIRE_FORM {
 		?>
 		<div class="wrap" id="iscic">
 			<?php echo screen_icon(); ?>
-			<h2>Maker Faire Bay Area 2013
+			<h2><?php echo wpcom_vip_get_term_by( 'slug', $GLOBALS['current_faire'], 'faire')->name; ?>
 				<div style="font-size:75%">Report: View Project Images</div>
 			</h2>
 			<h3>Total: <?php echo intval( count( $projects['exhibit'] ) + count( $projects['performer'] ) + count( $projects['presenter'] ) ); ?> Proposed, Waiting for Info and Accepted Projects</h3>
@@ -2582,11 +2582,11 @@ class MAKER_FAIRE_FORM {
 				foreach( $list as $id => $form ) :
 				?>
 					<div style="float:left; width:400px; margin:20px; height:500px;">
-						<a href="<?php edit_post_link(); ?>">
+						<a href="<?php echo esc_url( get_edit_post_link( $id ) ) ?>">
 							<img src="<?php echo esc_url( $form['form_photo_thumb'] ); ?>" style="max-width:400px; max-height:400px; margin-bottom:10px;" />
 						</a>
 						<div style="font-size:12px;">
-							<a href="<?php edit_post_link(); ?>">
+							<a href="<?php echo esc_url( get_edit_post_link( $id ) ) ?>">
 								<?php echo esc_html( ucwords( $form['form_type'] ) ); ?> : <?php echo esc_html( $form[ 'project_name' ] ); ?> (<?php echo intval( $id ); ?>)<br />
 							</a>
 							Maker: <?php echo esc_html( $form['name'] ); ?>
