@@ -154,19 +154,6 @@
 				<h3>Upcoming Featured Faires</h3>
 				<div class="row">
 					<div class="span1">
-						<img alt="Maker Faire Kansas City" src="http://makerfaire.files.wordpress.com/2013/01/kansascity-mf-sq-01_001.gif?w=75&amp;h=60" width="75" height="60">
-					</div>
-					<div class="span3">
-						<h4 class="smaller"><a href="http://www.makerfairekc.com/">Maker Faire <small style="color:#0088cc;">Kansas City</small></a></h4>
-						<ul class="unstyled">
-							<li>June 29<sup>th</sup>and 30<sup>th</sup>, 2013</li>
-							<li>Union Station</li>
-						</ul>
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="span1">
 						<img alt="Maker Faire Detroit" src="http://makerfaire.files.wordpress.com/2013/01/detroit-mf-sq.gif?w=75" width="75">
 					</div>
 					<div class="span3">
