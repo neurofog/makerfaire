@@ -154,25 +154,14 @@
 				<h3>Upcoming Featured Faires</h3>
 				<div class="row">
 					<div class="span1">
-						<img alt="Maker Faire Detroit" src="http://makerfaire.files.wordpress.com/2013/01/detroit-mf-sq.gif?w=75" width="75">
-					</div>
-					<div class="span3">
-						<h4 class="smaller"><a href="http://www.makerfairedetroit.com/">Maker Faire <small style="color:#0088cc;">Detroit</small></a></h4>
-						<ul class="unstyled">
-							<li>Date: July 27<sup>th</sup> and 28<sup>th</sup>, 2013</li>
-							<li>The Henry Ford</li>
-						</ul>
-					</div>
-				</div>
-				<div class="row">
-					<div class="span1">
 						<img alt="Maker Faire Rome" src="http://makerfaire.files.wordpress.com/2013/01/rome-mf-sq_logowithtag_logowithtag.gif?w=75" width="75">
 					</div>
 					<div class="span3">
 						<h4 class="smaller"><a href="http://www.makerfairerome.eu/">Maker Faire <small style="color:#0088cc;">Rome</small></a></h4>
 						<ul class="unstyled">
 							<li>Date: October 3<sup>rd</sup> through 6<sup>th</sup>, 2013</li>
-							<li>Campo Boario</li>
+							<li>Palazzo dei Congressi</li>
+							<li>Piazzale Kennedy, 1 Rome</li>
 						</ul>
 					</div>
 				</div>	
