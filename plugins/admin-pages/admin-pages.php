@@ -237,6 +237,7 @@ function makerfaire_current_faire_page() {
 					<th scope="col" id="" class="manage-column" style="">Location</th>
 					<th scope="col" id="" class="manage-column" style="">Featured Maker</th>
 					<th scope="col" id="" class="manage-column" style="">Modified Date</th>
+					<th scope="col" id="" class="manage-column" style="">Edu Day</th>
 				</tr>
 			</thead>
 			<tfoot>
@@ -253,6 +254,7 @@ function makerfaire_current_faire_page() {
 					<th scope="col" id="" class="manage-column" style="">Location</th>
 					<th scope="col" id="" class="manage-column" style="">Featured Maker</th>
 					<th scope="col" id="" class="manage-column" style="">Modified Date</th>
+					<th scope="col" id="" class="manage-column" style="">Edu Day</th>
 				</tr>
 			</tfoot>
 			<tbody id="the-list">
@@ -263,7 +265,7 @@ function makerfaire_current_faire_page() {
 						foreach ( $posts as $post ) {
 							setup_postdata( $post );
 							$json = json_decode( html_entity_decode( mf_convert_newlines( str_replace( array("\'", "u03a9"), array("'", '&#8486;'), $post->post_content ), "\n"), ENT_COMPAT, 'utf-8' ) );
-							$id = $post->ID;
+							$id = absint( $post->ID );
 							echo '<tr>';
 								echo '<td><img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 130, 130, true ) . '" class="media-object thumbnail pull-left"/></td>';
 								echo '<td>' . $id . '</td>';
@@ -289,6 +291,12 @@ function makerfaire_current_faire_page() {
 								}
 								// echo '<td>' . get_the_time( 'F jS, Y', $id ) . '</td>';
 								echo '<td>' . get_the_modified_date( 'F jS, Y' ) . '</td>';
+								$edu_day = get_post_meta( $id, '_ef_editorial_meta_checkbox_education-day', true );
+								if ( $edu_day ) {
+									echo '<td>Yes</td>';
+								} else {
+									echo '<td>No</td>';
+								}
 							echo '</tr>';
 						}
 					}?>
