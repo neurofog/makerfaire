@@ -162,6 +162,7 @@ function makerfaire_current_faire_page() {
 	$orderby 		= ( isset( $_GET['orderby'] ) ) ? sanitize_sql_orderby( $_GET['orderby'] ) : '';
 	$order 			= ( isset( $_GET['order'] ) ) ? sanitize_text_field( $_GET['order'] ) : '';
 	$posts_per_page = ( isset( $_GET['posts_per_page'] ) ) ? absint( $_GET['posts_per_page'] ) : '20';
+	$edu 			= ( isset( $_GET['edu_day'] ) && $_GET['edu_day'] == 'true' ) ? '_ef_editorial_meta_checkbox_education-day' : '';
 
 	$args = array( 
 		'post_type'			=> 'mf_form',
@@ -176,6 +177,7 @@ function makerfaire_current_faire_page() {
 		'order'				=> $order,
 		'posts_per_page'	=> $posts_per_page,
 		'tag'				=> $post_tag,
+		'meta_key'			=> $edu,
 		);
 	$query = new WP_Query( $args );
 
@@ -213,6 +215,10 @@ function makerfaire_current_faire_page() {
 				<?php echo mf_post_status_dropdown(); ?>
 				<?php echo mf_orderby_dropdown( $orderby ); ?>
 				<?php echo mf_order_dropdown( $order ); ?>
+				<select name="edu_day">
+					<option value="">Edu Day</option>
+					<option value="true"<?php selected( $_GET['edu_day'], 'true' ); ?>>Yes</option>
+				</select>
 				<label class="screen-reader-text" for="post-search-input">Search Applications:</label>
 				<input type="number" id="post-search-input" name="posts_per_page" min="1" value="<?php echo !empty( $posts_per_page ) ? esc_attr( $posts_per_page ) : '20'; ?>" value="">
 				<input type="search" id="post-search-input" name="s" placeholder="Search" value="<?php echo !empty( $s ) ? esc_attr( $s ) : ''; ?>" value="">
@@ -266,6 +272,7 @@ function makerfaire_current_faire_page() {
 							setup_postdata( $post );
 							$json = json_decode( html_entity_decode( mf_convert_newlines( str_replace( array("\'", "u03a9"), array("'", '&#8486;'), $post->post_content ), "\n"), ENT_COMPAT, 'utf-8' ) );
 							$id = absint( $post->ID );
+
 							echo '<tr>';
 								echo '<td><img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 130, 130, true ) . '" class="media-object thumbnail pull-left"/></td>';
 								echo '<td>' . $id . '</td>';
