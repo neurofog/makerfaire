@@ -17,7 +17,7 @@ $GLOBALS['current_faire'] = 'world-maker-faire-new-york-2013';
 /**
  * Function to count the statuses of Maker Faire applications
  */
-function mf_count_post_statuses() {
+function mf_count_post_statuses( $display = 'list' ) {
 	$types = array( 
 		'All' 				=> 'any', 
 		'Accepted'			=> 'accepted', 
@@ -27,7 +27,7 @@ function mf_count_post_statuses() {
 		'Rejected'			=> 'rejected',
 		'Waiting for Info'	=> 'waiting-for-info'
 		);
-	$output = '';
+	$output = ( $display == 'table' ) ? '  <table width="100%" border="0" cellspacing="0" cellpadding="3" style="border:1px solid #DFDFDF;">' : '';
 	foreach ($types as $k => $type) {
 		$args = array( 
 			'post_type'			=> 'mf_form',
@@ -38,8 +38,13 @@ function mf_count_post_statuses() {
 			'return_fields'		=> 'ids',
 			);
 		$query = new WP_Query( $args );
-		$output .= '| <li><a href="edit.php?post_type=mf_form&page=current_faire&post_status=' . $type . '">' . $k . '</a> <span class="count">(' . $query->found_posts . ' )</span></li>';
+		if ( $display == 'list' ) {
+			$output .= '| <li><a href="edit.php?post_type=mf_form&page=current_faire&post_status=' . $type . '">' . $k . '</a> <span class="count">(' . $query->found_posts . ' )</span></li>';
+		} elseif ( $display == 'table' ) {
+			$output .= '<tr><td>' . $k . '</a></td><td><a href="edit.php?post_type=mf_form&page=current_faire&post_status=' . $type . '">' . $query->found_posts . '</a></td></tr>';
+		}
 	}
+	$output .= ( $display == 'table' ) ? '</table>' : '';
 	return substr($output, 2);
 }
 
@@ -163,6 +168,7 @@ function makerfaire_current_faire_page() {
 	$order 			= ( isset( $_GET['order'] ) ) ? sanitize_text_field( $_GET['order'] ) : '';
 	$posts_per_page = ( isset( $_GET['posts_per_page'] ) ) ? absint( $_GET['posts_per_page'] ) : '20';
 	$edu 			= ( isset( $_GET['edu_day'] ) && $_GET['edu_day'] == 'true' ) ? '_ef_editorial_meta_checkbox_education-day' : '';
+	$edu_true		= ( isset( $_GET['edu_day'] ) ) ? $_GET['edu_day'] : 'false';
 
 	$args = array( 
 		'post_type'			=> 'mf_form',
@@ -217,7 +223,7 @@ function makerfaire_current_faire_page() {
 				<?php echo mf_order_dropdown( $order ); ?>
 				<select name="edu_day">
 					<option value="">Edu Day</option>
-					<option value="true"<?php selected( $_GET['edu_day'], 'true' ); ?>>Yes</option>
+					<option value="true"<?php selected( $edu_true, 'true' ); ?>>Yes</option>
 				</select>
 				<label class="screen-reader-text" for="post-search-input">Search Applications:</label>
 				<input type="number" id="post-search-input" name="posts_per_page" min="1" value="<?php echo !empty( $posts_per_page ) ? esc_attr( $posts_per_page ) : '20'; ?>" value="">
