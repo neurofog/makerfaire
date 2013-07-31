@@ -2621,27 +2621,8 @@ class MAKER_FAIRE_FORM {
 			<?php echo screen_icon(); ?>
 			<h2>Maker Faire Reports</h2>
 			<div style="width:45%; float:left">
-				<!-- <h1>Stats</h1>
-				<table width="100%" border="0" cellspacing="0" cellpadding="3" style="border:1px solid #DFDFDF;">
-					<thead>
-						<tr>
-							<td>Status</td>
-							<td>Exhibits</td>
-							<td>Presentations</td>
-							<td>Performances</td>
-						</tr>
-					</thead>
-					<tbody>
-						<?php // foreach( $stats as $status => $details ) : ?>
-						<tr>
-							<td><?php // echo esc_html( ucwords( str_replace( '-', ' ', $status ) ) ); ?></td>
-							<?php // foreach( $details as $mftype => $num ) : ?>
-							<td><?php // echo intval( $num ); ?></td>
-							<?php // endforeach; ?>
-						</tr>
-						<?php // endforeach; ?>
-					</tbody>
-				</table>-->
+				<h3><?php echo wpcom_vip_get_term_by( 'slug', $GLOBALS['current_faire'], 'faire')->name; ?> Stats</h3>
+				<?php echo mf_count_post_statuses( 'table' ); ?>
 			<h1 style="margin-top:20px;">Sync Status with JDB</h1>
 			Syncs 100 applications at a time.<br />To do a full sync start at 0 and increase by 100 until you're done.
 			<form action="" method="post">
