@@ -17,7 +17,7 @@ $GLOBALS['current_faire'] = 'world-maker-faire-new-york-2013';
 /**
  * Function to count the statuses of Maker Faire applications
  */
-function mf_count_post_statuses() {
+function mf_count_post_statuses( $display = 'list' ) {
 	$types = array( 
 		'All' 				=> 'any', 
 		'Accepted'			=> 'accepted', 
@@ -27,7 +27,7 @@ function mf_count_post_statuses() {
 		'Rejected'			=> 'rejected',
 		'Waiting for Info'	=> 'waiting-for-info'
 		);
-	$output = '';
+	$output = ( $display == 'table' ) ? '  <table width="100%" border="0" cellspacing="0" cellpadding="3" style="border:1px solid #DFDFDF;">' : '';
 	foreach ($types as $k => $type) {
 		$args = array( 
 			'post_type'			=> 'mf_form',
@@ -38,8 +38,13 @@ function mf_count_post_statuses() {
 			'return_fields'		=> 'ids',
 			);
 		$query = new WP_Query( $args );
-		$output .= '| <li><a href="edit.php?post_type=mf_form&page=current_faire&post_status=' . $type . '">' . $k . '</a> <span class="count">(' . $query->found_posts . ' )</span></li>';
+		if ( $display == 'list' ) {
+			$output .= '| <li><a href="edit.php?post_type=mf_form&page=current_faire&post_status=' . $type . '">' . $k . '</a> <span class="count">(' . $query->found_posts . ' )</span></li>';
+		} elseif ( $display == 'table' ) {
+			$output .= '<tr><td>' . $k . '</a></td><td><a href="edit.php?post_type=mf_form&page=current_faire&post_status=' . $type . '">' . $query->found_posts . '</a></td></tr>';
+		}
 	}
+	$output .= ( $display == 'table' ) ? '</table>' : '';
 	return substr($output, 2);
 }
 
@@ -162,6 +167,8 @@ function makerfaire_current_faire_page() {
 	$orderby 		= ( isset( $_GET['orderby'] ) ) ? sanitize_sql_orderby( $_GET['orderby'] ) : '';
 	$order 			= ( isset( $_GET['order'] ) ) ? sanitize_text_field( $_GET['order'] ) : '';
 	$posts_per_page = ( isset( $_GET['posts_per_page'] ) ) ? absint( $_GET['posts_per_page'] ) : '20';
+	$edu 			= ( isset( $_GET['edu_day'] ) && $_GET['edu_day'] == 'true' ) ? '_ef_editorial_meta_checkbox_education-day' : '';
+	$edu_true		= ( isset( $_GET['edu_day'] ) ) ? $_GET['edu_day'] : 'false';
 
 	$args = array( 
 		'post_type'			=> 'mf_form',
@@ -176,6 +183,7 @@ function makerfaire_current_faire_page() {
 		'order'				=> $order,
 		'posts_per_page'	=> $posts_per_page,
 		'tag'				=> $post_tag,
+		'meta_key'			=> $edu,
 		);
 	$query = new WP_Query( $args );
 
@@ -213,6 +221,10 @@ function makerfaire_current_faire_page() {
 				<?php echo mf_post_status_dropdown(); ?>
 				<?php echo mf_orderby_dropdown( $orderby ); ?>
 				<?php echo mf_order_dropdown( $order ); ?>
+				<select name="edu_day">
+					<option value="">Edu Day</option>
+					<option value="true"<?php selected( $edu_true, 'true' ); ?>>Yes</option>
+				</select>
 				<label class="screen-reader-text" for="post-search-input">Search Applications:</label>
 				<input type="number" id="post-search-input" name="posts_per_page" min="1" value="<?php echo !empty( $posts_per_page ) ? esc_attr( $posts_per_page ) : '20'; ?>" value="">
 				<input type="search" id="post-search-input" name="s" placeholder="Search" value="<?php echo !empty( $s ) ? esc_attr( $s ) : ''; ?>" value="">
@@ -237,6 +249,7 @@ function makerfaire_current_faire_page() {
 					<th scope="col" id="" class="manage-column" style="">Location</th>
 					<th scope="col" id="" class="manage-column" style="">Featured Maker</th>
 					<th scope="col" id="" class="manage-column" style="">Modified Date</th>
+					<th scope="col" id="" class="manage-column" style="">Edu Day</th>
 				</tr>
 			</thead>
 			<tfoot>
@@ -253,6 +266,7 @@ function makerfaire_current_faire_page() {
 					<th scope="col" id="" class="manage-column" style="">Location</th>
 					<th scope="col" id="" class="manage-column" style="">Featured Maker</th>
 					<th scope="col" id="" class="manage-column" style="">Modified Date</th>
+					<th scope="col" id="" class="manage-column" style="">Edu Day</th>
 				</tr>
 			</tfoot>
 			<tbody id="the-list">
@@ -263,7 +277,8 @@ function makerfaire_current_faire_page() {
 						foreach ( $posts as $post ) {
 							setup_postdata( $post );
 							$json = json_decode( html_entity_decode( mf_convert_newlines( str_replace( array("\'", "u03a9"), array("'", '&#8486;'), $post->post_content ), "\n"), ENT_COMPAT, 'utf-8' ) );
-							$id = $post->ID;
+							$id = absint( $post->ID );
+
 							echo '<tr>';
 								echo '<td><img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 130, 130, true ) . '" class="media-object thumbnail pull-left"/></td>';
 								echo '<td>' . $id . '</td>';
@@ -289,6 +304,12 @@ function makerfaire_current_faire_page() {
 								}
 								// echo '<td>' . get_the_time( 'F jS, Y', $id ) . '</td>';
 								echo '<td>' . get_the_modified_date( 'F jS, Y' ) . '</td>';
+								$edu_day = get_post_meta( $id, '_ef_editorial_meta_checkbox_education-day', true );
+								if ( $edu_day ) {
+									echo '<td>Yes</td>';
+								} else {
+									echo '<td>No</td>';
+								}
 							echo '</tr>';
 						}
 					}?>
