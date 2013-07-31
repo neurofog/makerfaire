@@ -643,6 +643,10 @@ class MAKER_FAIRE_FORM {
 						<p><?php echo Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $main_description, "\n" ) ) ) ); ?></p>
 						<table style="width:100%">
 							<tr>
+								<td style="width:80px;" valign="top"><strong>Type:</strong></td>
+								<td valign="top"><?php echo esc_attr( $data->form_type ); ?></td>
+							</tr>
+							<tr>
 								<td style="width:80px;" valign="top"><strong>Status:</strong></td>
 								<td valign="top"><?php echo esc_attr( $post->post_status ); ?></td>
 							</tr>
