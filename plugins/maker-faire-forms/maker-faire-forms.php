@@ -632,7 +632,6 @@ class MAKER_FAIRE_FORM {
 			} else {
 				$main_description = '';
 			}
-			var_dump($data);
 			?>
 			<h1><?php echo esc_html( $data->{ $this->merge_fields( 'project_name', $data->form_type ) } ); ?></h1>
 			<input name="form_type" type="hidden" value="<?php echo esc_attr( $data->form_type ); ?>" />
@@ -895,7 +894,6 @@ class MAKER_FAIRE_FORM {
 			<table style="width:100%">
 
 				<?php foreach( (array) $data as $k => $v ) : if ( in_array( $k, $cont ) ) continue; ?>
-					<?php //var_dump($k); var_dump($v); ?>
 					<tr class="mf-form-row" id="<?php echo esc_attr( $k ); ?>" <?php if ( strpos( $k, '_thumb' ) !== false ): ?>style="display:none"<?php endif; ?>>
 					<td valign="top"><?php echo esc_html( ucwords( str_replace( '_', ' ', $k ) ) ); ?>:</td>
 					<td>
@@ -1160,7 +1158,7 @@ class MAKER_FAIRE_FORM {
 		<?php elseif ( array_key_exists( $key, $radios ) ) : ?>
 		
 			<?php foreach( $radios[ $key ] as $dkey => $data ) : $dkey = ! is_int( $dkey ) ? $dkey : $data; ?>
-				<div>sdf
+				<div>
 					<input name="<?php echo esc_attr( $type . '[' . $key . ']' ); ?>" type="radio" value="<?php echo esc_attr( $dkey ); ?>" <?php checked( $dkey == $value ); ?> /> 
 					<?php echo esc_html( $data ); ?>
 				</div>
@@ -1185,16 +1183,14 @@ class MAKER_FAIRE_FORM {
 					'presenter_org',
 					'presenter_title',
 				)
-			); 
-
-			//var_dump($init_fields); ?>
+			); ?>
 		
 			<input name="<?php echo esc_attr( $type . '[' . $key . '][0]' ); ?>" value="<?php echo esc_attr( isset( $all_data[ $key ][0] ) ? $all_data[ $key ][0] : '' ); ?>" type="text" />
 			</td></tr>
 			<?php foreach( $init_fields[ $key ] as $fn ) : 
-				//var_dump($fn);
 				$data = is_array( $all_data[ $fn ] ) && isset( $all_data[ $fn ][0] ) ? $all_data[ $fn ][0] : ''; 
-				$data = is_string( $all_data[ $fn ] ) ? $all_data[ $fn ] : '';
+				$data = is_string( $all_data[ $fn ][0] ) ? $all_data[ $fn ][0] : '';
+
 				if ( ( $fn == 'm_maker_gigyaid' || $fn == 'presenter_gigyaid' ) && $data == '' && isset( $all_data['uid'] ) )
 					$data = $all_data['uid']; ?>
 
@@ -1202,9 +1198,9 @@ class MAKER_FAIRE_FORM {
 					<td valign="top"><?php echo esc_html( ucwords( str_replace( '_', ' ', $fn ) ) ); ?>:</td>
 
 					<?php if ( $fn == 'm_maker_bio' || $fn == 'presenter_bio' ) :?>
-						<td><textarea name="<?php echo esc_attr( $type . '[' . $fn . '][0]' ); ?>" id="<?php echo esc_attr( $type . '[' . $fn . '][0]' ); ?>" cols="30" rows="10"><?php echo esc_attr( isset( $all_data[ $fn ][0] ) ? $all_data[ $fn ][0] : '' ); ?></textarea></td>
+						<td><textarea name="<?php echo esc_attr( $type . '[' . $fn . '][0]' ); ?>" id="<?php echo esc_attr( $type . '[' . $fn . '][0]' ); ?>" cols="30" rows="10"><?php echo ( ! empty( $data ) ) ? esc_attr( $data ) : ''; ?></textarea></td>
 					<?php else : ?>
-						<td><input name="<?php echo esc_attr( $type . '[' . $fn . '][0]' ); ?>" value="<?php echo esc_attr( isset( $all_data[ $fn ][0] ) ? $all_data[ $fn ][0] : '' ); ?>" type="text" /></td>
+						<td><input style="width:100%;" name="<?php echo esc_attr( $type . '[' . $fn . '][0]' ); ?>" value="<?php echo esc_attr( $data ); ?>" type="text" /></td>
 					<?php endif; ?>
 				</tr>
 			<?php endforeach;
