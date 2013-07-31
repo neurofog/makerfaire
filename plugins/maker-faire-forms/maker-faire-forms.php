@@ -457,10 +457,10 @@ class MAKER_FAIRE_FORM {
 				echo '<strong>'.intval( $pid ).'</strong>';
 				break;
 			case 'type':
-				echo '<strong>'.esc_html( strtoupper( $data->form_type ) ).'</strong>';
+				echo ( !empty( $data->form_type ) ) ? '<strong>' . esc_html( $data->form_type ) . '</strong>' : '';
 				break;
 			case 'maker':
-				echo esc_html( $data->name );
+				echo ( !empty( $data->name ) ) ? esc_html( $data->name ) : '';
 				break;
 		}
 	}

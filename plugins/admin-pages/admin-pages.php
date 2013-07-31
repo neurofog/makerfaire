@@ -27,7 +27,7 @@ function mf_count_post_statuses( $display = 'list' ) {
 		'Rejected'			=> 'rejected',
 		'Waiting for Info'	=> 'waiting-for-info'
 		);
-	$output = ( $display == 'table' ) ? '  <table width="100%" border="0" cellspacing="0" cellpadding="3" style="border:1px solid #DFDFDF;">' : '';
+	$output = ( $display == 'table' ) ? '  <table width="300" border="0" cellspacing="0" cellpadding="3" style="border:1px solid #DFDFDF;">' : '';
 	foreach ($types as $k => $type) {
 		$args = array( 
 			'post_type'			=> 'mf_form',
