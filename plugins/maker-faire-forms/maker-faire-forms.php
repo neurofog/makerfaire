@@ -302,7 +302,7 @@ class MAKER_FAIRE_FORM {
 			'hierarchical'       => true,
 			'menu_position'      => null,
 			'menu_icon'          => plugins_url( 'assets/i/admin-icon.png', __FILE__ ),
-			'supports'           => array( 'title' ),
+			'supports'           => array( 'title', 'revisions' ),
 			'taxonomies'		 => array( 'category', 'post_tag' ),
 			'rewrite'            => array( 'slug' => 'makers', 'with_front' => false )
 		);
@@ -558,6 +558,20 @@ class MAKER_FAIRE_FORM {
 						</div>
 					</div>
 					<div class="clear"></div>
+					<p class="misc-pub-section num-revisions">
+					<?php
+						$args = array( 
+									'post_parent' 	=> get_the_ID(),
+									'post_type'		=> 'revision'
+								);
+						$kids = get_children( $args );
+						if ( count( $kids ) > 1 ) :
+							printf( __( 'Revisions: %s' ), '<b>' . number_format_i18n( absint( count( $kids ) ) ) . '</b>' );
+							$kid = array_splice( $kids, 0 );
+					?>
+						<a class="hide-if-no-js" href="<?php echo esc_url( get_edit_post_link( absint( $kid[0]->ID ) ) ); ?>"><?php _ex( 'Browse', 'revisions' ); ?></a>
+					<?php endif; ?>
+					</p>
 					<script type="text/javascript">
 						(function($){
 							$(document).ready(function() {
