@@ -565,10 +565,12 @@ class MAKER_FAIRE_FORM {
 									'post_type'		=> 'revision'
 								);
 						$kids = get_children( $args );
-						printf( __( 'Revisions: %s' ), '<b>' . number_format_i18n( absint( count( $kids ) ) ) . '</b>' );
-						$kid = array_splice( $kids, 0 );
+						if ( count( $kids ) > 1 ) :
+							printf( __( 'Revisions: %s' ), '<b>' . number_format_i18n( absint( count( $kids ) ) ) . '</b>' );
+							$kid = array_splice( $kids, 0 );
 					?>
 						<a class="hide-if-no-js" href="<?php echo esc_url( get_edit_post_link( absint( $kid[0]->ID ) ) ); ?>"><?php _ex( 'Browse', 'revisions' ); ?></a>
+					<?php endif; ?>
 					</p>
 					<script type="text/javascript">
 						(function($){
