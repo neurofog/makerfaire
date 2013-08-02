@@ -644,7 +644,7 @@ class MAKER_FAIRE_FORM {
 						<table style="width:100%">
 							<tr>
 								<td style="width:80px;" valign="top"><strong>Type:</strong></td>
-								<td valign="top"><?php echo esc_attr( $data->form_type ); ?></td>
+								<td valign="top"><?php echo esc_attr( ucfirst( $data->form_type ) ); ?></td>
 							</tr>
 							<tr>
 								<td style="width:80px;" valign="top"><strong>Status:</strong></td>
