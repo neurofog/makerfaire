@@ -238,7 +238,7 @@
 				'category' 		 => ( isset( $_GET['category'] ) && $_GET['category'] != '0' ) ? absint( $_GET['category'] ) : '',
 				'tag'			 => ( isset( $_GET['tag'] ) && $_GET['tag'] != 'all' ) ? sanitize_text_field( $_GET['tag'] ) : '',
 				'edu_day'		 => ( isset( $_GET['edu_day'] ) && $_GET['edu_day'] == 'true' ) ? '_ef_editorial_meta_checkbox_education-day' : '',
-				'posts_per_page' => ( isset( $_GET['posts_per_page'] ) && $_GET['posts_per_page'] <= 100 ) ? absint( $_GET['posts_per_page'] ) : 40,
+				'posts_per_page' => ( isset( $_GET['posts_per_page'] ) && $_GET['posts_per_page'] <= 1000 ) ? absint( $_GET['posts_per_page'] ) : 40,
 				'search' 		 => ( isset( $_GET['s'] ) && ! empty( $_GET['s'] ) ) ? sanitize_text_field( $_GET['s'] ) : '',
 				'post_id'		 => ( isset( $_GET['p'] ) && ! empty( $_GET['p'] ) ) ? absint( $_GET['p'] ) : '', 
 			);
@@ -679,7 +679,7 @@
 						<?php echo $this->make_categories_dropdown(); ?>
 						<?php echo $this->make_tags_dropdown(); ?>
 						<?php echo $this->post_edu_dropdown(); ?>
-						<?php echo $this->posts_per_page_dropdown( array( 20, 30, 40, 50, 60, 70, 80, 90, 100 ) ); ?>
+						<?php echo $this->posts_per_page_dropdown( array( 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 1000 ) ); ?>
 						<label for="post-search-id" class="screen-reader-text">Search by Project ID</label>
 						<input type="search" id="post-search-id" name="p" placeholder="Project ID" value="<?php echo ( isset( $_GET['p'] ) && ! empty( $_GET['p'] ) ) ? esc_attr( $_GET['p'] ) : ''; ?>">
 						<input type="submit" name="" id="filter-submit" class="button" value="Filter All Content">
