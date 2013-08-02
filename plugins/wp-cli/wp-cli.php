@@ -176,16 +176,25 @@ class MAKE_CLI extends WP_CLI_Command {
 			global $post;
 			
 			setup_postdata( $post );
-		
+			$bad   = array( '&amp;', '&#8211;', '&#8230;', );
+			$good  = array( '&',	 '–',       '…',       );
+
 			// Get our applications
-			$app   = json_decode( html_entity_decode( $post->post_content ) );
+			$app   = json_decode( $post->post_content );
 			$type  = ( isset( $app->form_type ) ) ? $app->form_type : 'null';
+
+			// Setup a array of messages
+			$messages = array(
+				'errors'  => array(),
+				'success' => array(),
+			);
 
 			// Use a switch to easily check for all the different application types
 			switch ( $type ) {
 
 				// If the application is an "exhibit", get the info we need.
 				case 'exhibit' :
+					$app_type = 'Exhibit';
 
 					// Check what kind of maker we have; a single, a list, or a group. Return their email.
 					switch ( $app->maker ) {
@@ -195,8 +204,9 @@ class MAKE_CLI extends WP_CLI_Command {
 
 							$maker_type  = 'One Maker';
 							$maker_email = ( isset( $app->maker_email ) ) ? $app->maker_email : $app->email;
-							$maker_name  = ( isset( $app->maker_name ) ) ? $app->maker_name : $app->name;
-							$maker_photo = ( isset( $app->maker_photo ) ) ? $app->maker_photo: $app->project_photo;
+							$maker_name  = ( isset( $app->maker_name ) )  ? $app->maker_name  : $app->name;
+							$maker_photo = ( isset( $app->maker_photo ) ) ? $app->maker_photo : $app->project_photo;
+							$maker_bio   = ( isset( $app->maker_bio ) )   ? $app->maker_bio   : $app->public_description;
 
 							break;
 
@@ -208,6 +218,7 @@ class MAKE_CLI extends WP_CLI_Command {
 							$maker_email = array();
 							$maker_name  = array();
 							$maker_photo = array();
+							$maker_bio   = array();
 							
 							// Let's loop through all of our makers in one shot shall we?
 							for ( $i = 0; $i < $num_makers; $i++ ) {
@@ -216,14 +227,14 @@ class MAKE_CLI extends WP_CLI_Command {
 								if ( $app->m_maker_email[ $i ] != '' ) {
 									$maker_email[] = $app->m_maker_email[ $i ];
 								} else {
-									$maker_email = $app->email;
+									$maker_email   = $app->email;
 								}
 
 								// Get our maker name. Some applicants have empty fields, default to the main contact
 								if ( $app->m_maker_name[ $i ] != '' ) {
 									$maker_name[] = $app->m_maker_name[ $i ];
 								} else {
-									$maker_name = $app->name;
+									$maker_name   = $app->name;
 								}
 
 								// Get our maker photo. Again, Some applicants have empty fields, default to the main contact
@@ -231,6 +242,13 @@ class MAKE_CLI extends WP_CLI_Command {
 									$maker_photo = $app->m_maker_photo[ $i ];
 								} else {
 									$maker_photo = $app->project_photo;
+								}
+
+								// Get our maker bio.
+								if ( $app->m_maker_bio[ $i ] != '' ) {
+									$maker_bio = $app->m_maker_bio[ $i ];
+								} else {
+									$maker_bio = $app->public_description;
 								}
 
 							}
@@ -243,6 +261,7 @@ class MAKE_CLI extends WP_CLI_Command {
 							$maker_type  = 'A Group or Association';
 							$maker_email = $app->email; // Since the group option doens't have a "Group Email" field, we'll just grab the main applicants emails
 							$maker_name  = $app->group_name;
+							$maker_bio   = $app->group_bio;
 
 							break;
 					}
@@ -257,9 +276,96 @@ class MAKE_CLI extends WP_CLI_Command {
 
 					break;
 
+				// If the application is an "presenter", get the info we need.
+				case 'presenter' :
+					$app_type = 'Presenter';
+					
+					// Check our presentation type; Presentation or Panel Presentation. Really, either presentation type holds the same data...
+					// We'll just create unique values for the $maker_type variable and process the rest as the same.
+					switch ( $app->presentation_type ) {
+
+						// Presentation 
+						case 'Presentation' :
+							$maker_type = 'Presentation';
+
+							break;
+							
+						// Panel Presentation
+						case 'Panel Presentation' :
+							$maker_type = 'Panel Presentation';
+
+							break;
+
+					}
+
+					$num_makers  = count( $app->presenter_email );
+					$maker_email = array();
+					$maker_name  = array();
+					$maker_photo = array();
+					$maker_bio   = array();
+					
+					// Let's loop through all of our makers in one shot shall we?
+					for ( $i = 0; $i < $num_makers; $i++ ) {
+						WP_CLI::line( $i );
+						
+						// Get our maker email. Some applicants have empty fields, default to the main contact
+						if ( $app->presenter_email[ $i ] != '' ) {
+							$maker_email[] = $app->presenter_email[ $i ];
+						} else {
+							$maker_email   = $app->email;
+						}
+
+						// Get our maker name. Some applicants have empty fields, default to the main contact
+						if ( $app->presenter_name[ $i ] != '' ) {
+							$maker_name[] = $app->presenter_name[ $i ];
+						} else {
+							$maker_name   = $app->name;
+						}
+
+						// Get our maker photo. Again, Some applicants have empty fields, default to the main contact
+						if ( $app->presenter_photo[ $i ] != '' ) {
+							$maker_photo = $app->presenter_photo[ $i ];
+						} else {
+							$maker_photo = $app->presentation_photo;
+						}
+
+						// Get our maker bio.
+						if ( $app->presenter_bio[ $i ] != '' ) {
+							$maker_bio = $app->presenter_bio[ $i ];
+						} else {
+							$maker_bio = $app->public_description;
+						}
+
+					}
+
+					break;
+
+				// Lastly, we'll process the performer applications
+				case 'performer' :
+					$app_type = 'Performer';
+
+					$maker_type  = 'Performer';
+					$maker_email = ( isset( $app->performer_name ) ) 	 ? $app->performer_name 	: $app->name;
+					$maker_name  = ( isset( $app->name ) )				 ? $app->name  				: '';
+					$maker_photo = ( isset( $app->performer_photo ) )    ? $app->performer_photo 	: '';
+					$maker_bio   = ( isset( $app->public_description ) ) ? $app->public_description : '';
+
+					// Get our makers website URL
+					if ( isset( $app->performer_website ) && ! empty( $app->performer_website ) )
+						$maker_website = $app->performer_website;
+
+					// Get our makers video URL
+					if ( isset( $app->performer_video ) && ! empty( $app->performer_video ) )
+						$maker_video = $app->performer_video; 
+
+
+					break;
+
+
 			}
 
-
+			// str_replace( $bad, $good, $nothing );
+			// 
 			// Now that we have all of our delicious Maker info. Let's add them to our Maker Custom Post Type...
 			// First, we need to deal with the application with multiple makers. If an array exists, loop through them and add each as an individual post.
 			// Use email as our main key to pair and loop.
@@ -270,18 +376,87 @@ class MAKE_CLI extends WP_CLI_Command {
 				// Loop through each maker
 				for ( $i = 0; $i < $num_makers; $i++ ) {
 
-					// Check if the maker already exists.
-					$maker = get_page_by_title( $maker_name[ $i ], OBJECT, 'maker' );
+					// Check if the maker already exists. Use wpcom_vip_get_page_by_title() as this is more performant and the non wpcom_vip_* function
+					$maker = wpcom_vip_get_page_by_title( $maker_name[ $i ], OBJECT, 'maker' );
 
 					if ( ! $maker ) {
-						WP_CLI::success( 'User created' );
+
+						// Create our post
+						$maker_post = array(
+							'post_title'    => esc_attr( $maker_name[ $i ] ),
+							'post_content'  => wp_kses_post( $maker_bio[ $i ] ),
+							'post_status'   => 'publish',
+							'post_type'		=> 'maker',
+							'tax_input'     => array(
+								'faire' => array(
+									$faire_slug
+								)
+							),
+						);
+
+						// Create our post and save it's info to a variable for use in adding post meta and error checking
+						$maker_id = wp_insert_post( $maker_post );
+
+						// Cheack if everything went well when creating our post
+						( is_wp_error( $maker_id ) ) ? $messages['errors'][] .= 'MAKER CREATION FAILED' : $messages['success'][] .= 'MAKER CREATED';
+
+						// Add the maker email
+						( update_post_meta( $maker_id, 'email', $maker_email[ $i ] ) )   ? $messages['success'][] .= 'Email Saved'    : $messages['errors'][] .= 'Email Not Saved';
+
+						// Add the maker photo
+						( update_post_meta( $maker_id, 'photo', $maker_photo[ $i ] ) )   ? $messages['success'][] .= 'Photo Saved'    : $messages['errors'][] .= 'Photo Not Saved';
+
+						// Add the maker website
+						( update_post_meta( $maker_id, 'website', $maker_website ) )     ? $messages['success'][] .= 'Website Saved'  : $messages['errors'][] .= 'Website Not Saved';
+
+						// Add the maker video
+						( update_post_meta( $maker_id, 'video', $maker_video ) )         ? $messages['success'][] .= 'Video Saved'    : $messages['errors'][] .= 'Video Not Saved';
+
+						// Add the MF Event ID
+						( add_post_meta( $maker_id, 'mfei_record', $post->ID ) )         ? $messages['success'][] .= 'Event ID Saved' : $messages['errors'][] .= 'Event ID Not Saved';
+
+						// Add the Faire Slug
+						( add_post_meta( $maker_id, 'maker_faire', $faire_slug, true ) ) ? $messages['success'][] .= 'MF Saved'       : $messages['errors'][] .= 'MF Not Saved';
 					} else {
-						WP_CLI::success( 'User updated!' );
+
+						// Since our post already exists, we should return it's ID so we can update
+						$maker_id = $maker->ID;
+
+						// Cheack if everything went well when creating our post
+						( is_wp_error( $maker_id ) ) ? $messages['errors'][] .= 'MAKER UPDATE FAILED' : $messages['success'][] .= 'MAKER UPDATED';
+
+						// Add the maker email
+						( update_post_meta( $maker_id, 'email', $maker_email[ $i ] ) )   ? $messages['success'][] .= 'Email Updated'    : $messages['errors'][] .= 'Email Not Updated';
+
+						// Add the maker photo
+						( update_post_meta( $maker_id, 'photo', $maker_photo[ $i ] ) )   ? $messages['success'][] .= 'Photo Updated'    : $messages['errors'][] .= 'Photo Not Updated';
+
+						// Add the maker website
+						( update_post_meta( $maker_id, 'website', $maker_website ) )     ? $messages['success'][] .= 'Website Updated'  : $messages['errors'][] .= 'Website Not Updated';
+
+						// Add the maker video
+						( update_post_meta( $maker_id, 'video', $maker_video ) )         ? $messages['success'][] .= 'Video Updated'    : $messages['errors'][] .= 'Video Not Updated';
+
+						// Add the MF Event ID
+						( add_post_meta( $maker_id, 'mfei_record', $post->ID ) )         ? $messages['success'][] .= 'Event ID Updated' : $messages['errors'][] .= 'Event ID Not Updated';
+
+						// Add the Faire Slug
+						( add_post_meta( $maker_id, 'maker_faire', $faire_slug, true ) ) ? $messages['success'][] .= 'MF Updated'       : $messages['errors'][] .= 'MF Not Updated';
 					}
 
 					// Show the output of what we just did.
-					WP_CLI::line( ' | Exhibit' );
-					WP_CLI::line( ' | ID: ' . $post->ID );
+					if ( isset( $messages ) && is_array( $messages ) ) {
+						foreach ( $messages['errors'] as $errors ) {
+							WP_CLI::warning( $errors );
+						}
+
+						foreach ( $messages['success'] as $success ) {
+							WP_CLI::success( $success );
+						}
+					}
+					WP_CLI::line( ' | APP TYPE: ' . $app_type );
+					WP_CLI::line( ' | APP ID: ' . $post->ID );
+					WP_CLI::line( ' | MAKER ID: ' . $maker_id );
 					WP_CLI::line( ' | TYPE: ' . $maker_type );
 					WP_CLI::line( ' | NAME: ' . $maker_name[ $i ] );
 					WP_CLI::line( ' | EMAIL: ' . $maker_email[ $i ] );
@@ -292,25 +467,101 @@ class MAKE_CLI extends WP_CLI_Command {
 
 					// Leave some evidence we are done with this application.
 					WP_CLI::line( ' ----------------------------------------' );
+					WP_CLI::line( '' );
 				}
+			} 
 
-			} else {
+			// Process applications that are NOT a group of makers.
+			else {
 
-				// Check if the maker already exists.
-				$maker = get_page_by_title( $maker_name, OBJECT, 'maker' );
+				// Check if the maker already exists. Use wpcom_vip_get_page_by_title() as this is more performant and the non wpcom_vip_* function
+				$maker = wpcom_vip_get_page_by_title( $maker_name, OBJECT, 'maker' );
 
+				// Check if the maker post exists in the maker Custom Post Type, if not, create it.
 				if ( ! $maker ) {
-					WP_CLI::success( 'User created' );
+
+					// Create our post
+					$maker_post = array(
+						'post_title'    => $maker_name,
+						'post_content'  => $maker_bio,
+						'post_status'   => 'publish',
+						'post_type'		=> 'maker',
+						'tax_input'     => array(
+							'faire' => array(
+								$faire_slug
+							)
+						),
+					);
+
+					// Create our post and save it's info to a variable for use in adding post meta and error checking
+					$maker_id = wp_insert_post( $maker_post );
+
+					// Cheack if everything went well when creating our post
+					( is_wp_error( $maker_id ) ) ? $messages['errors'][] .= 'MAKER CREATION FAILED' : $messages['success'][] .= 'MAKER CREATED';
+
+					// Add the maker email
+					( update_post_meta( $maker_id, 'email', $maker_email ) )         ? $messages['success'][] .= 'Email Saved'    : $messages['errors'][] .= 'Email Not Saved';
+
+					// Add the maker photo
+					( update_post_meta( $maker_id, 'photo', $maker_photo ) )         ? $messages['success'][] .= 'Photo Saved'    : $messages['errors'][] .= 'Photo Not Saved';
+
+					// Add the maker website
+					( update_post_meta( $maker_id, 'website', $maker_website ) )     ? $messages['success'][] .= 'Website Saved'  : $messages['errors'][] .= 'Website Not Saved';
+
+					// Add the maker video
+					( update_post_meta( $maker_id, 'video', $maker_video ) )         ? $messages['success'][] .= 'Video Saved'    : $messages['errors'][] .= 'Video Not Saved';
+
+					// Add the MF Event ID
+					( add_post_meta( $maker_id, 'mfei_record', $post->ID ) )         ? $messages['success'][] .= 'Event ID Saved' : $messages['errors'][] .= 'Event ID Not Saved';
+
+					// Add the Faire Slug
+					( add_post_meta( $maker_id, 'maker_faire', $faire_slug, true ) ) ? $messages['success'][] .= 'MF Saved'       : $messages['errors'][] .= 'MF Not Saved';
+
 				} else {
-					WP_CLI::success( 'User updated!' );
+
+					// Since our post already exists, we should return it's ID so we can update
+					$maker_id = $maker->ID;
+
+					// Cheack if everything went well when creating our post
+					( is_wp_error( $maker_id ) ) ? $messages['errors'][] .= 'MAKER UPDATE FAILED' : $messages['success'][] .= 'MAKER UPDATED';
+
+					// Add the maker email
+					( update_post_meta( $maker_id, 'email', $maker_email ) )         ? $messages['success'][] .= 'Email Updated'    : $messages['errors'][] .= 'Email Not Updated';
+
+					// Add the maker photo
+					( update_post_meta( $maker_id, 'photo', $maker_photo ) )         ? $messages['success'][] .= 'Photo Updated'    : $messages['errors'][] .= 'Photo Not Updated';
+
+					// Add the maker website
+					( update_post_meta( $maker_id, 'website', $maker_website ) )     ? $messages['success'][] .= 'Website Updated'  : $messages['errors'][] .= 'Website Not Updated';
+
+					// Add the maker video
+					( update_post_meta( $maker_id, 'video', $maker_video ) )         ? $messages['success'][] .= 'Video Updated'    : $messages['errors'][] .= 'Video Not Updated';
+
+					// Add the MF Event ID
+					( add_post_meta( $maker_id, 'mfei_record', $post->ID ) )         ? $messages['success'][] .= 'Event ID Updated' : $messages['errors'][] .= 'Event ID Not Updated';
+
+					// Add the Faire Slug
+					( add_post_meta( $maker_id, 'maker_faire', $faire_slug, true ) ) ? $messages['success'][] .= 'MF Updated'       : $messages['errors'][] .= 'MF Not Updated';
+					
 				}
 
-				// Show the output of what we just did.
-				WP_CLI::line( ' | Exhibit' );
-				WP_CLI::line( ' | ID: ' . $post->ID );
+
+				// Now that we have either updated or created our maker posts, lets show the output of what we just did so we know what just happened.
+				if ( isset( $messages ) && is_array( $messages ) ) {
+					foreach ( $messages['errors'] as $errors ) {
+						WP_CLI::warning( $errors );
+					}
+
+					foreach ( $messages['success'] as $success ) {
+						WP_CLI::success( $success );
+					}
+				}
+				WP_CLI::line( ' | APP TYPE: ' . $app_type );
+				WP_CLI::line( ' | APP ID: ' . $post->ID );
+				WP_CLI::line( ' | MAKER ID: ' . $maker_id );
 				WP_CLI::line( ' | TYPE: ' . $maker_type );
 				WP_CLI::line( ' | NAME: ' . $maker_name );
-				WP_CLI::line( ' | EMAIL: ' . $email );
+				WP_CLI::line( ' | EMAIL: ' . $maker_email );
 				WP_CLI::line( ' | PHOTO: ' . $maker_photo );
 				WP_CLI::line( ' | WEBSITE: ' . $maker_website );
 				WP_CLI::line( ' | VIDEO: ' . $maker_video );
@@ -318,11 +569,13 @@ class MAKE_CLI extends WP_CLI_Command {
 
 				// Leave some evidence we are done with this application.
 				WP_CLI::line( ' ----------------------------------------' );
+				WP_CLI::line( '' );
 			}
 		endwhile;
 
 		WP_CLI::success( 'SHAZAM! Job is DONE. Get a beer! You deserve it big guy! ;)' );
 	}
+
 
 	/**
 	 * Delete all of the Makers in the makers custom post type
