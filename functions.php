@@ -1,4 +1,9 @@
 <?php
+
+// Set our global Faire Variable. Use the slug of the taxonomy as the value.
+$GLOBALS['current_faire'] = 'world-maker-faire-new-york-2013';
+
+
 require_once( WP_CONTENT_DIR . '/themes/vip/plugins/vip-init.php' );
 
 // include maker-faire-forms plugin
@@ -17,7 +22,7 @@ include_once dirname(__file__) . '/plugins/markdown/markdown.php';
 include_once dirname(__file__) . '/plugins/status-board/status-board.php';
 
 // Current Faire Page
-include_once dirname(__file__) . '/plugins/admin-pages/admin-pages.php';
+include_once dirname( __FILE__ ) . '/plugins/admin-pages/current-faire/current-faire.php';
 
 
 require_once( 'taxonomies/type.php' );
