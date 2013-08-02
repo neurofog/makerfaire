@@ -50,7 +50,7 @@
 		 * Set our pages screen ID for wide useage
 		 * @var string
 		 */
-		public $screen_id = 'mf_form_page_current-faire';
+		public $screen_id = 'mf_form_page_current_faire';
 
 
 		/**
@@ -162,6 +162,11 @@
 			),
 			'post_date' => array(
 				'label'    => 'Modified Date',
+				'sortable' => true,
+				'default'  => true,
+			),
+			'commercial' => array(
+				'label'    => 'Commercial',
 				'sortable' => true,
 				'default'  => true,
 			),
@@ -720,6 +725,7 @@
 										$tags 		 = get_the_term_list( $post_id, 'post_tag', null, ', ' );
 										$location 	 = get_the_term_list( $post_id, 'location', '', ', ', '' );
 										$featured 	 = get_post_meta( $post_id, '_ef_editorial_meta_checkbox_featured', true );
+										$commercial  = ( ! empty( $json->sales ) ) ? sanitize_text_field( $this->convert_boolean( $json->sales ) ) : '';
 										$edu_day 	 = get_post_meta( $post_id, '_ef_editorial_meta_checkbox_education-day', true );
 
 										echo '<tr id="post-' . absint( $post->ID ) . '" valign="top">';
@@ -744,6 +750,7 @@
 										echo '<td class="location column-location"' . $this->check_screen_options( 'location', false, true ) . '>' . $location . '</td>';
 										echo '<td class="featured_maker column-featured_maker"' . $this->check_screen_options( 'featured_maker', false, true ) . '>' . $this->convert_boolean( $featured ) . '</td>';
 										echo '<td class="post_date column-post_date"' . $this->check_screen_options( 'post_date', false, true ) . '>' . get_the_modified_date( 'F jS, Y' ) . '</td>';
+										echo '<td class="commercial column-commercial"' . $this->check_screen_options( 'commercial', false, true ) . '>' . $commercial . '</td>';
 										echo '<td class="education_day column-education_day"' . $this->check_screen_options( 'education_day', false, true ) . '>' . $this->convert_boolean( $edu_day ) . '</td>';
 										echo '</tr>';
 									}
