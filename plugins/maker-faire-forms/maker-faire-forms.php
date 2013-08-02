@@ -2741,225 +2741,266 @@ class MAKER_FAIRE_FORM {
 	private function build_form_export( $export_type = 'all', $status = 'all', $return_array = false ) {
 
 		//NONCE CHECK
-		if ( isset( $_GET['_wpnonce'] ) && !wp_verify_nonce( $_GET['_wpnonce'], 'mf_export_check' ) )
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( $_GET['_wpnonce'], 'mf_export_check' ) )
 			return false;
 			
 		//CAP CHECK
-		if ( !current_user_can( 'edit_others_posts' ) ) 
-			return false;
-			
-		//EXPORT TYPE CHECK
-		if ( $export_type != 'all' && ! array_key_exists( $export_type, $this->fields ) )
+		if ( ! current_user_can( 'edit_others_posts' ) ) 
 			return false;
 
-		$data  = array(
-			'status'              => '',
-			'form_type'           => '',
-			'project_id'          => '',
-			'project_name'        => '',
-			'public_description'  => '',
-			'private_description' => '',
-			'cats'                => '',
-			'tags'                => '',
-			'form_photo'          => '',
-			'uid'                 => '',
-			'user_photo'          => '',
-			'user_bio'            => ''
-		);
+		// Are we requesting to sort the form build?
+		if ( ! isset( $data['sort'] ) && empty( $data['sort'] ) )
+			$data['sort'] = NULL;
 
-		if ( $export_type == 'all' ) {	
-			$s = array( 's1' => array() );	
-			foreach( $this->fields as $type => $st ) { 
-				foreach( $st as $sn => $d ) {
-					$s['s1'] = array_merge( $s['s1'], $d );
+
+		// Get our array of form fields so we can build the header of the csv export
+		if ( $export_type == 'all' ) {
+			$header_titles = array(
+				's1' => array(),
+			);
+
+			foreach ( $this->fields as $type => $step_number ) {
+				foreach ( $step_number as $key => $value ) {
+					$header_titles['s1'] = array_merge( $header_titles['s1'], $value );
 				}
 			}
 		} else {
-			$s = $this->fields[ $export_type ];
+			$header_titles = $this->fields[ $export_type ];
 		}
+
+
+		foreach ( $header_titles as $step_number => $value ) {
+			foreach ( $value as $key => $value ) {
+				$data[ $key ] = '';
+
+				if ( $key == 'm_maker_gigysid' ) {
+					for ( $i = 2; $i < 5; $i++ ) {
+						$data['m_maker_name_' . $i ] = '';
+						$data['m']
+					}
+				}
+			}
+		}
+			
+		$applications = $this->get_all_forms( $data['sort'], $status );
+		$ef_terms 	  = $this->get_editflow_terms();
+		$ef_data 	  = $this->get_editflow_data( $ef_terms );
+
 		
-		foreach( $s as $sn => $d ) {
-			foreach( $d as $key => $r ) {
-				$data[$key] = '';
+		// $header = implode( '\t', )
+		var_dump($header_titles);
+		// //EXPORT TYPE CHECK
+		// if ( $export_type != 'all' && ! array_key_exists( $export_type, $this->fields ) )
+		// 	return false;
+
+		// $data  = array(
+		// 	'status'              => '',
+		// 	'form_type'           => '',
+		// 	'project_id'          => '',
+		// 	'project_name'        => '',
+		// 	'public_description'  => '',
+		// 	'private_description' => '',
+		// 	'cats'                => '',
+		// 	'tags'                => '',
+		// 	'form_photo'          => '',
+		// 	'uid'                 => '',
+		// 	'user_photo'          => '',
+		// 	'user_bio'            => ''
+		// );
+
+		// if ( $export_type == 'all' ) {	
+		// 	$s = array( 's1' => array() );	
+		// 	foreach( $this->fields as $type => $st ) { 
+		// 		foreach( $st as $sn => $d ) {
+		// 			$s['s1'] = array_merge( $s['s1'], $d );
+		// 		}
+		// 	}
+		// } else {
+		// 	$s = $this->fields[ $export_type ];
+		// }
+		
+		// foreach( $s as $sn => $d ) {
+		// 	foreach( $d as $key => $r ) {
+		// 		$data[$key] = '';
 				
-				if( 'm_maker_gigyaid' == $key ) {
-					for( $i=2; $i < 5; $i++ ) {
-						$data['m_maker_name_'.$i]    = '';
-						$data['m_maker_email_'.$i]   = '';
-						$data['m_maker_gigyaid_'.$i] = '';
-					}
-				} elseif( 'presenter_gigyaid' == $key ) {
-					for( $i=2; $i < 5; $i++ ) {
-						$data['presenter_name_'.$i]    = '';
-						$data['presenter_email_'.$i]   = '';	
-						$data['presenter_gigyaid_'.$i] = '';
-					}
-				}
-			}
-		}
+		// 		if( 'm_maker_gigyaid' == $key ) {
+		// 			for( $i=2; $i < 5; $i++ ) {
+		// 				$data['m_maker_name_'.$i]    = '';
+		// 				$data['m_maker_email_'.$i]   = '';
+		// 				$data['m_maker_gigyaid_'.$i] = '';
+		// 			}
+		// 		} elseif( 'presenter_gigyaid' == $key ) {
+		// 			for( $i=2; $i < 5; $i++ ) {
+		// 				$data['presenter_name_'.$i]    = '';
+		// 				$data['presenter_email_'.$i]   = '';	
+		// 				$data['presenter_gigyaid_'.$i] = '';
+		// 			}
+		// 		}
+		// 	}
+		// }
 
 
-		$posts   = $this->get_all_forms( NULL, $status );
-		$efterms = $this->get_editflow_terms();
-		$efdata  = $this->get_editflow_data( $efterms );
-		$efdef   = array(
-			'checkbox' => 'No',
-			'data'     => 'N/A',
-			'text'     => ''
-		);
+		// $posts   = $this->get_all_forms( NULL, $status );
+		// $efterms = $this->get_editflow_terms();
+		// $efdata  = $this->get_editflow_data( $efterms );
+		// $efdef   = array(
+		// 	'checkbox' => 'No',
+		// 	'data'     => 'N/A',
+		// 	'text'     => ''
+		// );
 
-		$res     = array();
-		$data    = array_keys( $data );
+		// $res     = array();
+		// $data    = array_keys( $data );
 
-		if( 'accepted' == $status ) {
-			array_splice( $data, 1, 0, 'accepted' );	
-		}
+		// if( 'accepted' == $status ) {
+		// 	array_splice( $data, 1, 0, 'accepted' );	
+		// }
 
-		$header  = implode( "\t", $data );
-		$header  = strtoupper( str_replace( '_', ' ', $header ) );
+		// $header  = implode( "\t", $data );
+		// $header  = strtoupper( str_replace( '_', ' ', $header ) );
 
-		foreach( $efterms as $efterm ) {
-			$header .= "\t".$efterm['name'];
-		}
-		$header .= "\tLocation";
-		$header .= "\tList of Makers";
-		$header .= "\r\n";
+		// foreach( $efterms as $efterm ) {
+		// 	$header .= "\t".$efterm['name'];
+		// }
+		// $header .= "\tLocation";
+		// $header .= "\tList of Makers";
+		// $header .= "\r\n";
 
-		$body    = "";
+		// $body    = "";
 
-		foreach( $posts as $post ) {
-			$form = (array) json_decode( str_replace( "\'", "'", $post->post_content ) );
+		// foreach( $posts as $post ) {
+		// 	$form = (array) json_decode( str_replace( "\'", "'", $post->post_content ) );
 
-			if ( $export_type != 'all' && $export_type != $form['form_type'] )
-				continue;
+		// 	if ( $export_type != 'all' && $export_type != $form['form_type'] )
+		// 		continue;
 
-			$form = array_merge( $form, array(
-				'status'     => $post->post_status,
-				'project_id' => $post->ID
-			) );
+		// 	$form = array_merge( $form, array(
+		// 		'status'     => $post->post_status,
+		// 		'project_id' => $post->ID
+		// 	) );
 			
-			$line             = '';
-			$res[ $post->ID ] = array();
+		// 	$line             = '';
+		// 	$res[ $post->ID ] = array();
 			
-			$multi = array( 
-				'm_maker_name', 
-				'm_maker_email', 
-				'm_maker_gigyaid', 
-				'presenter_name', 
-				'presenter_email', 
-				'presenter_gigyaid' 
-			);
+		// 	$multi = array( 
+		// 		'm_maker_name', 
+		// 		'm_maker_email', 
+		// 		'm_maker_gigyaid', 
+		// 		'presenter_name', 
+		// 		'presenter_email', 
+		// 		'presenter_gigyaid' 
+		// 	);
 			
-			//SET POST DATA
-			foreach( $data as $key ) {
-				$data_key = $key;
-				if( $mkey = $this->merge_fields( $key, $form['form_type'] ) )
-					$key = $mkey;
+		// 	//SET POST DATA
+		// 	foreach( $data as $key ) {
+		// 		$data_key = $key;
+		// 		if( $mkey = $this->merge_fields( $key, $form['form_type'] ) )
+		// 			$key = $mkey;
 
-				//BREAK UP MULTIPLE MAKERS/PRESENTERS
-				if( in_array( $data_key, $multi ) ) {
-					$d = is_array( $form[$key] ) ? $form[$key][0] : $form[$key]; 
+		// 		//BREAK UP MULTIPLE MAKERS/PRESENTERS
+		// 		if( in_array( $data_key, $multi ) ) {
+		// 			$d = is_array( $form[$key] ) ? $form[$key][0] : $form[$key]; 
 					
-					$res[$post->ID][$data_key] = $d;
-					$line .= "\t".$d;
+		// 			$res[$post->ID][$data_key] = $d;
+		// 			$line .= "\t".$d;
 					
-					if( 'm_maker_gigyaid' == $data_key ) {
-						for( $i=1; $i < 4; $i++ ) {
-							foreach( array( 'm_maker_name', 'm_maker_email', 'm_maker_gigyaid' ) as $n ) {
-								$res[$post->ID][$n.'_'.( $i + 1 )] = $form[$n][$i];
-								$line .= "\t".$form[$n][$i];
-							}
-						}
-					} elseif( 'presenter_gigyaid' == $data_key ) {
-						for( $i=1; $i < 4; $i++ ) {
-							foreach( array( 'presenter_name', 'presenter_email', 'presenter_gigyaid' ) as $n ) {
-								$res[$post->ID][$n.'_'.( $i + 1 )] = $form[$n][$i];
-								$line .= "\t".$form[$n][$i];
-							}
-						}
-					}
-				//CATCH ALL
-				} elseif( 'accepted' == $key ) {
+		// 			if( 'm_maker_gigyaid' == $data_key ) {
+		// 				for( $i=1; $i < 4; $i++ ) {
+		// 					foreach( array( 'm_maker_name', 'm_maker_email', 'm_maker_gigyaid' ) as $n ) {
+		// 						$res[$post->ID][$n.'_'.( $i + 1 )] = $form[$n][$i];
+		// 						$line .= "\t".$form[$n][$i];
+		// 					}
+		// 				}
+		// 			} elseif( 'presenter_gigyaid' == $data_key ) {
+		// 				for( $i=1; $i < 4; $i++ ) {
+		// 					foreach( array( 'presenter_name', 'presenter_email', 'presenter_gigyaid' ) as $n ) {
+		// 						$res[$post->ID][$n.'_'.( $i + 1 )] = $form[$n][$i];
+		// 						$line .= "\t".$form[$n][$i];
+		// 					}
+		// 				}
+		// 			}
+		// 		//CATCH ALL
+		// 		} elseif( 'accepted' == $key ) {
 					
-					$log = get_post_meta( $post->ID, '_mf_log', true );
+		// 			$log = get_post_meta( $post->ID, '_mf_log', true );
 
-					if( $log ) {
-						foreach( $log as $entry ) {
-							if( strpos( $entry, 'Accepted' ) !== false ) {
-								$entry_a = explode( ' ', $entry );
-								$line .= "\t".$entry_a[0]." ".$entry_a[1]." ". strtoupper( $entry_a[2] );
-								break;
-							}
-						}
-					} else {
-						$line .= "\tN/A";
-					}	
+		// 			if( $log ) {
+		// 				foreach( $log as $entry ) {
+		// 					if( strpos( $entry, 'Accepted' ) !== false ) {
+		// 						$entry_a = explode( ' ', $entry );
+		// 						$line .= "\t".$entry_a[0]." ".$entry_a[1]." ". strtoupper( $entry_a[2] );
+		// 						break;
+		// 					}
+		// 				}
+		// 			} else {
+		// 				$line .= "\tN/A";
+		// 			}	
 					
-				} elseif( isset( $form[$key] ) ) {
-					$d = is_array( $form[$key] ) ? implode( ',', $form[$key] ) : $form[$key];
+		// 		} elseif( isset( $form[$key] ) ) {
+		// 			$d = is_array( $form[$key] ) ? implode( ',', $form[$key] ) : $form[$key];
 					
-					$res[$post->ID][$data_key] = $d;
-					$line .= "\t".$d;
-				} else {
+		// 			$res[$post->ID][$data_key] = $d;
+		// 			$line .= "\t".$d;
+		// 		} else {
 					
-					$is_multi = false;
-					foreach( $multi as $m ) {
-						for( $i=2; $i < 5; $i++ ) {
-							if( $data_key == $m.'_'.$i ) {
-								$is_multi = true;
-								break;	
-							}
-						}
-					}
+		// 			$is_multi = false;
+		// 			foreach( $multi as $m ) {
+		// 				for( $i=2; $i < 5; $i++ ) {
+		// 					if( $data_key == $m.'_'.$i ) {
+		// 						$is_multi = true;
+		// 						break;	
+		// 					}
+		// 				}
+		// 			}
 					
-					if( !$is_multi ) {
-						$res[$post->ID][$data_key] = "";
-						$line .= "\t"."";
-					}
-				}
-			}
+		// 			if( !$is_multi ) {
+		// 				$res[$post->ID][$data_key] = "";
+		// 				$line .= "\t"."";
+		// 			}
+		// 		}
+		// 	}
 
-			//SET EDITFLOW DATA	
-			foreach( $efterms as $efid => $efterm ) {
-				if ( isset( $efdata[ $post->ID ][ $efid ] ) ) {
-					$line .= "\t".$efdata[ $post->ID ][ $efid ];
-				} else {
-					$line .= "\t".$efdef[ $efterm['type'] ];
-				}
-			}
+		// 	//SET EDITFLOW DATA	
+		// 	foreach( $efterms as $efid => $efterm ) {
+		// 		if ( isset( $efdata[ $post->ID ][ $efid ] ) ) {
+		// 			$line .= "\t".$efdata[ $post->ID ][ $efid ];
+		// 		} else {
+		// 			$line .= "\t".$efdef[ $efterm['type'] ];
+		// 		}
+		// 	}
 			
-			//SET LOCATIONS
-			$locations = wp_get_object_terms( $post->ID, 'location' );
-			if( empty( $locations ) ) {
-				$line .= "\t";
-			} else {
-				$ls = '';
-				foreach( $locations as $l ) {
-					$ls .= ','.htmlspecialchars_decode( $l->name );	
-				}
-				$line .= "\t".substr($ls, 1);
-			}
+		// 	//SET LOCATIONS
+		// 	$locations = wp_get_object_terms( $post->ID, 'location' );
+		// 	if( empty( $locations ) ) {
+		// 		$line .= "\t";
+		// 	} else {
+		// 		$ls = '';
+		// 		foreach( $locations as $l ) {
+		// 			$ls .= ','.htmlspecialchars_decode( $l->name );	
+		// 		}
+		// 		$line .= "\t".substr($ls, 1);
+		// 	}
 
 
-			// Set List of Makers
-			$makers = $form['m_maker_name'];
-			if( empty( $makers ) ) {
-				$line .= "\t";
-			} else {
-				$ls = '';
-				foreach( $makers as $maker ) {
-					$ls .= ', '.htmlspecialchars_decode( $maker );
-				}
-				$line .= "\t".substr($ls, 2);
-			}
-			$body .= substr( $line, 1)."\r\n";
-		}
+		// 	// Set List of Makers
+		// 	$makers = $form['m_maker_name'];
+		// 	if( empty( $makers ) ) {
+		// 		$line .= "\t";
+		// 	} else {
+		// 		$ls = '';
+		// 		foreach( $makers as $maker ) {
+		// 			$ls .= ', '.htmlspecialchars_decode( $maker );
+		// 		}
+		// 		$line .= "\t".substr($ls, 2);
+		// 	}
+		// 	$body .= substr( $line, 1)."\r\n";
+		// }
 
-		if ( $return_array )
-			return $res;
+		// if ( $return_array )
+		// 	return $res;
 			
-		$time_offset = time() - ( 3600 * 7 );
-		$this->output_csv( strtoupper( $export_type ).'_APPLICATIONS_'.date('M-d-Y', $time_offset).'_'.date('G-i', $time_offset), $header.$body );
+		// $time_offset = time() - ( 3600 * 7 );
+		// $this->output_csv( strtoupper( $export_type ).'_APPLICATIONS_'.date('M-d-Y', $time_offset).'_'.date('G-i', $time_offset), $header.$body );
 	}
 	/* 
 	* Associate all posts with EditFlow Data
