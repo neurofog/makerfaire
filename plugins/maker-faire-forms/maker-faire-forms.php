@@ -560,11 +560,7 @@ class MAKER_FAIRE_FORM {
 					<div class="clear"></div>
 					<p class="misc-pub-section num-revisions">
 					<?php
-						$args = array( 
-									'post_parent' 	=> get_the_ID(),
-									'post_type'		=> 'revision'
-								);
-						$kids = get_children( $args );
+						$kids = wp_get_post_revisions( get_the_ID() );
 						if ( count( $kids ) > 1 ) :
 							printf( __( 'Revisions: %s' ), '<b>' . number_format_i18n( absint( count( $kids ) ) ) . '</b>' );
 							$kid = array_splice( $kids, 0 );
