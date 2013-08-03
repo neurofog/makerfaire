@@ -731,7 +731,7 @@
 										echo '<tr id="post-' . absint( $post->ID ) . '" valign="top">';
 										echo '<td class="post_photo column-post_photo"' . $this->check_screen_options( 'post_photo', false, true ) . '>';
 											if ( ! empty( $app_image ) )
-												echo wpcom_vip_get_resized_remote_image_url( esc_url( $app_image ), 130, 130, true );
+												echo '<img src="' . wpcom_vip_get_resized_remote_image_url( esc_url( $app_image ), 130, 130, true ) . '" >';
 										echo '</td>';
 										echo '<td class="post_id column-post_id"' . $this->check_screen_options( 'post_id', false, true ) . '>' . $post_id . '</td>';
 										echo '<td class="post_status column-post_status"' . $this->check_screen_options( 'post_status', false, true ) . '>' . $post_status . '</td>';
