@@ -66,8 +66,13 @@ function make_enqueue_jquery() {
 	wp_enqueue_style( 'make-bootstrap', get_stylesheet_directory_uri() . '/css/bootstrap.css' );
 	wp_enqueue_style( 'make', get_stylesheet_directory_uri() . '/style.css' );
 }
-
 add_action( 'wp_enqueue_scripts', 'make_enqueue_jquery' );
+
+function make_enqueue_admin_scripts() {
+	if ( get_post_type() == 'mf_form' && is_admin() )
+		wp_enqueue_script( 'make-custom-post-lock', get_stylesheet_directory_uri() . '/js/expand-post-edit.js', array( 'jquery' ) );
+}
+add_action( 'admin_enqueue_scripts', 'make_enqueue_admin_scripts' );
 
 
 function makerfaire_get_news() {
