@@ -74,7 +74,7 @@
 			</ul>
 		</div>
 		
-		<h3 style="text-align:center;">Countdown until World Maker Faire!</h3>
+		<h3 class="countdown-heading">Countdown until World Maker Faire!</h3>
 
 		<div class="countdown">
 

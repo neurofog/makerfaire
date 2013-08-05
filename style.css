@@ -15,6 +15,12 @@ License URI: license.txt
 	display: none;
 }
 
+.countdown-heading {
+	text-align: center;
+	color: #252525;
+	font-size: 20px;
+}
+
 #myCarousel-1234 .carousel-caption {
 	background-color: rgba( 0, 173, 239, 0.9 );
 	color:#fff;
@@ -218,7 +224,7 @@ License URI: license.txt
 
 tr.time {
 	height: 30px;
-	color: black;
+	color: #707070;
 	text-align: center;
 	font-weight: 300;
 	font-size: 18px;
@@ -239,10 +245,9 @@ tr.time {
 .countdown-numbers {
 	margin-top:15px;
 	margin-right:15px;
-	margin-left:15px;
+	margin-left:25px;
 	padding-left:5px;
 }
-	
 	
 .countdown-numbers th {
 	color:#fc040c;
@@ -250,14 +255,18 @@ tr.time {
 	font-weight:300;
 	font-size:42px;
 	font-family: "Bebas Neue" "bebas-neue";
-	}
+}
+
+.countdown-numbers td {
+	width: 20px;
+}
 
 tr.time {
 	height:45px;
-	color:#000;
+	color:#707070;
 	text-align:center;
 	font-weight:300;
-	font-size:24px;
+	font-size:18px;
 	font-family: "Bebas Neue" "bebas-neue";
 	}
 
@@ -550,6 +559,12 @@ Sidebar
 	line-height:110%;
 	text-transform: uppercase;
 	}
+
+h3.countdown-heading {
+	text-align: center;
+	color: #252525;
+	font-size: 20px;
+}
 
 .home-sidebar h4 {
 	margin-bottom:10px;
@@ -995,4 +1010,6 @@ h6.letter {
 	height:244px;
 	border:3px solid #EC0D29;
 	background-image:url('http://cdn.makezine.com/make/makerfaire/newyork/2012/images/kissingsm.jpg');
-	}
+}
+
+
