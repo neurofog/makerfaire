@@ -2132,19 +2132,29 @@ class MAKER_FAIRE_FORM {
 		$m.='<p>' . esc_html( ucfirst( $r['name'] ) ) . ',</p>';
 		$m.='<p>Thanks for your interest in participating in World Maker Faire New York 2013! We have received your application for: <strong>' . $app_name . '</strong> ' . $app_info . '.</p>';
 		if (  $r['form_type'] == 'presenter' ) {
-			$m .= '<p><strong>You can update your presentation application anytime until September 1st</strong>. <em>(Note that those submitting panel presentation proposals are responsible for collecting and entering all bio information from proposed panelists—so please come back and finish your application if those fields are not yet complete.)</em></p>';
-			$m .= '<ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li>';
-			$m .= '<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
-			$m .= '<p>(Note that those submitting panel presentation proposals are responsible for collecting and entering all bio information from proposed panelists—so please come back and finish your application if those fields are not yet complete.)</p>';
-			$m .= '<p>You will be notified as to the status of your application no later than August 16th.</p>';
-			$m .= '<p>If your presentation is accepted, we will do our best to accomodate your requests.  Please understand that your requests are not guaranteed. What we can provide will be confirmed in a follow-up letter after acceptance.';
-			$m .= '<p>Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.</p>';
+			// $m .= '<p><strong>You can update your presentation application anytime until September 1st</strong>. <em>(Note that those submitting panel presentation proposals are responsible for collecting and entering all bio information from proposed panelists—so please come back and finish your application if those fields are not yet complete.)</em></p>';
+			// $m .= '<ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li>';
+			// $m .= '<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
+			// $m .= '<p>(Note that those submitting panel presentation proposals are responsible for collecting and entering all bio information from proposed panelists—so please come back and finish your application if those fields are not yet complete.)</p>';
+			// $m .= '<p>You will be notified as to the status of your application no later than August 16th.</p>';
+			// $m .= '<p>If your presentation is accepted, we will do our best to accomodate your requests.  Please understand that your requests are not guaranteed. What we can provide will be confirmed in a follow-up letter after acceptance.';
+			$m .= '<p>Please note that the deadline for Maker entries has passed. However, there are several ways that you can still participate!:</p>';
+			$m .= '<ol><li>We will consider your entry as a last-minute addition. If you do not receive an acceptance letter by September 1st, we were not able to find space for your exhibit. We will do our best to notify you before then.</li>';
+			$m .= '<li>If you would like to volunteer your time and make an invaluable contribution to the success of Maker Faire, please sign up for our <a href="http://makerfaire.com/new-york-2013/maker-corps-program/">Maker Corps at Maker Faire Program</a>, which is a platform to enhance your skills and learn about the Maker Movement. You will have a behind-the-scenes experience, and help make the Greatest Show (and Tell) on Earth happen! Learn more at <a href="http://makerfaire.com">makerfaire.com</a>.</li>';
+			$m .= '<li>Plan to come as an attendee, enjoy the show and support the Maker movement by <a href="http://makerfairenyc.eventbrite.com/">purchasing your tickets</a> early!</li>';
+			$m .= '<li>Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.</li></ol>';
 			$m .= '<p>Sabrina Merlo<br />Program Director<br />Maker Faire';
+			$m .= '<p>Maker Faire (<a href="http://makerfaire.com">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		} else {
-			$m .= '<p>You will be notified as to the status of your application no later than August 12th.</p>';
-			$m .= '<p>If your application is accepted, we have agreed to the concept of your exhibit, however, we are not able to  guarantee all of your requests at this time. What we can provide will be outlined in a confirmation letter before the event.</p>';
-			$m .= '<p>Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.</p>';
-			$m .= '<p>Lastly, the Road to Maker Faire Challenge, presented by Esurance, will award one lucky maker $2,500 to bring their project to World Maker Faire. You may apply with the same project you are submitting to Maker Faire, and applications must be completed no later than 11:59pm PT on August 5th. <a href="http://makezine.com/road-to-maker-faire-challenge">Enter Now</a>!</p>';
+			// $m .= '<p>You will be notified as to the status of your application no later than August 12th.</p>';
+			// $m .= '<p>If your application is accepted, we have agreed to the concept of your exhibit, however, we are not able to guarantee all of your requests at this time. What we can provide will be outlined in a confirmation letter before the event.</p>';
+			// $m .= '<p>Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.</p>';
+			// $m .= '<p>Lastly, the Road to Maker Faire Challenge, presented by Esurance, will award one lucky maker $2,500 to bring their project to World Maker Faire. You may apply with the same project you are submitting to Maker Faire, and applications must be completed no later than 11:59pm PT on August 5th. <a href="http://makezine.com/road-to-maker-faire-challenge">Enter Now</a>!</p>';
+			$m .= '<p>Please note that the deadline for Maker entries has passed. However, there are several ways that you can still participate!:</p>';
+			$m .= '<ol><li>We will consider your entry as a last-minute addition. If you do not receive an acceptance letter by September 1st, we were not able to find space for your exhibit. We will do our best to notify you before then.</li>';
+			$m .= '<li>If you would like to volunteer your time and make an invaluable contribution to the success of Maker Faire, please sign up for our <a href="http://makerfaire.com/new-york-2013/maker-corps-program/">Maker Corps at Maker Faire Program</a>, which is a platform to enhance your skills and learn about the Maker Movement. You will have a behind-the-scenes experience, and help make the Greatest Show (and Tell) on Earth happen! Learn more at <a href="http://makerfaire.com">makerfaire.com</a>.</li>';
+			$m .= '<li>Plan to come as an attendee, enjoy the show and support the Maker movement by <a href="http://makerfairenyc.eventbrite.com/">purchasing your tickets</a> early!</li>';
+			$m .= '<li>Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.</li></ol>';
 			$m .= '<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
 			$m .= '<p>Maker Faire (<a href="http://makerfaire.com">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		}
