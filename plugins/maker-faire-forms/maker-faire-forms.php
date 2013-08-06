@@ -3495,33 +3495,26 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	private function sync_jdb( $id = 0 ) {
 		
-		//DONT SYNC FROM OUR SERVER
-		if( $_SERVER['SERVER_ADDR_NAME'] == 'iscrackweb1' )
+		// Don't sync from ISC server
+		if ( $_SERVER['SERVER_ADDR_NAME'] == 'iscrackweb1' )
 			return false;
 	
-		if( !$id ) {
+		if ( ! $id ) {
 			$posts = $this->get_all_forms();
 		} else {
 			$post  = get_post( $id ); 
 			
-			if( is_null( $post ) )
+			if ( is_null( $post ) )
 				return false;
-			if( $post->post_type != 'mf_form' )
-				return false;
-			
-			//ABORT SYNC IF IT HAS ALREADY HAPPENED
-			$sync = get_post_meta( $id, 'mf_jdb_sync', true );
-			
-			if( $sync == '' )
+
+			if ( $post->post_type != 'mf_form' )
 				return false;
 			
 			$posts = array( $post );
-		}
-		
-		$total = count( $posts );
-
-		foreach( $posts as $post ) {
 			
+		}
+
+		foreach ( $posts as $post ) {
 			$form = (array) json_decode( str_replace( "\'", "'", $post->post_content ) );
 			$res  = wp_remote_post( 'http://ec2-23-22-142-64.compute-1.amazonaws.com/updateExhibitInfo', array( 'body' => array_merge( array( 'eid' => $post->ID, 'mid' => $form['uid'] ), (array) $form ) ) );
 	
@@ -3531,14 +3524,14 @@ class MAKER_FAIRE_FORM {
 					update_post_meta( $post->ID, 'mf_jdb_sync_fail', time() );
 				} else {
 					update_post_meta( $post->ID, 'mf_jdb_sync', time() );
-					delete_post_meta( $post->ID, 'mf_jdb_sync_fail' );
+					delete_post_meta( $post->ID, 'mf_jdb_sync_failed' );
 				}
 			} else {
 				update_post_meta( $post->ID, 'mf_jdb_sync_fail', time() );
 			}
 		}
 		
-		if( !$id )	
+		if ( ! $id )	
 			update_option( 'mf_full_jdb_sync', date( 'M jS, Y g:s A', ( time() - ( 3600 * 7 ) ) ) );
 	}
 	/*
