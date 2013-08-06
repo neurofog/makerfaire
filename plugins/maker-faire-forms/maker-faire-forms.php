@@ -3524,7 +3524,7 @@ class MAKER_FAIRE_FORM {
 					update_post_meta( $post->ID, 'mf_jdb_sync_fail', time() );
 				} else {
 					update_post_meta( $post->ID, 'mf_jdb_sync', time() );
-					delete_post_meta( $post->ID, 'mf_jdb_sync_failed' );
+					delete_post_meta( $post->ID, 'mf_jdb_sync_fail' );
 				}
 			} else {
 				update_post_meta( $post->ID, 'mf_jdb_sync_fail', time() );
