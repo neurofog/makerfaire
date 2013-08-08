@@ -74,7 +74,7 @@
 			</ul>
 		</div>
 		
-		<h3 style="text-align:center;">Countdown until World Maker Faire!</h3>
+		<h3 class="countdown-heading">Countdown until World Maker Faire!</h3>
 
 		<div class="countdown">
 
@@ -100,8 +100,8 @@
 		</div>
 		
 		<div style="text-align:center">
-			<a href="http://makerfaire.com/newyork-2013-call-for-makers/">
-				<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/CalltoMakers_280px.png" alt="Call for Makers">
+			<a class="" href="http://makerfairenyc.eventbrite.com/">
+				<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/MakerFaire_TicketButton.png" alt="Buy Maker Faire Ticekts">
 			</a>
 		</div>
 		

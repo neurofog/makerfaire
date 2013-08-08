@@ -161,7 +161,7 @@
 				'default'  => true,
 			),
 			'post_date' => array(
-				'label'    => 'Modified Date',
+				'label'    => 'Date',
 				'sortable' => true,
 				'default'  => true,
 			),
@@ -231,13 +231,19 @@
 		 * @return array
 		 */
 		function get_query_vars() {
+			$order_by_options = array(
+				'date',
+				'modified',
+			);
+
 			$query_vars = array(
 				'paged' 		 => ( isset( $_GET['paged'] ) ) ? absint( $_GET['paged'] ) : 1,
 				'app_type'		 => ( isset( $_GET['app_type'] ) && in_array( $_GET['app_type'], $this->application_types ) ) ? sanitize_text_field( $_GET['app_type'] ) : '',
 				'post_status' 	 => ( isset( $_GET['post_status'] ) && $_GET['post_status'] != '' && $_GET['post_status'] != 'all' ) ? sanitize_text_field( $_GET['post_status'] ) : $this->get_post_statuses(),
 				'category' 		 => ( isset( $_GET['category'] ) && $_GET['category'] != '0' ) ? absint( $_GET['category'] ) : '',
 				'tag'			 => ( isset( $_GET['tag'] ) && $_GET['tag'] != 'all' ) ? sanitize_text_field( $_GET['tag'] ) : '',
-				'edu_day'		 => ( isset( $_GET['edu_day'] ) && $_GET['edu_day'] == 'true' ) ? '_ef_editorial_meta_checkbox_education-day' : '',
+				'edu_day'        => ( isset( $_GET['edu_day'] ) && $_GET['edu_day'] == 'true' ) ? '_ef_editorial_meta_checkbox_education-day' : '',
+				'order_by'		 => ( isset( $_GET['order_by'] ) && in_array( $_GET['order_by'], $order_by_options ) ) ? sanitize_text_field( $_GET['order_by'] ) : '',
 				'posts_per_page' => ( isset( $_GET['posts_per_page'] ) && $_GET['posts_per_page'] <= 1000 ) ? absint( $_GET['posts_per_page'] ) : 40,
 				'search' 		 => ( isset( $_GET['s'] ) && ! empty( $_GET['s'] ) ) ? sanitize_text_field( $_GET['s'] ) : '',
 				'post_id'		 => ( isset( $_GET['p'] ) && ! empty( $_GET['p'] ) ) ? absint( $_GET['p'] ) : '', 
@@ -289,6 +295,9 @@
 			if ( ! empty( $query_vars['category'] ) )
 				$additionals .= '&category=' . $query_vars['category'];
 
+			if ( ! empty( $query_vars['order_by'] ) )
+				$additionals .= '&order_by=' . $query_vars['order_by'];
+
 			if ( ! empty( $query_vars['tag'] ) )
 				$additionals .= '&tag=' . $query_vars['tag'];
 
@@ -319,6 +328,7 @@
 					'p'				 => $query_vars['post_id'],
 					'type'			 => $query_vars['app_type'],
 					'meta_key'		 => $query_vars['edu_day'],
+					'order_by'		 => $query_vars['order_by'],
 					'posts_per_page' => 0,
 					'return_fields'	 => 'ids',
 				);
@@ -402,6 +412,24 @@
 
 
 		/**
+		 * Generates the sort by submission or modified dates
+		 * @return string
+		 */
+		function orderby_dropdown() {
+			
+			$query_vars = $this->get_query_vars();
+
+			$output = '<select name="order_by" id="order-by">';
+			$output .= '<option value="none">Sort By</option>';
+			$output .= '<option value="date"' . selected( $query_vars['order_by'], 'date', false ) . '>Submission Date</option>';
+			$output .= '<option value="modified"' . selected( $query_vars['order_by'], 'modified', false ) . '>Modified Date</option>';
+			$output .= '</select>';
+
+			return $output;
+		}
+
+
+		/**
 		 * Generates a dropdown of how many pages we want to display on each page
 		 * @param  array $posts_per_page an array of integers to be outputted as options
 		 * @return html
@@ -425,7 +453,7 @@
 		 * Generate a dropdown to filter tags
 		 * @return html
 		 */
-		function make_tags_dropdown() {
+		function tags_dropdown() {
 
 			$query_vars = $this->get_query_vars();
 			$terms = get_terms( 'post_tag', array( 'hide_empty' => false ) );
@@ -447,7 +475,7 @@
 		 * Generate a dropdown to filter categories
 		 * @return html
 		 */
-		function make_categories_dropdown() {
+		function categories_dropdown() {
 
 			$query_vars = $this->get_query_vars();
 			$cats = wp_dropdown_categories( array(
@@ -625,6 +653,30 @@
 
 
 		/**
+		 * Process both submission and modified dates into a block of HTML
+		 * @param  integer $post_date      The post date
+		 * @param  integer  $post_modified The modified date
+		 * @return string
+		 */
+		function process_dates( $post_date, $post_modified ) {
+
+			$output = '';
+
+			if ( ! empty( $post_date ) ) {
+				$post_date = strtotime( $post_date );
+				$output    .= '<p><strong>Submitted</strong>: ' . date( 'F j, Y @ g:i a', $post_date ) . '</p>';
+			}
+
+			if ( ! empty( $post_modified ) ) {
+				$post_modified = strtotime( $post_modified );
+				$output 	   .= '<p><strong><em>Modified</strong>: ' . date( 'F j, Y @ g:i a', $post_modified ) . '</em></p>';
+			}
+
+			return $output;
+		}
+
+
+		/**
 		 * Current Faire Page
 		 */
 		function display_current_faire_page() {
@@ -653,6 +705,7 @@
 				'tag'			 => $query_vars['tag'],
 				'type'			 => $query_vars['app_type'],
 				'meta_key'		 => $query_vars['edu_day'],
+				'orderby'		 => $query_vars['order_by'],
 				's'				 => $query_vars['search'],
 				'p'				 => $query_vars['post_id'],
 			);
@@ -676,9 +729,9 @@
 
 					<div class="tablenav top">
 						<?php echo $this->application_type_dropdown(); ?>
-						<?php echo $this->make_categories_dropdown(); ?>
-						<?php echo $this->make_tags_dropdown(); ?>
-						<?php echo $this->post_edu_dropdown(); ?>
+						<?php echo $this->categories_dropdown(); ?>
+						<?php echo $this->tags_dropdown(); ?>
+						<?php echo $this->orderby_dropdown(); ?>
 						<?php echo $this->posts_per_page_dropdown( array( 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 1000 ) ); ?>
 						<label for="post-search-id" class="screen-reader-text">Search by Project ID</label>
 						<input type="search" id="post-search-id" name="p" placeholder="Project ID" value="<?php echo ( isset( $_GET['p'] ) && ! empty( $_GET['p'] ) ) ? esc_attr( $_GET['p'] ) : ''; ?>">
@@ -731,7 +784,7 @@
 										echo '<tr id="post-' . absint( $post->ID ) . '" valign="top">';
 										echo '<td class="post_photo column-post_photo"' . $this->check_screen_options( 'post_photo', false, true ) . '>';
 											if ( ! empty( $app_image ) )
-												echo wpcom_vip_get_resized_remote_image_url( esc_url( $app_image ), 130, 130, true );
+												echo '<img src="' . wpcom_vip_get_resized_remote_image_url( esc_url( $app_image ), 130, 130, true ) . '" >';
 										echo '</td>';
 										echo '<td class="post_id column-post_id"' . $this->check_screen_options( 'post_id', false, true ) . '>' . $post_id . '</td>';
 										echo '<td class="post_status column-post_status"' . $this->check_screen_options( 'post_status', false, true ) . '>' . $post_status . '</td>';
@@ -749,7 +802,7 @@
 										echo '<td class="tags column-tags"' . $this->check_screen_options( 'tags', false, true ) . '>' . $tags . '</td>';
 										echo '<td class="location column-location"' . $this->check_screen_options( 'location', false, true ) . '>' . $location . '</td>';
 										echo '<td class="featured_maker column-featured_maker"' . $this->check_screen_options( 'featured_maker', false, true ) . '>' . $this->convert_boolean( $featured ) . '</td>';
-										echo '<td class="post_date column-post_date"' . $this->check_screen_options( 'post_date', false, true ) . '>' . get_the_modified_date( 'F jS, Y' ) . '</td>';
+										echo '<td class="post_date column-post_date"' . $this->check_screen_options( 'post_date', false, true ) . '>' . $this->process_dates( $post->post_date, $post->post_modified ) . '</td>';
 										echo '<td class="commercial column-commercial"' . $this->check_screen_options( 'commercial', false, true ) . '>' . $commercial . '</td>';
 										echo '<td class="education_day column-education_day"' . $this->check_screen_options( 'education_day', false, true ) . '>' . $this->convert_boolean( $edu_day ) . '</td>';
 										echo '</tr>';
