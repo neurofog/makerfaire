@@ -2748,21 +2748,22 @@ class MAKER_FAIRE_FORM {
 		if ( ! current_user_can( 'edit_others_posts' ) ) 
 			return false;
 
+		// Set to true
+		$return_array = false;
+
 		// Setup some default options
 		$defaults = array(
 			'export_type' 	=> 'all',
 			'sort'		  	=> null,
 			'header_titles' => array(
-				'exhibit' => array(
-					's3' => array(
-						'hotdogs' => 1,
-					),
-				),
+				'hotdogs',
 			),
 		);
 
 		// Parse our options with the defaults
 		$options = wp_parse_args( $options, $defaults );
+
+		$fields = array_merge( $this->fields, $options['header_titles'] );
 
 		// Get our array of form fields so we can build the header of the csv export
 		if ( $options['export_type'] == 'all' ) {
@@ -2770,7 +2771,7 @@ class MAKER_FAIRE_FORM {
 				's1' => array(),
 			);
 
-			foreach ( $this->fields as $type => $step_number ) {
+			foreach ( $fields as $type => $step_number ) {
 				foreach ( $step_number as $key => $value ) {
 					$header_titles['s1'] = array_merge( $header_titles['s1'], $value );
 				}
@@ -2830,13 +2831,17 @@ class MAKER_FAIRE_FORM {
 		$header .= "\tLocations";
 		$header .= "\tList of Makers";
 		$header .= "\r\n";
+
+		foreach ( $options['header_titles'] as $header_title ) {
+			$header .= "\t" . strtoupper( $header_title );
+		}
+
+		var_dump($header);
 		
 		// Setup the results array
 		$results = array();
 
-		// Setup the body of the CSV
-		$body = '';
-
+		// Process our rows.
 		foreach ( $applications as $app ) {
 			// Get the current applications content (which is json data)
 			$form = (array) json_decode( str_replace( "\'", "'", $app->post_content ) );
@@ -2870,8 +2875,8 @@ class MAKER_FAIRE_FORM {
 			// define our CSV rows
 			foreach ( $data as $key ) {
 
-				// Merge our key with the form type
-				if( $merged_key = $this->merge_fields( $key, $form['form_type'] ) )
+				// For each application type, we have different field keys. We'll pass it through this function to ensure we return the right type
+				if ( $merged_key = $this->merge_fields( $key, $form['form_type'] ) )
 					$key = $merged_key;
 
 				// Separate each maker/presenter to a new row
@@ -2921,7 +2926,7 @@ class MAKER_FAIRE_FORM {
 						$row .= "\tN/A";
 					}	
 					
-				} elseif( isset( $form[ $key ] ) ) {
+				} elseif ( isset( $form[ $key ] ) ) {
 					$d = is_array( $form[ $key ] ) ? implode( ', ', $form[ $key ] ) : $form[ $key ];
 					
 					$results[ $app->ID ][ $key ] = $d;
@@ -2951,7 +2956,7 @@ class MAKER_FAIRE_FORM {
 			// Get all of the Edit Flow terms and process them into our CSV
 			foreach( $ef_terms as $ef_id => $ef_term ) {
 				$results_ef = $results[ $app->ID ][ $ef_term['slug'] ];
-				// var_dump($ef_term);
+
 				if ( isset( $ef_data[ $app->ID ][ $ef_id ] ) ) {
 					
 					// Handle any text field
@@ -3010,12 +3015,12 @@ class MAKER_FAIRE_FORM {
 			}
 			
 			// Take the $row variable we have been feeding each of our applications into in a variable called $body
-			$body .= substr( $row, 1) . "\r\n";
+			$body = substr( $row, 1) . "\r\n";
 		}
 
 		// Check if we are using this function to just return an array of our results.
 		if ( $return_array )
-			return $results;
+			var_dump($results);
 		
 		// Get the time this export was ran. This is used in the file name of the CSV
 		$time_offset = time() - ( 3600 * 7 );
@@ -3023,7 +3028,7 @@ class MAKER_FAIRE_FORM {
 		// var_dump($header);
 		// var_dump($body);
 		// Now that we have everything, return the data.
-		$this->output_csv( strtoupper( $export_type ) . '_APPLICATIONS_' . date( 'M-d-Y', $time_offset ) . '_' . date( 'G-i', $time_offset ), $header . $body );
+		// $this->output_csv( strtoupper( $export_type ) . '_APPLICATIONS_' . date( 'M-d-Y', $time_offset ) . '_' . date( 'G-i', $time_offset ), $header . $body );
 
 
 		####### Original Export Tool from ISC #######
