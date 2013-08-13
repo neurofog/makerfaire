@@ -324,7 +324,7 @@
 					'post_status'	 => ( $type == 'all' ) ? $new_post_status : $type,
 					'tag'			 => $query_vars['tag'],
 					'category'		 => $query_vars['category'],
-					's'				 => $query_vars['serach'],
+					's'				 => $query_vars['search'],
 					'p'				 => $query_vars['post_id'],
 					'type'			 => $query_vars['app_type'],
 					'meta_key'		 => $query_vars['edu_day'],
