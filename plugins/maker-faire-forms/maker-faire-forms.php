@@ -647,7 +647,7 @@ class MAKER_FAIRE_FORM {
 			<input name="form_type" type="hidden" value="<?php echo esc_attr( $data->form_type ); ?>" />
 			<table style="width:100%">
 				<tr>
-					<td style="width:210px;" valign="top"><img src="<?php echo esc_url( $photo ); ?>" height="200" width="200" /></td>
+					<td style="width:210px;" valign="top"><img src="<?php echo esc_url( wpcom_vip_get_resized_remote_image_url( $photo, 200, 200 ) ); ?>"  /></td>
 					<td valign="top">
 						<p><?php echo Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $main_description, "\n" ) ) ) ); ?></p>
 						<table style="width:100%">
@@ -843,7 +843,7 @@ class MAKER_FAIRE_FORM {
 			<?php echo esc_html( $data->private_address.' '.$data->private_address2 ); ?><br />
 			<?php echo esc_html( $data->private_city.', '.$data->private_state.' '.$data->private_zip.' '.$data->private_country ); ?><br /><br />
 			<strong>Bio</strong><br />
-			<?php echo esc_html( $bio ); ?>
+			<?php echo wp_kses_post( mf_convert_newlines( $bio ) ); ?>
 
 		<?php } elseif ( $args['id'] == 'mf_form_type' ) { ?>
 
