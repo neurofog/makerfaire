@@ -5,7 +5,7 @@ function maker_init() {
 		'hierarchical'        => false,
 		'public'              => true,
 		'show_in_nav_menus'   => true,
-		'show_ui'             => false,
+		'show_ui'             => true,
 		'supports'            => array( 'title', 'editor' ),
 		'has_archive'         => true,
 		'query_var'           => true,
