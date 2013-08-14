@@ -61,6 +61,25 @@ function event_items_updated_messages( $messages ) {
 add_filter( 'post_updated_messages', 'event_items_updated_messages' );
 
 
+/**
+ * Function to generate a mailto: link with the presentation details.
+ */
+
+function mf_schedule_mailto( $meta ) {
+	$linked_post = get_post( $meta['mfei_record'][0] );
+	$json = json_decode( $linked_post->post_content );
+	$loc = get_the_terms( $linked_post->ID, 'location' );
+	$email = esc_url( 'mailto:' . $json->email );
+	$subject = '?&subject=Event+Scheduled: ' . esc_attr( $linked_post->post_title );
+	$body = rawurlencode(
+		"Event: " . esc_attr( $linked_post->post_title ) . "\n" .
+		"Start Time: " . esc_attr( $meta['mfei_start'][0] ) . "\n" .
+		"End Time: " . esc_attr( $meta['mfei_stop'][0] ) . "\n" .
+		"Location: " . esc_attr( $loc[0]->name ) .  "\n" );
+	$url = add_query_arg( array( 'subject' => $subject ),  $email );
+	$url = add_query_arg( array( 'body' => $body ), $url );
+	echo '<p><a href="' . $url . '" class="button" target="_blank">Email Presenter Schedule</a></p>';
+}
 
 /* 
 * Callback for adding meta box to EVENT ITEM
@@ -120,6 +139,8 @@ function makerfaire_meta_box( $post ) {
 			window.open('/wp-admin/post.php?post=' + jQuery( '#mfei_record' ).val() + '&action=edit', '_blank');
 		});
 	</script>
+	<?php mf_schedule_mailto( $meta ); ?>
+	
 <?php	
 }
 /* 
