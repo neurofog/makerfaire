@@ -33,7 +33,7 @@
 							
 				<div class="span4">
                     <a href="https://readerservices.makezine.com/MK/subscribe.aspx">
-                        <img src="http://cdn.makezine.com/make/ads/subscribe-make34-mf-ad.png" alt="Subscribe to MAKE magazine!" />
+                        <img src="http://cdn.makezine.com/make/ads/subscribe_ad_V35.png" alt="Subscribe to MAKE magazine!" />
                     </a>
                 </div><!--subad-->
 		

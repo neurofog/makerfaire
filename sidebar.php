@@ -33,7 +33,7 @@
 									</h3>
 									<div class="controls" style="margin-top: -10px;margin-left: 5px;">
 										<h3>
-											<label class="checkbox inline" for="cm188882" style="padding-top: 8px;padding-right: 10px;">
+											<label class="checkbox inline" for="cm188882" style="padding-top: 5px;padding-right: 10px;">
 												<input type="checkbox" name="cm-fo-jdlthk" id="cm188882" value="188882"> Bay Area
 											</label>
 											<label class="checkbox inline">
@@ -44,7 +44,7 @@
 								</div>
 								<div class="control-group">
 									<div class="controls">
-										<h3 style="margin-left:5px">\
+										<h3 style="margin-left:5px">
 											<label class="checkbox inline" for="cm188888">
 												<input type="checkbox" name="cm-fo-jdliji" id="cm188888" value="188888"> Are you a Maker?
 											</label>
