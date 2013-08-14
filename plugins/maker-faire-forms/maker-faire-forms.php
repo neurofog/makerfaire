@@ -489,6 +489,7 @@ class MAKER_FAIRE_FORM {
 
 		if ( $post->post_status != 'auto-draft' ) {
 			add_meta_box( 'mf_summary',   'Summary',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
+			add_meta_box( 'mf_summary',   'Summary',   array( &$this, 'meta_box' ), 'maker', 'normal', 'default' );
 			add_meta_box( 'mf_details',   'Details',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 			add_meta_box( 'mf_logistics', 'Edit Form', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 		} else {
@@ -516,6 +517,12 @@ class MAKER_FAIRE_FORM {
 	* @param array $args Include arguments for the meta box.
 	* =====================================================================*/
 	public function meta_box( $post, $args ) {
+
+		if ( get_post_type() == 'maker' ) {
+			$id = get_post_meta( get_the_ID(), 'mfei_record', true );
+			$post = get_post( absint( $id ) );
+		}
+
 		$bad  = array( '&#039;', "\'", '&#8217;', '&#38;', '&#038;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;', 'u2018', 'u2019' );
    		$good = array( "'",      "'",  "'",       "&",     "&",      '"',     '"',      '–',       '>',    '...',     "'",     "'",    );
 		$data = json_decode( str_replace( $bad, $good, $post->post_content ) );
