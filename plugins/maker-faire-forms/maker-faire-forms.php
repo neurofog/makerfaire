@@ -2887,6 +2887,21 @@ class MAKER_FAIRE_FORM {
 		// Merge any custom headers with our existing ones for custom columns.
 		$fields = array_merge( $this->fields, $options['header_titles'] );
 
+		$data  = array(
+			'status'              => '',
+			'form_type'           => '',
+			'project_id'          => '',
+			'project_name'        => '',
+			'public_description'  => '',
+			'private_description' => '',
+			'cats'                => '',
+			'tags'                => '',
+			'form_photo'          => '',
+			'uid'                 => '',
+			'user_photo'          => '',
+			'user_bio'            => ''
+		);
+
 		// Get our array of form fields so we can build the header of the csv export
 		if ( $options['filters']['type'] == 'all' ) {
 			$header_titles = array(
