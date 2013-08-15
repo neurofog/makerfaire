@@ -333,15 +333,19 @@ class MAKER_FAIRE_FORM {
 			if ( isset( $options['filters']['makers'] ) && $options['filters']['makers'] == 'true' ) {
 				// Export our makers
 				$this->build_maker_export( $options );
-			} elseif ( isset( $options['filters']['edit_comments'] ) && $options['filters']['edit_comments'] == 'true' ) {
-				// Export the editorial comments
-				$this->build_comments_export( $options );
 			} else {
 				// Default, Make sure you get some cookies and milk.
 				$this->build_form_export( $options );
 			}
 		}
+
+		// Maker Export
+		if ( isset( $_GET['maker_csv'] ) ) {
+			$options['filters']['faire'] = 'world-maker-faire-new-york-2013';
+			$this->build_comments_export( $options );
+		}
 			
+		// Presentation Export
 		if ( isset( $_GET['presentation_csv'] ) )
 			$this->build_presentation_exports( esc_attr( $_GET['presentation_csv'] ) );
 			
@@ -2795,12 +2799,13 @@ class MAKER_FAIRE_FORM {
 							<input type="checkbox" name="makers" id="makers" value="true" /> Export Maker Names Only
 						</li>
 						<li style="margin:20px 0;">
-							<input type="hidden" name="edit_comments" id="export-comments">
 							<input type="submit" class="button button-primary button-large" value="Process Report" />
-							<input type="submit" class="button button-primary button-large export_comments" value="Export Editorial Comments" />
 						</li>
 					</ul>
 				</form>
+
+				<h2 style="margin-top:40px;">Maker Based Reports</h2>
+				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&maker_csv=presenter', 'mf_export_check' ); ?>">Export Maker Based Report</a></h3>
 					
 				<h2 style="margin-top:40px;">Presentation Reports</h2>
 				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&presentation_csv=manager', 'mf_export_check' ); ?>">Stage Manager Report</a></h3>
@@ -3377,10 +3382,6 @@ class MAKER_FAIRE_FORM {
 		// Make sure the user requesting this has the privileges...
 		if ( ! current_user_can( 'edit_others_posts' ) ) 
 			return false;
-
-		// Also ensure that we are passing the variable to trigger our maker export
-		if ( ! isset( $_GET['edit_comments'] ) && ! $_GET['edit_comments'] )
-			return false;
 		
 		global $wpdb;
  
@@ -3409,7 +3410,7 @@ class MAKER_FAIRE_FORM {
 				$user_list .= ", " . $user_name->display_name;
 			}
 			
-			$txt = str_replace( '"', "\'", iconv( "UTF-8", "ISO-8859-1//TRANSLIT", $comment->comment_content ) );
+			$txt = strip_tags( str_replace( '"', "\'", iconv( "UTF-8", "ISO-8859-1//TRANSLIT", $comment->comment_content ) ) );
 
 			$row  = absint( $comment->ID ) . "\t";
 			$row .= $comment->post_title . "\t";
@@ -3419,12 +3420,12 @@ class MAKER_FAIRE_FORM {
 			$row .= '"' . $txt . "\"\t";
 			
 			$output .= $row . "\r\n";
-			var_dump($comment);
 		}
 
-		$time_offset = time() - ( 3600 * 7 );
-		$this->output_csv( 'EDITORIAL_COMMENTS_' . date( 'M-d-Y', $time_offset ) . '_' . date( 'G-i', $time_offset ), $output );
+		$this->output_csv( 'EDITORIAL_COMMENTS_' . strtoupper( $options['filters']['faire'] ) . '_' . date( 'M-d-Y', $time_offset ), $output );
 	}
+
+
 	/* 
 	* Gathers and builds the output for PRESENTER EXPORTS
 	*
