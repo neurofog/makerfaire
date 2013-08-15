@@ -319,15 +319,33 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	public function admin_init() {
 		
-		if ( isset( $_GET['form_csv'] ) )
-			$this->build_form_export( esc_attr( $_GET['form_csv'] ), ( isset( $_GET['form_status'] ) ? esc_attr( $_GET['form_status'] ) : 'all' ) );
-
-		if ( isset( $_GET['maker_csv'] ) )
-			$this->build_maker_export( esc_attr( $_GET['maker_csv'] ) );
-		
-		if ( isset( $_GET['comments_csv'] ) )
-			$this->build_comments_export();
+		// Our new form export tool
+		if ( isset( $_GET['form_export'] ) ) {
 			
+			// Contain our export featurs into the proper array our build form export function wants
+			$options = array(
+				'filters' => $_GET,
+			);
+
+			// Remove the page, post_type, form export and nonce data.
+			$options['filters'] = array_slice( $options['filters'], 4 );
+
+			if ( isset( $options['filters']['makers'] ) && $options['filters']['makers'] == 'true' ) {
+				// Export our makers
+				$this->build_maker_export( $options );
+			} else {
+				// Default, Make sure you get some cookies and milk.
+				$this->build_form_export( $options );
+			}
+		}
+
+		// Maker Export
+		if ( isset( $_GET['maker_csv'] ) ) {
+			$options['filters']['faire'] = 'world-maker-faire-new-york-2013';
+			$this->build_comments_export( $options );
+		}
+			
+		// Presentation Export
 		if ( isset( $_GET['presentation_csv'] ) )
 			$this->build_presentation_exports( esc_attr( $_GET['presentation_csv'] ) );
 			
@@ -809,7 +827,7 @@ class MAKER_FAIRE_FORM {
 					</tr>
 					</table>
 				<?php
-		} elseif ( $args['id'] == 'mf_details' ) {
+		} elseif ( $args['id'] == 'mf_details' ) { // Details Metabox
 
 			// Check if we are loading the private description or a long description
 			if ( isset( $data->private_description ) ) {
@@ -822,7 +840,7 @@ class MAKER_FAIRE_FORM {
 			
 			echo stripslashes( wp_filter_post_kses( $this->convert_newlines( $details_description ) ) );
 			
-		} elseif ( $args['id'] == 'mf_maker' ) { 
+		} elseif ( $args['id'] == 'mf_maker' ) { // The Maker Info Metabox
 			
 			$photo_thumb_key = $this->merge_fields( 'user_photo_thumb', $data->form_type );
 			$photo_key       = $this->merge_fields( 'user_photo', $data->form_type );
@@ -853,7 +871,7 @@ class MAKER_FAIRE_FORM {
 			<?php echo wp_kses_post( mf_convert_newlines( $bio ) ); ?>
 
 		<?php } elseif ( $args['id'] == 'mf_form_type' ) { ?>
-
+			
 			<input class="mf_form_type" name="form_type" type="radio" value="exhibit" /> &nbsp; Exhibit Application &nbsp;
 			<input class="mf_form_type" name="form_type" type="radio" value="performer" /> &nbsp; Performer Application &nbsp;
 			<input class="mf_form_type" name="form_type" type="radio" value="presenter" /> &nbsp; Presenter Application
@@ -2368,6 +2386,8 @@ class MAKER_FAIRE_FORM {
 		if ( ( 'edit.php' == $hook && $post_type == 'mf_form' ) || ( 'post.php' == $hook && $post_type == 'mf_form' ) )
 			wp_enqueue_script( 'mf-custom-search', plugins_url( 'assets/js/search-id.js', __FILE__ ), array( 'jquery' ), '1.0', true );
 
+		wp_enqueue_script( 'mf-reports', plugins_url( 'assets/js/reports.js', __FILE__ ), array( 'jquery' ), '1.0', true );
+
 		wp_enqueue_style( 'mff_css', plugins_url( 'assets/css/style.css', __FILE__ ) );
 	}
 
@@ -2637,7 +2657,9 @@ class MAKER_FAIRE_FORM {
 	* @access public
 	* =====================================================================*/
 	public function show_reports_page() { 
-	
+		// Get the post statuses		
+		global $wp_post_statuses;
+
 		if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
 			//NONCE CHECK
 			if ( isset( $_POST['mf_syncjdb'] ) && wp_verify_nonce( $_POST['mf_syncjdb'], 'mf_syncjdb' ) )
@@ -2649,8 +2671,27 @@ class MAKER_FAIRE_FORM {
 	
 		// $stats = $this->get_reports_stats();
 		$fails = $this->get_failed_syncs();
-		
-		?>
+		$app_types = array(
+			'Exhibit' => 'exhibit',
+			'Performer' => 'performer',
+			'Presenter' => 'presenter',
+		);
+		$disallowed_post_statuses = array(
+			'publish',
+			'future',
+			'pitch',
+			'assigned',
+			'trash',
+			'spam',
+			'inherit',
+			'private',
+			'auto-draft',
+		);
+		$locations = get_terms( 'location', array(
+			'hide_empty'   => false,
+		) );
+		$faires = get_terms( 'faire', array( 'hide_empty' => false, 'order' => 'DESC' ) );
+		$tags = get_terms( 'post_tag', array( 'hide_empty' => false ) ); ?>
 		<div class="wrap" id="iscic">
 			<?php echo screen_icon(); ?>
 			<h2>Maker Faire Reports</h2>
@@ -2686,38 +2727,102 @@ class MAKER_FAIRE_FORM {
 			<h2>Failed Syncs</h2>
 			<ul>
 			<?php foreach( $fails as $fail ) : ?>
-				<li><a href="post.php?post=<?php echo intval( $fail->ID ); ?>&action=edit"><?php echo esc_html( $fail->post_title ); ?></a></li>
+				<li><a href="post.php?post=<?php echo intval( $fail->ID ); ?>&amp;action=edit"><?php echo esc_html( $fail->post_title ); ?></a></li>
 			<?php endforeach; ?>
 			</ul>
 			</div>
 			<div style="width:45%; float:right; border:1px solid #DFDFDF; border-radius:3px; padding:10px; background:#F2F2F2">
-				<h1>Project/Application Reports</h1>
+				<h1>Generate Reports</h1>
 				
-				<h2>Accepted Projects/Applications</h2>
-        		<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&form_csv=exhibit&form_status=accepted', 'mf_export_check' ); ?>">Export Accepted Exhibit Applications</a></h3>
-        		<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&form_csv=performer&form_status=accepted', 'mf_export_check' ); ?>">Export Accepted Performer Applications</a></h3>
-        		<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&form_csv=presenter&form_status=accepted', 'mf_export_check' ); ?>">Export Accepted Presenter Applications</a></h3>
-        
-				<h2>Project/Application Reports</h2>
-				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&form_csv=all', 'mf_export_check' ); ?>">Export All Applications</a></h3>
-				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&form_csv=exhibit', 'mf_export_check' ); ?>">Export All Exhibit Applications</a></h3>
-				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&form_csv=performer', 'mf_export_check' ); ?>">Export All Performer Applications</a></h3>
-				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&form_csv=presenter', 'mf_export_check' ); ?>">Export All Presenter Applications</a></h3>
-				
-				<h2 style="margin-top:40px;">Maker Reports</h2>
-				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&maker_csv=presenter', 'mf_export_check' ); ?>">Export All Makers</a></h3>
-				
-				<h2 style="margin-top:40px;">Editorial Comments Export</h2>
-				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&comments_csv', 'mf_export_check' ); ?>">Export Editorial Comments</a></h3>
-				
+				<form method="get" class="reports-form" style="border-bottom:1px solid #dfdfdf">
+					<input type="hidden" name="post_type" value="<?php echo esc_attr( $_REQUEST['post_type'] ); ?>" />
+					<input type="hidden" name="page" value="<?php echo esc_attr( $_REQUEST['page'] ); ?>" />
+					<input type="hidden" name="form_export" value="true" />
+					<?php wp_nonce_field( 'mf_export_check', 'export_nonce', false ); ?>
+					
+					<ul>
+						<?php if ( ! empty( $faires ) ) : ?>
+							<li>
+								<label for="faire">Faire Applications</label>
+								<select name="faire" id="faire">
+									<?php foreach ( $faires as $faire ) : ?>
+										<option value="<?php echo $faire->slug; ?>"><?php echo $faire->name; ?></option>
+									<?php endforeach; ?>
+								</select>
+							</li>
+						<?php endif; ?>
+						<li>
+							<label for="app-type">Application Type</label>
+							<select name="type" id="app-type">
+								<option value="all">All Types</option>
+								<?php foreach ( $app_types as $app_type => $app_value ) : ?>
+									<option value="<?php echo sanitize_text_field( $app_value ); ?>"><?php echo esc_html( $app_type ); ?></option>
+								<?php endforeach; ?>
+							</select>
+						</li>
+						<li>
+							<label for="post-status">Application Status</label>
+							<select name="post_status" id="post-status">
+								<option value="all">All Statuses</option>
+								<?php foreach ( $wp_post_statuses as $status => $name ) {
+									if ( ! in_array( $status, $disallowed_post_statuses ) )
+										echo '<option value="' . $status . '">' . $name->label . '</option>';
+								} ?>
+							</select>
+						</li>
+						<li>
+							<label for="categories">Category</label>
+							<?php wp_dropdown_categories( array(
+								'hide_empty'	  => false,
+								'id'		 	  => 'categories',
+								'orderby'	 	  => 'title',
+								'show_option_all' => 'All Categories',
+								'hierarchical'	  => true,
+							) ); ?>
+						</li>
+						<li>
+							<label for="tags">Tags</label>
+							<select name="tag" id="tags">
+								<option value="all">All Tags</option>
+								<?php foreach( $tags as $tag ) : ?>
+									<option value="<?php echo sanitize_text_field( $tag->slug ); ?>"><?php echo esc_html( $tag->name ); ?></option>
+								<?php endforeach; ?>
+							</select>
+						</li>
+						<li>
+							<label for="location">Location</label>
+							<select name="location" id="location">
+								<option value="all">All Locations</option>
+								<?php foreach ( $locations as $location ) : ?>
+									<?php $location_short_name = substr( $location->name, 0, 2 ); // For MFNY2013 we needed a fast way to separate faire locations. add a_ was the route... for now only display those locations....
+									if ( $location_short_name == 'a_' ) : ?>
+										<option value="<?php echo $location->slug; ?>"><?php echo $location->name; ?></option>
+									<?php endif; ?>
+								<?php endforeach; ?>
+							</select>
+						</li>
+						<li>
+							<label for="makers">Makers</label>
+							<input type="checkbox" name="makers" id="makers" value="true" /> Export Maker Names Only
+						</li>
+						<li style="margin:20px 0;">
+							<input type="submit" class="button button-primary button-large" value="Process Report" />
+						</li>
+					</ul>
+				</form>
+
+				<h2 style="margin-top:40px;">Maker Based Reports</h2>
+				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&maker_csv=presenter', 'mf_export_check' ); ?>">Export Maker Based Report</a></h3>
+					
 				<h2 style="margin-top:40px;">Presentation Reports</h2>
 				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&presentation_csv=manager', 'mf_export_check' ); ?>">Stage Manager Report</a></h3>
 				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&presentation_csv=signage', 'mf_export_check' ); ?>">Stage Signage Report</a></h3>
 				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&presentation_csv=checkin', 'mf_export_check' ); ?>">Presenter CheckIn Report</a></h3>
 			</div>
 		</div>
-		<?php
-	}
+	<?php }
+
+
 	/* 
 	* Gathers and outputs application data
 	*
@@ -2751,27 +2856,43 @@ class MAKER_FAIRE_FORM {
 
 		return $res;
 	}
-	/* 
-	* Gathers and outputs application data
-	*
-	* @access private
-	* @param string $export_type The type of form to output
-	* @param string $status The status of the form
-	* @param boolean $return_array Whether to return an array or output CSV
-	* =====================================================================*/
-	private function build_form_export( $export_type = 'all', $status = 'all', $return_array = false ) {
 
-		//NONCE CHECK
-		if ( isset( $_GET['_wpnonce'] ) && !wp_verify_nonce( $_GET['_wpnonce'], 'mf_export_check' ) )
+
+	/**
+	 * Gathers and outputs application data.
+	 * 
+	 * @param  array   $options      The array of filters we want to pass to WP_Query like application type, app status, and other fun stuff.
+	 * @param  boolean $return_array Returns an array instead of the CSV
+	 * @return void
+	 */
+	private function build_form_export( $options = array(), $return_array = false ) {
+
+		// Check our nonce
+		if ( isset( $_GET['export_nonce'] ) && ! wp_verify_nonce( $_GET['export_nonce'], 'mf_export_check' ) )
 			return false;
 			
-		//CAP CHECK
-		if ( !current_user_can( 'edit_others_posts' ) ) 
+		// Make sure the user requesting this has the privileges...
+		if ( ! current_user_can( 'edit_others_posts' ) ) 
 			return false;
-			
-		//EXPORT TYPE CHECK
-		if ( $export_type != 'all' && ! array_key_exists( $export_type, $this->fields ) )
-			return false;
+
+		// Set to true
+		$return_array = false;
+
+		// Setup some default options
+		$defaults = array(
+			'sort'		  	=> null,
+			'header_titles' => array(),
+			'filters'		=> array(
+				'type' 	  	  => 'all',
+				'post_status' => 'all',
+			),
+		);
+
+		// Parse our options with the defaults
+		$options = wp_parse_args( $options, $defaults );
+
+		// Merge any custom headers with our existing ones for custom columns.
+		$fields = array_merge( $this->fields, $options['header_titles'] );
 
 		$data  = array(
 			'status'              => '',
@@ -2788,80 +2909,111 @@ class MAKER_FAIRE_FORM {
 			'user_bio'            => ''
 		);
 
-		if ( $export_type == 'all' ) {	
-			$s = array( 's1' => array() );	
-			foreach( $this->fields as $type => $st ) { 
-				foreach( $st as $sn => $d ) {
-					$s['s1'] = array_merge( $s['s1'], $d );
+		// Get our array of form fields so we can build the header of the csv export
+		if ( $options['filters']['type'] == 'all' ) {
+			$header_titles = array(
+				's1' => array(),
+			);
+
+			foreach ( $fields as $type => $step_number ) {
+				foreach ( $step_number as $key => $value ) {
+					$header_titles['s1'] = array_merge( $header_titles['s1'], $value );
 				}
 			}
 		} else {
-			$s = $this->fields[ $export_type ];
+			$header_titles = $this->fields[ $options['filters']['type'] ];
 		}
-		
-		foreach( $s as $sn => $d ) {
-			foreach( $d as $key => $r ) {
-				$data[$key] = '';
-				
-				if( 'm_maker_gigyaid' == $key ) {
-					for( $i=2; $i < 5; $i++ ) {
-						$data['m_maker_name_'.$i]    = '';
-						$data['m_maker_email_'.$i]   = '';
-						$data['m_maker_gigyaid_'.$i] = '';
+
+		// Take the current header titles and merge them all into the $data variable.
+		foreach ( $header_titles as $step_number => $value ) {
+			foreach ( $value as $key => $value ) {
+				$data[ $key ] = '';
+
+				if ( $key == 'm_maker_gigyaid' ) {
+					for ( $i = 2; $i < 5; $i++ ) {
+						$data['m_maker_name_' . $i ] 	= '';
+						$data['m_maker_email_' . $i ] 	= '';
+						$data['m_maker_gigyaid_' . $i ] = '';
 					}
-				} elseif( 'presenter_gigyaid' == $key ) {
-					for( $i=2; $i < 5; $i++ ) {
-						$data['presenter_name_'.$i]    = '';
-						$data['presenter_email_'.$i]   = '';	
-						$data['presenter_gigyaid_'.$i] = '';
+				} elseif ( $key == 'presenter_gigyaid' ) {
+					for ( $i = 2; $i < 5; $i++ ) {
+						$data['presenter_name_' . $i ] 	  = '';
+						$data['presenter_email_' . $i ]   = '';
+						$data['presneter_gigyaid_' . $i ] = '';
 					}
 				}
 			}
 		}
-
-
-		$posts   = $this->get_all_forms( NULL, $status );
-		$efterms = $this->get_editflow_terms();
-		$efdata  = $this->get_editflow_data( $efterms );
-		$efdef   = array(
+		
+		// Get our data setup
+		$applications = $this->get_all_forms( $options['sort'], $options['filters']['post_status'], $options['filters'] );
+		$ef_terms 	  = $this->get_editflow_terms();
+		$ef_data 	  = $this->get_editflow_data( $ef_terms );
+		$ef_def   	  = array(
 			'checkbox' => 'No',
 			'data'     => 'N/A',
-			'text'     => ''
 		);
 
-		$res     = array();
-		$data    = array_keys( $data );
+		// Set the array keys for the header
+		$data = array_keys( $data );
 
-		if( 'accepted' == $status ) {
+		if ( 'accepted' == $options['filters']['post_status'] ) {
 			array_splice( $data, 1, 0, 'accepted' );	
 		}
 
-		$header  = implode( "\t", $data );
-		$header  = strtoupper( str_replace( '_', ' ', $header ) );
+		// Begin setting up the code for the header
+		$header = implode( "\t", $data );
 
-		foreach( $efterms as $efterm ) {
-			$header .= "\t".$efterm['name'];
+		// Process our Edit Flow terms also into the header
+		foreach ( $ef_terms as $ef_term ) {
+			$header .= "\t" . $ef_term['name'];
 		}
+
+		// Add some more to the list..
 		$header .= "\tLocation";
 		$header .= "\tList of Makers";
+		$header .= "\tTemp Location";
+		$header .= "\tLocations";
+		$header .= "\tList of Makers";
+
+		// We'll also append any custom header titles
+		if ( ! empty( $options['header_titles'] ) ) {
+	 		foreach ( $options['header_titles'] as $header_title ) {
+				$header .= "\t" . $header_title;
+			}
+		}
+
+		// Any instance that has under scores, replace it with spaces and make the text uppercase
+		$header = strtoupper( str_replace( '_', ' ', $header ) );
+
+		// Start a new row which will be our content :)
 		$header .= "\r\n";
+		
+		// Setup the results array
+		$results = array();
 
-		$body    = "";
+		// Process our rows.
+		foreach ( $applications as $app ) {
+			// Get the current applications content (which is json data)
+			$form = (array) json_decode( str_replace( "\'", "'", $app->post_content ) );
 
-		foreach( $posts as $post ) {
-			$form = (array) json_decode( str_replace( "\'", "'", $post->post_content ) );
-
-			if ( $export_type != 'all' && $export_type != $form['form_type'] )
+			// Let's make sure we're actually getting what we expect..
+			if ( $options['filters']['type'] != 'all' && $options['filters']['type'] != $form['form_type'] )
 				continue;
 
+			// Append some extra details to our data
 			$form = array_merge( $form, array(
-				'status'     => $post->post_status,
-				'project_id' => $post->ID
+				'status'     => $app->post_status,
+				'project_id' => $app->ID
 			) );
-			
-			$line             = '';
-			$res[ $post->ID ] = array();
-			
+
+			// Create an array key for this post in the results array
+			$results[ $app->ID ] = array();
+
+			// Create an empty string to append each CSV row to.
+			$row = '';
+
+			// Add our maker info
 			$multi = array( 
 				'm_maker_name', 
 				'm_maker_email', 
@@ -2870,118 +3022,165 @@ class MAKER_FAIRE_FORM {
 				'presenter_email', 
 				'presenter_gigyaid' 
 			);
-			
-			//SET POST DATA
-			foreach( $data as $key ) {
-				$data_key = $key;
-				if( $mkey = $this->merge_fields( $key, $form['form_type'] ) )
-					$key = $mkey;
 
-				//BREAK UP MULTIPLE MAKERS/PRESENTERS
-				if( in_array( $data_key, $multi ) ) {
-					$d = is_array( $form[$key] ) ? $form[$key][0] : $form[$key]; 
+			// define our CSV rows
+			foreach ( $data as $key ) {
+
+				// For each applications type, we have different field keys. We'll pass it through this function to ensure we return the right type
+				if ( $merged_key = $this->merge_fields( $key, $form['form_type'] ) )
+					$key = $merged_key;
+
+				// Separate each maker/presenter to a new row
+				if ( in_array( $key, $multi ) ) {
+
+					// If the current data is an array, then we'll point it to their 0 index. This will be the makers name, email and gigya ID's
+					$maker_data = is_array( $form[ $key ] ) ? $form[ $key ][0] : $form[ $key ];
+
+					// Add our maker data to the results array
+					$results[ $app->ID][ $key ] = $maker_data;
 					
-					$res[$post->ID][$data_key] = $d;
-					$line .= "\t".$d;
+					// Add our maker data to the row TODO: don't add if $maker_data is empty?? What happens to the results?
+					$row .= "\t" . $maker_data;
 					
-					if( 'm_maker_gigyaid' == $data_key ) {
-						for( $i=1; $i < 4; $i++ ) {
-							foreach( array( 'm_maker_name', 'm_maker_email', 'm_maker_gigyaid' ) as $n ) {
-								$res[$post->ID][$n.'_'.( $i + 1 )] = $form[$n][$i];
-								$line .= "\t".$form[$n][$i];
+					// Process a makers info
+					if ( $key == 'm_maker_gigyaid' ) {
+						for ( $i = 1; $i < 4; $i++ ) {
+							foreach ( array( 'm_maker_name', 'm_maker_email', 'm_maker_gigyaid' ) as $n ) {
+								$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ][ $i ];
+								$row .= "\t" . $form[ $n ][ $i ];
 							}
 						}
-					} elseif( 'presenter_gigyaid' == $data_key ) {
-						for( $i=1; $i < 4; $i++ ) {
-							foreach( array( 'presenter_name', 'presenter_email', 'presenter_gigyaid' ) as $n ) {
-								$res[$post->ID][$n.'_'.( $i + 1 )] = $form[$n][$i];
-								$line .= "\t".$form[$n][$i];
+					} elseif( $key == 'presenter_gigyaid' ) {
+						for ( $i = 1; $i < 4; $i++ ) {
+							foreach ( array( 'presenter_name', 'presenter_email', 'presenter_gigyaid' ) as $n ) {
+								$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ][ $i ];
+								$row .= "\t" . $form[ $n ][ $i ];
 							}
 						}
 					}
-				//CATCH ALL
-				} elseif( 'accepted' == $key ) {
+				// Catch all
+				} elseif ( $key == 'accepted' ) {
 					
-					$log = get_post_meta( $post->ID, '_mf_log', true );
+					// Return the logged data
+					$meta_log = get_post_meta( $app->ID, '_mf_log', true );
 
-					if( $log ) {
-						foreach( $log as $entry ) {
-							if( strpos( $entry, 'Accepted' ) !== false ) {
+					// If data was returned
+					if ( $meta_log ) {
+						foreach ( $meta_log as $entry ) {
+							if ( strpos( $entry, 'Accepted' ) !== false ) {
 								$entry_a = explode( ' ', $entry );
-								$line .= "\t".$entry_a[0]." ".$entry_a[1]." ". strtoupper( $entry_a[2] );
+								$row .= "\t" . $entry_a[0] . ' ' . $entry_a[1] . ' ' . strtoupper( $entry_a[2] );
 								break;
 							}
 						}
 					} else {
-						$line .= "\tN/A";
+						$row .= "\tN/A";
 					}	
 					
-				} elseif( isset( $form[$key] ) ) {
-					$d = is_array( $form[$key] ) ? implode( ',', $form[$key] ) : $form[$key];
+				} elseif ( isset( $form[ $key ] ) ) {
+					$d = is_array( $form[ $key ] ) ? implode( ', ', $form[ $key ] ) : $form[ $key ];
 					
-					$res[$post->ID][$data_key] = $d;
-					$line .= "\t".$d;
+					$results[ $app->ID ][ $key ] = $d;
+					$row .= "\t" . $d;
+
 				} else {
 					
+					// Check if we are dealing with a multi-listing maker of presenter.
 					$is_multi = false;
-					foreach( $multi as $m ) {
-						for( $i=2; $i < 5; $i++ ) {
-							if( $data_key == $m.'_'.$i ) {
+					foreach ( $multi as $m ) {
+						for ( $i = 2; $i < 5; $i++ ) {
+							if ( $key == $m . '_' . $i ) {
 								$is_multi = true;
 								break;	
 							}
 						}
 					}
 					
-					if( !$is_multi ) {
-						$res[$post->ID][$data_key] = "";
-						$line .= "\t"."";
+					if ( ! $is_multi ) {
+						$results[ $app->ID ][ $key ] = '';
+						$row .= "\t" . '';
+
 					}
 				}
 			}
 
-			//SET EDITFLOW DATA	
-			foreach( $efterms as $efid => $efterm ) {
-				if ( isset( $efdata[ $post->ID ][ $efid ] ) ) {
-					$line .= "\t".$efdata[ $post->ID ][ $efid ];
+			// Get all of the Edit Flow terms and process them into our CSV
+			foreach( $ef_terms as $ef_id => $ef_term ) {
+				$results_ef = $results[ $app->ID ][ $ef_term['slug'] ];
+
+				if ( isset( $ef_data[ $app->ID ][ $ef_id ] ) ) {
+					
+					// Handle any text field
+					if ( $ef_term['type'] == 'text' ) {
+
+						$ef_text_results = get_post_meta( $app->ID, '_' . $ef_term['taxonomy'] . '_' . $ef_term['type'] . '_' . $ef_term['slug'], true );
+						$results[ $app->ID ][ $ef_term['slug'] ] = $ef_text_results;
+						$row .= "\t" . $ef_text_results;
+
+					} else {
+
+						$results[ $app->ID ][ $ef_term['slug'] ] = $ef_def[ $ef_term['type'] ];
+						$row .= "\t" . $ef_data[ $app->ID ][ $ef_id ];
+					}
+
 				} else {
-					$line .= "\t".$efdef[ $efterm['type'] ];
+					
+					$results[ $app->ID ][ $ef_term['slug'] ] = $ef_def[ $ef_term['type'] ];
+					$row .= "\t" . $ef_def[ $ef_term['type'] ];
+
 				}
-			}
-			
-			//SET LOCATIONS
-			$locations = wp_get_object_terms( $post->ID, 'location' );
-			if( empty( $locations ) ) {
-				$line .= "\t";
-			} else {
-				$ls = '';
-				foreach( $locations as $l ) {
-					$ls .= ','.htmlspecialchars_decode( $l->name );	
-				}
-				$line .= "\t".substr($ls, 1);
 			}
 
+			// Get application locations and add to the CSV
+			$locations = wp_get_object_terms( $app->ID, 'location' );
+			if ( empty( $locations ) ) {
+				$results[ $app->ID ]['locations'] = '';
+				$row .= "\t";
+			} else {
+				$ls = '';
+				// Locations are returned as an object, grab the name.
+				foreach ( $locations as $l ) {
+					$ls .= ', ' . htmlspecialchars_decode( $l->name );
+				}
+
+				$results[ $app->ID ]['locations'] = substr( $ls, 1 );
+				$row .= "\t" . substr( $ls, 1 );
+			}
 
 			// Set List of Makers
 			$makers = $form['m_maker_name'];
-			if( empty( $makers ) ) {
-				$line .= "\t";
+
+			// $makers can return an array, a single string or empty. Handle them as needed.
+			if ( empty( $makers ) ) {
+				$results[ $app->ID ]['list_of_makers'] = '';
+				$row .= "\t";
 			} else {
 				$ls = '';
+				// Process each maker into a string.
 				foreach( $makers as $maker ) {
-					$ls .= ', '.htmlspecialchars_decode( $maker );
+					$ls .= ', ' . htmlspecialchars_decode( $maker );
 				}
-				$line .= "\t".substr($ls, 2);
+
+				$results[ $app->ID ]['list_of_makers'] = substr( $ls, 2 );
+				$row .= "\t" . substr( $ls, 2 );
 			}
-			$body .= substr( $line, 1)."\r\n";
+			
+			// Take the $row variable we have been feeding each of our applications into in a variable called $body
+			$body .= substr( $row, 1) . "\r\n";
 		}
 
+		// Check if we are using this function to just return an array of our results.
 		if ( $return_array )
-			return $res;
-			
+			return $results;
+		
+		// Get the time this export was ran. This is used in the file name of the CSV
 		$time_offset = time() - ( 3600 * 7 );
-		$this->output_csv( strtoupper( $export_type ).'_APPLICATIONS_'.date('M-d-Y', $time_offset).'_'.date('G-i', $time_offset), $header.$body );
+		
+		// Now that we have everything, return the data.
+		$this->output_csv( strtoupper( $options['filters']['type'] ) . '_APPLICATIONS_' . strtoupper( $options['filters']['faire'] ) . '_' . date( 'M-d-Y', $time_offset ), $header . $body );
 	}
+
+
 	/* 
 	* Associate all posts with EditFlow Data
 	*
@@ -3038,103 +3237,182 @@ class MAKER_FAIRE_FORM {
 
 		return $efterms;
 	}
-	/* 
-	* Gathers and builds the output for all makers
-	*
-	* @access private
-	* =====================================================================*/
-	private function build_maker_export() {
-
-		//NONCE CHECK
-		if ( isset( $_GET['_wpnonce'] ) && !wp_verify_nonce( $_GET['_wpnonce'], 'mf_export_check' ) )
-			return false;
-		//CAP CHECK
-		if ( !current_user_can( 'edit_others_posts' ) )
-			return false;
-			
-		$posts  = $this->get_all_forms();
-		$data   = array();
-		
-		$header = "Firstname\tLastname\tBio\tPhoto\tEmail\tStatus\tType\tID\tProject\tShort Description\tProject Website\tProject Video\tCategories\tTags\tGroup Name\tGroup Bio\tGroup Phone\tGroup Website\tOrganization\tJob Title\tPhone 1\tPhone 1 Type\tPhone 2\tPhone 2 Type\tOnsite Phone\tContact Firstname\tContact Lastname\tContact Email\tCity\tState\tZip\tCountry\r\n";
-		
-		foreach( $posts as $post ) {
-			$form  = (array) json_decode( str_replace( "\'", "'", $post->post_content ) );
-			
-			$fname = substr( $form['name'], 0, strpos( $form['name'], ' ' ) )."\t";
-			$lname = substr( $form['name'], strpos( $form['name'], ' ' ) + 1 )."\t";
-			
-			$line  = $fname.$lname; //FIRSTNAME & LASTNAME
-			$line .= $form[$this->merge_fields( 'user_bio', $form['form_type'] )]."\t"; //BIO
-			$line .= $form[$this->merge_fields( 'form_photo', $form['form_type'] )]."\t"; //PHOTO
-			$line .= $form['email']."\t"; //EMAIL
-			$line .= strtoupper( $post->post_status )."\t"; //STATUS
-			$line .= strtoupper( $form['form_type'] )."\t"; //TYPE
-			$line .= strtoupper( $post->ID )."\t"; //ID
-			$line .= $form[$this->merge_fields( 'project_name', $form['form_type'] )]."\t"; //PROJECT NAME
-			$line .= $form['public_description']."\t"; //SHORT DESCRIPTOIN
-			$line .= $form[$this->merge_fields( 'project_wesbite', $form['form_type'] )]."\t"; //PROJECT WEBSITE
-			$line .= $form[$this->merge_fields( 'project_video', $form['form_type'] )]."\t"; //PROJECT VIDEO
-			$line .= ( isset( $form['categories'] ) && is_array( $form['categories'] ) ? implode( ',', $form['categories'] ) : "" )."\t"; //CATEGORIES
-			$line .= ( isset( $form['tags'] ) && is_array( $form['tags'] ) ? implode( ',', $form['tags'] ) : "" )."\t"; //TAGS
-			//GROUP DATA
-			$line .= ( isset( $form['group_name'] )      ? $form['group_name'] : "" )."\t"; //GROUP NAME
-			$line .= ( isset( $form['group_bio'] )       ? $form['group_bio'] : "" )."\t"; //GROUP BIO
-			$line .= ( isset( $form['group_photo'] )     ? $form['group_photo'] : "" )."\t"; //GROUP PHOTO
-			$line .= ( isset( $form['group_websit'] )    ? $form['group_website'] : "" )."\t"; //GROUP WEBSITE
-			$line .= ( isset( $form['presenter_org'] )   ? $form['presenter_org'] : "" )."\t"; //ORG
-			$line .= ( isset( $form['presenter_title'] ) ? $form['presenter_title'] : "" )."\t"; //JOB TITLE
-			//CONTACT DATA
-			$line .= $form['phone1']."\t"; //PHONE1
-			$line .= $form['phone1_type']."\t"; //PHONE1 TYPE
-			$line .= $form['phone2']."\t"; //PHONE2
-			$line .= $form['phone2_type']."\t"; //PHONE2 TYPE
-			$line .= ( isset( $form['onsite_phone'] ) ? $form['onsite_phone'] : "" )."\t"; //ONESITE PHONE
-			$line .= $fname.$lname; //CONTACT FNAME & CONTACT LNAME
-			$line .= $form['email']."\t"; //CONTACT EMAIL
-			$line .= $form['private_city']."\t"; //CITY
-			$line .= $form['private_state']."\t"; //STATE
-			$line .= $form['private_zip']."\t"; //ZIP
-			$line .= $form['private_country']; //COUNTRY
-			
-			$body .= $line."\r\n";
-			
-			foreach( array( 'exhibit' => 'm_maker_', 'presenter' => 'presenter' ) as $type => $prefix ) {
-			
-				if ( $form['form_type'] == $type && is_array( $form[$prefix.'name'] ) && is_array( $form[$prefix.'email'] ) ) {
-					
-					for( $i = 1; $i < count( $form[$prefix.'name'] ); $i++) {
 	
-						$add_fname = substr( $form[$prefix.'name'][$i], 0, strpos( $form[$prefix.'name'][$i], ' ' ) )."\t";
-						$add_lname = substr( $form[$prefix.'name'][$i], strpos( $form[$prefix.'name'][$i], ' ' ) + 1 )."\t";
-						
-						$add_line  = str_replace( $fname.$lname, $add_fname.$add_lname, $line );						
-						$add_line  = str_replace( $form[$prefix.'email'][$i], $form['email'],  $add_line );
-						
-						$body .= $add_line."\r\n";
+
+	/**
+	 * Exports all Makers in an awesome, fancy, CSV file that you can use to organize Maker Faire. #magic. (Unicorns not included).
+	 * @param  array  $options The array of filters we want to pass to WP_Query like application type, app status, and other fun stuff.
+	 * @return void
+	 */
+	private function build_maker_export( $options = array() ) {
+
+		// Check our nonce
+		if ( isset( $_GET['export_nonce'] ) && ! wp_verify_nonce( $_GET['export_nonce'], 'mf_export_check' ) )
+			return false;
+			
+		// Make sure the user requesting this has the privileges...
+		if ( ! current_user_can( 'edit_others_posts' ) ) 
+			return false;
+
+		// Also ensure that we are passing the variable to trigger our maker export
+		if ( ! isset( $_GET['makers'] ) && ! $_GET['makers'] )
+			return false;
+
+		// Setup some default options
+		$defaults = array(
+			'sort'		  	=> null,
+			'header_titles' => array(),
+			'filters'		=> array(
+				'type' 	  	  => 'all',
+				'post_status' => 'all',
+			),
+		);
+
+		// Parse our options with the defaults
+		$options = wp_parse_args( $options, $defaults );
+
+		// Setup the headers we want
+		$headers = array(
+			'First Name',
+			'Last Name',
+			'Bio',
+			'Photo',
+			'Email',
+			'Status',
+			'Type',
+			'ID',
+			'Project',
+			'Short Description',
+			'Project Website',
+			'Project Video',
+			'Categories',
+			'Tags',
+			'Group Name',
+			'Group Bio',
+			'Group Phone',
+			'Group Website',
+			'Organization',
+			'Job Title',
+			'Phone 1',
+			'Phone 1 Type',
+			'Phone 2',
+			'Phone 2 Type',
+			'Onsite Phone',
+			'Contact First Name',
+			'Contact Last Name',
+			'Contact Email',
+			'City',
+			'State',
+			'Zip',
+			'Country'
+		);
+
+		// Process our headers
+		foreach ( $headers as $header ) {
+			$header_titles .= "{$header}\t";
+		}
+
+		$header_titles .= "\r\n";
+
+
+		// Get our applications
+		$posts   = $this->get_all_forms( $options['sort'], $options['filters']['post_status'], $options['filters'] );
+		$results = array();
+		$body    = '';
+
+		foreach ( $posts as $post ) {
+			$form = (array) json_decode( str_replace( "\'", "'", $post->post_content ) );
+
+			// Break up the maker name by first and last name
+			$firstname = substr( $form['name'], 0, strpos( $form['name'], ' ' ) ) . "\t";
+			$lastname  = substr( $form['name'], strpos( $form['name'], ' ' ) + 1 ) . "\t";
+
+			// Maker's info
+			$row  = $firstname . $lastname; // First and Last name columns
+			$row .= ( ! is_array( $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] ) ? $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] : $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ][0] ) . "\t"; // Maker Bio
+			$row .= $form[ $this->merge_fields( 'form_photo', $form['form_type'] ) ] . "\t"; // Maker Photo
+			$row .= $form['email'] . "\t"; // Maker Email
+			$row .= strtoupper( $post->post_status ) . "\t"; // Application Status
+			$row .= strtoupper( $form['form_type'] ) . "\t"; // Application Type
+			$row .= strtoupper( $post->ID ) . "\t"; // Application ID
+			$row .= $form[ $this->merge_fields( 'project_name', $form['form_type'] ) ] . "\t"; // Application Name
+			$row .= ( $form['form_type'] != 'presenter' ) ? $form['public_description'] . "\t" : $form['short_description'] . "\t"; // Application Short Description
+			$row .= $form[ $this->merge_fields( 'project_website', $form['form_type'] ) ] . "\t"; // Maker Website
+			$row .= $form[ $this->merge_fields( 'project_video', $form['form_type'] ) ] . "\t"; // Maker Video
+			$row .= ( isset( $form['categories'] ) && is_array( $form['categories'] ) ? implode( ', ', $form['categories'] ) : '' ) . "\t"; // Application Categories
+			$row .= ( isset( $form['tags'] ) 	   && is_array( $form['tags'] ) 	  ? implode( ', ', $form['tags'] ) 		 : '' ) . "\t"; // Application Tags
+
+			// Group Data
+			$row .= ( isset( $form['group_name'] ) 		   ? $form['group_name'] 	   			   	   : '' ) . "\t"; // Group Name
+			$row .= ( isset( $form['group_bio'] ) 		   ? $form['group_bio'] 	   			   	   : '' ) . "\t"; // Group Bio
+			$row .= ( isset( $form['group_photo'] ) 	   ? $form['group_photo'] 	   			   	   : '' ) . "\t"; // Group Photo
+			$row .= ( isset( $form['group_website'] ) 	   ? $form['group_website']   				   : '' ) . "\t"; // Group Website
+			$row .= ( is_array( $form['presenter_org'] )   ? implode( ', ', $form['presenter_org'] )   : $form['presenter_org'] ) . "\t"; // Organization
+			$row .= ( is_array( $form['presenter_title'] ) ? implode( ', ', $form['presenter_title'] ) : $form['presenter_title'] ) . "\t"; // Job Title
+
+			// Contact Data
+			$row .= $form['phone1'] . "\t"; // Contact Phone 1
+			$row .= $form['phone1_type'] . "\t"; // Contact Phone 1 Type
+			$row .= $form['phone2'] . "\t"; // Contact Phone 2
+			$row .= $form['phone2_type'] . "\t"; // Contact Phone 2 Type
+			$row .= ( isset( $form['onsite_phone'] ) ? $form['onsite_phone'] : '' ) . "\t"; // Contacts Onsite Phone
+			$row .= $firstname . $lastname; // Contact First and Last Name
+			$row .= $form['email'] . "\t"; // Contact Email
+			$row .= $form['private_city'] . "\t"; // Contact City
+			$row .= $form['private_state'] . "\t"; // Contact Stats
+			$row .= $form['private_zip'] . "\t"; // Contact Zip
+			$row .= $form['private_country']; // Contact Country
+
+			// Contain our entire row into the $body variable
+			$body .= $row . "\r\n";
+			
+			// We need a way to handle and process applications with multiple makers. Let's do that okay?
+			foreach ( array( 'exhibit' => 'm_maker_', 'presenter' => 'presenter' ) as $type => $prefix ) {
+				
+				// Check if the form field contains more than one maker name and email.
+				if ( $form['form_type'] == $type && is_array( $form[ $prefix . 'name' ] ) && is_array( $form[ $prefix . 'email' ] ) ) {
+
+					// Loop through each maker and count them
+					for ( $i = 1; $i < count( $form[ $prefix . 'name' ] ); $i++ ) {
+
+						// Process their first and last name.
+						$add_firstname = substr( $form[ $prefix . 'name' ][ $i ], 0, strpos( $form[ $prefix . 'name' ] [ $i ], ' ' ) ) . "\t";
+						$add_lastname  = substr( $form[ $prefix . 'name'][ $i ], strpos( $form[ $prefix . 'name'][ $i ], ' ' ) ) . "\t";
+
+						// Lets add their credentials to a new row
+						$add_row = str_replace( $firstname . $lastname, $add_firstname . $add_lastname, $row );
+						$add_row = str_replace( $form[ $prefix . 'email'][ $i ], $form['email'], $add_row );
 					}
 				}
 			}
 		}
+
+		// Get the time this export was ran. This is used in the file name of the CSV
 		$time_offset = time() - ( 3600 * 7 );
-		$this->output_csv( 'ALLMAKERS_'.date('M-d-Y', $time_offset).'_'.date('G-i', $time_offset), $header.$body );
+
+		// Process the list makers CSV
+		$this->output_csv( 'ALLMAKERS_' . strtoupper( $options['filters']['faire'] ) . '_' . date( 'M-d-Y', $time_offset ), $header_titles . $body );
 	}
+
+
 	/* 
 	* Gathers and builds the output for EDITORIAL COMMENTS
 	*
 	* @access private
 	* =====================================================================*/
-	private function build_comments_export() {
+	private function build_comments_export( $options ) {
 		
-		//NONCE CHECK
-		if ( isset( $_GET['_wpnonce'] ) && !wp_verify_nonce( $_GET['_wpnonce'], 'mf_export_check' ) )
+		// Check our nonce
+		if ( isset( $_GET['export_nonce'] ) && ! wp_verify_nonce( $_GET['export_nonce'], 'mf_export_check' ) )
 			return false;
-		//CAP CHECK
-		if ( !current_user_can( 'edit_others_posts' ) )
+			
+		// Make sure the user requesting this has the privileges...
+		if ( ! current_user_can( 'edit_others_posts' ) ) 
 			return false;
 		
 		global $wpdb;
  
-		$sql = "SELECT * FROM $wpdb->comments LEFT OUTER JOIN $wpdb->posts ON ($wpdb->comments.comment_post_ID = $wpdb->posts.ID) WHERE  comment_type = 'editorial-comment' AND post_type='mf_form' ORDER BY comment_date_gmt DESC LIMIT 1999";
+		$sql = "SELECT * FROM $wpdb->comments LEFT OUTER JOIN $wpdb->posts ON ($wpdb->comments.comment_post_ID = $wpdb->posts.ID) WHERE comment_type = 'editorial-comment' AND post_type = 'mf_form' ORDER BY comment_date_gmt DESC LIMIT 1999";
  
 		$comments        = $wpdb->get_results( $sql );
 		$output          = "Project ID\tProject Name\tUsers & Groups Flagged\tDate Timestamp\tUser Name\tComment Text\r\n";
@@ -3142,34 +3420,39 @@ class MAKER_FAIRE_FORM {
 		
 		foreach( $comments as $comment ) {
 			
-			if( isset( $following_users[ $comment->ID ] ) ) {
+			// Check that the post has our latest faire term.
+			if ( ! has_term( $options['filters']['faire'], 'faire', $comment->ID ) )
+				continue;
+
+			if ( isset( $following_users[ $comment->ID ] ) ) {
 				$users = $following_users[ $comment->ID ];
 			} else {
 				$users = get_the_terms( $comment->ID, 'following_users' );
 				$following_users[ $comment->ID ] = $users;
 			}
 
-			$user_list = "";
-			foreach( $users as $user ) {
-				$uo = get_user_by( 'login', $user->name );
-				$user_list .= ", ".$uo->display_name;
+			$user_list = '';
+			foreach ( $users as $user ) {
+				$user_name = get_user_by( 'login', $user->name );
+				$user_list .= ", " . $user_name->display_name;
 			}
 			
-			$txt = str_replace( '"', '\'', iconv( "UTF-8", "ISO-8859-1//TRANSLIT", $comment->comment_content ) );
+			$txt = strip_tags( str_replace( '"', "\'", iconv( "UTF-8", "ISO-8859-1//TRANSLIT", $comment->comment_content ) ) );
 
-			$line  = intval( $comment->ID )."\t";
-			$line .= $comment->post_title."\t";
-			$line .= substr( $user_list, 2 )."\t";
-			$line .= $comment->comment_date."\t";
-			$line .= $comment->comment_author."\t";
-			$line .= '"'.$txt."\"\t";
+			$row  = absint( $comment->ID ) . "\t";
+			$row .= $comment->post_title . "\t";
+			$row .= substr( $user_list, 2 ) . "\t";
+			$row .= $comment->comment_date . "\t";
+			$row .= $comment->comment_author . "\t";
+			$row .= '"' . $txt . "\"\t";
 			
-			$output .= $line."\r\n";
+			$output .= $row . "\r\n";
 		}
 
-		$time_offset = time() - ( 3600 * 7 );
-		$this->output_csv( 'EDITORIAL_COMMENTS_'.date('M-d-Y', $time_offset).'_'.date('G-i', $time_offset), $output );
+		$this->output_csv( 'EDITORIAL_COMMENTS_' . strtoupper( $options['filters']['faire'] ) . '_' . date( 'M-d-Y', $time_offset ), $output );
 	}
+
+
 	/* 
 	* Gathers and builds the output for PRESENTER EXPORTS
 	*
@@ -3394,36 +3677,40 @@ class MAKER_FAIRE_FORM {
 	* @param string $status The status of the application
 	* @return array Maker Faire Forms
 	* =====================================================================*/
-	private function get_all_forms( $sort = NULL, $status = 'all', $faire = 'world-maker-faire-new-york-2013' ) {
+	private function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = 'world-maker-faire-new-york-2013' ) {
+
 		$args = array(
 			'posts_per_page' => 1999,
 			'post_type'      => 'mf_form',
-			'faire'			 => $faire
+			'faire'			 => ( isset( $filters['faire'] ) && $filters['faire'] != $faire ) ? sanitize_text_field( $filters['faire'] ) : sanitize_text_field( $faire ),
+			'post_status'	 => ( $app_status != 'all' ) ? sanitize_text_field( $app_status ) : '',
+			'sort'			 => $sort,
+			'type'			 => ( isset( $filters['type'] ) && $filters['type'] != 'all' ) ? sanitize_text_field( $filters['type'] ) : '',
+			'cat'			 => ( isset( $filters['cat'] ) && $filters['cat'] != 0 ) ? absint( $filters['cat'] ) : '',
+			'tag'			 => ( isset( $filters['tag'] ) && $filters['tag'] != 'all' ) ? sanitize_text_field( $filters['tag'] ) : '',
+			'location'		 => ( isset( $filters['location'] ) && $filters['location'] != 'all' ) ? sanitize_text_field( $filters['location'] ) : '',
 		);
 
-		if( $status != 'all' )
-      		$args['post_status'] = esc_attr( $status );
-
-		$ps      = new WP_Query( $args );
-		$posts   = $ps->get_posts();
+		$ps    = new WP_Query( $args );
+		$posts = $ps->get_posts();
 
 		if ( is_null( $sort ) )
 			return $posts;
 
 		$res = array();
 
-		foreach( $posts as $post ) {
+		foreach ( $posts as $post ) {
 			$form = (array) json_decode( str_replace( "\'", "'", $post->post_content ) );
 
-			if ( ! isset( $form[$sort] ) ) {
+			if ( ! isset( $form[ $sort ] ) ) {
 				continue;
 			} elseif ( ! isset( $res[ $form[ $sort ] ] ) ) {
 				$res[ $form[ $sort ] ] = array();
 			}
 
-			foreach( $form as $key => $data ) {
-				if($mkey = $this->merge_fields( $key ) )
-					$form[$mkey] = $data;
+			foreach ( $form as $key => $data ) {
+				if ( $mkey = $this->merge_fields( $key ) )
+					$form[ $mkey ] = $data;
 
 				$form[ $key ] = is_array( $data ) ? implode( ',', $data ) : $data;
 			}
@@ -3432,11 +3719,14 @@ class MAKER_FAIRE_FORM {
 				$form, array(
 					'status'     => $post->post_status,
 					'project_id' => $post->ID
-				) ); 
+				)
+			); 
 		}
 
 		return $res;
 	}
+
+
 	/*
 	* Get all posts that have failed to sync with JDB
 	*
@@ -3550,7 +3840,7 @@ class MAKER_FAIRE_FORM {
 	*
 	* @access private
 	* @param int $id Post id to SYNC
-	* @param string $status Post status
+	* @param string $app_status Post status
 	* =====================================================================*/
 	private function sync_status_jdb( $id = 0, $status = '' ) {
 
