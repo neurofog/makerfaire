@@ -2803,7 +2803,7 @@ class MAKER_FAIRE_FORM {
 						</li>
 						<li>
 							<label for="makers">Makers</label>
-							<input type="checkbox" name="makers" id="makers" value="true" /> Export Maker Names Only
+							<input type="checkbox" name="makers" id="makers" value="true" /> Export Maker Based Report
 						</li>
 						<li style="margin:20px 0;">
 							<input type="submit" class="button button-primary button-large" value="Process Report" />
@@ -2811,8 +2811,8 @@ class MAKER_FAIRE_FORM {
 					</ul>
 				</form>
 
-				<h2 style="margin-top:40px;">Maker Based Reports</h2>
-				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&maker_csv=presenter', 'mf_export_check' ); ?>">Export Maker Based Report</a></h3>
+				<h2 style="margin-top:40px;">Editorial Reports</h2>
+				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&maker_csv=presenter', 'mf_export_check' ); ?>">Export Editorial Comments</a></h3>
 					
 				<h2 style="margin-top:40px;">Presentation Reports</h2>
 				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&presentation_csv=manager', 'mf_export_check' ); ?>">Stage Manager Report</a></h3>
