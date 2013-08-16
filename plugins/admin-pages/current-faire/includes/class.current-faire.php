@@ -78,11 +78,12 @@
 		public $post_status = array(
 			'All'	   	  	   => 'all',
 			'Accepted'         => 'accepted',
-			'Draft' 	  	   => 'draft',
 			'In Progress'      => 'in-progress',
 			'Proposed' 	  	   => 'proposed',
 			'Rejected'         => 'rejected',
+			'Cancelled'		   => 'cancelled',
 			'Waiting for Info' => 'waiting-for-info',
+			'Draft' 	  	   => 'draft',
 		);
 
 
