@@ -1309,16 +1309,16 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	public function update_post( $id ) {
 
-		if ( empty( $_POST ) || ( ! isset( $_POST['mf_form'], $_POST['form_type'] ) && isset( $this->fields[ $_POST['form_type'] ] ) ) || isset( $_POST['mf_updated'] ) )
-			return false;
-
 		// Bail if post is auto-draft/revision/nav-menu item
 		if ( get_post_type( $id ) != 'mf_form' )
 			return false;
 
+		if ( empty( $_POST ) || ( ! isset( $_POST['mf_form'], $_POST['form_type'] ) && isset( $this->fields[ $_POST['form_type'] ] ) ) || isset( $_POST['mf_updated'] ) )
+			return false;
+
 		// Set some variables yo.
 		$form_type  = sanitize_text_field( $_POST['form_type'] );
-		$is_trashed = $_POST['trash-post'];
+		$is_trashed = ( isset( $_POST['trash-post'] ) ) ? $_POST['trash-post'] : '';
 		$r = array(
 			'form_type'   => $form_type,
 			'maker_faire' => sanitize_text_field( $_POST[ $form_type ]['maker_faire'] ),
@@ -1333,10 +1333,9 @@ class MAKER_FAIRE_FORM {
 
 			// Loop through each array in the $s variable
 			foreach ( array_keys( $s ) as $k ) {
-
 				// Check if our data being submitted is in an array first, sanitize and add to the $r array.
 				// Then check if we are passing in a textarea or text field and sanitize those fields accordingly.
-				if ( is_array( $_POST[ $form_type ][ $k ] ) ) {
+				if ( isset( $_POST[ $form_type ][ $k ] ) && is_array( $_POST[ $form_type ][ $k ] ) ) {
 					
 					// Add new keys that are not there by default to the $r array (e.g. m_maker_name, m_maker_email, etc etc)
 					$r[ $k ] = array();
@@ -1350,7 +1349,7 @@ class MAKER_FAIRE_FORM {
 			 		$r[ $k ] = wp_kses_post( nl2br( $_POST[ $form_type ][ $k ] ) );
 				} else {
 					// Sanitize the string in our text fields
-			 		$r[ $k ] = sanitize_text_field( $_POST[ $form_type ][ $k ] );
+					$r[ $k ] = ( isset( $_POST[ $form_type ][ $k ] ) ) ? sanitize_text_field( $_POST[ $form_type ][ $k ] ) : '';
 			 	}
 			}
 
@@ -3797,7 +3796,7 @@ class MAKER_FAIRE_FORM {
 	private function sync_jdb( $id = 0 ) {
 		
 		// Don't sync from ISC server
-		if ( $_SERVER['SERVER_ADDR_NAME'] == 'iscrackweb1' )
+		if ( isset( $_SERVER['SERVER_ADDR_NAME'] ) && $_SERVER['SERVER_ADDR_NAME'] == 'iscrackweb1' )
 			return false;
 	
 		if ( ! $id ) {
