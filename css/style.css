@@ -1,0 +1,55 @@
+/*!
+ * Maker Faire -- Boom
+ */
+.sidebar-bordered {
+  border: 1px solid #d7d7d7;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
+.sidebar-bordered .makey {
+  margin-top: -25px;
+  margin-left: 10px;
+  margin-right: 8px;
+}
+.sidebar-bordered .counter {
+  margin-top: 25px;
+  margin-bottom: 10px;
+}
+.sidebar-bordered h5 {
+  text-align: center;
+  font-size: 14px;
+}
+.sidebar-bordered .center {
+  text-align: center;
+}
+.sidebar-bordered .buy-tickets {
+  text-align: center;
+}
+.sidebar-bordered h3 {
+  color: #464646;
+  margin: 0 20px 10px;
+  font-size: 18px;
+  text-align: center;
+  line-height: 20px;
+}
+.sidebar-bordered #subForm {
+  margin-left: 12px;
+}
+.sidebar-bordered #subForm .btn {
+  margin-top: -1px;
+}
+.sidebar-bordered .bm ul li {
+  margin-right: 5px;
+}
+.sidebar-bordered.sponsored {
+  padding-top: 20px;
+}
+.sidebar-bordered.sponsored h3 {
+  color: #898989;
+}
+.sidebar-bordered.sponsored img {
+  text-align: center;
+}
+.sidebar-bordered.sponsored .zazzle {
+  margin-top: 12px;
+}

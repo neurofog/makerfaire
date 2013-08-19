@@ -1,90 +1,16 @@
-	<div class="span4">
+<div class="span4">
 
-	<div class="home-sidebar">
-		<div class="newsletter">
-			<div class="robot pull-left">
-				<img src="<?php echo get_template_directory_uri(); ?>/images/robot.png"/>
-			</div>
+	<div class="sidebar-bordered">
 
-			<div class="textform pull-right">
-				
-				<h3>Get News and Updates on all Faires and Calls for Makers</h3>
-			
-				<div class="row" style="">
-
-					<form class="form-inline" action="http://makermedia.createsend.com/t/r/s/jjuruj/" method="post" id="subForm"> 
-
-							<script type="text/javascript">
-
-								jQuery(document).ready(function(){
-
-									jQuery('#jjuruj-jjuruj').focus(function() {
-										jQuery('.hide').slideDown('fast').css('margin-left', '20px');
-									});
-
-								});
-
-							</script>
-
-							<div class="hide" style="margin-left:20px;">
-								<div class="control-group" style="margin-top: 5px;">
-									<h3>
-										<label class="control-label" for="inlineCheckboxes">Preferred Faire?</label>
-									</h3>
-									<div class="controls" style="margin-top: -10px;margin-left: 5px;">
-										<h3>
-											<label class="checkbox inline" for="cm188882" style="padding-top: 5px;padding-right: 10px;">
-												<input type="checkbox" name="cm-fo-jdlthk" id="cm188882" value="188882"> Bay Area
-											</label>
-											<label class="checkbox inline">
-												<input type="checkbox" name="cm-fo-jdlthk" id="cm188884" value="188884">New York
-											</label>
-										</h3>
-									</div>
-								</div>
-								<div class="control-group">
-									<div class="controls">
-										<h3 style="margin-left:5px">
-											<label class="checkbox inline" for="cm188888">
-												<input type="checkbox" name="cm-fo-jdliji" id="cm188888" value="188888"> Are you a Maker?
-											</label>
-										</h3>
-									</div>
-								</div>
-							</div>
-						</div>		
-						<div>
-							<input type="text" placeholder="Enter your email" class="span2 small" name="cm-jjuruj-jjuruj" id="jjuruj-jjuruj">
-							<input type="submit" value="Go!" style="margin-bottom:9px;" class="btn btn-danger btn-small">
-						</div>
-					</form>
-			</div>
-		</div> 
-		<div class="clear"></div>
-				
-		<div class="bm">
-			<ul>
-				<li><a href="http://twitter.com/makerfaire"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/twitter1.png" alt="Maker Faire on twitter" /></a></li>
-				<li><a href="http://youtube.com/makerfaire"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/youtube.png" alt="Maker Faire on YouTube" /></a></li>
-				<li><a href="http://www.flickr.com/photos/tags/makerfaire/"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/flickr.png" alt="Maker Faire on Flickr" /></a></li>
-				<li><a href="http://facebook.com/makerfaire"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/facebook.png" alt="Maker Faire on facebook" /></a></li>
-				<li><a href="http://instagram.com/makerfaire"><img src="http://cdn.makezine.com/make/social-icons/instagram-icon-32.png" alt="MAKE on Instagram" height="32" width="32"></a></li>
-				<li><a href="https://google.com/+MAKE/"><img src="http://cdn.makezine.com/make/google-plus-icon.jpg" alt="MAKE on Google+" height="32" width="32"></a></li>
-				<li><a href="http://blog.makezine.com/category/events-3/maker-faire-events/feed/"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/rss.png" alt="Maker Faire News Feed" /></a></li>
-			</ul>
-		</div>
-		
-		<h3 class="countdown-heading">Countdown until World Maker Faire!</h3>
+		<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/mr-makey.png" alt="Mr. Makey" class="makey pull-left">
+		<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/countdown.png" alt="Mr. Makey" class="counter pull-left">
+		<h5>Sept 21 &amp; 22, New York Hall of Science</h5>
 
 		<div class="countdown">
 
 			<script type="text/javascript">
-				// var newYear = new Date(); 
-				// newYear = new Date('2013-05-18 9:00 AM UTC -0800'); 
-				// jQuery('.countdown').countdown({until: newYear });
 
 				jQuery(document).ready(function() {
-					var newYear = new Date();
 					mfba = new Date(2013, 9-1, 21, 9, 00);
 					jQuery('.countdown').countdown({
 						until: mfba,
@@ -98,105 +24,122 @@
 			</script>
 
 		</div>
-		
-		<div style="text-align:center">
-			<a class="" href="http://makerfairenyc.eventbrite.com/">
-				<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/MakerFaire_TicketButton.png" alt="Buy Maker Faire Ticekts">
-			</a>
+
+		<p class="buy-tickets"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/buy-tickets.png" alt="Buy tickets for Maker Faire" class=""></p>
+
+		<hr>
+
+		<h3>Get news and updates on all faires and calls for makers.</h3>
+
+		<form class="form-inline" action="http://makermedia.createsend.com/t/r/s/jjuruj/" method="post" id="subForm"> 
+			<input type="text" placeholder="Enter your email" class="" name="cm-jjuruj-jjuruj" id="jjuruj-jjuruj">
+			<input type="image" src="<?php echo get_stylesheet_directory_uri(); ?>/images/go.png" value="Go!" class="btn">
+		</form>
+
+		<div class="bm">
+			<ul>
+				<li><a href="http://twitter.com/makerfaire"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/twitter1.png" alt="Maker Faire on twitter" /></a></li>
+				<li><a href="http://youtube.com/makerfaire"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/youtube.png" alt="Maker Faire on YouTube" /></a></li>
+				<li><a href="http://www.flickr.com/photos/tags/makerfaire/"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/flickr.png" alt="Maker Faire on Flickr" /></a></li>
+				<li><a href="http://facebook.com/makerfaire"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/facebook.png" alt="Maker Faire on facebook" /></a></li>
+				<li><a href="http://instagram.com/makerfaire"><img src="http://cdn.makezine.com/make/social-icons/instagram-icon-32.png" alt="MAKE on Instagram" height="32" width="32"></a></li>
+				<li><a href="https://google.com/+MAKE/"><img src="http://cdn.makezine.com/make/google-plus-icon.jpg" alt="MAKE on Google+" height="32" width="32"></a></li>
+				<li><a href="http://blog.makezine.com/category/events-3/maker-faire-events/feed/"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/rss.png" alt="Maker Faire News Feed" /></a></li>
+			</ul>
 		</div>
-		
+
 	</div>
 
-	<div>
-		
-		<div class="count">
-		
-			<h3><a class="red" href="http://makerfaire.com/sponsors/">Maker Faire Sponsors</a></h3>
-			<div id="myCarousel" class="carousel slide">
-				<div class="carousel-inner">
-					<?php 
-						$sponsors = get_bookmarks( array( 'orderby' => 'rating' ) );
-						foreach ($sponsors as $idx => $sponsor) {
-							if ( $idx == 0 ) {
-								echo '<div class="item active">';
-							} else {
-								echo '<div class="item">';
-							}
-							echo '<a href="' . esc_url( $sponsor->link_url ) . '"><img src="' . esc_url( $sponsor->link_image ) . '" alt="' . esc_attr( $sponsor->link_name ) . '"></a></div>';
+	<div class="sidebar-bordered sponsored">
+
+		<h3>Presented By</h3>
+
+		<div class="center">
+			<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/disney.png" alt="Disney" class="center">
+		</div>
+
+		<h3>Goldsmith Sponsor</h3>
+
+		<div class="gold center">
+
+			<div class="row-fluid">
+
+				<div class="span6">
+
+					<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/radio-shack.png" alt="Radio Shack">
+
+				</div>
+
+				<div class="span6">
+
+					<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/zazzle.png" alt="Zazzle" class="zazzle">
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<h3>Silversmith Sponsor</h3>
+
+		<div id="myCarousel" class="carousel slide">
+			<div class="carousel-inner">
+				<?php 
+					$sponsors = get_bookmarks( array( 'orderby' => 'rating', 'category_name' => 'Silversmith Sponsor' ) );
+					foreach ($sponsors as $idx => $sponsor) {
+						if ( $idx == 0 ) {
+							echo '<div class="item active">';
+						} else {
+							echo '<div class="item">';
 						}
-					?>
-				</div>
+						echo '<a href="' . esc_url( $sponsor->link_url ) . '"><img src="' . esc_url( $sponsor->link_image ) . '" alt="' . esc_attr( $sponsor->link_name ) . '"></a></div>';
+					}
+				?>
 			</div>
-			
-			<!-- Beginning Sync AdSlot 2 for Ad unit header ### size: [[300,250]]  -->
-			<div id='div-gpt-ad-664089004995786621-2'>
-				<script type='text/javascript'>
-					googletag.cmd.push(function(){googletag.display('div-gpt-ad-664089004995786621-2')});
-				</script>
-			</div>
-			<!-- End AdSlot 2 -->
-		
-			<div class="row" style="margin-top: 10px;">
-
-				<div class="span4" style="text-align:center;">
-					<a href="https://twitter.com/makerfaire" class="twitter-follow-button" data-show-count="false" data-size="large">Follow @makerfaire</a>
-					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-					<a class="twitter-timeline" href="https://twitter.com/search?q=%23makerfaire" data-widget-id="322225978648698880">Tweets about "#makerfaire"</a>
-					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-				</div>
-
-			</div>
-			
-			<?php if ( !is_front_page() ) { ?>
-			
-			<div class="featured">
-			
-				<h3>Upcoming Featured Faires</h3>
-				<div class="row">
-					<div class="span1">
-						<img alt="Maker Faire Rome" src="http://makerfaire.files.wordpress.com/2013/01/rome-mf-sq_logowithtag_logowithtag.gif?w=75" width="75">
-					</div>
-					<div class="span3">
-						<h4 class="smaller"><a href="http://www.makerfairerome.eu/">Maker Faire <small style="color:#0088cc;">Rome</small></a></h4>
-						<ul class="unstyled">
-							<li>Date: October 3<sup>rd</sup> through 6<sup>th</sup>, 2013</li>
-							<li>Palazzo dei Congressi</li>
-							<li>Piazzale Kennedy, 1 Rome</li>
-						</ul>
-					</div>
-				</div>	
-				<div class="row">
-					<div class="span1">
-						<img alt="Maker Faire Tokyo" src="http://makerfaire.files.wordpress.com/2013/05/tokyo-mf-sq_logo.gif?w=75" width="75">
-					</div>
-					<div class="span3">
-						<h4 class="smaller"><a href="http://makezine.jp/">Maker Faire <small style="color:#0088cc;">Tokyo</small></a></h4>
-						<ul class="unstyled">
-							<li>Date: TBD 2013</li>
-							<li>Location: TBD</li>
-						</ul>
-					</div>
-				</div>	
-			</div>
-			
-			<?php } ?>
-			
 		</div>
-	
-		<?php //echo makerfaire_sidebar_news(); ?>
+
+		<h3>Coppersmith Sponsor</h3>
+
+		<div id="myCarousel" class="carousel slide">
+			<div class="carousel-inner">
+				<?php 
+					$sponsors = get_bookmarks( array( 'orderby' => 'rating', 'category_name' => 'Coppersmith Sponsor' ) );
+					foreach ($sponsors as $idx => $sponsor) {
+						if ( $idx == 0 ) {
+							echo '<div class="item active">';
+						} else {
+							echo '<div class="item">';
+						}
+						echo '<a href="' . esc_url( $sponsor->link_url ) . '"><img src="' . esc_url( $sponsor->link_image ) . '" alt="' . esc_attr( $sponsor->link_name ) . '"></a></div>';
+					}
+				?>
+			</div>
 		
-		<!-- Beginning Sync AdSlot 3 for Ad unit header ### size: [[300,250]]  -->
-		<div id='div-gpt-ad-664089004995786621-3'>
-			<script type='text/javascript'>
-				googletag.cmd.push(function(){googletag.display('div-gpt-ad-664089004995786621-3')});
-			</script>
 		</div>
-		<!-- End AdSlot 3 -->
 
 	</div>
 
-	<div class="clear"></div>
+	<!-- Beginning Sync AdSlot 2 for Ad unit header ### size: [[300,250]]  -->
+	<div id='div-gpt-ad-664089004995786621-2'>
+		<script type='text/javascript'>
+			googletag.cmd.push(function(){googletag.display('div-gpt-ad-664089004995786621-2')});
+		</script>
+	</div>
+	<!-- End AdSlot 2 -->
 
-</div>
-		
+	<div class="center">
+		<a href="https://twitter.com/makerfaire" class="twitter-follow-button" data-show-count="false" data-size="large">Follow @makerfaire</a>
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+		<a class="twitter-timeline" href="https://twitter.com/search?q=%23makerfaire" data-widget-id="322225978648698880">Tweets about "#makerfaire"</a>
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+	</div>
+
+	<!-- Beginning Sync AdSlot 3 for Ad unit header ### size: [[300,250]]  -->
+	<div id='div-gpt-ad-664089004995786621-3'>
+		<script type='text/javascript'>
+			googletag.cmd.push(function(){googletag.display('div-gpt-ad-664089004995786621-3')});
+		</script>
+	</div>
+	<!-- End AdSlot 2 -->
+
 </div>

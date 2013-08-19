@@ -2746,7 +2746,7 @@ class MAKER_FAIRE_FORM {
 								<label for="faire">Faire Applications</label>
 								<select name="faire" id="faire">
 									<?php foreach ( $faires as $faire ) : ?>
-										<option value="<?php echo $faire->slug; ?>"><?php echo $faire->name; ?></option>
+										<option value="<?php echo esc_attr( $faire->slug ); ?>"><?php echo esc_html( $faire->name ); ?></option>
 									<?php endforeach; ?>
 								</select>
 							</li>
@@ -2756,7 +2756,7 @@ class MAKER_FAIRE_FORM {
 							<select name="type" id="app-type">
 								<option value="all">All Types</option>
 								<?php foreach ( $app_types as $app_type => $app_value ) : ?>
-									<option value="<?php echo sanitize_text_field( $app_value ); ?>"><?php echo esc_html( $app_type ); ?></option>
+									<option value="<?php echo esc_attr( $app_value ); ?>"><?php echo esc_html( $app_type ); ?></option>
 								<?php endforeach; ?>
 							</select>
 						</li>
@@ -2766,7 +2766,7 @@ class MAKER_FAIRE_FORM {
 								<option value="all">All Statuses</option>
 								<?php foreach ( $wp_post_statuses as $status => $name ) {
 									if ( ! in_array( $status, $disallowed_post_statuses ) )
-										echo '<option value="' . $status . '">' . $name->label . '</option>';
+										echo '<option value="' . esc_attr( $status ) . '">' . esc_attr( $name->label ) . '</option>';
 								} ?>
 							</select>
 						</li>
@@ -2785,7 +2785,7 @@ class MAKER_FAIRE_FORM {
 							<select name="tag" id="tags">
 								<option value="all">All Tags</option>
 								<?php foreach( $tags as $tag ) : ?>
-									<option value="<?php echo sanitize_text_field( $tag->slug ); ?>"><?php echo esc_html( $tag->name ); ?></option>
+									<option value="<?php echo esc_attr( $tag->slug ); ?>"><?php echo esc_html( $tag->name ); ?></option>
 								<?php endforeach; ?>
 							</select>
 						</li>
@@ -2796,7 +2796,7 @@ class MAKER_FAIRE_FORM {
 								<?php foreach ( $locations as $location ) : ?>
 									<?php $location_short_name = substr( $location->name, 0, 2 ); // For MFNY2013 we needed a fast way to separate faire locations. add a_ was the route... for now only display those locations....
 									if ( $location_short_name == 'a_' ) : ?>
-										<option value="<?php echo $location->slug; ?>"><?php echo $location->name; ?></option>
+										<option value="<?php echo esc_attr( $location->slug ); ?>"><?php echo esc_html( $location->name ); ?></option>
 									<?php endif; ?>
 								<?php endforeach; ?>
 							</select>

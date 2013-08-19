@@ -275,13 +275,15 @@ function mf_public_blurb( $json ) {
  * Function to spit out Featured Makers
  */
 add_shortcode( 'featured', 'mf_featured_makers' );
-function mf_featured_makers() {
+function mf_featured_makers( $atts ) {
 	$args = array( 
 		'meta_key'		=> '_ef_editorial_meta_checkbox_featured', 
 		'meta_value'	=> true,
 		'post_type'		=> 'mf_form',
 		'post_status'	=> 'accepted',
+		'faire'			=> 'maker-faire-bay-area-2013'
 		);
+	$args = wp_parse_args( $atts, $args );
 	$query = new WP_Query( $args );
 	$output = '<div id="featuredMakers" class="carousel slide"><div class="carousel-inner">';
 	$i = 1;
