@@ -118,3 +118,10 @@
 #project-id { margin-right:4px; }
 #quickly #project-id-search { float:right; position:relative; top:8px; }
 #quickly #project-id-search .search-error { top:-44px; padding-bottom:6px; }
+
+
+
+/***** Reports *****/
+.reports-form ul { list-style:none; margin:0; padding:0; }
+.reports-form label { display:block; font-size:1.3em; margin:1em 0 .5em; font-weight:600; }
+.reports-form .submit { border-top:1px solid #dfdfdf; margin-top:20px; padding-top:10px; }

@@ -13,18 +13,19 @@ class MAKE_CLI extends WP_CLI_Command {
 	public function copy_category_to_tag( $args, $assoc_args ) {
 
 		$args = array(
-			'posts_per_page' => 1000,
-			'post_type' => 'mf_form',
-			'post_status' => 'any',
+			'posts_per_page'			=> 2000,
+			'post_type'					=> 'mf_form',
+			'post_status'				=> 'any',
+			'faire'						=> $GLOBALS['current_faire'],
 
 			// Prevent new posts from affecting the order
-			'orderby' => 'ID',
-			'order' => 'ASC',
+			'orderby' 					=> 'ID',
+			'order' 					=> 'ASC',
 
 			// Speed this up
 			'no_found_rows' => true,
-			'update_post_meta_cache' => false,
-			'update_post_term_cache' => false,
+			'update_post_meta_cache'	=> false,
+			'update_post_term_cache'	=> false,
 		);
 
 		// Get the first set of posts
@@ -54,7 +55,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					if ( !empty( $result ) ) {
 						WP_CLI::success( $cat );
 					} else {
-						WP_CLI::error( $cat );
+						WP_CLI::warning( $cat );
 					}
 				}
 			}
@@ -76,7 +77,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					if ( !empty( $result ) ) {
 						WP_CLI::success( $tag );
 					} else {
-						WP_CLI::error( $tag );
+						WP_CLI::warning( $tag );
 					}
 				}
 			}
@@ -584,6 +585,44 @@ class MAKE_CLI extends WP_CLI_Command {
 	 * 
 	 */
 	public function mf_delete_makers( $args, $assoc_args ) {
+
+		WP_CLI::line( ' 
+                                                  zee.                      
+        z**=.                                  .P"  $                       
+         %   ^c                               z"   $                        
+          b    %                             d    4"                        
+          4     $            ....           4"    $                         
+           F     L       .P"       "%.      $     $                         
+           $     4     e"             "c    "     $                         
+           $      F  z"                 *  4      $                         
+           P      $ d                    3.$      $                         
+           %      $d       ..eeeec..      *$      \'b                        
+          d       $%   .e$*c d" ".z**$%.   $       $                        
+          F       $  e" $   *F   $   ^F.db.$        b                       
+         J        $d\" ^$   4b   $    $  3/$        *                       
+         $        $*$   $c  P *P" * ."F  .$$         b                      
+        4F        $ $c .EeP""      ^C$$..*F F        $                      
+        J         $ $.*"-"*.      ."    "b$ F        \'r                     
+        $         *"$   zc. ..  -"..-""\  $$%         $                     
+        $          $      ..  L P  ebe    4$          $                     
+        $          ^F   d%*$J%3 $ *$* "   4F          $                     
+        *          4b       @   3 ^r      4$          $                     
+        4          d$.          4         $3.        4F                     
+         L         $$*.                  %$ $        J                      
+         $        d $ $      -   ^.     P $c $       $                      
+          r      z".$L L    .$%..*$    J  $P. *.    d                       
+          "     z" P$$ ^%  z"      ".  L d$$"c "e  z%                       
+           *  .P .*$$$  "*"   .$c        $$$$.b  ^$"                        
+            *$  dL$$$$r ^4. ./" ""%..r"  $$$$$$J$e"                         
+             *$b$$$$$$F        ""        $$$$$$$P                           
+              ^$$$$$$$$                  $$$$$"                             
+                 "*$$$$                  $"                                 
+                      \'                 4                                   
+                       *  $         .$  F                                   
+                        % 4F       .$  "                                    
+                          *$%     .$dr                                      
+                            *.    .*                                        
+                              ".." ' );
 
 		$args = array(
 			'posts_per_page' => 2000,

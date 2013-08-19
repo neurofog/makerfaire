@@ -1,4 +1,9 @@
 <?php
+
+// Set our global Faire Variable. Use the slug of the taxonomy as the value.
+$GLOBALS['current_faire'] = 'world-maker-faire-new-york-2013';
+
+
 require_once( WP_CONTENT_DIR . '/themes/vip/plugins/vip-init.php' );
 
 // include maker-faire-forms plugin
@@ -12,6 +17,16 @@ require_once( __DIR__ . '/post-types/maker.php' );
 
 // Markdown
 include_once dirname(__file__) . '/plugins/markdown/markdown.php';
+
+// Status Board
+include_once dirname(__file__) . '/plugins/status-board/status-board.php';
+
+// Current Faire Page
+include_once dirname( __FILE__ ) . '/plugins/admin-pages/current-faire/current-faire.php';
+
+// Sponsor Carousel
+include_once dirname( __FILE__ ) . '/plugins/public-pages/sponsor.php';
+
 
 require_once( 'taxonomies/type.php' );
 require_once( 'taxonomies/location.php' );
@@ -52,10 +67,16 @@ function make_enqueue_jquery() {
 	wp_enqueue_script( 'make-bootstrap', get_stylesheet_directory_uri() . '/js/bootstrap.js', array( 'jquery' ) );
 	wp_enqueue_script( 'make-countdown', get_stylesheet_directory_uri() . '/js/jquery.countdown.js', array( 'jquery' ) );
 	wp_enqueue_style( 'make-bootstrap', get_stylesheet_directory_uri() . '/css/bootstrap.css' );
+	wp_enqueue_style( 'make-styles', get_stylesheet_directory_uri() . '/css/style.css' );
 	wp_enqueue_style( 'make', get_stylesheet_directory_uri() . '/style.css' );
 }
-
 add_action( 'wp_enqueue_scripts', 'make_enqueue_jquery' );
+
+function make_enqueue_admin_scripts() {
+	if ( get_post_type() == 'mf_form' && is_admin() )
+		wp_enqueue_script( 'make-custom-post-lock', get_stylesheet_directory_uri() . '/js/expand-post-edit.js', array( 'jquery' ) );
+}
+add_action( 'admin_enqueue_scripts', 'make_enqueue_admin_scripts' );
 
 
 function makerfaire_get_news() {
@@ -365,11 +386,71 @@ function mf_hide_faires( $query ) {
 			array(
 				'taxonomy'	=> 'faire',
 				'field'		=> 'slug',
-				'terms'		=> 'maker-faire-bay-area-2013',
-				'operator'	=> 'NOT IN',
+				'terms'		=> 'world-maker-faire-new-york-2013',
+				'operator'	=> 'IN',
 			)
 		);
 		$query->set( 'tax_query', $tax_query );
 	}
 }
+
 // add_action( 'pre_get_posts', 'mf_hide_faires' );
+
+
+
+/**
+ * Counts the post numbers for the Dashboard.
+ */
+function mf_add_magazine_article_counts() {
+		if ( !post_type_exists( 'mf_form' ) ) {
+			 return;
+		}
+
+		$num_posts = wp_count_posts( 'mf_form' );
+		$num = number_format_i18n( $num_posts->accepted );
+		$text = _n( 'Application', 'Applications', intval($num_posts->accepted) );
+		if ( current_user_can( 'edit_posts' ) ) {
+			$url = admin_url( 'edit.php?post_type=mf_form' );
+			$num = '<a href="'.$url.'">'.$num.'</a>';
+			$text = '<a href="'.$url.'">'.$text.'</a>';
+		}
+		echo '<td class="first b b-mf_form">' . $num . '</td>';
+		echo '<td class="t mf_form">' . $text . '</td>';
+
+		echo '</tr>';
+
+		if ($num_posts->proposed > 0) {
+			$num = number_format_i18n( $num_posts->proposed );
+			$text = _n( 'Applications Pending', 'Applications Pending', intval($num_posts->proposed) );
+			if ( current_user_can( 'edit_posts' ) ) {
+				$url = admin_url( 'edit.php?post_status=proposed&post_type=mf_form' );
+				$num = '<a href="' . $url . '">' . $num . '</a>';
+				$text = '<a href="' . $url . '">' . $text . '</a>';
+			}
+			echo '<td class="first b b-recipes">' . $num . '</td>';
+			echo '<td class="t recipes">' . $text . '</td>';
+
+			echo '</tr>';
+		}
+}
+
+add_action('right_now_content_table_end', 'mf_add_magazine_article_counts');
+
+function mf_send_hipchat_notification( $message = 'Default Message', $from = 'MakeBot' ) {
+	$base 		= 'https://api.hipchat.com/v1/rooms/message';
+	$auth_token = '9f4f9113e8eeb3754da520d295ca59';
+	$room 		= 198932;
+	$notify 	= 1;
+
+	$opts = array( 
+		'auth_token'=> $auth_token, 
+		'room_id'	=> $room, 
+		'from' 		=> $from, 
+		'notify' 	=> $notify,
+		'message'	=> urlencode( $message ),
+		'color'		=> 'green'
+	);
+
+	$url = add_query_arg( $opts, $base );
+	$json = wpcom_vip_file_get_contents( $url );
+}

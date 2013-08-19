@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Bay Area 2013 Makers
+ * Template Name: New York 2013 Makers
  */
 get_header(); ?>
 
@@ -14,7 +14,7 @@ get_header(); ?>
 			
 			<div class="page-header">
 				
-				<h1><?php the_title(); ?> <small>Maker Faire Bay Area 2013</small></h1>	
+				<h1><?php the_title(); ?> <small>World Maker Faire New York 2013</small></h1>	
 				
 			</div>
 			
@@ -29,19 +29,19 @@ get_header(); ?>
 				'order'			=> 'asc',
 				'posts_per_page'=> 20,
 				'paged'			=> $paged,
-				'faire'			=> 'maker-faire-bay-area-2013',
+				'faire'			=> 'world-maker-faire-new-york-2013',
 			);
-			$my_query = new WP_Query($args);
+			$query = new WP_Query( $args );
 
-			if($my_query->have_posts()):
-				while($my_query->have_posts()):$my_query->the_post();
+			if( $query->have_posts() ):
+				while($query->have_posts()):$query->the_post();
 					the_mf_content();
 					echo '<hr>';
 				endwhile;
 			?>
 			<ul class="pager">
-				<li class="previous"><?php previous_posts_link('&larr; Previous Page', $my_query->max_num_pages); ?></li>
-				<li class="next"><?php next_posts_link('Next Page &rarr;', $my_query->max_num_pages); ?></li>
+				<li class="previous"><?php previous_posts_link('&larr; Previous Page', $query->max_num_pages); ?></li>
+				<li class="next"><?php next_posts_link('Next Page &rarr;', $query->max_num_pages); ?></li>
 			</ul>
 			<?php endif; ?>
 			<?php wp_reset_query(); ?>

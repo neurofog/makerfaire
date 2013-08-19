@@ -275,13 +275,15 @@ function mf_public_blurb( $json ) {
  * Function to spit out Featured Makers
  */
 add_shortcode( 'featured', 'mf_featured_makers' );
-function mf_featured_makers() {
+function mf_featured_makers( $atts ) {
 	$args = array( 
 		'meta_key'		=> '_ef_editorial_meta_checkbox_featured', 
 		'meta_value'	=> true,
 		'post_type'		=> 'mf_form',
 		'post_status'	=> 'accepted',
+		'faire'			=> 'maker-faire-bay-area-2013'
 		);
+	$args = wp_parse_args( $atts, $args );
 	$query = new WP_Query( $args );
 	$output = '<div id="featuredMakers" class="carousel slide"><div class="carousel-inner">';
 	$i = 1;
@@ -541,17 +543,17 @@ function mf_schedule( $atts ) {
 			'meta_query' => array(
 				array(
 					'key' 	=> 'mfei_day',
-					'value'	=> 'Saturday'
-			   )
-			)
-			);
+					'value'	=> 'Saturday',
+				),
+			),
+		);
 		$query = new WP_Query( $args );
 		wp_cache_set( $location . '_saturday_schedule', $query, '', 300 );
 	}
 
 	$output .= '<table class="table table-striped table-bordered">';
 	while ( $query->have_posts() ) : $query->the_post();
-		$meta = get_post_meta( get_the_ID());
+		$meta = get_post_meta( get_the_ID() );
 		$sched_post = get_post( $meta['mfei_record'][0] );
 		$json = json_decode( mf_convert_newlines( str_replace( "\'", "'", $sched_post->post_content ) ) );
 		$day = ($meta['mfei_day'][0]) ? $meta['mfei_day'][0] : '' ;
@@ -588,6 +590,9 @@ function mf_schedule( $atts ) {
 		if (!empty($json->public_description)) {
 			$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) ;
 		}
+
+		if ( ! empty( $meta['mfei_coverage'][0] ) )
+			$output .= '<p><a href="' . esc_url( $meta['mfei_coverage'][0] ) . '" class="btn btn-mini btn-primary">Watch Video</a></p>';
 		// $output .= '<ul class="unstyled">';
 		// $terms = get_the_terms( $sched_post->ID, array( 'category', 'post_tag' ) );
 		// if (!empty($terms)) {
@@ -661,6 +666,9 @@ function mf_schedule( $atts ) {
 			
 			$output .= Markdown( wp_kses_post( $content_clean ) ) ;
 		}
+		
+		if ( ! empty( $meta['mfei_coverage'][0] ) )
+			$output .= '<p><a href="' . esc_url( $meta['mfei_coverage'][0] ) . '" class="btn btn-mini btn-primary">Watch Video</a></p>';
 		// $output .= '<ul class="unstyled">';
 		// $terms = get_the_terms( $sched_post->ID, array( 'category', 'post_tag' ) );
 		// if (!empty($terms)) {
@@ -711,7 +719,7 @@ function mf_get_scheduled_item( $the_ID ) {
 	if ($query->found_posts >= 1 ) {
 		// Set a variable we can use to see if Saturday events were found for the Sunday query
 		$has_saturday_events = true;
-		$output .= '<thead><tr class="info"><td><strong>Day</strong></td><td><strong>Start Time</strong></td><td><strong>End Time</strong></td><td><strong>Locations</strong></td></tr></thead><tbody>';
+		$output .= '<thead><tr class="info"><td><strong>Day</strong></td><td><strong>Start Time</strong></td><td><strong>End Time</strong></td><td><strong>Locations</strong></td><td><strong>Video Coverage</strong></td></tr></thead><tbody>';
 		while ( $query->have_posts() ) : $query->the_post();
 			$meta = get_post_meta( get_the_ID());
 			$sched_post = get_post( $meta['mfei_record'][0] );
@@ -719,11 +727,17 @@ function mf_get_scheduled_item( $the_ID ) {
 			$day = ($meta['mfei_day'][0]) ? $meta['mfei_day'][0] : '' ;
 			$start = ($meta['mfei_start'][0]) ? $meta['mfei_start'][0] : '' ;
 			$stop = ($meta['mfei_stop'][0]) ? $meta['mfei_stop'][0] : '' ;
+			$coverage = ( !empty( $meta['mfei_coverage'][0] ) ) ? $meta['mfei_coverage'][0] : '';
 			$output .= '<tr>';
 			$output .= '<td>' . esc_html( $day ) . '</td>';
 			$output .= '<td>' . esc_html( $start ) . '</td>';
 			$output .= '<td>' . esc_html( $stop ) . '</td>';
 			$output .= '<td>' . get_the_term_list( get_the_ID(), 'location' ) . '</td>';
+			if ( ! empty( $coverage ) ) {
+				$output .= '<td><a href="' . esc_url( $coverage ) . '" class="btn btn-mini btn-primary">Watch Video</a></td>';
+			} else {
+				$output .= '<td>No Video Available</td>';
+			}
 			$output .= '</tr>';
 		endwhile;
 	}
@@ -751,8 +765,9 @@ function mf_get_scheduled_item( $the_ID ) {
 		wp_cache_set( $the_ID . '_sunday_schedule', $query, '', 300 );
 	}
 	if ($query->found_posts >= 1 ) {
-		if ( ! isset( $has_saturday_events ) )
-			$output .= '<thead><tr class="info"><td><strong>Day</strong></td><td><strong>Start Time</strong></td><td><strong>End Time</strong></td><td><strong>Location</strong></td></tr></thead><tbody>';
+		if ( ! isset( $has_saturday_events ) ) {
+			$output .= '<thead><tr class="info"><td><strong>Day</strong></td><td><strong>Start Time</strong></td><td><strong>End Time</strong></td><td><strong>Locations</strong></td><td><strong>Video Coverage</strong></td></tr></thead><tbody>';
+		}
 		while ( $query->have_posts() ) : $query->the_post();
 			$meta = get_post_meta( get_the_ID());
 			$sched_post = get_post( $meta['mfei_record'][0] );
@@ -760,11 +775,17 @@ function mf_get_scheduled_item( $the_ID ) {
 			$day = ($meta['mfei_day'][0]) ? $meta['mfei_day'][0] : '' ;
 			$start = ($meta['mfei_start'][0]) ? $meta['mfei_start'][0] : '' ;
 			$stop = ($meta['mfei_stop'][0]) ? $meta['mfei_stop'][0] : '' ;
+			$coverage = ($meta['mfei_coverage'][0]) ? $meta['mfei_coverage'][0] : '';
 			$output .= '<tr>';
 			$output .= '<td>' . esc_html( $day ) . '</td>';
 			$output .= '<td>' . esc_html( $start ) . '</td>';
 			$output .= '<td>' . esc_html( $stop ) . '</td>';
 			$output .= '<td>' . get_the_term_list( get_the_ID(), 'location' ) . '</td>';
+			if ( ! empty( $coverage ) ) {
+				$output .= '<td><a href="' . esc_url( $coverage ) . '" class="btn btn-mini btn-primary">Watch Video</a></td>';
+			} else {
+				$output .= '<td>No Video Available</td>';
+			}
 			$output .= '</tr>';
 		endwhile;
 	}

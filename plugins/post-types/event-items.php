@@ -61,6 +61,25 @@ function event_items_updated_messages( $messages ) {
 add_filter( 'post_updated_messages', 'event_items_updated_messages' );
 
 
+/**
+ * Function to generate a mailto: link with the presentation details.
+ */
+
+function mf_schedule_mailto( $meta ) {
+	$linked_post = get_post( $meta['mfei_record'][0] );
+	$json = json_decode( $linked_post->post_content );
+	$loc = get_the_terms( $linked_post->ID, 'location' );
+	$email = esc_url( 'mailto:' . $json->email );
+	$subject = '?&subject=Event+Scheduled: ' . esc_attr( $linked_post->post_title );
+	$body = rawurlencode(
+		"Event: " . esc_attr( $linked_post->post_title ) . "\n" .
+		"Start Time: " . esc_attr( $meta['mfei_start'][0] ) . "\n" .
+		"End Time: " . esc_attr( $meta['mfei_stop'][0] ) . "\n" .
+		"Location: " . esc_attr( $loc[0]->name ) .  "\n" );
+	$url = add_query_arg( array( 'subject' => $subject ),  $email );
+	$url = add_query_arg( array( 'body' => $body ), $url );
+	echo '<p><a href="' . $url . '" class="button" target="_blank">Email Presenter Schedule</a></p>';
+}
 
 /* 
 * Callback for adding meta box to EVENT ITEM
@@ -76,16 +95,16 @@ function makerfaire_add_meta_boxes() {
 function makerfaire_meta_box( $post ) {
 	
 	$meta = array(
-		'mfei_day'    => 'Saturday',
-		'mfei_start'  => '8:00 AM',
-		'mfei_stop'   => '8:30 AM',
-		'mfei_record' => ''
+		'mfei_day'    	=> 'Saturday',
+		'mfei_start'  	=> '8:00 AM',
+		'mfei_stop'   	=> '8:30 AM',
+		'mfei_record' 	=> '',
+		'mfei_coverage'	=> '',
 	);
 	
 	if( $post->post_status == 'publish' ) 
-		$meta = get_post_custom( $post->ID );
+		$meta = get_post_custom( $post->ID ); ?>
 
-	?>
 	<style>#ei-details label{font-weight:bold; display:block; margin:15px 0 5px 0;} #ei-details select,#ei-details input[type=text]{width:200px}</style>
 	<?php wp_nonce_field('mfei_nonce', 'mfei_submit_nonce'); ?>
 	<label>Day</label>
@@ -101,6 +120,8 @@ function makerfaire_meta_box( $post ) {
 	<select name="mfei_stop">
 		<?php makerfaire_create_time( $meta['mfei_stop'][0] ); ?>
 	</select>
+	<label>Coverage Video Link</label>
+	<input type="text" name="mfei_coverage" id="mfei_coverage" value="<?php echo ( !empty( $meta['mfei_coverage'][0] ) ) ? esc_url ( $meta['mfei_coverage'][0] ) : ''; ?>" />
 	<label>Record Number - MUST BE VALID APPLICATION ID</label>
 	<?php
 		// Check if we are loading from a referring post and add that ID to our Record field
@@ -115,9 +136,11 @@ function makerfaire_meta_box( $post ) {
 	<input name="mfei_schedule_completed" type="checkbox" value="1" /> &nbsp; Event is Scheduled
 	<script>		
 		jQuery( '#ei-details a' ).click( function() {
-			window.open('/wp-admin/post.php?post='+ jQuery( '#mfei_record' ).val() +'&action=edit', '_blank');
+			window.open('/wp-admin/post.php?post=' + jQuery( '#mfei_record' ).val() + '&action=edit', '_blank');
 		});
 	</script>
+	<?php mf_schedule_mailto( $meta ); ?>
+	
 <?php	
 }
 /* 
@@ -164,7 +187,8 @@ function makerfaire_update_event( $id ) {
 		'mfei_day'    => sanitize_text_field( $_POST['mfei_day'] ),
 		'mfei_start'  => sanitize_text_field( $_POST['mfei_start'] ),
 		'mfei_stop'   => sanitize_text_field( $_POST['mfei_stop'] ),
-		'mfei_record' => $is_mf_form ? intval( $_POST['mfei_record'] ) : 0
+		'mfei_record' => $is_mf_form ? intval( $_POST['mfei_record'] ) : 0,
+		'mfei_coverage' => esc_url( $_POST['mfei_coverage'] ),
 	);
 
 	foreach( $meta as $meta_key => $meta_value ) {
@@ -347,7 +371,7 @@ add_filter( 'request', 'makerfaire_columns_orderby' );
 * Add Location Taxonomy filter to posts
 * =====================================================================*/
 function makerfaire_manage_posts() {
-	
+	$location = ( !empty( $_GET['location'] ) ) ? intval( $_GET['location'] ) : '';
 	if( !isset( $_GET['post_type'] ) || $_GET['post_type'] != 'event-items' )
 		return;
 	
@@ -355,7 +379,7 @@ function makerfaire_manage_posts() {
 		'show_option_all' => "View All Locations",
 		'taxonomy'        => 'location',
 		'name'            => 'location',
-		'selected'        => intval( $_GET['location'] ),
+		'selected'        => $location,
 	);
 	wp_dropdown_categories($args); 
 	echo '<style>select[name="m"]{display:none}</style>';
@@ -370,7 +394,7 @@ add_action('restrict_manage_posts','makerfaire_manage_posts');
  * Need a way to filter all of the different types of applications in the admin area.
  *
  */
-function mf_restrict_listings_by_type() {
+function mf_restrict_listings_by_type( $type ) {
 	global $typenow;
 	global $wp_query;
 
@@ -379,11 +403,11 @@ function mf_restrict_listings_by_type() {
 			array(
 				'walker'			=> new SH_Walker_TaxonomyDropdown(),
 				'value'				=> 'slug',
-				'show_option_all'	=> 'View All Types',
+				'show_option_all'	=> 'Types',
 				'taxonomy'			=> 'type',
 				'name'				=> 'type',
 				'orderby'			=> 'name',
-				'selected'			=> ( !empty( $wp_query->query['type'] ) ) ? $wp_query->query['type'] : '',
+				'selected'			=> $type,
 				'hierarchical'		=> true,
 				'hide_empty'		=> false
 				)
@@ -462,4 +486,21 @@ class SH_Walker_TaxonomyDropdown extends Walker_CategoryDropdown{
 		$output .= "</option>\n";
 		}
 
+}
+
+/**
+ * Wrapper for wp_dropdown_categories to easily add new dropdowns.
+ */
+function mf_generate_dropdown( $tax, $selected ) {
+	wp_dropdown_categories(
+		array(
+			'show_option_all'	=> ( $tax == 'post_tag' ) ? 'Tag' : ucwords( $tax ),
+			'taxonomy'			=> $tax,
+			'orderby'			=> 'name',
+			'selected'			=> $selected,
+			'hierarchical'		=> true,
+			'hide_empty'		=> false,
+			'name'				=> $tax,
+			)
+	);	
 }

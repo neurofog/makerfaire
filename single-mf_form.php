@@ -30,7 +30,7 @@ get_header(); ?>
 
 					<?php
 						if ($json->form_type == 'exhibit') {
-							echo mf_location( get_the_ID() );
+							// echo mf_location( get_the_ID() );
 						}
 					?>
 					

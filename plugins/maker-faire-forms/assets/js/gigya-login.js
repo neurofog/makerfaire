@@ -91,13 +91,13 @@ function mf_is_loggedin(o)
 
 				// Check if we are on a certain date or have passed
 				var now = new Date();
-				var end_date = new Date( '2013-08-01' ); // Set the end date here - YYYY-MM-DD
+				var end_date = new Date( '2013-08-04' ); // Set the end date here - YYYY-MM-DD
 
 
 				for(i in r.forms) {
 					for(j in r.forms[i]) {
 
-						// Check if the date right now is before our end date, 'August 1st, 2013', or else close the forms
+						// Check if the date right now is before our end date, 'August 4th, 2013', or else close the forms
 						if ( now.getTime() < end_date.getTime() ) {
 							append = '<li><a href="/'+i+'form/?id='+j+'">'+j+' - '+r.forms[i][j]['post_title']+' ('+r.forms[i][j]['post_status']+')</a></li>';
 						} else {
