@@ -1048,7 +1048,7 @@ h6.letter {
 	display:inline;
 }
 .home-page .bulleted li:after, .home-page .bulleted-after:after {
-	content: " •";
+	content: " \2022";
 	font-size:30px;
 	color:#ed1c24;
 	position:relative;
