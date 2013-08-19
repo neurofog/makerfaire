@@ -25,7 +25,7 @@
 
 		</div>
 
-		<p class="buy-tickets"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/buy-tickets.png" alt="Buy tickets for Maker Faire" class=""></p>
+		<p class="buy-tickets"><a href="http://makerfairenyc.eventbrite.com/"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/buy-tickets.png" alt="Buy tickets for Maker Faire" class=""></a></p>
 
 		<hr>
 
