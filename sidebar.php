@@ -84,17 +84,7 @@
 
 		<div id="myCarousel" class="carousel slide">
 			<div class="carousel-inner">
-				<?php 
-					$sponsors = get_bookmarks( array( 'orderby' => 'rating', 'category_name' => 'Silversmith Sponsor' ) );
-					foreach ($sponsors as $idx => $sponsor) {
-						if ( $idx == 0 ) {
-							echo '<div class="item active">';
-						} else {
-							echo '<div class="item">';
-						}
-						echo '<a href="' . esc_url( $sponsor->link_url ) . '"><img src="' . esc_url( $sponsor->link_image ) . '" alt="' . esc_attr( $sponsor->link_name ) . '"></a></div>';
-					}
-				?>
+				<?php mf_sponsor_carousel( 'Silversmith Sponsor' ); ?>
 			</div>
 		</div>
 
@@ -102,17 +92,7 @@
 
 		<div id="myCarousel" class="carousel slide">
 			<div class="carousel-inner">
-				<?php 
-					$sponsors = get_bookmarks( array( 'orderby' => 'rating', 'category_name' => 'Coppersmith Sponsor' ) );
-					foreach ($sponsors as $idx => $sponsor) {
-						if ( $idx == 0 ) {
-							echo '<div class="item active">';
-						} else {
-							echo '<div class="item">';
-						}
-						echo '<a href="' . esc_url( $sponsor->link_url ) . '"><img src="' . esc_url( $sponsor->link_image ) . '" alt="' . esc_attr( $sponsor->link_name ) . '"></a></div>';
-					}
-				?>
+				<?php mf_sponsor_carousel( 'Coppersmith Sponsor' ); ?>
 			</div>
 		
 		</div>

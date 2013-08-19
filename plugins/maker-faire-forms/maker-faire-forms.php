@@ -505,7 +505,7 @@ class MAKER_FAIRE_FORM {
 	public function add_meta_boxes() {
 		global $post;
 
-		if ( $post->post_status != 'auto-draft' ) {
+		if ( isset( $post->post_status ) && ( $post->post_status != 'auto-draft' ) ) {
 			add_meta_box( 'mf_summary',   'Summary',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 			add_meta_box( 'mf_summary',   'Summary',   array( &$this, 'meta_box' ), 'maker', 'normal', 'default' );
 			add_meta_box( 'mf_details',   'Details',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
@@ -522,7 +522,7 @@ class MAKER_FAIRE_FORM {
 		add_meta_box( 'mf_save', 'Edit Application', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
 		add_meta_box( 'mf_logs', 'Status Changes &amp; Notifications Sent', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 
-		if ( $post->post_status != 'auto-draft' )
+		if ( isset( $post->post_status ) && ( $post->post_status != 'auto-draft' ) )
 			add_meta_box( 'mf_maker', 'Maker Info', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
 	}
 

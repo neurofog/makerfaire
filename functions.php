@@ -24,6 +24,9 @@ include_once dirname(__file__) . '/plugins/status-board/status-board.php';
 // Current Faire Page
 include_once dirname( __FILE__ ) . '/plugins/admin-pages/current-faire/current-faire.php';
 
+// Sponsor Carousel
+include_once dirname( __FILE__ ) . '/plugins/public-pages/sponsor.php';
+
 
 require_once( 'taxonomies/type.php' );
 require_once( 'taxonomies/location.php' );
