@@ -1227,8 +1227,13 @@ class MAKER_FAIRE_FORM {
 			<input name="<?php echo esc_attr( $type . '[' . $key . '][0]' ); ?>" value="<?php echo esc_attr( isset( $all_data[ $key ][0] ) ? $all_data[ $key ][0] : '' ); ?>" type="text" />
 			</td></tr>
 			<?php foreach( $init_fields[ $key ] as $fn ) : 
-				$data = is_array( $all_data[ $fn ] ) && isset( $all_data[ $fn ][0] ) ? $all_data[ $fn ][0] : ''; 
-				$data = is_string( $all_data[ $fn ][0] ) ? $all_data[ $fn ][0] : '';
+				if ( is_array( $all_data[ $fn ] ) && isset( $all_data[ $fn ][0] ) ) {
+					$data = $all_data[ $fn ][0]; 
+				} elseif ( is_string( $all_data[ $fn ] ) ) {
+					$data = $all_data[ $fn ]; 
+				} else {
+					$data = '';
+				}
 
 				if ( ( $fn == 'm_maker_gigyaid' || $fn == 'presenter_gigyaid' ) && $data == '' && isset( $all_data['uid'] ) )
 					$data = $all_data['uid']; ?>
