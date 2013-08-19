@@ -84,7 +84,7 @@
 
 		<div id="myCarousel" class="carousel slide">
 			<div class="carousel-inner">
-				<?php mf_sponsor_carousel( 'Silversmith Sponsor' ); ?>
+				<?php echo mf_sponsor_carousel( 'Silversmith Sponsor' ); ?>
 			</div>
 		</div>
 
@@ -92,7 +92,7 @@
 
 		<div id="myCarousel" class="carousel slide">
 			<div class="carousel-inner">
-				<?php mf_sponsor_carousel( 'Coppersmith Sponsor' ); ?>
+				<?php echo mf_sponsor_carousel( 'Coppersmith Sponsor' ); ?>
 			</div>
 		
 		</div>
@@ -100,7 +100,7 @@
 	</div>
 
 	<!-- Beginning Sync AdSlot 2 for Ad unit header ### size: [[300,250]]  -->
-	<div id='div-gpt-ad-664089004995786621-2'>
+	<div id='div-gpt-ad-664089004995786621-2' class="adblock">
 		<script type='text/javascript'>
 			googletag.cmd.push(function(){googletag.display('div-gpt-ad-664089004995786621-2')});
 		</script>
@@ -115,7 +115,7 @@
 	</div>
 
 	<!-- Beginning Sync AdSlot 3 for Ad unit header ### size: [[300,250]]  -->
-	<div id='div-gpt-ad-664089004995786621-3'>
+	<div id='div-gpt-ad-664089004995786621-3' class="adblock">
 		<script type='text/javascript'>
 			googletag.cmd.push(function(){googletag.display('div-gpt-ad-664089004995786621-3')});
 		</script>

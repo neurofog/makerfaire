@@ -53,3 +53,9 @@
 .sidebar-bordered.sponsored .zazzle {
   margin-top: 12px;
 }
+.sidebar-bordered .thumb {
+  text-align: center;
+}
+.sidebar-bordered .adblock {
+  margin-bottom: 20px;
+}
