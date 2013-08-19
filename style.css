@@ -401,11 +401,11 @@ header {
 	}
 	
 .tagline {	
-	margin-top:15px;
+	margin-top:10px;
 	color:#2e3b58;
-	text-align:center;
 	font-size:14px;
 	font-family: georgia, serif;
+	margin-bottom: 0px;
 	}
 	
 header .container {

@@ -24,6 +24,9 @@ include_once dirname(__file__) . '/plugins/status-board/status-board.php';
 // Current Faire Page
 include_once dirname( __FILE__ ) . '/plugins/admin-pages/current-faire/current-faire.php';
 
+// Sponsor Carousel
+include_once dirname( __FILE__ ) . '/plugins/public-pages/sponsor.php';
+
 
 require_once( 'taxonomies/type.php' );
 require_once( 'taxonomies/location.php' );
@@ -64,6 +67,7 @@ function make_enqueue_jquery() {
 	wp_enqueue_script( 'make-bootstrap', get_stylesheet_directory_uri() . '/js/bootstrap.js', array( 'jquery' ) );
 	wp_enqueue_script( 'make-countdown', get_stylesheet_directory_uri() . '/js/jquery.countdown.js', array( 'jquery' ) );
 	wp_enqueue_style( 'make-bootstrap', get_stylesheet_directory_uri() . '/css/bootstrap.css' );
+	wp_enqueue_style( 'make-styles', get_stylesheet_directory_uri() . '/css/style.css' );
 	wp_enqueue_style( 'make', get_stylesheet_directory_uri() . '/style.css' );
 }
 add_action( 'wp_enqueue_scripts', 'make_enqueue_jquery' );
