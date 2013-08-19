@@ -105,7 +105,7 @@ Topbar
 			
 		</div>
 
-		<p class="tagline"><strong><em>A family-friendly festival of invention, creativity and resourcefulness, and a celebration of the Maker movement.</em></strong></p>
+		<p class="tagline"><a href="http://disney.com"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/disney.png" alt="Disney"></a></p>
 		
 			<div class="row">
 			
