@@ -1090,7 +1090,7 @@ class MAKER_FAIRE_FORM {
 			),
 			'length_presentation' => array(
 				'12 minutes', 
-				'20 minutes', 
+				'25 minutes', 
 				'45 minutes',
 			),
 		);
