@@ -1221,6 +1221,8 @@ class MAKER_FAIRE_FORM {
 					'presenter_onsite_phone',
 					'presenter_org',
 					'presenter_title',
+					'presenter_twitter',
+					'presenter_previous',
 				)
 			); ?>
 		
@@ -1277,17 +1279,24 @@ class MAKER_FAIRE_FORM {
 				);
 
 				for ( $i = 1; $i < count( $all_data[ $key ] ); $i++ ) : 
-					foreach( $add_fields[ $key ] as $fkey => $ftitle ) : ?>
+					foreach( $add_fields[ $key ] as $fkey => $ftitle ) : 
+						if ( is_array( $all_data[ $fkey ] ) && isset( $all_data[ $fkey ][0] ) ) {
+							$data = $all_data[ $fkey ][0]; 
+						} elseif ( is_string( $all_data[ $fkey ] ) ) {
+							$data = $all_data[ $fkey ]; 
+						} else {
+							$data = '';
+						} ?>
 						<tr class="mf-form-row add-maker">
 							<td valign="top"><?php echo esc_html( $ftitle ); ?>:</td>
 
 							<?php if ( $fkey == 'm_maker_bio' || $fkey == 'presenter_bio' ) : ?>
 								<td>
-									<textarea name="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" id="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" cols="30" rows="10"><?php echo esc_attr( isset( $all_data[ $fkey ][ $i ] ) ? $all_data[ $fkey ][ $i ] : '' ); ?></textarea>
+									<textarea name="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" id="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" cols="30" rows="10"><?php echo esc_attr( $data ); ?></textarea>
 								</td>
 							<?php else : ?>
 								<td>
-									<input name="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" value="<?php echo esc_attr( isset( $all_data[ $fkey ][ $i ] ) ? $all_data[ $fkey ][ $i ] : '' ); ?>" type="text" />
+									<input name="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" value="<?php echo esc_attr( $data ); ?>" type="text" />
 								</td>
 							<?php endif; ?>
 						</tr>
