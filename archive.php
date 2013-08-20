@@ -10,7 +10,7 @@
 			
 			<div class="page-header">
 				
-				<h1><?php echo single_cat_title(); ?> <small>Maker Faire Bay Area 2013</h1>	
+				<h1><?php echo single_cat_title(); ?></h1>	
 				
 			</div>
 			
