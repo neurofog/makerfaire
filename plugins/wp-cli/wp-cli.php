@@ -135,446 +135,499 @@ class MAKE_CLI extends WP_CLI_Command {
 	 * Add makers to the maker custom post type from mf_form
 	 *
 	 * @subcommand makers
+	 * @synopsis [--faire=<faire>]
 	 * 
 	 */
 	public function mf_create_makers( $args, $assoc_args ) {
+		global $mfform;
 
-		$faire_slug = 'maker-faire-bay-area-2013';
-		$args = array(
-			'posts_per_page' => 2000,
-			'post_type' => 'mf_form',
-			'post_status' => 'accepted',
+		WP_CLI::line( 'Fetching Maker Faire Appliactions...' );
 
-			// Prevent new posts from affecting the order
-			'orderby' => 'ID',
-			'order' => 'ASC',
+		$applications = $mfform->get_all_forms( NULL, 'all' );
 
-			// Get our latest applications in the "faire" taxonomy
-			'tax_query' => array(
-				array(
-					'taxonomy' => 'faire',
-					'field' => 'slug',
-					'terms' => $faire_slug,
-				)
-			),
+		foreach( $applications as $app ) {
+			$content = (array) json_decode( str_replace( "\'", "'", $app->post_content ) );
 
-			// Speed this up
-			'no_found_rows' => true,
-			'update_post_meta_cache' => false,
-			'update_post_term_cache' => false,
-		);
+			// print_r($content[ $mfform->merge_fields( 'user_bio', $content['form_type'] ) ][0]);
+			// Setup a new array based on our application ID.
+			$app_type = $content['form_type'];
+			$title = $content['name'];
+			$content = ( is_array( $content[ $mfform->merge_fields( 'user_bio', $content['form_type'] ) ] ) ) ? $content[ $mfform->merge_fields( 'user_bio', $content['form_type'] ) ][0] : $content[ $mfform->merge_fields( 'user_bio', $content['form_type'] ) ];
+			$email = $content['email'];
+			$photo = $content[ $mfform->merge_fields( 'form_photo', $content['form_type'] ) ];
+			$website = $content[ $mfform->merge_fields( 'project_website', $content['form_type'] ) ];
+			$video = $content[ $mfform->merge_fields( 'project_video', $content['form_type'] ) ];
 
-		// Get the first set of posts
-		$query = new WP_Query( $args );
+			foreach ( array( 'exhibit' => 'm_maker_', 'presenter' => 'presenter' ) as $type => $prefix ) {
+				
+				// Check if the form field contains more than one maker name and email.
+				if ( $content['form_type'] == $type && is_array( $content[ $prefix . 'name' ] ) && is_array( $content[ $prefix . 'email' ] ) ) {
 
-		if ( isset( $query ) && ! empty( $query ) )
-			WP_CLI::line( 'Fetching Latest Maker Faire Appliactions...' );
+					// Loop through each maker and count them
+					for ( $i = 1; $i < count( $content[ $prefix . 'name' ] ); $i++ ) {
+
+						// Process their first and last name.
+						$add_name = $content[ $prefix . 'name' ][ $i ];
+
+						// Lets add their credentials to a new row
+						$add_maker = str_replace( $title, $add_name, $title );
+						$add_maker = str_replace( $email, $content[ $prefix . 'email'][ $i ], $add_maker );
+					}
+				}
+			}
 
 
-		// Do this.
-		while ( $query->have_posts() ) : $query->the_post();
+			WP_CLI::line( ' | APP TYPE: ' . $app_type );
+			WP_CLI::line( ' | APP ID: ' . $app->ID );
+			WP_CLI::line( ' | NAME: ' . $title );
+			WP_CLI::line( ' | EMAIL: ' . $email );
+			WP_CLI::line( ' | PHOTO: ' . $photo );
+			WP_CLI::line( ' | WEBSITE: ' . $website );
+			WP_CLI::line( ' | VIDEO: ' . $video );
+
+			// Leave some evidence we are done with this application.
+			WP_CLI::line( ' ----------------------------------------' );
+			WP_CLI::line( '' );
+		}
+
+		// var_dump($makers);
+
+		// $faire_slug = 'maker-faire-bay-area-2013';
+		// $args = array(
+		// 	'posts_per_page' => 2000,
+		// 	'post_type' => 'mf_form',
+		// 	'post_status' => 'accepted',
+
+		// 	// Prevent new posts from affecting the order
+		// 	'orderby' => 'ID',
+		// 	'order' => 'ASC',
+
+		// 	// Get our latest applications in the "faire" taxonomy
+		// 	'tax_query' => array(
+		// 		array(
+		// 			'taxonomy' => 'faire',
+		// 			'field' => 'slug',
+		// 			'terms' => $faire_slug,
+		// 		)
+		// 	),
+
+		// 	// Speed this up
+		// 	'no_found_rows' => true,
+		// 	'update_post_meta_cache' => false,
+		// 	'update_post_term_cache' => false,
+		// );
+
+		// // Get the first set of posts
+		// $query = new WP_Query( $args );
+
+		// if ( isset( $query ) && ! empty( $query ) )
+		// 	WP_CLI::line( 'Fetching Latest Maker Faire Appliactions...' );
+
+
+		// // Do this.
+		// while ( $query->have_posts() ) : $query->the_post();
 		
-			global $post;
+		// 	global $post;
 			
-			setup_postdata( $post );
-			$bad   = array( '&amp;', '&#8211;', '&#8230;', );
-			$good  = array( '&',	 '–',       '…',       );
+		// 	setup_postdata( $post );
+		// 	$bad   = array( '&amp;', '&#8211;', '&#8230;', );
+		// 	$good  = array( '&',	 '–',       '…',       );
 
-			// Get our applications
-			$app   = json_decode( $post->post_content );
-			$type  = ( isset( $app->form_type ) ) ? $app->form_type : 'null';
+		// 	// Get our applications
+		// 	$app   = json_decode( $post->post_content );
+		// 	$type  = ( isset( $app->form_type ) ) ? $app->form_type : 'null';
 
-			// Setup a array of messages
-			$messages = array(
-				'errors'  => array(),
-				'success' => array(),
-			);
+		// 	// Setup a array of messages
+		// 	$messages = array(
+		// 		'errors'  => array(),
+		// 		'success' => array(),
+		// 	);
 
-			// Use a switch to easily check for all the different application types
-			switch ( $type ) {
+		// 	// Use a switch to easily check for all the different application types
+		// 	switch ( $type ) {
 
-				// If the application is an "exhibit", get the info we need.
-				case 'exhibit' :
-					$app_type = 'Exhibit';
+		// 		// If the application is an "exhibit", get the info we need.
+		// 		case 'exhibit' :
+		// 			$app_type = 'Exhibit';
 
-					// Check what kind of maker we have; a single, a list, or a group. Return their email.
-					switch ( $app->maker ) {
+		// 			// Check what kind of maker we have; a single, a list, or a group. Return their email.
+		// 			switch ( $app->maker ) {
 
-						// A single maker
-						case 'One maker' :
+		// 				// A single maker
+		// 				case 'One maker' :
 
-							$maker_type  = 'One Maker';
-							$maker_email = ( isset( $app->maker_email ) ) ? $app->maker_email : $app->email;
-							$maker_name  = ( isset( $app->maker_name ) )  ? $app->maker_name  : $app->name;
-							$maker_photo = ( isset( $app->maker_photo ) ) ? $app->maker_photo : $app->project_photo;
-							$maker_bio   = ( isset( $app->maker_bio ) )   ? $app->maker_bio   : $app->public_description;
+		// 					$maker_type  = 'One Maker';
+		// 					$maker_email = ( isset( $app->maker_email ) ) ? $app->maker_email : $app->email;
+		// 					$maker_name  = ( isset( $app->maker_name ) )  ? $app->maker_name  : $app->name;
+		// 					$maker_photo = ( isset( $app->maker_photo ) ) ? $app->maker_photo : $app->project_photo;
+		// 					$maker_bio   = ( isset( $app->maker_bio ) )   ? $app->maker_bio   : $app->public_description;
 
-							break;
+		// 					break;
 
-						// A list of makers
-						case 'A list of makers' :
+		// 				// A list of makers
+		// 				case 'A list of makers' :
 
-							$maker_type  = 'A List of Makers';
-							$num_makers  = count( $app->m_maker_name );
-							$maker_email = array();
-							$maker_name  = array();
-							$maker_photo = array();
-							$maker_bio   = array();
+		// 					$maker_type  = 'A List of Makers';
+		// 					$num_makers  = count( $app->m_maker_name );
+		// 					$maker_email = array();
+		// 					$maker_name  = array();
+		// 					$maker_photo = array();
+		// 					$maker_bio   = array();
 							
-							// Let's loop through all of our makers in one shot shall we?
-							for ( $i = 0; $i < $num_makers; $i++ ) {
+		// 					// Let's loop through all of our makers in one shot shall we?
+		// 					for ( $i = 0; $i < $num_makers; $i++ ) {
 								
-								// Get our maker email. Some applicants have empty fields, default to the main contact
-								if ( $app->m_maker_email[ $i ] != '' ) {
-									$maker_email[] = $app->m_maker_email[ $i ];
-								} else {
-									$maker_email   = $app->email;
-								}
+		// 						// Get our maker email. Some applicants have empty fields, default to the main contact
+		// 						if ( $app->m_maker_email[ $i ] != '' ) {
+		// 							$maker_email[] = $app->m_maker_email[ $i ];
+		// 						} else {
+		// 							$maker_email   = $app->email;
+		// 						}
 
-								// Get our maker name. Some applicants have empty fields, default to the main contact
-								if ( $app->m_maker_name[ $i ] != '' ) {
-									$maker_name[] = $app->m_maker_name[ $i ];
-								} else {
-									$maker_name   = $app->name;
-								}
+		// 						// Get our maker name. Some applicants have empty fields, default to the main contact
+		// 						if ( $app->m_maker_name[ $i ] != '' ) {
+		// 							$maker_name[] = $app->m_maker_name[ $i ];
+		// 						} else {
+		// 							$maker_name   = $app->name;
+		// 						}
 
-								// Get our maker photo. Again, Some applicants have empty fields, default to the main contact
-								if ( $app->m_maker_photo[ $i ] != '' ) {
-									$maker_photo = $app->m_maker_photo[ $i ];
-								} else {
-									$maker_photo = $app->project_photo;
-								}
+		// 						// Get our maker photo. Again, Some applicants have empty fields, default to the main contact
+		// 						if ( $app->m_maker_photo[ $i ] != '' ) {
+		// 							$maker_photo = $app->m_maker_photo[ $i ];
+		// 						} else {
+		// 							$maker_photo = $app->project_photo;
+		// 						}
 
-								// Get our maker bio.
-								if ( $app->m_maker_bio[ $i ] != '' ) {
-									$maker_bio = $app->m_maker_bio[ $i ];
-								} else {
-									$maker_bio = $app->public_description;
-								}
+		// 						// Get our maker bio.
+		// 						if ( $app->m_maker_bio[ $i ] != '' ) {
+		// 							$maker_bio = $app->m_maker_bio[ $i ];
+		// 						} else {
+		// 							$maker_bio = $app->public_description;
+		// 						}
 
-							}
+		// 					}
 
-							break;
+		// 					break;
 
-						// A group of makers
-						case 'A group or association' :
+		// 				// A group of makers
+		// 				case 'A group or association' :
 
-							$maker_type  = 'A Group or Association';
-							$maker_email = $app->email; // Since the group option doens't have a "Group Email" field, we'll just grab the main applicants emails
-							$maker_name  = $app->group_name;
-							$maker_bio   = $app->group_bio;
+		// 					$maker_type  = 'A Group or Association';
+		// 					$maker_email = $app->email; // Since the group option doens't have a "Group Email" field, we'll just grab the main applicants emails
+		// 					$maker_name  = $app->group_name;
+		// 					$maker_bio   = $app->group_bio;
 
-							break;
-					}
+		// 					break;
+		// 			}
 
-					// Get our makers website URL
-					if ( isset( $app->project_website ) && ! empty( $app->project_website ) )
-						$maker_website = $app->project_website;
+		// 			// Get our makers website URL
+		// 			if ( isset( $app->project_website ) && ! empty( $app->project_website ) )
+		// 				$maker_website = $app->project_website;
 
-					// Get our makers video URL
-					if ( isset( $app->project_video ) && ! empty( $app->project_video ) )
-						$maker_video = $app->project_video; 
+		// 			// Get our makers video URL
+		// 			if ( isset( $app->project_video ) && ! empty( $app->project_video ) )
+		// 				$maker_video = $app->project_video; 
 
-					break;
+		// 			break;
 
-				// If the application is an "presenter", get the info we need.
-				case 'presenter' :
-					$app_type = 'Presenter';
+		// 		// If the application is an "presenter", get the info we need.
+		// 		case 'presenter' :
+		// 			$app_type = 'Presenter';
 					
-					// Check our presentation type; Presentation or Panel Presentation. Really, either presentation type holds the same data...
-					// We'll just create unique values for the $maker_type variable and process the rest as the same.
-					switch ( $app->presentation_type ) {
+		// 			// Check our presentation type; Presentation or Panel Presentation. Really, either presentation type holds the same data...
+		// 			// We'll just create unique values for the $maker_type variable and process the rest as the same.
+		// 			switch ( $app->presentation_type ) {
 
-						// Presentation 
-						case 'Presentation' :
-							$maker_type = 'Presentation';
+		// 				// Presentation 
+		// 				case 'Presentation' :
+		// 					$maker_type = 'Presentation';
 
-							break;
+		// 					break;
 							
-						// Panel Presentation
-						case 'Panel Presentation' :
-							$maker_type = 'Panel Presentation';
+		// 				// Panel Presentation
+		// 				case 'Panel Presentation' :
+		// 					$maker_type = 'Panel Presentation';
 
-							break;
+		// 					break;
 
-					}
+		// 			}
 
-					$num_makers  = count( $app->presenter_email );
-					$maker_email = array();
-					$maker_name  = array();
-					$maker_photo = array();
-					$maker_bio   = array();
+		// 			$num_makers  = count( $app->presenter_email );
+		// 			$maker_email = array();
+		// 			$maker_name  = array();
+		// 			$maker_photo = array();
+		// 			$maker_bio   = array();
 					
-					// Let's loop through all of our makers in one shot shall we?
-					for ( $i = 0; $i < $num_makers; $i++ ) {
-						WP_CLI::line( $i );
+		// 			// Let's loop through all of our makers in one shot shall we?
+		// 			for ( $i = 0; $i < $num_makers; $i++ ) {
+		// 				WP_CLI::line( $i );
 						
-						// Get our maker email. Some applicants have empty fields, default to the main contact
-						if ( $app->presenter_email[ $i ] != '' ) {
-							$maker_email[] = $app->presenter_email[ $i ];
-						} else {
-							$maker_email   = $app->email;
-						}
+		// 				// Get our maker email. Some applicants have empty fields, default to the main contact
+		// 				if ( $app->presenter_email[ $i ] != '' ) {
+		// 					$maker_email[] = $app->presenter_email[ $i ];
+		// 				} else {
+		// 					$maker_email   = $app->email;
+		// 				}
 
-						// Get our maker name. Some applicants have empty fields, default to the main contact
-						if ( $app->presenter_name[ $i ] != '' ) {
-							$maker_name[] = $app->presenter_name[ $i ];
-						} else {
-							$maker_name   = $app->name;
-						}
+		// 				// Get our maker name. Some applicants have empty fields, default to the main contact
+		// 				if ( $app->presenter_name[ $i ] != '' ) {
+		// 					$maker_name[] = $app->presenter_name[ $i ];
+		// 				} else {
+		// 					$maker_name   = $app->name;
+		// 				}
 
-						// Get our maker photo. Again, Some applicants have empty fields, default to the main contact
-						if ( $app->presenter_photo[ $i ] != '' ) {
-							$maker_photo = $app->presenter_photo[ $i ];
-						} else {
-							$maker_photo = $app->presentation_photo;
-						}
+		// 				// Get our maker photo. Again, Some applicants have empty fields, default to the main contact
+		// 				if ( $app->presenter_photo[ $i ] != '' ) {
+		// 					$maker_photo = $app->presenter_photo[ $i ];
+		// 				} else {
+		// 					$maker_photo = $app->presentation_photo;
+		// 				}
 
-						// Get our maker bio.
-						if ( $app->presenter_bio[ $i ] != '' ) {
-							$maker_bio = $app->presenter_bio[ $i ];
-						} else {
-							$maker_bio = $app->public_description;
-						}
+		// 				// Get our maker bio.
+		// 				if ( $app->presenter_bio[ $i ] != '' ) {
+		// 					$maker_bio = $app->presenter_bio[ $i ];
+		// 				} else {
+		// 					$maker_bio = $app->public_description;
+		// 				}
 
-					}
+		// 			}
 
-					break;
+		// 			break;
 
-				// Lastly, we'll process the performer applications
-				case 'performer' :
-					$app_type = 'Performer';
+		// 		// Lastly, we'll process the performer applications
+		// 		case 'performer' :
+		// 			$app_type = 'Performer';
 
-					$maker_type  = 'Performer';
-					$maker_email = ( isset( $app->performer_name ) ) 	 ? $app->performer_name 	: $app->name;
-					$maker_name  = ( isset( $app->name ) )				 ? $app->name  				: '';
-					$maker_photo = ( isset( $app->performer_photo ) )    ? $app->performer_photo 	: '';
-					$maker_bio   = ( isset( $app->public_description ) ) ? $app->public_description : '';
+		// 			$maker_type  = 'Performer';
+		// 			$maker_email = ( isset( $app->performer_name ) ) 	 ? $app->performer_name 	: $app->name;
+		// 			$maker_name  = ( isset( $app->name ) )				 ? $app->name  				: '';
+		// 			$maker_photo = ( isset( $app->performer_photo ) )    ? $app->performer_photo 	: '';
+		// 			$maker_bio   = ( isset( $app->public_description ) ) ? $app->public_description : '';
 
-					// Get our makers website URL
-					if ( isset( $app->performer_website ) && ! empty( $app->performer_website ) )
-						$maker_website = $app->performer_website;
+		// 			// Get our makers website URL
+		// 			if ( isset( $app->performer_website ) && ! empty( $app->performer_website ) )
+		// 				$maker_website = $app->performer_website;
 
-					// Get our makers video URL
-					if ( isset( $app->performer_video ) && ! empty( $app->performer_video ) )
-						$maker_video = $app->performer_video; 
-
-
-					break;
+		// 			// Get our makers video URL
+		// 			if ( isset( $app->performer_video ) && ! empty( $app->performer_video ) )
+		// 				$maker_video = $app->performer_video; 
 
 
-			}
+		// 			break;
 
-			// str_replace( $bad, $good, $nothing );
-			// 
-			// Now that we have all of our delicious Maker info. Let's add them to our Maker Custom Post Type...
-			// First, we need to deal with the application with multiple makers. If an array exists, loop through them and add each as an individual post.
-			// Use email as our main key to pair and loop.
-			if ( is_array( $maker_email ) ) {
 
-				$num_makers = count( $maker_email );
+		// 	}
 
-				// Loop through each maker
-				for ( $i = 0; $i < $num_makers; $i++ ) {
+		// 	// str_replace( $bad, $good, $nothing );
+		// 	// 
+		// 	// Now that we have all of our delicious Maker info. Let's add them to our Maker Custom Post Type...
+		// 	// First, we need to deal with the application with multiple makers. If an array exists, loop through them and add each as an individual post.
+		// 	// Use email as our main key to pair and loop.
+		// 	if ( is_array( $maker_email ) ) {
 
-					// Check if the maker already exists. Use wpcom_vip_get_page_by_title() as this is more performant and the non wpcom_vip_* function
-					$maker = wpcom_vip_get_page_by_title( $maker_name[ $i ], OBJECT, 'maker' );
+		// 		$num_makers = count( $maker_email );
 
-					if ( ! $maker ) {
+		// 		// Loop through each maker
+		// 		for ( $i = 0; $i < $num_makers; $i++ ) {
 
-						// Create our post
-						$maker_post = array(
-							'post_title'    => esc_attr( $maker_name[ $i ] ),
-							'post_content'  => wp_kses_post( $maker_bio[ $i ] ),
-							'post_status'   => 'publish',
-							'post_type'		=> 'maker',
-							'tax_input'     => array(
-								'faire' => array(
-									$faire_slug
-								)
-							),
-						);
+		// 			// Check if the maker already exists. Use wpcom_vip_get_page_by_title() as this is more performant and the non wpcom_vip_* function
+		// 			$maker = wpcom_vip_get_page_by_title( $maker_name[ $i ], OBJECT, 'maker' );
 
-						// Create our post and save it's info to a variable for use in adding post meta and error checking
-						$maker_id = wp_insert_post( $maker_post );
+		// 			if ( ! $maker ) {
 
-						// Cheack if everything went well when creating our post
-						( is_wp_error( $maker_id ) ) ? $messages['errors'][] .= 'MAKER CREATION FAILED' : $messages['success'][] .= 'MAKER CREATED';
+		// 				// Create our post
+		// 				$maker_post = array(
+		// 					'post_title'    => esc_attr( $maker_name[ $i ] ),
+		// 					'post_content'  => wp_kses_post( $maker_bio[ $i ] ),
+		// 					'post_status'   => 'publish',
+		// 					'post_type'		=> 'maker',
+		// 					'tax_input'     => array(
+		// 						'faire' => array(
+		// 							$faire_slug
+		// 						)
+		// 					),
+		// 				);
 
-						// Add the maker email
-						( update_post_meta( $maker_id, 'email', $maker_email[ $i ] ) )   ? $messages['success'][] .= 'Email Saved'    : $messages['errors'][] .= 'Email Not Saved';
+		// 				// Create our post and save it's info to a variable for use in adding post meta and error checking
+		// 				$maker_id = wp_insert_post( $maker_post );
 
-						// Add the maker photo
-						( update_post_meta( $maker_id, 'photo', $maker_photo[ $i ] ) )   ? $messages['success'][] .= 'Photo Saved'    : $messages['errors'][] .= 'Photo Not Saved';
+		// 				// Cheack if everything went well when creating our post
+		// 				( is_wp_error( $maker_id ) ) ? $messages['errors'][] .= 'MAKER CREATION FAILED' : $messages['success'][] .= 'MAKER CREATED';
 
-						// Add the maker website
-						( update_post_meta( $maker_id, 'website', $maker_website ) )     ? $messages['success'][] .= 'Website Saved'  : $messages['errors'][] .= 'Website Not Saved';
+		// 				// Add the maker email
+		// 				( update_post_meta( $maker_id, 'email', $maker_email[ $i ] ) )   ? $messages['success'][] .= 'Email Saved'    : $messages['errors'][] .= 'Email Not Saved';
 
-						// Add the maker video
-						( update_post_meta( $maker_id, 'video', $maker_video ) )         ? $messages['success'][] .= 'Video Saved'    : $messages['errors'][] .= 'Video Not Saved';
+		// 				// Add the maker photo
+		// 				( update_post_meta( $maker_id, 'photo', $maker_photo[ $i ] ) )   ? $messages['success'][] .= 'Photo Saved'    : $messages['errors'][] .= 'Photo Not Saved';
 
-						// Add the MF Event ID
-						( add_post_meta( $maker_id, 'mfei_record', $post->ID ) )         ? $messages['success'][] .= 'Event ID Saved' : $messages['errors'][] .= 'Event ID Not Saved';
+		// 				// Add the maker website
+		// 				( update_post_meta( $maker_id, 'website', $maker_website ) )     ? $messages['success'][] .= 'Website Saved'  : $messages['errors'][] .= 'Website Not Saved';
 
-						// Add the Faire Slug
-						( add_post_meta( $maker_id, 'maker_faire', $faire_slug, true ) ) ? $messages['success'][] .= 'MF Saved'       : $messages['errors'][] .= 'MF Not Saved';
-					} else {
+		// 				// Add the maker video
+		// 				( update_post_meta( $maker_id, 'video', $maker_video ) )         ? $messages['success'][] .= 'Video Saved'    : $messages['errors'][] .= 'Video Not Saved';
 
-						// Since our post already exists, we should return it's ID so we can update
-						$maker_id = $maker->ID;
+		// 				// Add the MF Event ID
+		// 				( add_post_meta( $maker_id, 'mfei_record', $post->ID ) )         ? $messages['success'][] .= 'Event ID Saved' : $messages['errors'][] .= 'Event ID Not Saved';
 
-						// Cheack if everything went well when creating our post
-						( is_wp_error( $maker_id ) ) ? $messages['errors'][] .= 'MAKER UPDATE FAILED' : $messages['success'][] .= 'MAKER UPDATED';
+		// 				// Add the Faire Slug
+		// 				( add_post_meta( $maker_id, 'maker_faire', $faire_slug, true ) ) ? $messages['success'][] .= 'MF Saved'       : $messages['errors'][] .= 'MF Not Saved';
+		// 			} else {
 
-						// Add the maker email
-						( update_post_meta( $maker_id, 'email', $maker_email[ $i ] ) )   ? $messages['success'][] .= 'Email Updated'    : $messages['errors'][] .= 'Email Not Updated';
+		// 				// Since our post already exists, we should return it's ID so we can update
+		// 				$maker_id = $maker->ID;
 
-						// Add the maker photo
-						( update_post_meta( $maker_id, 'photo', $maker_photo[ $i ] ) )   ? $messages['success'][] .= 'Photo Updated'    : $messages['errors'][] .= 'Photo Not Updated';
+		// 				// Cheack if everything went well when creating our post
+		// 				( is_wp_error( $maker_id ) ) ? $messages['errors'][] .= 'MAKER UPDATE FAILED' : $messages['success'][] .= 'MAKER UPDATED';
 
-						// Add the maker website
-						( update_post_meta( $maker_id, 'website', $maker_website ) )     ? $messages['success'][] .= 'Website Updated'  : $messages['errors'][] .= 'Website Not Updated';
+		// 				// Add the maker email
+		// 				( update_post_meta( $maker_id, 'email', $maker_email[ $i ] ) )   ? $messages['success'][] .= 'Email Updated'    : $messages['errors'][] .= 'Email Not Updated';
 
-						// Add the maker video
-						( update_post_meta( $maker_id, 'video', $maker_video ) )         ? $messages['success'][] .= 'Video Updated'    : $messages['errors'][] .= 'Video Not Updated';
+		// 				// Add the maker photo
+		// 				( update_post_meta( $maker_id, 'photo', $maker_photo[ $i ] ) )   ? $messages['success'][] .= 'Photo Updated'    : $messages['errors'][] .= 'Photo Not Updated';
 
-						// Add the MF Event ID
-						( add_post_meta( $maker_id, 'mfei_record', $post->ID ) )         ? $messages['success'][] .= 'Event ID Updated' : $messages['errors'][] .= 'Event ID Not Updated';
+		// 				// Add the maker website
+		// 				( update_post_meta( $maker_id, 'website', $maker_website ) )     ? $messages['success'][] .= 'Website Updated'  : $messages['errors'][] .= 'Website Not Updated';
 
-						// Add the Faire Slug
-						( add_post_meta( $maker_id, 'maker_faire', $faire_slug, true ) ) ? $messages['success'][] .= 'MF Updated'       : $messages['errors'][] .= 'MF Not Updated';
-					}
+		// 				// Add the maker video
+		// 				( update_post_meta( $maker_id, 'video', $maker_video ) )         ? $messages['success'][] .= 'Video Updated'    : $messages['errors'][] .= 'Video Not Updated';
 
-					// Show the output of what we just did.
-					if ( isset( $messages ) && is_array( $messages ) ) {
-						foreach ( $messages['errors'] as $errors ) {
-							WP_CLI::warning( $errors );
-						}
+		// 				// Add the MF Event ID
+		// 				( add_post_meta( $maker_id, 'mfei_record', $post->ID ) )         ? $messages['success'][] .= 'Event ID Updated' : $messages['errors'][] .= 'Event ID Not Updated';
 
-						foreach ( $messages['success'] as $success ) {
-							WP_CLI::success( $success );
-						}
-					}
-					WP_CLI::line( ' | APP TYPE: ' . $app_type );
-					WP_CLI::line( ' | APP ID: ' . $post->ID );
-					WP_CLI::line( ' | MAKER ID: ' . $maker_id );
-					WP_CLI::line( ' | TYPE: ' . $maker_type );
-					WP_CLI::line( ' | NAME: ' . $maker_name[ $i ] );
-					WP_CLI::line( ' | EMAIL: ' . $maker_email[ $i ] );
-					WP_CLI::line( ' | PHOTO: ' . $maker_photo[ $i ] );
-					WP_CLI::line( ' | WEBSITE: ' . $maker_website );
-					WP_CLI::line( ' | VIDEO: ' . $maker_video );
-					WP_CLI::line( ' | FAIRE: ' . $faire_slug );
+		// 				// Add the Faire Slug
+		// 				( add_post_meta( $maker_id, 'maker_faire', $faire_slug, true ) ) ? $messages['success'][] .= 'MF Updated'       : $messages['errors'][] .= 'MF Not Updated';
+		// 			}
 
-					// Leave some evidence we are done with this application.
-					WP_CLI::line( ' ----------------------------------------' );
-					WP_CLI::line( '' );
-				}
-			} 
+		// 			// Show the output of what we just did.
+		// 			if ( isset( $messages ) && is_array( $messages ) ) {
+		// 				foreach ( $messages['errors'] as $errors ) {
+		// 					WP_CLI::warning( $errors );
+		// 				}
 
-			// Process applications that are NOT a group of makers.
-			else {
+		// 				foreach ( $messages['success'] as $success ) {
+		// 					WP_CLI::success( $success );
+		// 				}
+		// 			}
+		// 			WP_CLI::line( ' | APP TYPE: ' . $app_type );
+		// 			WP_CLI::line( ' | APP ID: ' . $post->ID );
+		// 			WP_CLI::line( ' | MAKER ID: ' . $maker_id );
+		// 			WP_CLI::line( ' | TYPE: ' . $maker_type );
+		// 			WP_CLI::line( ' | NAME: ' . $maker_name[ $i ] );
+		// 			WP_CLI::line( ' | EMAIL: ' . $maker_email[ $i ] );
+		// 			WP_CLI::line( ' | PHOTO: ' . $maker_photo[ $i ] );
+		// 			WP_CLI::line( ' | WEBSITE: ' . $maker_website );
+		// 			WP_CLI::line( ' | VIDEO: ' . $maker_video );
+		// 			WP_CLI::line( ' | FAIRE: ' . $faire_slug );
 
-				// Check if the maker already exists. Use wpcom_vip_get_page_by_title() as this is more performant and the non wpcom_vip_* function
-				$maker = wpcom_vip_get_page_by_title( $maker_name, OBJECT, 'maker' );
+		// 			// Leave some evidence we are done with this application.
+		// 			WP_CLI::line( ' ----------------------------------------' );
+		// 			WP_CLI::line( '' );
+		// 		}
+		// 	} 
 
-				// Check if the maker post exists in the maker Custom Post Type, if not, create it.
-				if ( ! $maker ) {
+		// 	// Process applications that are NOT a group of makers.
+		// 	else {
 
-					// Create our post
-					$maker_post = array(
-						'post_title'    => $maker_name,
-						'post_content'  => $maker_bio,
-						'post_status'   => 'publish',
-						'post_type'		=> 'maker',
-						'tax_input'     => array(
-							'faire' => array(
-								$faire_slug
-							)
-						),
-					);
+		// 		// Check if the maker already exists. Use wpcom_vip_get_page_by_title() as this is more performant and the non wpcom_vip_* function
+		// 		$maker = wpcom_vip_get_page_by_title( $maker_name, OBJECT, 'maker' );
 
-					// Create our post and save it's info to a variable for use in adding post meta and error checking
-					$maker_id = wp_insert_post( $maker_post );
+		// 		// Check if the maker post exists in the maker Custom Post Type, if not, create it.
+		// 		if ( ! $maker ) {
 
-					// Cheack if everything went well when creating our post
-					( is_wp_error( $maker_id ) ) ? $messages['errors'][] .= 'MAKER CREATION FAILED' : $messages['success'][] .= 'MAKER CREATED';
+		// 			// Create our post
+		// 			$maker_post = array(
+		// 				'post_title'    => $maker_name,
+		// 				'post_content'  => $maker_bio,
+		// 				'post_status'   => 'publish',
+		// 				'post_type'		=> 'maker',
+		// 				'tax_input'     => array(
+		// 					'faire' => array(
+		// 						$faire_slug
+		// 					)
+		// 				),
+		// 			);
 
-					// Add the maker email
-					( update_post_meta( $maker_id, 'email', $maker_email ) )         ? $messages['success'][] .= 'Email Saved'    : $messages['errors'][] .= 'Email Not Saved';
+		// 			// Create our post and save it's info to a variable for use in adding post meta and error checking
+		// 			$maker_id = wp_insert_post( $maker_post );
 
-					// Add the maker photo
-					( update_post_meta( $maker_id, 'photo', $maker_photo ) )         ? $messages['success'][] .= 'Photo Saved'    : $messages['errors'][] .= 'Photo Not Saved';
+		// 			// Cheack if everything went well when creating our post
+		// 			( is_wp_error( $maker_id ) ) ? $messages['errors'][] .= 'MAKER CREATION FAILED' : $messages['success'][] .= 'MAKER CREATED';
 
-					// Add the maker website
-					( update_post_meta( $maker_id, 'website', $maker_website ) )     ? $messages['success'][] .= 'Website Saved'  : $messages['errors'][] .= 'Website Not Saved';
+		// 			// Add the maker email
+		// 			( update_post_meta( $maker_id, 'email', $maker_email ) )         ? $messages['success'][] .= 'Email Saved'    : $messages['errors'][] .= 'Email Not Saved';
 
-					// Add the maker video
-					( update_post_meta( $maker_id, 'video', $maker_video ) )         ? $messages['success'][] .= 'Video Saved'    : $messages['errors'][] .= 'Video Not Saved';
+		// 			// Add the maker photo
+		// 			( update_post_meta( $maker_id, 'photo', $maker_photo ) )         ? $messages['success'][] .= 'Photo Saved'    : $messages['errors'][] .= 'Photo Not Saved';
 
-					// Add the MF Event ID
-					( add_post_meta( $maker_id, 'mfei_record', $post->ID ) )         ? $messages['success'][] .= 'Event ID Saved' : $messages['errors'][] .= 'Event ID Not Saved';
+		// 			// Add the maker website
+		// 			( update_post_meta( $maker_id, 'website', $maker_website ) )     ? $messages['success'][] .= 'Website Saved'  : $messages['errors'][] .= 'Website Not Saved';
 
-					// Add the Faire Slug
-					( add_post_meta( $maker_id, 'maker_faire', $faire_slug, true ) ) ? $messages['success'][] .= 'MF Saved'       : $messages['errors'][] .= 'MF Not Saved';
+		// 			// Add the maker video
+		// 			( update_post_meta( $maker_id, 'video', $maker_video ) )         ? $messages['success'][] .= 'Video Saved'    : $messages['errors'][] .= 'Video Not Saved';
 
-				} else {
+		// 			// Add the MF Event ID
+		// 			( add_post_meta( $maker_id, 'mfei_record', $post->ID ) )         ? $messages['success'][] .= 'Event ID Saved' : $messages['errors'][] .= 'Event ID Not Saved';
 
-					// Since our post already exists, we should return it's ID so we can update
-					$maker_id = $maker->ID;
+		// 			// Add the Faire Slug
+		// 			( add_post_meta( $maker_id, 'maker_faire', $faire_slug, true ) ) ? $messages['success'][] .= 'MF Saved'       : $messages['errors'][] .= 'MF Not Saved';
 
-					// Cheack if everything went well when creating our post
-					( is_wp_error( $maker_id ) ) ? $messages['errors'][] .= 'MAKER UPDATE FAILED' : $messages['success'][] .= 'MAKER UPDATED';
+		// 		} else {
 
-					// Add the maker email
-					( update_post_meta( $maker_id, 'email', $maker_email ) )         ? $messages['success'][] .= 'Email Updated'    : $messages['errors'][] .= 'Email Not Updated';
+		// 			// Since our post already exists, we should return it's ID so we can update
+		// 			$maker_id = $maker->ID;
 
-					// Add the maker photo
-					( update_post_meta( $maker_id, 'photo', $maker_photo ) )         ? $messages['success'][] .= 'Photo Updated'    : $messages['errors'][] .= 'Photo Not Updated';
+		// 			// Cheack if everything went well when creating our post
+		// 			( is_wp_error( $maker_id ) ) ? $messages['errors'][] .= 'MAKER UPDATE FAILED' : $messages['success'][] .= 'MAKER UPDATED';
 
-					// Add the maker website
-					( update_post_meta( $maker_id, 'website', $maker_website ) )     ? $messages['success'][] .= 'Website Updated'  : $messages['errors'][] .= 'Website Not Updated';
+		// 			// Add the maker email
+		// 			( update_post_meta( $maker_id, 'email', $maker_email ) )         ? $messages['success'][] .= 'Email Updated'    : $messages['errors'][] .= 'Email Not Updated';
 
-					// Add the maker video
-					( update_post_meta( $maker_id, 'video', $maker_video ) )         ? $messages['success'][] .= 'Video Updated'    : $messages['errors'][] .= 'Video Not Updated';
+		// 			// Add the maker photo
+		// 			( update_post_meta( $maker_id, 'photo', $maker_photo ) )         ? $messages['success'][] .= 'Photo Updated'    : $messages['errors'][] .= 'Photo Not Updated';
 
-					// Add the MF Event ID
-					( add_post_meta( $maker_id, 'mfei_record', $post->ID ) )         ? $messages['success'][] .= 'Event ID Updated' : $messages['errors'][] .= 'Event ID Not Updated';
+		// 			// Add the maker website
+		// 			( update_post_meta( $maker_id, 'website', $maker_website ) )     ? $messages['success'][] .= 'Website Updated'  : $messages['errors'][] .= 'Website Not Updated';
 
-					// Add the Faire Slug
-					( add_post_meta( $maker_id, 'maker_faire', $faire_slug, true ) ) ? $messages['success'][] .= 'MF Updated'       : $messages['errors'][] .= 'MF Not Updated';
+		// 			// Add the maker video
+		// 			( update_post_meta( $maker_id, 'video', $maker_video ) )         ? $messages['success'][] .= 'Video Updated'    : $messages['errors'][] .= 'Video Not Updated';
+
+		// 			// Add the MF Event ID
+		// 			( add_post_meta( $maker_id, 'mfei_record', $post->ID ) )         ? $messages['success'][] .= 'Event ID Updated' : $messages['errors'][] .= 'Event ID Not Updated';
+
+		// 			// Add the Faire Slug
+		// 			( add_post_meta( $maker_id, 'maker_faire', $faire_slug, true ) ) ? $messages['success'][] .= 'MF Updated'       : $messages['errors'][] .= 'MF Not Updated';
 					
-				}
+		// 		}
 
 
-				// Now that we have either updated or created our maker posts, lets show the output of what we just did so we know what just happened.
-				if ( isset( $messages ) && is_array( $messages ) ) {
-					foreach ( $messages['errors'] as $errors ) {
-						WP_CLI::warning( $errors );
-					}
+		// 		// Now that we have either updated or created our maker posts, lets show the output of what we just did so we know what just happened.
+		// 		if ( isset( $messages ) && is_array( $messages ) ) {
+		// 			foreach ( $messages['errors'] as $errors ) {
+		// 				WP_CLI::warning( $errors );
+		// 			}
 
-					foreach ( $messages['success'] as $success ) {
-						WP_CLI::success( $success );
-					}
-				}
-				WP_CLI::line( ' | APP TYPE: ' . $app_type );
-				WP_CLI::line( ' | APP ID: ' . $post->ID );
-				WP_CLI::line( ' | MAKER ID: ' . $maker_id );
-				WP_CLI::line( ' | TYPE: ' . $maker_type );
-				WP_CLI::line( ' | NAME: ' . $maker_name );
-				WP_CLI::line( ' | EMAIL: ' . $maker_email );
-				WP_CLI::line( ' | PHOTO: ' . $maker_photo );
-				WP_CLI::line( ' | WEBSITE: ' . $maker_website );
-				WP_CLI::line( ' | VIDEO: ' . $maker_video );
-				WP_CLI::line( ' | FAIRE: ' . $faire_slug );
+		// 			foreach ( $messages['success'] as $success ) {
+		// 				WP_CLI::success( $success );
+		// 			}
+		// 		}
+		// 		WP_CLI::line( ' | APP TYPE: ' . $app_type );
+		// 		WP_CLI::line( ' | APP ID: ' . $post->ID );
+		// 		WP_CLI::line( ' | MAKER ID: ' . $maker_id );
+		// 		WP_CLI::line( ' | TYPE: ' . $maker_type );
+		// 		WP_CLI::line( ' | NAME: ' . $maker_name );
+		// 		WP_CLI::line( ' | EMAIL: ' . $maker_email );
+		// 		WP_CLI::line( ' | PHOTO: ' . $maker_photo );
+		// 		WP_CLI::line( ' | WEBSITE: ' . $maker_website );
+		// 		WP_CLI::line( ' | VIDEO: ' . $maker_video );
+		// 		WP_CLI::line( ' | FAIRE: ' . $faire_slug );
 
-				// Leave some evidence we are done with this application.
-				WP_CLI::line( ' ----------------------------------------' );
-				WP_CLI::line( '' );
-			}
-		endwhile;
+		// 		// Leave some evidence we are done with this application.
+		// 		WP_CLI::line( ' ----------------------------------------' );
+		// 		WP_CLI::line( '' );
+		// 	}
+		// endwhile;
 
-		WP_CLI::success( 'SHAZAM! Job is DONE. Get a beer! You deserve it big guy! ;)' );
+		// WP_CLI::success( 'SHAZAM! Job is DONE. Get a beer! You deserve it big guy! ;)' );
 	}
 
 

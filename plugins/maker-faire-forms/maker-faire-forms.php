@@ -3597,7 +3597,7 @@ class MAKER_FAIRE_FORM {
 	* @param string $key The key to look for
 	* @param boolean|string $reverse The form type to reverse look up or false
 	* =====================================================================*/
-	private function merge_fields( $key, $reverse = false ) {
+	public function merge_fields( $key, $reverse = false ) {
 		$conv = array( 
 			'project_name'     => array( 
 				'exhibit'   => 'project_name', 
@@ -3672,12 +3672,12 @@ class MAKER_FAIRE_FORM {
 	/*
 	* Get all posts with type mf_form
 	*
-	* @access private
+	* @access public
 	* @param string|null $sort Whether and how the forms should be sorted.
 	* @param string $status The status of the application
 	* @return array Maker Faire Forms
 	* =====================================================================*/
-	private function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = 'world-maker-faire-new-york-2013' ) {
+	public function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = 'world-maker-faire-new-york-2013' ) {
 
 		$args = array(
 			'posts_per_page' => 1999,
