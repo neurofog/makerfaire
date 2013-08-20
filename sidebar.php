@@ -55,7 +55,8 @@
 		<h3>Presented By</h3>
 
 		<div class="center">
-			<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/disney.png" alt="Disney" class="center">
+			<a href="http://disney.com/">
+			<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/disney.png" alt="Disney" class="center"></a>
 		</div>
 
 		<h3>Goldsmith Sponsor</h3>
@@ -66,13 +67,13 @@
 
 				<div class="span6">
 
-					<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/radio-shack.png" alt="Radio Shack">
+					<a href="http://www.radioshack.com/"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/radio-shack.png" alt="Radio Shack"></a>
 
 				</div>
 
 				<div class="span6">
 
-					<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/zazzle.png" alt="Zazzle" class="zazzle">
+					<a href="http://www.zazzle.com/"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/zazzle.png" alt="Zazzle" class="zazzle"></a>
 
 				</div>
 
