@@ -3812,7 +3812,7 @@ class MAKER_FAIRE_FORM {
 		$local_server = array( 'localhost', 'make.com' );
 		
 		// Don't sync from any of our testing locations.
-		if ( isset( $_SERVER['HTTP_HOST'] ) && in_array( $local_server, $_SERVER['HTTP_HOST'] ) )
+		if ( isset( $_SERVER['HTTP_HOST'] ) && in_array( $_SERVER['HTTP_HOST'], $local_server ) )
 			return false;
 	
 		if ( ! $id ) {
