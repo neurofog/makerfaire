@@ -3832,23 +3832,23 @@ class MAKER_FAIRE_FORM {
 
 		foreach ( $posts as $post ) {
 			$form = (array) json_decode( str_replace( "\'", "'", $post->post_content ) );
-			// $res  = wp_remote_post( 'http://ec2-23-22-142-64.compute-1.amazonaws.com/updateExhibitInfo', array( 'body' => array_merge( array( 'eid' => $post->ID, 'mid' => $form['uid'] ), (array) $form ) ) );
+			$res  = wp_remote_post( 'http://ec2-23-22-142-64.compute-1.amazonaws.com/updateExhibitInfo', array( 'body' => array_merge( array( 'eid' => $post->ID, 'mid' => $form['uid'] ), (array) $form ) ) );
 	
-			// if ( 200 == $res['response']['code'] ) {
-			// 	$body = json_decode( $res['body'] );
-			// 	if ( $body->exhibit_id == '' && $body->exhibit_id == 0 ) {
-			// 		update_post_meta( $post->ID, 'mf_jdb_sync_fail', time() );
-			// 	} else {
-			// 		update_post_meta( $post->ID, 'mf_jdb_sync', time() );
-			// 		delete_post_meta( $post->ID, 'mf_jdb_sync_fail' );
-			// 	}
-			// } else {
-			// 	update_post_meta( $post->ID, 'mf_jdb_sync_fail', time() );
-			// }
+			if ( 200 == $res['response']['code'] ) {
+				$body = json_decode( $res['body'] );
+				if ( $body->exhibit_id == '' && $body->exhibit_id == 0 ) {
+					update_post_meta( $post->ID, 'mf_jdb_sync_fail', time() );
+				} else {
+					update_post_meta( $post->ID, 'mf_jdb_sync', time() );
+					delete_post_meta( $post->ID, 'mf_jdb_sync_fail' );
+				}
+			} else {
+				update_post_meta( $post->ID, 'mf_jdb_sync_fail', time() );
+			}
 		}
 		
-		// if ( ! $id )	
-			// update_option( 'mf_full_jdb_sync', date( 'M jS, Y g:s A', ( time() - ( 3600 * 7 ) ) ) );
+		if ( ! $id )	
+			update_option( 'mf_full_jdb_sync', date( 'M jS, Y g:s A', ( time() - ( 3600 * 7 ) ) ) );
 	}
 	/*
 	* Sync MakerFiare Application Statuses
