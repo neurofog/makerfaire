@@ -66,6 +66,7 @@ add_filter( 'post_updated_messages', 'event_items_updated_messages' );
  */
 
 function mf_schedule_mailto( $meta ) {
+	if ( isset( $meta['mfei_record'][0] ) ) {
 	$linked_post = get_post( $meta['mfei_record'][0] );
 	$json = json_decode( $linked_post->post_content );
 	$loc = get_the_terms( $linked_post->ID, 'location' );
@@ -79,6 +80,7 @@ function mf_schedule_mailto( $meta ) {
 	$url = add_query_arg( array( 'subject' => $subject ),  $email );
 	$url = add_query_arg( array( 'body' => $body ), $url );
 	echo '<p><a href="' . $url . '" class="button" target="_blank">Email Presenter Schedule</a></p>';
+	}
 }
 
 /* 
@@ -127,9 +129,9 @@ function makerfaire_meta_box( $post ) {
 		// Check if we are loading from a referring post and add that ID to our Record field
 		if ( isset( $_GET['refer_id'] ) && ! empty( $_GET['refer_id'] ) ) {
 			echo  '<input type="text" name="mfei_record" id="mfei_record" value="' . intval( $_GET['refer_id'] ) . '" />';
-		} else {
+		} elseif ( !empty( $meta['mfei_record'][0] ) ) {
 			echo '<input type="text" name="mfei_record" id="mfei_record" value="' . esc_attr( $meta['mfei_record'][0] ) . '" />';
-		}
+		} 
 	?>
 	<a title="Edit event items" href="#" class="post-edit-link">View Application</a> (opens new window with given application)
 	<label>Schedule Completed</label>
