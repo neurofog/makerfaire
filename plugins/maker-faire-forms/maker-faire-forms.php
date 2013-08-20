@@ -3789,16 +3789,6 @@ class MAKER_FAIRE_FORM {
 		
 		return in_array( (string) $key, $text_areas );
 	}
-
-
-	public function clean_post_content( $content ) {
-$bad  = array( '&#039;', "\'", '&#8217;', '&#38;', '&#038;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;', 'u2018', 'u2019' );
-   		$good = array( "'",      "'",  "'",       "&",     "&",      '"',     '"',      '–',       '>',    '...',     "'",     "'",    );
-		$data = json_decode( str_replace( $bad, $good, $post->post_content ) );
-		
-	}
-
-
 	/*
 	* Fix newlines saving improperly to at least display correctly.
 	*
