@@ -1090,7 +1090,7 @@ class MAKER_FAIRE_FORM {
 			),
 			'length_presentation' => array(
 				'12 minutes', 
-				'20 minutes', 
+				'25 minutes', 
 				'45 minutes',
 			),
 		);
@@ -1221,6 +1221,8 @@ class MAKER_FAIRE_FORM {
 					'presenter_onsite_phone',
 					'presenter_org',
 					'presenter_title',
+					'presenter_twitter',
+					'presenter_previous',
 				)
 			); ?>
 		
@@ -1277,17 +1279,24 @@ class MAKER_FAIRE_FORM {
 				);
 
 				for ( $i = 1; $i < count( $all_data[ $key ] ); $i++ ) : 
-					foreach( $add_fields[ $key ] as $fkey => $ftitle ) : ?>
+					foreach( $add_fields[ $key ] as $fkey => $ftitle ) : 
+						if ( is_array( $all_data[ $fkey ] ) && isset( $all_data[ $fkey ][0] ) ) {
+							$data = $all_data[ $fkey ][0]; 
+						} elseif ( is_string( $all_data[ $fkey ] ) ) {
+							$data = $all_data[ $fkey ]; 
+						} else {
+							$data = '';
+						} ?>
 						<tr class="mf-form-row add-maker">
 							<td valign="top"><?php echo esc_html( $ftitle ); ?>:</td>
 
 							<?php if ( $fkey == 'm_maker_bio' || $fkey == 'presenter_bio' ) : ?>
 								<td>
-									<textarea name="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" id="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" cols="30" rows="10"><?php echo esc_attr( isset( $all_data[ $fkey ][ $i ] ) ? $all_data[ $fkey ][ $i ] : '' ); ?></textarea>
+									<textarea name="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" id="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" cols="30" rows="10"><?php echo esc_attr( $data ); ?></textarea>
 								</td>
 							<?php else : ?>
 								<td>
-									<input name="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" value="<?php echo esc_attr( isset( $all_data[ $fkey ][ $i ] ) ? $all_data[ $fkey ][ $i ] : '' ); ?>" type="text" />
+									<input name="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" value="<?php echo esc_attr( $data ); ?>" type="text" />
 								</td>
 							<?php endif; ?>
 						</tr>
@@ -1331,7 +1340,6 @@ class MAKER_FAIRE_FORM {
 			'tags'        => sanitize_text_field( $_POST[ $form_type ]['tags'] ),
 			'cats'        => sanitize_text_field( $_POST[ $form_type ]['cats'] ),
 		);
-
 
 		// For starters, lets get all of our data into one bucket and clean things up.
 		foreach ( $this->fields[ $form_type ] as $sn => $s ) {
@@ -3799,9 +3807,12 @@ class MAKER_FAIRE_FORM {
 	* @param int $id Post id to SYNC
 	* =====================================================================*/
 	private function sync_jdb( $id = 0 ) {
+
+		// Setup a list of our local servers...
+		$local_server = array( 'localhost', 'make.com' );
 		
-		// Don't sync from ISC server
-		if ( isset( $_SERVER['SERVER_ADDR_NAME'] ) && $_SERVER['SERVER_ADDR_NAME'] == 'iscrackweb1' )
+		// Don't sync from any of our testing locations.
+		if ( isset( $_SERVER['HTTP_HOST'] ) && in_array( $local_server, $_SERVER['HTTP_HOST'] ) )
 			return false;
 	
 		if ( ! $id ) {
@@ -3821,23 +3832,23 @@ class MAKER_FAIRE_FORM {
 
 		foreach ( $posts as $post ) {
 			$form = (array) json_decode( str_replace( "\'", "'", $post->post_content ) );
-			$res  = wp_remote_post( 'http://ec2-23-22-142-64.compute-1.amazonaws.com/updateExhibitInfo', array( 'body' => array_merge( array( 'eid' => $post->ID, 'mid' => $form['uid'] ), (array) $form ) ) );
+			// $res  = wp_remote_post( 'http://ec2-23-22-142-64.compute-1.amazonaws.com/updateExhibitInfo', array( 'body' => array_merge( array( 'eid' => $post->ID, 'mid' => $form['uid'] ), (array) $form ) ) );
 	
-			if ( 200 == $res['response']['code'] ) {
-				$body = json_decode( $res['body'] );
-				if ( $body->exhibit_id == '' && $body->exhibit_id == 0 ) {
-					update_post_meta( $post->ID, 'mf_jdb_sync_fail', time() );
-				} else {
-					update_post_meta( $post->ID, 'mf_jdb_sync', time() );
-					delete_post_meta( $post->ID, 'mf_jdb_sync_fail' );
-				}
-			} else {
-				update_post_meta( $post->ID, 'mf_jdb_sync_fail', time() );
-			}
+			// if ( 200 == $res['response']['code'] ) {
+			// 	$body = json_decode( $res['body'] );
+			// 	if ( $body->exhibit_id == '' && $body->exhibit_id == 0 ) {
+			// 		update_post_meta( $post->ID, 'mf_jdb_sync_fail', time() );
+			// 	} else {
+			// 		update_post_meta( $post->ID, 'mf_jdb_sync', time() );
+			// 		delete_post_meta( $post->ID, 'mf_jdb_sync_fail' );
+			// 	}
+			// } else {
+			// 	update_post_meta( $post->ID, 'mf_jdb_sync_fail', time() );
+			// }
 		}
 		
-		if ( ! $id )	
-			update_option( 'mf_full_jdb_sync', date( 'M jS, Y g:s A', ( time() - ( 3600 * 7 ) ) ) );
+		// if ( ! $id )	
+			// update_option( 'mf_full_jdb_sync', date( 'M jS, Y g:s A', ( time() - ( 3600 * 7 ) ) ) );
 	}
 	/*
 	* Sync MakerFiare Application Statuses
