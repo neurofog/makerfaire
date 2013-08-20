@@ -1332,7 +1332,6 @@ class MAKER_FAIRE_FORM {
 			'cats'        => sanitize_text_field( $_POST[ $form_type ]['cats'] ),
 		);
 
-
 		// For starters, lets get all of our data into one bucket and clean things up.
 		foreach ( $this->fields[ $form_type ] as $sn => $s ) {
 
@@ -3799,9 +3798,12 @@ class MAKER_FAIRE_FORM {
 	* @param int $id Post id to SYNC
 	* =====================================================================*/
 	private function sync_jdb( $id = 0 ) {
+
+		// Setup a list of our local servers... We need to centralize these address names.
+		$local_server = array( 'localhost', 'make.com', 'iscrackweb1' );
 		
-		// Don't sync from ISC server
-		if ( isset( $_SERVER['SERVER_ADDR_NAME'] ) && $_SERVER['SERVER_ADDR_NAME'] == 'iscrackweb1' )
+		// Don't sync from any of our testing locations.
+		if ( isset( $_SERVER['SERVER_ADDR_NAME'] ) && in_array( $local_server, $_SERVER['SERVER_ADDR_NAME'] ) )
 			return false;
 	
 		if ( ! $id ) {
