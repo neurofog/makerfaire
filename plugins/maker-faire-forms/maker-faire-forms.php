@@ -3639,16 +3639,21 @@ class MAKER_FAIRE_FORM {
 				'performer' => 'private_description',
 				'presenter' => 'presenter_bio' 
 			),
+			'user_gigya'	   => array(
+				'exhibit'	=> 'm_maker_gigyaid',
+				'performer' => 'uid',
+				'presenter' => 'presenter_gigyaid'
+			),
 		);
 
-		if ( $reverse && isset( $conv[$key][$reverse] ) )
-			return $conv[$key][$reverse];
+		if ( $reverse && isset( $conv[ $key ][ $reverse ] ) )
+			return $conv[ $key ][ $reverse ];
 
-		if ( $reverse && !isset( $conv[$key][$reverse] ) )
+		if ( $reverse && ! isset( $conv[ $key ][ $reverse ] ) )
 			return false;
 
-		foreach( $conv as $conv_key => $conv_a) {
-			if (  !$reverse && in_array( $key, $conv_a ) )
+		foreach ( $conv as $conv_key => $conv_a ) {
+			if ( ! $reverse && in_array( $key, $conv_a ) )
 				return $conv_key;
 		}
 
@@ -3915,6 +3920,87 @@ class MAKER_FAIRE_FORM {
 			
 			update_option( $opt, 2 );
 		}
+	}
+
+
+	/**
+	 * Creates new makers in our Makers custom post type. Primarily used for our mobile app for the time being.
+	 * @param array  $maker      The array of a single maker
+	 * @param string $faire_slug The default faire we want to associate this maker to.
+	 */
+	public function add_to_maker_cpt( $makers, $faire_slug = 'world-maker-faire-new-york-2013' ) {
+		// Setup a array of messages
+		$messages = array(
+			'errors'   => array(),
+			'success'  => array(),
+			'maker_id' => '',
+		);
+
+		// Create our post array
+		$maker_post = array(
+			'post_title'   => esc_attr( $makers['title'] ),
+			'post_content' => wp_kses_post( $makers['content'] ),
+			'post_status'  => 'publish',
+			'post_type'	   => 'maker',
+			'tax_input'    => array(
+				'faire' => array(
+					$faire_slug
+				)
+			),
+		);
+
+		// Check if the maker already exists.
+		$maker = wpcom_vip_get_page_by_title( $makers['title'], OBJECT, 'maker' );
+
+		if ( ! $maker ) {
+
+			// Create our post and save it's info to a variable for use in adding post meta and error checking
+			$maker_id = wp_insert_post( $maker_post );
+
+			// Cheack if everything went well when creating our post
+			( is_wp_error( $maker_id ) ) ? $messages['errors'][] .= 'MAKER CREATION FAILED' : $messages['success'][] .= 'MAKER CREATED';
+
+		} else {
+
+			// Since our post already exists, we should return it's ID so we can update
+			$maker_id = $maker->ID;
+
+			// Add our ID to the post array
+			$maker_post['ID'] = $maker_id;
+
+			// Update our maker post
+			$maker_id_updated = wp_update_post( $maker_post );
+
+			// Cheack if everything went well when creating our post
+			( is_wp_error( $maker_id_updated ) ) ? $messages['errors'][] .= 'MAKER UPDATE FAILED' : $messages['success'][] .= 'MAKER UPDATED';
+
+		}
+
+		// Add the maker email
+		( update_post_meta( $maker_id, 'email', sanitize_email( $makers['email'] ) ) )     ? $messages['success'][] .= 'Email Saved'    : $messages['errors'][] .= 'Email Not Saved';
+
+		// Add the maker photo
+		( update_post_meta( $maker_id, 'photo', esc_url( $makers['photo'] ) ) )     	   ? $messages['success'][] .= 'Photo Saved'    : $messages['errors'][] .= 'Photo Not Saved';
+
+		// Add the maker website
+		( update_post_meta( $maker_id, 'website', esc_url( $makers['website'] ) ) ) 	   ? $messages['success'][] .= 'Website Saved'  : $messages['errors'][] .= 'Website Not Saved';
+
+		// Add the maker video
+		( update_post_meta( $maker_id, 'video', esc_url( $makers['video'] ) ) )     	   ? $messages['success'][] .= 'Video Saved'    : $messages['errors'][] .= 'Video Not Saved';
+
+		// Add the MF Event ID
+		( add_post_meta( $maker_id, 'mfei_record', absint( $makers['app_id'] ) ) ) 		   ? $messages['success'][] .= 'Event ID Saved' : $messages['errors'][] .= 'Event ID Not Saved';
+
+		// Add the Maker Gigya ID
+		( update_post_meta( $maker_id, 'guid', sanitize_text_field( $makers['gigya'] ) ) ) ? $message['success'][]  .= 'Gigya ID Saved' : $messages['errors'][] .= 'Gigya ID Not Saved';
+
+		// Add the Faire Slug
+		( add_post_meta( $maker_id, 'maker_faire', $faire_slug, true ) ) ? $messages['success'][] .= 'MF Saved'       : $messages['errors'][] .= 'MF Not Saved';
+
+		// Add our New Maker ID to the messages
+		$messages['maker_id'] .= $maker_id;
+
+		return $messages;
 	}
 }
 
