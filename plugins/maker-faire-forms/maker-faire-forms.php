@@ -1280,8 +1280,8 @@ class MAKER_FAIRE_FORM {
 
 				for ( $i = 1; $i < count( $all_data[ $key ] ); $i++ ) : 
 					foreach( $add_fields[ $key ] as $fkey => $ftitle ) : 
-						if ( is_array( $all_data[ $fkey ] ) && isset( $all_data[ $fkey ][0] ) ) {
-							$data = $all_data[ $fkey ][0]; 
+						if ( is_array( $all_data[ $fkey ] ) && isset( $all_data[ $fkey ][ $i ] ) ) {
+							$data = $all_data[ $fkey ][ $i ]; 
 						} elseif ( is_string( $all_data[ $fkey ] ) ) {
 							$data = $all_data[ $fkey ]; 
 						} else {
