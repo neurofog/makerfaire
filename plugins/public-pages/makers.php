@@ -149,7 +149,7 @@ function mf_public_blurb( $json ) {
 		echo '<hr>';
 		
 		echo '<div class="lead">';
-		echo ( $json->public_description ) ? Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) : null;
+		echo ( $json->long_description ) ? Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->long_description, "\n" ) ) ) ) : null;
 		echo '</div>';
 		
 		if ( $json->presentation_website || $json->video) {

@@ -3767,7 +3767,9 @@ class MAKER_FAIRE_FORM {
 	private function is_textarea( $key ) {
 		$text_areas = array( 
 			'public_description', 
-			'private_description', 
+			'private_description',
+			'short_description',
+			'long_description',
 			'food_details',
 			'sales_details',
 			'booth_size_details',
