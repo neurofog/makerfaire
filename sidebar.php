@@ -55,7 +55,8 @@
 		<h3>Presented By</h3>
 
 		<div class="center">
-			<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/disney.png" alt="Disney" class="center">
+			<a href="http://disney.com/">
+			<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/disney.png" alt="Disney" class="center"></a>
 		</div>
 
 		<h3>Goldsmith Sponsor</h3>
@@ -66,13 +67,13 @@
 
 				<div class="span6">
 
-					<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/radio-shack.png" alt="Radio Shack">
+					<a href="http://www.radioshack.com/"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/radio-shack.png" alt="Radio Shack"></a>
 
 				</div>
 
 				<div class="span6">
 
-					<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/zazzle.png" alt="Zazzle" class="zazzle">
+					<a href="http://www.zazzle.com/"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/zazzle.png" alt="Zazzle" class="zazzle"></a>
 
 				</div>
 
@@ -84,7 +85,7 @@
 
 		<div id="myCarousel" class="carousel slide">
 			<div class="carousel-inner">
-				<?php mf_sponsor_carousel( 'Silversmith Sponsor' ); ?>
+				<?php echo mf_sponsor_carousel( 'Silversmith Sponsor' ); ?>
 			</div>
 		</div>
 
@@ -92,7 +93,7 @@
 
 		<div id="myCarousel" class="carousel slide">
 			<div class="carousel-inner">
-				<?php mf_sponsor_carousel( 'Coppersmith Sponsor' ); ?>
+				<?php echo mf_sponsor_carousel( 'Coppersmith Sponsor' ); ?>
 			</div>
 		
 		</div>
@@ -100,14 +101,14 @@
 	</div>
 
 	<!-- Beginning Sync AdSlot 2 for Ad unit header ### size: [[300,250]]  -->
-	<div id='div-gpt-ad-664089004995786621-2'>
+	<div id='div-gpt-ad-664089004995786621-2' class="adblock">
 		<script type='text/javascript'>
 			googletag.cmd.push(function(){googletag.display('div-gpt-ad-664089004995786621-2')});
 		</script>
 	</div>
 	<!-- End AdSlot 2 -->
 
-	<div class="center">
+	<div class="center twitter">
 		<a href="https://twitter.com/makerfaire" class="twitter-follow-button" data-show-count="false" data-size="large">Follow @makerfaire</a>
 		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 		<a class="twitter-timeline" href="https://twitter.com/search?q=%23makerfaire" data-widget-id="322225978648698880">Tweets about "#makerfaire"</a>
@@ -115,7 +116,7 @@
 	</div>
 
 	<!-- Beginning Sync AdSlot 3 for Ad unit header ### size: [[300,250]]  -->
-	<div id='div-gpt-ad-664089004995786621-3'>
+	<div id='div-gpt-ad-664089004995786621-3' class="adblock">
 		<script type='text/javascript'>
 			googletag.cmd.push(function(){googletag.display('div-gpt-ad-664089004995786621-3')});
 		</script>

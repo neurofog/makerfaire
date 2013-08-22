@@ -1090,7 +1090,7 @@ class MAKER_FAIRE_FORM {
 			),
 			'length_presentation' => array(
 				'12 minutes', 
-				'20 minutes', 
+				'25 minutes', 
 				'45 minutes',
 			),
 		);
@@ -1221,14 +1221,21 @@ class MAKER_FAIRE_FORM {
 					'presenter_onsite_phone',
 					'presenter_org',
 					'presenter_title',
+					'presenter_twitter',
+					'presenter_previous',
 				)
 			); ?>
 		
 			<input name="<?php echo esc_attr( $type . '[' . $key . '][0]' ); ?>" value="<?php echo esc_attr( isset( $all_data[ $key ][0] ) ? $all_data[ $key ][0] : '' ); ?>" type="text" />
 			</td></tr>
 			<?php foreach( $init_fields[ $key ] as $fn ) : 
-				$data = is_array( $all_data[ $fn ] ) && isset( $all_data[ $fn ][0] ) ? $all_data[ $fn ][0] : ''; 
-				$data = is_string( $all_data[ $fn ][0] ) ? $all_data[ $fn ][0] : '';
+				if ( is_array( $all_data[ $fn ] ) && isset( $all_data[ $fn ][0] ) ) {
+					$data = $all_data[ $fn ][0]; 
+				} elseif ( is_string( $all_data[ $fn ] ) ) {
+					$data = $all_data[ $fn ]; 
+				} else {
+					$data = '';
+				}
 
 				if ( ( $fn == 'm_maker_gigyaid' || $fn == 'presenter_gigyaid' ) && $data == '' && isset( $all_data['uid'] ) )
 					$data = $all_data['uid']; ?>
@@ -1272,17 +1279,24 @@ class MAKER_FAIRE_FORM {
 				);
 
 				for ( $i = 1; $i < count( $all_data[ $key ] ); $i++ ) : 
-					foreach( $add_fields[ $key ] as $fkey => $ftitle ) : ?>
+					foreach( $add_fields[ $key ] as $fkey => $ftitle ) : 
+						if ( is_array( $all_data[ $fkey ] ) && isset( $all_data[ $fkey ][ $i ] ) ) {
+							$data = $all_data[ $fkey ][ $i ]; 
+						} elseif ( is_string( $all_data[ $fkey ] ) ) {
+							$data = $all_data[ $fkey ]; 
+						} else {
+							$data = '';
+						} ?>
 						<tr class="mf-form-row add-maker">
 							<td valign="top"><?php echo esc_html( $ftitle ); ?>:</td>
 
 							<?php if ( $fkey == 'm_maker_bio' || $fkey == 'presenter_bio' ) : ?>
 								<td>
-									<textarea name="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" id="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" cols="30" rows="10"><?php echo esc_attr( isset( $all_data[ $fkey ][ $i ] ) ? $all_data[ $fkey ][ $i ] : '' ); ?></textarea>
+									<textarea name="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" id="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" cols="30" rows="10"><?php echo esc_attr( $data ); ?></textarea>
 								</td>
 							<?php else : ?>
 								<td>
-									<input name="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" value="<?php echo esc_attr( isset( $all_data[ $fkey ][ $i ] ) ? $all_data[ $fkey ][ $i ] : '' ); ?>" type="text" />
+									<input name="<?php echo esc_attr( $type . '[' . $fkey . '][' . $i . ']' ); ?>" value="<?php echo esc_attr( $data ); ?>" type="text" />
 								</td>
 							<?php endif; ?>
 						</tr>
@@ -1309,16 +1323,16 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	public function update_post( $id ) {
 
-		if ( empty( $_POST ) || ( ! isset( $_POST['mf_form'], $_POST['form_type'] ) && isset( $this->fields[ $_POST['form_type'] ] ) ) || isset( $_POST['mf_updated'] ) )
-			return false;
-
 		// Bail if post is auto-draft/revision/nav-menu item
 		if ( get_post_type( $id ) != 'mf_form' )
 			return false;
 
+		if ( empty( $_POST ) || ( ! isset( $_POST['mf_form'], $_POST['form_type'] ) && isset( $this->fields[ $_POST['form_type'] ] ) ) || isset( $_POST['mf_updated'] ) )
+			return false;
+
 		// Set some variables yo.
 		$form_type  = sanitize_text_field( $_POST['form_type'] );
-		$is_trashed = $_POST['trash-post'];
+		$is_trashed = ( isset( $_POST['trash-post'] ) ) ? $_POST['trash-post'] : '';
 		$r = array(
 			'form_type'   => $form_type,
 			'maker_faire' => sanitize_text_field( $_POST[ $form_type ]['maker_faire'] ),
@@ -1327,16 +1341,14 @@ class MAKER_FAIRE_FORM {
 			'cats'        => sanitize_text_field( $_POST[ $form_type ]['cats'] ),
 		);
 
-
 		// For starters, lets get all of our data into one bucket and clean things up.
 		foreach ( $this->fields[ $form_type ] as $sn => $s ) {
 
 			// Loop through each array in the $s variable
 			foreach ( array_keys( $s ) as $k ) {
-
 				// Check if our data being submitted is in an array first, sanitize and add to the $r array.
 				// Then check if we are passing in a textarea or text field and sanitize those fields accordingly.
-				if ( is_array( $_POST[ $form_type ][ $k ] ) ) {
+				if ( isset( $_POST[ $form_type ][ $k ] ) && is_array( $_POST[ $form_type ][ $k ] ) ) {
 					
 					// Add new keys that are not there by default to the $r array (e.g. m_maker_name, m_maker_email, etc etc)
 					$r[ $k ] = array();
@@ -1350,7 +1362,7 @@ class MAKER_FAIRE_FORM {
 			 		$r[ $k ] = wp_kses_post( nl2br( $_POST[ $form_type ][ $k ] ) );
 				} else {
 					// Sanitize the string in our text fields
-			 		$r[ $k ] = sanitize_text_field( $_POST[ $form_type ][ $k ] );
+					$r[ $k ] = ( isset( $_POST[ $form_type ][ $k ] ) ) ? sanitize_text_field( $_POST[ $form_type ][ $k ] ) : '';
 			 	}
 			}
 
@@ -3760,7 +3772,9 @@ class MAKER_FAIRE_FORM {
 	private function is_textarea( $key ) {
 		$text_areas = array( 
 			'public_description', 
-			'private_description', 
+			'private_description',
+			'short_description',
+			'long_description',
 			'food_details',
 			'sales_details',
 			'booth_size_details',
@@ -3800,9 +3814,12 @@ class MAKER_FAIRE_FORM {
 	* @param int $id Post id to SYNC
 	* =====================================================================*/
 	private function sync_jdb( $id = 0 ) {
+
+		// Setup a list of our local servers...
+		$local_server = array( 'localhost', 'make.com' );
 		
-		// Don't sync from ISC server
-		if ( $_SERVER['SERVER_ADDR_NAME'] == 'iscrackweb1' )
+		// Don't sync from any of our testing locations.
+		if ( isset( $_SERVER['HTTP_HOST'] ) && in_array( $_SERVER['HTTP_HOST'], $local_server ) )
 			return false;
 	
 		if ( ! $id ) {
