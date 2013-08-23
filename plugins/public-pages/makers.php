@@ -149,7 +149,7 @@ function mf_public_blurb( $json ) {
 		echo '<hr>';
 		
 		echo '<div class="lead">';
-		echo ( $json->long_description ) ? Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->long_description, "\n" ) ) ) ) : null;
+		echo ( $json->public_description ) ? Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) : null;
 		echo '</div>';
 		
 		if ( $json->presentation_website || $json->video) {
@@ -421,16 +421,25 @@ function mf_term_list() {
 
 add_shortcode( 'mf_terms', 'mf_term_list' );
 
-function mf_merged_terms() {
+function mf_switch_category_name( $str ) {
+	return str_replace( 'category', 'category_name', $str );
+}
 
+function mf_merged_terms( $atts ) {
 	$args = array(
 		'hide_empty'	=> false,
 		'exclude'		=> array( '1' ),
 		);
-	$cats = get_terms( array('category', 'post_tag' ), $args );
+	$args = wp_parse_args( $atts, $args );
+	$cats = get_terms( array( 'category', 'post_tag' ), $args );
 	$output = '<ul class="columns">';
 	foreach ($cats as $cat) {
-		$output .= '<li><a href="' . get_term_link( $cat ) . '">' . $cat->name . '</a></li>';
+		if ( $atts['faire'] == 'world-maker-faire-new-york-2013' ) {
+			$output .= '<li><a href="' . esc_url( home_url( '/new-york-2013/topics/?' . mf_switch_category_name( $cat->taxonomy ) .'=' . $cat->slug ) ) . '">' . $cat->name . '</a></li>';
+		} else {
+			$output .= '<li><a href="' . get_term_link( $cat ) . '">' . $cat->name . '</a></li>';
+		}
+		
 	}
 	$output .= '</ul>';
 	return $output;
