@@ -421,6 +421,10 @@ function mf_term_list() {
 
 add_shortcode( 'mf_terms', 'mf_term_list' );
 
+function mf_switch_category_name( $str ) {
+	return str_replace( 'category', 'category_name', $str );
+}
+
 function mf_merged_terms( $atts ) {
 	$args = array(
 		'hide_empty'	=> false,
@@ -431,11 +435,7 @@ function mf_merged_terms( $atts ) {
 	$output = '<ul class="columns">';
 	foreach ($cats as $cat) {
 		if ( $atts['faire'] == 'world-maker-faire-new-york-2013' ) {
-			if ( $cat->taxonomy == 'category' ) {
-				$output .= '<li><a href="' . esc_url( home_url( '/new-york-2013/topics/?category=' . $cat->slug ) ) . '">' . $cat->name . '</a></li>';
-			} elseif ( $cat->taxonomy == 'post_tag' ) {
-				$output .= '<li><a href="' . esc_url( home_url( '/new-york-2013/topics/?tag=' . $cat->slug ) ) . '">' . $cat->name . '</a></li>';
-			}
+			$output .= '<li><a href="' . esc_url( home_url( '/new-york-2013/topics/?' . mf_switch_category_name( $cat->taxonomy ) .'=' . $cat->slug ) ) . '">' . $cat->name . '</a></li>';
 		} else {
 			$output .= '<li><a href="' . get_term_link( $cat ) . '">' . $cat->name . '</a></li>';
 		}
