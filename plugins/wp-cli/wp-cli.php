@@ -148,18 +148,27 @@ class MAKE_CLI extends WP_CLI_Command {
 
 		foreach( $applications as $app ) {
 			$content = (array) json_decode( str_replace( "\'", "'", $app->post_content ) );
+			$mfei_records = wp_get_post_terms($app->ID, 'faire');
+
+			$count = 1;
+			$mfei_record = '';
+			foreach ( $mfei_records as $single_mfei_record ) {
+				$mfei_record .= ( $count >= 2 ) ? ', ' . $single_mfei_record->term_id : $single_mfei_record->term_id;
+				$count++;
+			}
 
 			// Setup a new array based on our application ID.
 			$maker = array(
-				'app_type' => $content['form_type'],
-				'app_id'   => $app->ID,
-				'title'    => $content['name'],
-				'content'  => ( ! is_array( $content[ $mfform->merge_fields( 'user_bio', $content['form_type'] ) ] ) ? $content[ $mfform->merge_fields( 'user_bio', $content['form_type'] ) ] : $content[ $mfform->merge_fields( 'user_bio', $content['form_type'] ) ][0] ),
-				'email'    => $content['email'],
-				'photo'    => $content[ $mfform->merge_fields( 'form_photo', $content['form_type'] ) ],
-				'website'  => $content[ $mfform->merge_fields( 'project_website', $content['form_type'] ) ],
-				'video'    => $content[ $mfform->merge_fields( 'project_video', $content['form_type'] ) ],
-				'gigya'    => ( ! is_array( $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ] ) ? $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ] : $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ][0] ),
+				'app_type'    => $content['form_type'],
+				'app_id'   	  => $app->ID,
+				'title'    	  => $content['name'],
+				'content'  	  => ( ! is_array( $content[ $mfform->merge_fields( 'user_bio', $content['form_type'] ) ] ) ? $content[ $mfform->merge_fields( 'user_bio', $content['form_type'] ) ] : $content[ $mfform->merge_fields( 'user_bio', $content['form_type'] ) ][0] ),
+				'email'    	  => $content['email'],
+				'photo'    	  => $content[ $mfform->merge_fields( 'form_photo', $content['form_type'] ) ],
+				'website'  	  => $content[ $mfform->merge_fields( 'project_website', $content['form_type'] ) ],
+				'video'    	  => $content[ $mfform->merge_fields( 'project_video', $content['form_type'] ) ],
+				'gigya'    	  => ( ! is_array( $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ] ) ? $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ] : $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ][0] ),
+				'mfei_record' => $mfei_record,
 			);
 
 			// Update or create our individual maker and report back.

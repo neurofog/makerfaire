@@ -3973,7 +3973,7 @@ class MAKER_FAIRE_FORM {
 			'post_type'	   => 'maker',
 			'tax_input'    => array(
 				'faire' => array(
-					$faire_slug
+					$maker['mfei_record']
 				)
 			),
 		);
@@ -3992,7 +3992,7 @@ class MAKER_FAIRE_FORM {
 		} else {
 			
 			// Since our post already exists, we should return it's ID so we can update
-			$maker_id = $existing_maker->ID;
+			$maker_id = $existing_maker[0]->ID;
 
 			// Add our ID to the post array
 			$maker_post['ID'] = $maker_id;
@@ -4011,22 +4011,25 @@ class MAKER_FAIRE_FORM {
 		( update_post_meta( $maker_id, 'email', sanitize_email( $maker['email'] ) ) )     ? $messages['success'][] .= 'Email ' . $process_completed    : $messages['errors'][] .= 'Email Not ' . $process_completed;
 
 		// Add the maker photo
-		( update_post_meta( $maker_id, 'photo', esc_url( $maker['photo'] ) ) )     	   ? $messages['success'][] .= 'Photo ' . $process_completed    : $messages['errors'][] .= 'Photo Not ' . $process_completed;
+		( update_post_meta( $maker_id, 'photo', esc_url( $maker['photo'] ) ) )     	   	  ? $messages['success'][] .= 'Photo ' . $process_completed    : $messages['errors'][] .= 'Photo Not ' . $process_completed;
 
 		// Add the maker website
-		( update_post_meta( $maker_id, 'website', esc_url( $maker['website'] ) ) ) 	   ? $messages['success'][] .= 'Website ' . $process_completed  : $messages['errors'][] .= 'Website Not ' . $process_completed;
+		( update_post_meta( $maker_id, 'website', esc_url( $maker['website'] ) ) ) 	   	  ? $messages['success'][] .= 'Website ' . $process_completed  : $messages['errors'][] .= 'Website Not ' . $process_completed;
 
 		// Add the maker video
-		( update_post_meta( $maker_id, 'video', esc_url( $maker['video'] ) ) )     	   ? $messages['success'][] .= 'Video ' . $process_completed    : $messages['errors'][] .= 'Video Not ' . $process_completed;
+		( update_post_meta( $maker_id, 'video', esc_url( $maker['video'] ) ) )     	   	  ? $messages['success'][] .= 'Video ' . $process_completed    : $messages['errors'][] .= 'Video Not ' . $process_completed;
 
 		// Add the MF Event ID
-		( add_post_meta( $maker_id, 'mfei_record', absint( $maker['app_id'] ) ) ) 		   ? $messages['success'][] .= 'Event ID ' . $process_completed : $messages['errors'][] .= 'Event ID Not ' . $process_completed;
+		( add_post_meta( $maker_id, 'mfei_record', absint( $maker['app_id'] ) ) ) 		  ? $messages['success'][] .= 'Event ID ' . $process_completed : $messages['errors'][] .= 'Event ID Not ' . $process_completed;
 
 		// Add the Maker Gigya ID
 		( update_post_meta( $maker_id, 'guid', sanitize_text_field( $maker['gigya'] ) ) ) ? $message['success'][]  .= 'Gigya ID ' . $process_completed : $messages['errors'][] .= 'Gigya ID Not ' . $process_completed;
 
-		// Add the Faire Slug
-		( add_post_meta( $maker_id, 'maker_faire', $faire_slug, true ) ) ? $messages['success'][] .= 'MF ' . $process_completed       : $messages['errors'][] .= 'MF Not ' . $process_completed;
+		// Add Update the faire taxonomy
+		// $term_status = wp_set_post_terms( $maker_id, $maker['mfei_record'], 'faire', true );
+		// ( $term_status ) ? $messages['success'][] .= 'MF ' . $process_completed       : $messages['errors'][] .= 'MF Not ' . $process_completed;
+
+		var_dump($maker_post);
 
 		// Add our New Maker ID to the messages
 		$messages['maker_id'] .= $maker_id;
