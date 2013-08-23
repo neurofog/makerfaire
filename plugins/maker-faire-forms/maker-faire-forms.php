@@ -3834,7 +3834,7 @@ class MAKER_FAIRE_FORM {
 
 		foreach ( $posts as $post ) {
 			$form = (array) json_decode( str_replace( "\'", "'", $post->post_content ) );
-			$res  = wp_remote_post( 'http://ec2-23-22-142-64.compute-1.amazonaws.com/updateExhibitInfo', array( 'body' => array_merge( array( 'eid' => $post->ID, 'mid' => $form['uid'] ), (array) $form ) ) );
+			$res  = wp_remote_post( 'http://db.makerfaire.com/updateExhibitInfo', array( 'body' => array_merge( array( 'eid' => $post->ID, 'mid' => $form['uid'] ), (array) $form ) ) );
 	
 			if ( 200 == $res['response']['code'] ) {
 				$body = json_decode( $res['body'] );
@@ -3861,7 +3861,7 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	private function sync_status_jdb( $id = 0, $status = '' ) {
 
-		$res = wp_remote_post( 'http://ec2-23-22-142-64.compute-1.amazonaws.com/updateExhibitStatusForJSON', array( 'body' => array( 'eid' => intval( $id ), 'status' => esc_attr( $status ) ) ) );	
+		$res = wp_remote_post( 'http://db.makerfaire.com/updateExhibitStatusForJSON', array( 'body' => array( 'eid' => intval( $id ), 'status' => esc_attr( $status ) ) ) );	
 		$er  = 0; 
 		
 		if ( 200 == $res['response']['code'] ) {
