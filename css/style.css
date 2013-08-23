@@ -56,6 +56,9 @@
 .sidebar-bordered .thumb {
   text-align: center;
 }
+.sidebar-bordered .hidden h5 {
+  margin: 10px 0;
+}
 .twitter,
 .adblock {
   margin-bottom: 20px;
