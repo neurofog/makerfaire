@@ -3963,7 +3963,7 @@ class MAKER_FAIRE_FORM {
 		$existing_maker = $list_of_makers->get_posts();
 
 		// Fall back incase a maker doesn't have an email setup, but still have an account.
-		$existing_maker_title = wpcom_vip_get_page_by_title( $maker['title'], OBJECT, 'maker' );
+		$existing_maker_title = wpcom_vip_get_page_by_title( htmlspecialchars( $maker['title'], ENT_QUOTES ), OBJECT, 'maker' );
 
 		// Create our post array
 		$maker_post = array(
@@ -3971,11 +3971,6 @@ class MAKER_FAIRE_FORM {
 			'post_content' => wp_kses_post( $maker['content'] ),
 			'post_status'  => 'publish',
 			'post_type'	   => 'maker',
-			'tax_input'    => array(
-				'faire' => array(
-					$maker['mfei_record']
-				)
-			),
 		);
 
 		// Check if a makers email or name doesn't exist
@@ -3998,7 +3993,7 @@ class MAKER_FAIRE_FORM {
 			$maker_post['ID'] = $maker_id;
 
 			// Update our maker post
-			$maker_id_updated = wp_update_post( $maker_post );
+			// $maker_id_updated = wp_update_post( $maker_post );
 
 			// Cheack if everything went well when creating our post
 			( is_wp_error( $maker_id_updated ) ) ? $messages['errors'][] .= 'MAKER UPDATE FAILED' : $messages['success'][] .= 'MAKER UPDATED';
@@ -4026,10 +4021,8 @@ class MAKER_FAIRE_FORM {
 		( update_post_meta( $maker_id, 'guid', sanitize_text_field( $maker['gigya'] ) ) ) ? $message['success'][]  .= 'Gigya ID ' . $process_completed : $messages['errors'][] .= 'Gigya ID Not ' . $process_completed;
 
 		// Add Update the faire taxonomy
-		// $term_status = wp_set_post_terms( $maker_id, $maker['mfei_record'], 'faire', true );
-		// ( $term_status ) ? $messages['success'][] .= 'MF ' . $process_completed       : $messages['errors'][] .= 'MF Not ' . $process_completed;
-
-		var_dump($maker_post);
+		$term_status = wp_set_object_terms( $maker_id, $maker['mfei_record'], 'faire', true );
+		( $term_status ) ? $messages['success'][] .= 'MF ' . $process_completed       : $messages['errors'][] .= 'MF Not ' . $process_completed;
 
 		// Add our New Maker ID to the messages
 		$messages['maker_id'] .= $maker_id;

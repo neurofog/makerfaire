@@ -150,10 +150,11 @@ class MAKE_CLI extends WP_CLI_Command {
 			$content = (array) json_decode( str_replace( "\'", "'", $app->post_content ) );
 			$mfei_records = wp_get_post_terms($app->ID, 'faire');
 
+			// Get whatever faire taxonomy a maker already exists plus the current faire
 			$count = 1;
 			$mfei_record = '';
 			foreach ( $mfei_records as $single_mfei_record ) {
-				$mfei_record .= ( $count >= 2 ) ? ', ' . $single_mfei_record->term_id : $single_mfei_record->term_id;
+				$mfei_record .= ( $count >= 2 ) ? ', ' . $single_mfei_record->slug : $single_mfei_record->slug;
 				$count++;
 			}
 
@@ -170,9 +171,10 @@ class MAKE_CLI extends WP_CLI_Command {
 				'gigya'    	  => ( ! is_array( $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ] ) ? $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ] : $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ][0] ),
 				'mfei_record' => $mfei_record,
 			);
-
+			
 			// Update or create our individual maker and report back.
-			$maker_status = $mfform->add_to_maker_cpt( $maker );
+			if ( ! empty( $maker['title'] ) )
+				$maker_status = $mfform->add_to_maker_cpt( $maker );
 
 			// Show the output of what we just did.
 			if ( isset( $maker_status ) && is_array( $maker_status ) ) {
@@ -215,7 +217,8 @@ class MAKE_CLI extends WP_CLI_Command {
 						$mkaer['gigya'] = $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ][ $i ];
 
 						// Update or create our individual maker and report back.
-						$maker_status = $mfform->add_to_maker_cpt( $maker );
+						if ( ! empty( $maker['title'] ) )
+							$maker_status = $mfform->add_to_maker_cpt( $maker );
 
 						// Show the output of what we just did.
 						if ( isset( $maker_status ) && is_array( $maker_status ) ) {
