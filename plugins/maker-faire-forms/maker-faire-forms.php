@@ -3609,7 +3609,7 @@ class MAKER_FAIRE_FORM {
 	* @param string $key The key to look for
 	* @param boolean|string $reverse The form type to reverse look up or false
 	* =====================================================================*/
-	private function merge_fields( $key, $reverse = false ) {
+	public function merge_fields( $key, $reverse = false ) {
 		$conv = array( 
 			'project_name'     => array( 
 				'exhibit'   => 'project_name', 
@@ -3651,16 +3651,21 @@ class MAKER_FAIRE_FORM {
 				'performer' => 'private_description',
 				'presenter' => 'presenter_bio' 
 			),
+			'user_gigya'	   => array(
+				'exhibit'	=> 'm_maker_gigyaid',
+				'performer' => 'uid',
+				'presenter' => 'presenter_gigyaid'
+			),
 		);
 
-		if ( $reverse && isset( $conv[$key][$reverse] ) )
-			return $conv[$key][$reverse];
+		if ( $reverse && isset( $conv[ $key ][ $reverse ] ) )
+			return $conv[ $key ][ $reverse ];
 
-		if ( $reverse && !isset( $conv[$key][$reverse] ) )
+		if ( $reverse && ! isset( $conv[ $key ][ $reverse ] ) )
 			return false;
 
-		foreach( $conv as $conv_key => $conv_a) {
-			if (  !$reverse && in_array( $key, $conv_a ) )
+		foreach ( $conv as $conv_key => $conv_a ) {
+			if ( ! $reverse && in_array( $key, $conv_a ) )
 				return $conv_key;
 		}
 
@@ -3684,12 +3689,12 @@ class MAKER_FAIRE_FORM {
 	/*
 	* Get all posts with type mf_form
 	*
-	* @access private
+	* @access public
 	* @param string|null $sort Whether and how the forms should be sorted.
 	* @param string $status The status of the application
 	* @return array Maker Faire Forms
 	* =====================================================================*/
-	private function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = 'world-maker-faire-new-york-2013' ) {
+	public function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = 'world-maker-faire-new-york-2013' ) {
 
 		$args = array(
 			'posts_per_page' => 1999,
@@ -3932,6 +3937,97 @@ class MAKER_FAIRE_FORM {
 			
 			update_option( $opt, 2 );
 		}
+	}
+
+
+	/**
+	 * Creates new makers in our Makers custom post type. Primarily used for our mobile app for the time being.
+	 * @param array  $maker      The array of a single maker
+	 * @param string $faire_slug The default faire we want to associate this maker to.
+	 */
+	public function add_to_maker_cpt( $maker, $faire_slug = 'world-maker-faire-new-york-2013' ) {
+		// Setup a array of messages
+		$messages = array(
+			'errors'   => array(),
+			'success'  => array(),
+			'maker_id' => '',
+		);
+
+		// Get the list of makers so we can ensure if a maker exists or not
+		$list_of_makers = new WP_Query( array(
+			'posts_per_page' => 1,
+			'post_type' => 'maker',
+			'meta_key' => 'email',
+			'meta_value' => $maker['email'],
+		) );
+		$existing_maker = $list_of_makers->get_posts();
+
+		// Fall back incase a maker doesn't have an email setup, but still have an account.
+		$existing_maker_title = wpcom_vip_get_page_by_title( htmlspecialchars( $maker['title'], ENT_QUOTES ), OBJECT, 'maker' );
+
+		// Create our post array
+		$maker_post = array(
+			'post_title'   => esc_attr( $maker['title'] ),
+			'post_content' => wp_kses_post( $maker['content'] ),
+			'post_status'  => 'publish',
+			'post_type'	   => 'maker',
+		);
+
+		// Check if a makers email or name doesn't exist
+		if ( empty( $existing_maker ) || ! $existing_maker_title ) {
+
+			// Create our post and save it's info to a variable for use in adding post meta and error checking
+			$maker_id = wp_insert_post( $maker_post );
+
+			// Cheack if everything went well when creating our post
+			( is_wp_error( $maker_id ) ) ? $messages['errors'][] .= 'MAKER CREATION FAILED' : $messages['success'][] .= 'MAKER CREATED';
+
+			$process_completed = 'Saved';
+
+		} else {
+			
+			// Since our post already exists, we should return it's ID so we can update
+			$maker_id = $existing_maker[0]->ID;
+
+			// Add our ID to the post array
+			$maker_post['ID'] = $maker_id;
+
+			// Update our maker post
+			// $maker_id_updated = wp_update_post( $maker_post );
+
+			// Cheack if everything went well when creating our post
+			( is_wp_error( $maker_id_updated ) ) ? $messages['errors'][] .= 'MAKER UPDATE FAILED' : $messages['success'][] .= 'MAKER UPDATED';
+
+			$process_completed = 'Updated';
+
+		}
+
+		// Add the maker email
+		( update_post_meta( $maker_id, 'email', sanitize_email( $maker['email'] ) ) )     ? $messages['success'][] .= 'Email ' . $process_completed    : $messages['errors'][] .= 'Email Not ' . $process_completed;
+
+		// Add the maker photo
+		( update_post_meta( $maker_id, 'photo', esc_url( $maker['photo'] ) ) )     	   	  ? $messages['success'][] .= 'Photo ' . $process_completed    : $messages['errors'][] .= 'Photo Not ' . $process_completed;
+
+		// Add the maker website
+		( update_post_meta( $maker_id, 'website', esc_url( $maker['website'] ) ) ) 	   	  ? $messages['success'][] .= 'Website ' . $process_completed  : $messages['errors'][] .= 'Website Not ' . $process_completed;
+
+		// Add the maker video
+		( update_post_meta( $maker_id, 'video', esc_url( $maker['video'] ) ) )     	   	  ? $messages['success'][] .= 'Video ' . $process_completed    : $messages['errors'][] .= 'Video Not ' . $process_completed;
+
+		// Add the MF Event ID
+		( add_post_meta( $maker_id, 'mfei_record', absint( $maker['app_id'] ) ) ) 		  ? $messages['success'][] .= 'Event ID ' . $process_completed : $messages['errors'][] .= 'Event ID Not ' . $process_completed;
+
+		// Add the Maker Gigya ID
+		( update_post_meta( $maker_id, 'guid', sanitize_text_field( $maker['gigya'] ) ) ) ? $message['success'][]  .= 'Gigya ID ' . $process_completed : $messages['errors'][] .= 'Gigya ID Not ' . $process_completed;
+
+		// Add Update the faire taxonomy
+		$term_status = wp_set_object_terms( $maker_id, $maker['mfei_record'], 'faire', true );
+		( $term_status ) ? $messages['success'][] .= 'MF ' . $process_completed       : $messages['errors'][] .= 'MF Not ' . $process_completed;
+
+		// Add our New Maker ID to the messages
+		$messages['maker_id'] .= $maker_id;
+
+		return $messages;
 	}
 }
 

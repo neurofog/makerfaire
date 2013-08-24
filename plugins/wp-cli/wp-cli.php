@@ -32,7 +32,7 @@ class MAKE_CLI extends WP_CLI_Command {
 		$query = new WP_Query( $args );
 
 		while ( $query->have_posts() ) : $query->the_post();
-		global $post;
+			global $post;
 			setup_postdata($post);
 			WP_CLI::line( get_the_title() );
 			$json_post = json_decode( str_replace( "\'", "'", get_the_content() ) );
@@ -135,1180 +135,124 @@ class MAKE_CLI extends WP_CLI_Command {
 	 * Add makers to the maker custom post type from mf_form
 	 *
 	 * @subcommand makers
+	 * @synopsis [--faire=<faire>]
 	 * 
 	 */
 	public function mf_create_makers( $args, $assoc_args ) {
+		global $mfform;
 
-		$args = array(
-			'posts_per_page' => 2000,
-			'post_type' => 'mf_form',
-			'post_status' => 'accepted',
+		WP_CLI::line( 'Fetching Maker Faire Appliactions...' );
 
-			// Prevent new posts from affecting the order
-			'orderby' => 'ID',
-			'order' => 'ASC',
+		// Go and get all accepted applications
+		$applications = $mfform->get_all_forms( NULL, 'accepted' );
 
-			// Speed this up
-			'no_found_rows' => true,
-			'update_post_meta_cache' => false,
-			'update_post_term_cache' => false,
-		);
+		foreach( $applications as $app ) {
+			$content = (array) json_decode( str_replace( "\'", "'", $app->post_content ) );
+			$mfei_records = wp_get_post_terms($app->ID, 'faire');
 
-		// Get the first set of posts
-		$query = new WP_Query( $args );
+			// Get whatever faire taxonomy a maker already exists plus the current faire
+			$count = 1;
+			$mfei_record = '';
+			foreach ( $mfei_records as $single_mfei_record ) {
+				$mfei_record .= ( $count >= 2 ) ? ', ' . $single_mfei_record->slug : $single_mfei_record->slug;
+				$count++;
+			}
 
-		while ( $query->have_posts() ) : $query->the_post();
-		
-		global $post;
+			// Setup a new array based on our application ID.
+			$maker = array(
+				'app_type'    => $content['form_type'],
+				'app_id'   	  => $app->ID,
+				'title'    	  => $content['name'],
+				'content'  	  => ( ! is_array( $content[ $mfform->merge_fields( 'user_bio', $content['form_type'] ) ] ) ? $content[ $mfform->merge_fields( 'user_bio', $content['form_type'] ) ] : $content[ $mfform->merge_fields( 'user_bio', $content['form_type'] ) ][0] ),
+				'email'    	  => $content['email'],
+				'photo'    	  => $content[ $mfform->merge_fields( 'form_photo', $content['form_type'] ) ],
+				'website'  	  => $content[ $mfform->merge_fields( 'project_website', $content['form_type'] ) ],
+				'video'    	  => $content[ $mfform->merge_fields( 'project_video', $content['form_type'] ) ],
+				'gigya'    	  => ( ! is_array( $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ] ) ? $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ] : $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ][0] ),
+				'mfei_record' => $mfei_record,
+			);
 			
-		setup_postdata( $post );
+			// Update or create our individual maker and report back.
+			if ( ! empty( $maker['title'] ) )
+				$maker_status = $mfform->add_to_maker_cpt( $maker );
 
-		$application = json_decode( html_entity_decode( str_replace( array( "\'", "u03a9" ), array( "'", '&#8486;' ), $post->post_content ), ENT_COMPAT, 'utf-8' ) );
-		$type = ( isset( $application->form_type ) ) ? $application->form_type : 'null';
-
-		if ( $type == 'exhibit' ) {
-			WP_CLI::line( 'Exhibit' );
-
-			if ( $application->maker == 'A group or association' ) {
-				WP_CLI::line( 'A group or association | ID: ' . get_the_ID() );
-
-				$the_title = $application->group_name ? $application->group_name : $application->name;
-				$title = htmlspecialchars( $the_title );
-				$maker = get_page_by_title( $title, OBJECT, 'maker' );
-
-				echo ( isset( $maker->post_title ) ) ? WP_CLI::success( 'Found: ' . $maker->post_title ) : WP_CLI::warning( 'no title...' ) ;
-
-				if ( ! $maker ) {
-					// Setup post object...
-					$content = ( $application->group_bio ? htmlspecialchars_decode( $application->group_bio ) : null );
-					$my_post = array(
-						'post_title'    => $title,
-						'post_content'  => $content,
-						'post_status'   => 'publish',
-						'post_type'		=> 'maker'
-					); 
-
-					$pid = wp_insert_post( $my_post );
-					if ( is_wp_error( $pid ) ) {
-						WP_CLI::warning( $title );
-					} else {
-						WP_CLI::success( $title );
-					}
-
-					$website = ( $application->project_website ) ? $application->project_website  : null;
-					if ( ! empty( $website ) ) {
-						$web = update_post_meta( $pid, 'website', $website );
-
-						if ( ! empty( $web ) ) {
-							WP_CLI::success( 'website = ' .  $website );
-						} else {
-							WP_CLI::warning( 'website = ' . $website );
-						}
-					}
-
-					$video = ( $application->project_video ) ? $application->project_video  : null;
-					if ( ! empty( $video ) ) {
-						$vid = update_post_meta( $pid, 'video', $video );
-
-						if ( ! empty( $vid ) ) {
-							WP_CLI::success( 'Video = ' .  $video );
-						} else {
-							WP_CLI::warning( 'Video = ' . $video );
-						}
-					}
-
-					$post_id = get_the_ID();
-					if ( ! empty( $post_id ) ) {
-						$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-						if ( ! empty( $mfei_record ) ) {
-							WP_CLI::success( 'mfei_record = ' . $post_id );
-						} else {
-							WP_CLI::warning( 'mfei_record = ' . $post_id );
-						}
-					}
-
-					$photo_url = ( $application->group_photo ) ? $application->group_photo : null;
-					if ( ! empty( $photo_url ) ) {
-						$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-
-						if ( ! empty( $photo ) ) {
-							WP_CLI::success( 'Photo = ' . $photo_url );
-						} else {
-							WP_CLI::warning( 'Photo = ' . $photo_url );
-						}
-					}
-
-					$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-					if ( ! empty( $mf ) ) {
-						$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-
-						if ( ! empty( $photo ) ) {
-							WP_CLI::success( 'Maker Faire = ' . $mf );
-						} else {
-							WP_CLI::warning( 'Maker Faire = ' . $mf );
-						}
-					}
-				} else {
-					$pid = $maker->ID;
-
-					$website = ( $application->project_website ) ? $application->project_website  : null;
-					if ( ! empty( $website ) ) {
-						$web = update_post_meta( $pid, 'website', $website );
-
-						if ( ! empty( $web ) ) {
-							WP_CLI::success( 'Website = ' .  $website );
-						} else {
-							WP_CLI::warning( 'Website = ' . $website );
-						}
-					}
-
-					$video = ( $application->project_video ) ? $application->project_video  : null;
-					if ( ! empty( $video ) ) {
-						$vid = update_post_meta( $pid, 'video', $video );
-
-						if ( ! empty( $vid ) ) {
-							WP_CLI::success( 'Video = ' .  $video );
-						} else {
-							WP_CLI::warning( 'Video = ' . $video );
-						}
-					}
-
-					$post_id = get_the_ID();
-					if ( ! empty( $post_id ) ) {
-						$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-						if ( ! empty( $mfei_record ) ) {
-							WP_CLI::success( 'mfei_record = ' . $post_id );
-						} else {
-							WP_CLI::warning( 'mfei_record = ' . $post_id );
-						}
-					}
-
-					$photo_url = ( $application->group_photo ) ? $application->group_photo : null;
-					if ( ! empty( $photo_url ) ) {
-						$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-
-						if ( ! empty( $photo ) ) {
-							WP_CLI::success( 'Photo = ' . $photo );
-						} else {
-							WP_CLI::warning( 'Photo = ' . $photo );
-						}
-					}
-
-					$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-					if ( ! empty( $mf ) ) {
-						$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-
-						if ( ! empty( $photo ) ) {
-							WP_CLI::success( 'Maker Faire = ' . $mf );
-						} else {
-							WP_CLI::warning( 'Maker Faire = ' . $mf );
-						}
-					}
+			// Show the output of what we just did.
+			if ( isset( $maker_status ) && is_array( $maker_status ) ) {
+				foreach ( $maker_status['errors'] as $errors ) {
+					WP_CLI::warning( $errors );
 				}
-			// Some users didn't select an maker type... so loop them here.
-			} elseif ( $application->maker == 'One maker' || $application->maker == '' ) {
-				WP_CLI::line( 'One Maker | ID: ' . get_the_ID() );
 
-				$the_title = $application->maker_name ? $application->maker_name : $application->name;
-				$title = htmlspecialchars( $the_title );
-				$maker = get_page_by_title( $title, OBJECT, 'maker' );
-
-				echo ( isset( $maker->post_title ) ) ? WP_CLI::success( 'Found: ' . $maker->post_title ) : WP_CLI::warning( 'no title...' );
-
-				if ( ! $maker ) {
-					// Setup post object...
-					$content = ( $application->maker_bio ? htmlspecialchars_decode( $application->maker_bio ) : null );
-					$my_post = array(
-						'post_title'    => $title,
-						'post_content'  => $content,
-						'post_status'   => 'publish',
-						'post_type'		=> 'maker'
-					);
-
-					$pid = wp_insert_post( $my_post );
-					if ( is_wp_error( $pid ) ) {
-						WP_CLI::warning( $title );
-					} else {
-						WP_CLI::success( $title );
-					}
-
-					$website = ( $application->project_website ) ? $application->project_website  : null;
-					if ( ! empty( $website ) ) {
-						$web = update_post_meta( $pid, 'website', $website );
-
-						if ( ! empty( $web ) ) {
-							WP_CLI::success( 'Website = ' .  $website );
-						} else {
-							WP_CLI::warning( 'Website = ' . $website );
-						}
-					}
-
-					$video = ( $application->project_video ) ? $application->project_video  : null;
-					if ( ! empty( $video ) ) {
-						$vid = update_post_meta( $pid, 'video', $video );
-
-						if ( ! empty( $vid ) ) {
-							WP_CLI::success( 'Video = ' .  $video );
-						} else {
-							WP_CLI::warning( 'Video = ' . $video );
-						}
-					}
-
-					$post_id = get_the_ID();
-					if ( ! empty( $post_id ) ) {
-						$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-						if ( ! empty( $mfei_record ) ) {
-							WP_CLI::success( 'mfei_record = ' . $post_id );
-						} else {
-							WP_CLI::warning( 'mfei_record = ' . $post_id );
-						}
-					}
-
-					$photo_url = ( $application->m_maker_photo_thumb ) ? $application->m_maker_photo_thumb : null;
-					if ( ! empty( $photo_url ) ) {
-						$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-
-						if ( ! empty( $photo ) ) {
-							WP_CLI::success( 'Photo = ' . $photo_url );
-						} else {
-							WP_CLI::warning( 'Photo = ' . $photo_url );
-						}
-					}
-
-					$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-					if ( !empty( $mf ) ) {
-						$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-
-						if ( !empty( $photo ) ) {
-							WP_CLI::success( 'Maker Faire = ' . $mf );
-						} else {
-							WP_CLI::warning( 'Maker Faire = ' . $mf );
-						}
-					}
-				} else {
-					$pid = $maker->ID;
-
-					$website = ( $application->project_website ) ? $application->project_website  : null;
-					if ( ! empty( $website ) ) {
-						$web = update_post_meta( $pid, 'website', $website );
-
-						if ( ! empty( $web ) ) {
-							WP_CLI::success( 'Website = ' .  $website );
-						} else {
-							WP_CLI::warning( 'Website = ' . $website );
-						}
-					}
-
-					$video = ( $application->project_video ) ? $application->project_video  : null;
-					if ( !empty( $video ) ) {
-						$vid = update_post_meta( $pid, 'video', $video );
-
-						if ( !empty( $vid ) ) {
-							WP_CLI::success( 'Video = ' .  $video );
-						} else {
-							WP_CLI::warning( 'Video = ' . $video );
-						}
-					}
-					$post_id = get_the_ID();
-					if ( !empty( $post_id ) ) {
-						$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-						if ( !empty( $mfei_record ) ) {
-							WP_CLI::success( 'mfei_record = ' . $post_id );
-						} else {
-							WP_CLI::warning( 'mfei_record = ' . $post_id );
-						}
-					}
-					$photo_url = ( $application->m_maker_photo_thumb ) ? $application->m_maker_photo_thumb : null;
-					if ( !empty( $photo_url ) ) {
-						$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-
-						if ( !empty( $photo ) ) {
-							WP_CLI::success( 'Photo = ' . $photo );
-						} else {
-							WP_CLI::warning( 'Photo = ' . $photo );
-						}
-					}
-					$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-					if ( !empty( $mf ) ) {
-						$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-
-						if ( !empty( $photo ) ) {
-							WP_CLI::success( 'Maker Faire = ' . $mf );
-						} else {
-							WP_CLI::warning( 'Maker Faire = ' . $mf );
-						}
-					}
+				foreach ( $maker_status['success'] as $success ) {
+					WP_CLI::success( $success );
 				}
-			}  elseif ( $application->maker == 'A list of makers' ) {
-				WP_CLI::line('A List of Makers | ID: ' . get_the_ID() );
+			}
+
+			// Output some feed back..
+			WP_CLI::line( ' | APP TYPE: ' . $maker['app_type'] );
+			WP_CLI::line( ' | APP ID: ' . $maker['app_id'] );
+			WP_CLI::line( ' | MAKER ID: ' . $maker_status['maker_id'] );
+			WP_CLI::line( ' | NAME: ' . $maker['title'] );
+			WP_CLI::line( ' | EMAIL: ' . $maker['email'] );
+			WP_CLI::line( ' | PHOTO: ' . $maker['photo'] );
+			WP_CLI::line( ' | WEBSITE: ' . $maker['website'] );
+			WP_CLI::line( ' | VIDEO: ' . $maker['video'] );
+			WP_CLI::line( ' | GUID: ' . $maker['gigya'] );
+
+			// Leave some evidence we are done with this application.
+			WP_CLI::line( ' ----------------------------------------' );
+			WP_CLI::line( '' );
+
+			// Process any additional makers that are setup in an application
+			foreach ( array( 'exhibit' => 'm_maker_', 'presenter' => 'presenter' ) as $type => $prefix ) {
 				
-				$maker_list = ( isset( $application->m_maker_name ) ) ? $application->m_maker_name : $application->project_name;
-				$i = 0;
+				// Check if the form field contains more than one maker name and email.
+				if ( $content['form_type'] == $type && is_array( $content[ $prefix . 'name' ] ) && is_array( $content[ $prefix . 'email' ] ) ) {
 
-				if ( is_array( $maker_list ) ) {
-					foreach ( $maker_list as $maker_name ) {
-						$the_title = $application->m_maker_name[ $i ] ? $application->m_maker_name[ $i ] : $application->project_name;
-						$title = htmlspecialchars( $the_title );
-						$maker = get_page_by_title( $title, OBJECT, 'maker' );
+					// Loop through each maker and count them
+					for ( $i = 1; $i < count( $content[ $prefix . 'name' ] ); $i++ ) {
 
-						echo ( isset( $maker->post_title ) ) ? WP_CLI::success( 'Found: ' . $maker->post_title ) : WP_CLI::warning( 'no title...' ) ;
+						// Lets add their credentials to a new row
+						$maker['title'] = $content[ $prefix . 'name' ][ $i ];
+						$maker['email'] = $content[ $prefix . 'email' ][ $i ];
+						$mkaer['gigya'] = $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ][ $i ];
 
-						if ( ! $maker ) {
-							// Setup post object...
-							$content = ( isset( $application->m_maker_bio[ $i ] ) ? htmlspecialchars_decode( $application->m_maker_bio[ $i ] ) : null);
-							$my_post = array(
-								'post_title'    => $title,
-								'post_content'  => $content,
-								'post_status'   => 'publish',
-								'post_type'		=> 'maker'
-							);
+						// Update or create our individual maker and report back.
+						if ( ! empty( $maker['title'] ) )
+							$maker_status = $mfform->add_to_maker_cpt( $maker );
 
-							$pid = wp_insert_post( $my_post );
-							if ( is_wp_error( $pid ) ) {
-								WP_CLI::warning( 'Maker Name: ' . $title );
-							} else {
-								WP_CLI::success( 'Maker Name: ' . $title );
+						// Show the output of what we just did.
+						if ( isset( $maker_status ) && is_array( $maker_status ) ) {
+							foreach ( $maker_status['errors'] as $errors ) {
+								WP_CLI::warning( $errors );
 							}
 
-							$website = ( $application->project_website ) ? $application->project_website  : null;
-							if ( ! empty( $website ) ) {
-								$web = update_post_meta( $pid, 'website', $website );
-
-								if ( ! empty( $web ) ) {
-									WP_CLI::success( 'Website = ' .  $website );
-								} else {
-									WP_CLI::warning( 'Website = ' . $website );
-								}
-							}
-
-							$video = ( $application->project_video ) ? $application->project_video  : null;
-							if ( ! empty( $video ) ) {
-								$vid = update_post_meta( $pid, 'video', $video );
-
-								if ( ! empty( $vid ) ) {
-									WP_CLI::success( 'Video = ' .  $video );
-								} else {
-									WP_CLI::warning( 'Video = ' . $video );
-								}
-							}
-
-							$post_id = get_the_ID();
-							if ( ! empty( $post_id ) ) {
-								$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-								if ( ! empty( $mfei_record ) ) {
-									WP_CLI::success( 'mfei_record = ' . $post_id );
-								} else {
-									WP_CLI::warning( 'mfei_record = ' . $post_id );
-								}
-							}
-
-							$photo_url = ( $application->m_maker_photo[ $i ] ) ? $application->m_maker_photo[ $i ] : null;
-							if ( ! empty( $photo_url ) ) {
-								$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-
-								if ( ! empty( $photo ) ) {
-									WP_CLI::success( 'Photo = ' . $photo_url );
-								} else {
-									WP_CLI::warning( 'Photo = ' . $photo_url );
-								}
-							}
-
-							$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-							if ( ! empty( $mf ) ) {
-								$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-
-								if ( ! empty( $photo ) ) {
-									WP_CLI::success( 'Maker Faire = ' . $mf );
-								} else {
-									WP_CLI::warning( 'Maker Faire = ' . $mf );
-								}
-							}
-						} else {
-							WP_CLI::line( 'Updating Meta...' );
-							$pid = $maker->ID;
-
-							$website = ( $application->project_website ) ? $application->project_website  : null;
-							if ( ! empty( $website ) ) {
-								$web = update_post_meta( $pid, 'website', $website );
-
-								if ( ! empty( $web ) ) {
-									WP_CLI::success( 'Website = ' .  $website );
-								} else {
-									WP_CLI::warning( 'Website = ' . $website );
-								}
-							}
-
-							$video = ( $application->project_video ) ? $application->project_video  : null;
-							if ( ! empty( $video ) ) {
-								$vid = update_post_meta( $pid, 'video', $video );
-
-								if ( ! empty( $vid ) ) {
-									WP_CLI::success( 'Video = ' .  $video );
-								} else {
-									WP_CLI::warning( 'Video = ' . $video );
-								}
-							}
-
-							$post_id = get_the_ID();
-							if ( ! empty( $post_id ) ) {
-								$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-								if ( ! empty( $mfei_record ) ) {
-									WP_CLI::success( 'mfei_record = ' . $post_id );
-								} else {
-									WP_CLI::warning( 'mfei_record = ' . $post_id );
-								}
-							}
-
-							$photo_url = ( isset( $application->m_maker_photo[ $i ] ) ) ? $application->m_maker_photo[ $i ] : null;
-							if ( ! empty( $photo_url ) ) {
-								$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-
-								if ( ! empty( $photo ) ) {
-									WP_CLI::success( 'Photo = ' . $photo );
-								} else {
-									WP_CLI::warning( 'Photo = ' . $photo );
-								}
-							}
-
-							$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-							if ( ! empty( $mf ) ) {
-								$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-
-								if ( ! empty( $photo ) ) {
-									WP_CLI::success( 'Maker Faire = ' . $mf );
-								} else {
-									WP_CLI::warning( 'Maker Faire = ' . $mf );
-								}
-							}
-						}
-						$i++;
-					}
-				// Some users failed to fill in their name... so we need to provide something?
-				} else {
-					$the_title = $application->name ? $application->name : $application->project_name;
-					$title = htmlspecialchars( $the_title );
-					$maker = get_page_by_title( $title, OBJECT, 'maker' );
-
-					echo ( isset( $maker->post_title ) ) ? WP_CLI::success( 'Found: ' . $maker->post_title ) : WP_CLI::warning( 'no title...' ) ;
-
-					if ( ! $maker ) {
-						// Setup post object...
-						$content = ( isset( $application->m_maker_bio[0] ) ? htmlspecialchars_decode( $application->m_maker_bio[0] ) : null);
-						$my_post = array(
-							'post_title'    => $title,
-							'post_content'  => $content,
-							'post_status'   => 'publish',
-							'post_type'		=> 'maker'
-						);
-
-						$pid = wp_insert_post( $my_post );
-						if ( is_wp_error( $pid ) ) {
-							WP_CLI::warning( 'Maker Name: ' . $title );
-						} else {
-							WP_CLI::success( 'Maker Name: ' . $title );
-						}
-
-						$website = ( $application->project_website ) ? $application->project_website  : null;
-						if ( ! empty( $website ) ) {
-							$web = update_post_meta( $pid, 'website', $website );
-
-							if ( ! empty( $web ) ) {
-								WP_CLI::success( 'Website = ' .  $website );
-							} else {
-								WP_CLI::warning( 'Website = ' . $website );
+							foreach ( $maker_status['success'] as $success ) {
+								WP_CLI::success( $success );
 							}
 						}
 
-						$video = ( $application->project_video ) ? $application->project_video  : null;
-						if ( ! empty( $video ) ) {
-							$vid = update_post_meta( $pid, 'video', $video );
-
-							if ( ! empty( $vid ) ) {
-								WP_CLI::success( 'Video = ' .  $video );
-							} else {
-								WP_CLI::warning( 'Video = ' . $video );
-							}
-						}
-
-						$post_id = get_the_ID();
-						if ( ! empty( $post_id ) ) {
-							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-							if ( ! empty( $mfei_record ) ) {
-								WP_CLI::success( 'mfei_record = ' . $post_id );
-							} else {
-								WP_CLI::warning( 'mfei_record = ' . $post_id );
-							}
-						}
-
-						$photo_url = ( $application->m_maker_photo[0] ) ? $application->m_maker_photo[0] : null;
-						if ( ! empty( $photo_url ) ) {
-							$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-
-							if ( ! empty( $photo ) ) {
-								WP_CLI::success( 'Photo = ' . $photo_url );
-							} else {
-								WP_CLI::warning( 'Photo = ' . $photo_url );
-							}
-						}
-
-						$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-						if ( ! empty( $mf ) ) {
-							$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-
-							if ( ! empty( $photo ) ) {
-								WP_CLI::success( 'Maker Faire = ' . $mf );
-							} else {
-								WP_CLI::warning( 'Maker Faire = ' . $mf );
-							}
-						}
-					} else {
-						WP_CLI::line( 'Updating Meta...' );
-						$pid = $maker->ID;
-
-						$website = ( $application->project_website ) ? $application->project_website  : null;
-						if ( ! empty( $website ) ) {
-							$web = update_post_meta( $pid, 'website', $website );
-
-							if ( ! empty( $web ) ) {
-								WP_CLI::success( 'Website = ' .  $website );
-							} else {
-								WP_CLI::warning( 'Website = ' . $website );
-							}
-						}
-
-						$video = ( $application->project_video ) ? $application->project_video  : null;
-						if ( ! empty( $video ) ) {
-							$vid = update_post_meta( $pid, 'video', $video );
-
-							if ( ! empty( $vid ) ) {
-								WP_CLI::success( 'Video = ' .  $video );
-							} else {
-								WP_CLI::warning( 'Video = ' . $video );
-							}
-						}
-
-						$post_id = get_the_ID();
-						if ( ! empty( $post_id ) ) {
-							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-							if ( ! empty( $mfei_record ) ) {
-								WP_CLI::success( 'mfei_record = ' . $post_id );
-							} else {
-								WP_CLI::warning( 'mfei_record = ' . $post_id );
-							}
-						}
-
-						$photo_url = ( isset( $application->m_maker_photo[0] ) ) ? $application->m_maker_photo[0] : null;
-						if ( ! empty( $photo_url ) ) {
-							$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-
-							if ( ! empty( $photo ) ) {
-								WP_CLI::success( 'Photo = ' . $photo );
-							} else {
-								WP_CLI::warning( 'Photo = ' . $photo );
-							}
-						}
-
-						$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-						if ( ! empty( $mf ) ) {
-							$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-
-							if ( ! empty( $photo ) ) {
-								WP_CLI::success( 'Maker Faire = ' . $mf );
-							} else {
-								WP_CLI::warning( 'Maker Faire = ' . $mf );
-							}
-						}
-					}
-				}
-			}
-		} elseif ( $type == 'presenter' ) {
-			WP_CLI::line( 'Presenter' );
-
-			if ( $application->presentation_type == 'Presentation' ) {
-				WP_CLI::line( 'Presentation | ID: ' . get_the_ID() );
-
-				$the_title = $application->presenter_name[0] ? $application->presenter_name[0] : $application->name;
-				$title = htmlspecialchars( $the_title );
-				$presentation = get_page_by_title( $title, OBJECT, 'maker' );
-
-				echo ( isset( $presentation->post_title ) ) ? WP_CLI::success( 'Found: ' . $presentation->post_title ) : WP_CLI::warning( 'no title...' );
-
-				if ( ! $presentation ) {
-					// Setup post object...
-					$content = ( $application->presenter_bio[0] ? htmlspecialchars_decode( $application->presenter_bio[0] ) : null );
-					$my_post = array(
-						'post_title'    => $title,
-						'post_content'  => $content,
-						'post_status'   => 'publish',
-						'post_type'		=> 'maker'
-					);
-
-					$pid = wp_insert_post( $my_post );
-					if ( is_wp_error( $pid ) ) {
-						WP_CLI::warning( $title );
-					} else {
-						WP_CLI::success( $title );
-					}
-
-					$website = ( $application->presentation_website ) ? $application->presentation_website  : null;
-					if ( ! empty( $website ) ) {
-						$web = update_post_meta( $pid, 'presentation_website', $website );
-
-						if ( !empty( $web ) ) {
-							WP_CLI::success( 'Website = ' .  $website );
-						} else {
-							WP_CLI::warning( 'Website = ' . $website );
-						}
-					}
-
-					$video = ( $application->video ) ? $application->video  : null;
-					if ( ! empty( $video ) ) {
-						$vid = update_post_meta( $pid, 'video', $video );
-
-						if ( ! empty( $vid ) ) {
-							WP_CLI::success( 'Video = ' .  $video );
-						} else {
-							WP_CLI::warning( 'Video = ' . $video );
-						}
-					}
-
-					$post_id = get_the_ID();
-					if ( ! empty( $post_id ) ) {
-						$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-						if ( ! empty( $mfei_record ) ) {
-							WP_CLI::success( 'mfei_record = ' . $post_id );
-						} else {
-							WP_CLI::warning( 'mfei_record = ' . $post_id );
-						}
-					}
-
-					$photo_url = ( $application->presenter_photo[0] ) ? $application->presenter_photo[0] : null;
-					if ( ! empty( $photo_url ) ) {
-						$photo = add_post_meta( $pid, 'presenter_photo', $photo_url, true );
-
-						if ( ! empty( $photo ) ) {
-							WP_CLI::success( 'Photo = ' . $photo_url );
-						} else {
-							WP_CLI::warning( 'Photo = ' . $photo_url );
-						}
-					}
-
-					// Get the Maker Faire year
-					$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-					if ( ! empty( $mf ) ) {
-						$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-						if ( ! empty( $photo ) ) {
-							WP_CLI::success( 'Maker Faire = ' . $mf );
-						} else {
-							WP_CLI::warning( 'Maker Faire = ' . $mf );
-						}
-					}
-				} else {
-					WP_CLI::line( 'Updating Meta...' );
-					$pid = $presentation->ID;
-
-					$website = ( $application->presentation_website ) ? $application->presentation_website  : null;
-					if ( ! empty( $website ) ) {
-						$web = update_post_meta( $pid, 'presentation_website', $website );
-
-						if ( ! empty( $web ) ) {
-							WP_CLI::success( 'Video = ' .  $website );
-						} else {
-							WP_CLI::warning( 'Video = ' . $website );
-						}
-					}
-
-					$video = ( $application->video ) ? $application->video  : null;
-					if ( ! empty( $video ) ) {
-						$vid = update_post_meta( $pid, 'video', $video );
-
-						if ( ! empty( $vid ) ) {
-							WP_CLI::success( 'Video = ' .  $video );
-						} else {
-							WP_CLI::warning( 'Video = ' . $video );
-						}
-					}
-
-					$post_id = get_the_ID();
-					if ( ! empty( $post_id ) ) {
-						$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-						if ( ! empty( $mfei_record ) ) {
-							WP_CLI::success( 'mfei_record updated = ' . $post_id );
-						} else {
-							WP_CLI::warning( 'mfei_record updated = ' . $post_id );
-						}
-					}
-
-					$photo_url = ( $application->presenter_photo[0] ) ? $application->presenter_photo[0] : null;
-					if ( ! empty( $photo_url ) ) {
-						$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-
-						if ( ! empty( $photo ) ) {
-							WP_CLI::success( 'Photo = ' . $photo );
-						} else {
-							WP_CLI::warning( 'Photo = ' . $photo );
-						}
-					}
-
-					$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-					if ( ! empty( $mf ) ) {
-						$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-
-						if ( ! empty( $photo ) ) {
-							WP_CLI::success( 'Maker Faire = ' . $mf );
-						} else {
-							WP_CLI::warning( 'Maker Faire = ' . $mf );
-						}
-					}
-				}
-			} elseif ( $application->presentation_type == 'Panel Presentation' ) {
-				WP_CLI::line( 'Panel Presentation | ID: ' . get_the_ID() );
-
-				$presentation_list = ( isset( $application->presenter_name ) ) ? $application->presenter_name : $application->name;
-				$i = 0;
-
-				if ( is_array( $presentation_list ) ) {
-					foreach ( $presentation_list as $presenter_name ) {
-						// We may need to revise this? If $application->m_maker_name[ $i ] return false, we may end up generating multiple
-						// makers with the same title. If there are two empty maker name fields, that will generate dups.
-						// Any other good idea around this? - CG
-						$the_title = $application->presenter_name[ $i ] ? $application->presenter_name[ $i ] : $application->name;
-						$title = htmlspecialchars( $the_title );
-						$maker = get_page_by_title( $title, OBJECT, 'maker' );
-
-						echo ( isset( $maker->post_title ) ) ? WP_CLI::success( 'Found: ' . $maker->post_title ) : WP_CLI::warning( 'no title...' ) ;
-
-						if ( ! $maker ) {
-							// Setup post object...
-							$content = ( isset( $application->presenter_bio[ $i ] ) ? htmlspecialchars_decode( $application->presenter_bio[ $i ] ) : null);
-							$my_post = array(
-								'post_title'    => $title,
-								'post_content'  => $content,
-								'post_status'   => 'publish',
-								'post_type'		=> 'maker'
-							);
-
-							$pid = wp_insert_post( $my_post );
-							if ( is_wp_error( $pid ) ) {
-								WP_CLI::warning( 'Presenter Name: ' . $title );
-							} else {
-								WP_CLI::success( 'Presenter Name: ' . $title );
-							}
-
-							$website = ( $application->presentation_website ) ? $application->presentation_website  : null;
-							if ( ! empty( $website ) ) {
-								$web = update_post_meta( $pid, 'website', $website );
-								if ( ! empty( $web ) ) {
-									WP_CLI::success( 'website = ' .  $website );
-								} else {
-									WP_CLI::warning( 'website = ' . $website );
-								}
-							}
-
-							$video = ( $application->video ) ? $application->video  : null;
-							if ( ! empty( $video ) ) {
-								$vid = update_post_meta( $pid, 'video', $video );
-								if ( ! empty( $vid ) ) {
-									WP_CLI::success( 'Video = ' .  $video );
-								} else {
-									WP_CLI::warning( 'Video = ' . $video );
-								}
-							}
-
-							$post_id = get_the_ID();
-							if ( ! empty( $post_id ) ) {
-								$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-								if ( ! empty( $mfei_record ) ) {
-									WP_CLI::success( 'mfei_record = ' . $post_id );
-								} else {
-									WP_CLI::warning( 'mfei_record = ' . $post_id );
-								}
-							}
-
-							$photo_url = ( $application->presenter_photo[ $i ] ) ? $application->presenter_photo[ $i ] : null;
-							if ( ! empty( $photo_url ) ) {
-								$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-
-								if ( ! empty( $photo ) ) {
-									WP_CLI::success( 'Photo = ' . $photo_url );
-								} else {
-									WP_CLI::warning( 'Photo = ' . $photo_url );
-								}
-							}
-
-							$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-							if ( ! empty( $mf ) ) {
-								$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-
-								if ( ! empty( $photo ) ) {
-									WP_CLI::success( 'Maker Faire = ' . $mf );
-								} else {
-									WP_CLI::warning( 'Maker Faire = ' . $mf );
-								}
-							}
-						} else {
-							WP_CLI::line( 'Updating Meta...' );
-							$pid = $maker->ID;
-
-							$website = ( $application->presentation_website ) ? $application->presentation_website  : null;
-							if ( ! empty( $website ) ) {
-								$web = update_post_meta( $pid, 'website', $website );
-
-								if ( ! empty( $web ) ) {
-									WP_CLI::success( 'website = ' .  $website );
-								} else {
-									WP_CLI::warning( 'website = ' . $website );
-								}
-							}
-
-							$video = ( $application->video ) ? $application->video  : null;
-							if ( ! empty( $video ) ) {
-								$vid = update_post_meta( $pid, 'video', $video );
-
-								if ( ! empty( $vid ) ) {
-									WP_CLI::success( 'Video = ' .  $video );
-								} else {
-									WP_CLI::warning( 'Video = ' . $video );
-								}
-							}
-
-							$post_id = get_the_ID();
-							if ( ! empty( $post_id ) ) {
-								$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-								if ( ! empty( $mfei_record ) ) {
-									WP_CLI::success( 'mfei_record = ' . $post_id );
-								} else {
-									WP_CLI::warning( 'mfei_record = ' . $post_id );
-								}
-							}
-
-							$photo_url = ( isset( $application->presenter_photo[ $i ] ) ) ? $application->presenter_photo[ $i ] : null;
-							if ( ! empty( $photo_url ) ) {
-								$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-
-								if ( ! empty( $photo ) ) {
-									WP_CLI::success( 'Photo = ' . $photo );
-								} else {
-									WP_CLI::warning( 'Photo = ' . $photo );
-								}
-							}
-
-							$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-							if ( ! empty( $mf ) ) {
-								$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-
-								if ( ! empty( $photo ) ) {
-									WP_CLI::success( 'Maker Faire = ' . $mf );
-								} else {
-									WP_CLI::warning( 'Maker Faire = ' . $mf );
-								}
-							}
-						}
-						$i++;
-					}
-				// There are inconsistencies with the form names... We need to handle an instance that is a panel but 
-				// doesn't contain an array of panelists. That makes me a sad panda.
-				} else {
-					$the_title = $application->name ? $application->name : null;
-					$title = htmlspecialchars( $the_title );
-					$maker = get_page_by_title( $title, OBJECT, 'maker' );
-
-					echo ( isset( $maker->post_title ) ) ? WP_CLI::success( 'Found: ' . $maker->post_title ) : WP_CLI::warning( 'no title...' ) ;
-
-					if ( ! $maker ) {
-						// Setup post object...
-						$content = ( isset( $application->presenter_bio[0] ) ? htmlspecialchars_decode( $application->presenter_bio[0] ) : null);
-						$my_post = array(
-							'post_title'    => $title,
-							'post_content'  => $content,
-							'post_status'   => 'publish',
-							'post_type'		=> 'maker'
-						); 
-
-						$pid = wp_insert_post( $my_post );
-						if ( is_wp_error( $pid ) ) {
-							WP_CLI::warning( 'Presenter Name: ' . $title );
-						} else {
-							WP_CLI::success( 'Presenter Name: ' . $title );
-						}
-
-						$website = ( $application->presentation_website ) ? $application->presentation_website  : null;
-						if ( ! empty( $website ) ) {
-							$web = update_post_meta( $pid, 'website', $website );
-
-							if ( ! empty( $web ) ) {
-								WP_CLI::success( 'website = ' .  $website );
-							} else {
-								WP_CLI::warning( 'website = ' . $website );
-							}
-						}
-
-						$video = ( $application->video ) ? $application->video  : null;
-						if ( ! empty( $video ) ) {
-							$vid = update_post_meta( $pid, 'video', $video );
-
-							if ( ! empty( $vid ) ) {
-								WP_CLI::success( 'Video = ' .  $video );
-							} else {
-								WP_CLI::warning( 'Video = ' . $video );
-							}
-						}
-
-						$post_id = get_the_ID();
-						if ( ! empty( $post_id ) ) {
-							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-							if ( ! empty( $mfei_record ) ) {
-								WP_CLI::success( 'mfei_record created = ' . $post_id );
-							} else {
-								WP_CLI::warning( 'mfei_record created = ' . $post_id );
-							}
-						}
-
-						$photo_url = ( $application->presenter_photo[0] ) ? $application->presenter_photo[0] : null;
-						if ( ! empty( $photo_url ) ) {
-							$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-
-							if ( ! empty( $photo ) ) {
-								WP_CLI::success( 'Photo = ' . $photo_url );
-							} else {
-								WP_CLI::warning( 'Photo = ' . $photo_url );
-							}
-						}
-
-						$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-						if ( ! empty( $mf ) ) {
-							$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-
-							if ( ! empty( $photo ) ) {
-								WP_CLI::success( 'Maker Faire = ' . $mf );
-							} else {
-								WP_CLI::warning( 'Maker Faire = ' . $mf );
-							}
-						}
-					} else {
-						WP_CLI::line( 'Updating Meta...' );
-						$pid = $maker->ID;
-
-						$website = ( $application->presentation_website ) ? $application->presentation_website  : null;
-						if ( ! empty( $website ) ) {
-							$web = update_post_meta( $pid, 'website', $website );
-
-							if ( ! empty( $web ) ) {
-								WP_CLI::success( 'website = ' .  $website );
-							} else {
-								WP_CLI::warning( 'website = ' . $website );
-							}
-						}
-
-						$video = ( $application->video ) ? $application->video  : null;
-						if ( ! empty( $video ) ) {
-							$vid = update_post_meta( $pid, 'video', $video );
-
-							if ( ! empty( $vid ) ) {
-								WP_CLI::success( 'Video = ' .  $video );
-							} else {
-								WP_CLI::warning( 'Video = ' . $video );
-							}
-						}
-
-						$post_id = get_the_ID();
-						if ( ! empty( $post_id ) ) {
-							$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-							if ( ! empty( $mfei_record ) ) {
-								WP_CLI::success( 'mfei_record updated = ' . $post_id );
-							} else {
-								WP_CLI::warning( 'mfei_record updated = ' . $post_id );
-							}
-						}
-
-						$photo_url = ( isset( $application->presenter_photo[0] ) ) ? $application->presenter_photo[0] : null;
-						if ( ! empty( $photo_url ) ) {
-							$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-
-							if ( ! empty( $photo ) ) {
-								WP_CLI::success( 'Photo = ' . $photo );
-							} else {
-								WP_CLI::warning( 'Photo = ' . $photo );
-							}
-						}
-
-						$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-						if ( ! empty( $mf ) ) {
-							$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-
-							if ( ! empty( $photo ) ) {
-								WP_CLI::success( 'Maker Faire = ' . $mf );
-							} else {
-								WP_CLI::warning( 'Maker Faire = ' . $mf );
-							}
-						}
-					}
-				}
-			}
-		} elseif ( $type == 'performer' ) {
-			WP_CLI::line( 'Performer | ID: ' . get_the_ID() );
-
-			$the_title = $application->performer_name ? $application->performer_name : $application->name;
-			$title = htmlspecialchars( $the_title );
-			$performer = get_page_by_title( $title, OBJECT, 'maker' );
-
-			echo ( isset( $performer->post_title ) ) ? WP_CLI::success( 'Found: ' . $performer->post_title ) : WP_CLI::warning( 'no title...' );
-
-			if ( ! $performer ) {
-				// Setup post object...
-				$content = ($application->public_description ? htmlspecialchars_decode( $application->public_description ) : null);
-				$my_post = array(
-					'post_title'    => $title,
-					'post_content'  => $content,
-					'post_status'   => 'publish',
-					'post_type'		=> 'maker'
-				);
-
-				$pid = wp_insert_post( $my_post );
-				if ( is_wp_error( $pid ) ) {
-					WP_CLI::warning( $title );
-				} else {
-					WP_CLI::success( $title );
-				}
-
-				// Get Website URL
-				$website = ( $application->performer_website ) ? $application->performer_website  : null;
-				if ( ! empty( $website ) ) {
-					$web = update_post_meta( $pid, 'performer_website', $website );
-
-					if ( ! empty( $web ) ) {
-						WP_CLI::success( 'Website = ' .  $website );
-					} else {
-						WP_CLI::warning( 'Website = ' . $website );
-					}
-				}
-
-				// Get Video URL
-				$video = ( $application->performer_video ) ? $application->performer_video  : null;
-				if ( ! empty( $video ) ) {
-					$vid = update_post_meta( $pid, 'video', $video );
-
-					if ( ! empty( $vid ) ) {
-						WP_CLI::success( 'Video = ' .  $video );
-					} else {
-						WP_CLI::warning( 'Video = ' . $video );
-					}
-				}
-
-				// Get Post ID
-				$post_id = get_the_ID();
-				if ( ! empty( $post_id ) ) {
-					$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-					if ( ! empty( $mfei_record ) ) {
-						WP_CLI::success( 'mfei_record = ' . $post_id );
-					} else {
-						WP_CLI::warning( 'mfei_record = ' . $post_id );
-					}
-				}
-
-				// Get Photo URL
-				$photo_url = ( $application->performer_photo ) ? $application->performer_photo : null;
-				if ( ! empty( $photo_url ) ) {
-					$photo = add_post_meta( $pid, 'presenter_photo', $photo_url, true );
-
-					if ( ! empty( $photo ) ) {
-						WP_CLI::success( 'Photo = ' . $photo_url );
-					} else {
-						WP_CLI::warning( 'Photo = ' . $photo_url );
-					}
-				}
-
-				// Get the Maker Faire year
-				$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-				if ( ! empty( $mf ) ) {
-					$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-
-					if ( ! empty( $photo ) ) {
-						WP_CLI::success( 'Maker Faire = ' . $mf );
-					} else {
-						WP_CLI::warning( 'Maker Faire = ' . $mf );
-					}
-				}
-			} else {
-				WP_CLI::line( 'Updating Meta...' );
-				$pid = $performer->ID;
-
-				$website = ( $application->performer_website ) ? $application->performer_website  : null;
-				if ( ! empty( $website ) ) {
-					$web = update_post_meta( $pid, 'performer_website', $website );
-
-					if ( ! empty( $web ) ) {
-						WP_CLI::success( 'Website = ' .  $website );
-					} else {
-						WP_CLI::warning( 'Website = ' . $website );
-					}
-				}
-
-				$video = ( $application->performer_video ) ? $application->performer_video  : null;
-				if ( ! empty( $video ) ) {
-					$vid = update_post_meta( $pid, 'video', $video );
-
-					if ( ! empty( $vid ) ) {
-						WP_CLI::success( 'Video = ' .  $video );
-					} else {
-						WP_CLI::warning( 'Video = ' . $video );
-					}
-				}
-
-				$post_id = get_the_ID();
-				if ( ! empty( $post_id ) ) {
-					$mfei_record = add_post_meta( $pid, 'mfei_record', $post_id );
-
-					if ( ! empty( $mfei_record ) ) {
-						WP_CLI::success( 'mfei_record = ' . $post_id );
-					} else {
-						WP_CLI::warning( 'mfei_record = ' . $post_id );
-					}
-				}
-
-				$photo_url = ( $application->performer_photo ) ? $application->performer_photo : null;
-				if ( ! empty( $photo_url ) ) {
-					$photo = add_post_meta( $pid, 'photo_url', $photo_url, true );
-
-					if ( ! empty( $photo ) ) {
-						WP_CLI::success( 'Photo = ' . $photo );
-					} else {
-						WP_CLI::warning( 'Photo = ' . $photo );
-					}
-				}
-
-				$mf = ( $application->maker_faire ) ? $application->maker_faire : null;
-				if ( ! empty( $mf ) ) {
-					$faire = add_post_meta( $pid, 'maker_faire', $mf, true );
-
-					if ( ! empty( $photo ) ) {
-						WP_CLI::success( 'Maker Faire = ' . $mf );
-					} else {
-						WP_CLI::warning( 'Maker Faire = ' . $mf );
+						// Output some feed back for the additional makers
+						WP_CLI::line( ' | APP TYPE: ' . $maker['app_type'] );
+						WP_CLI::line( ' | APP ID: ' . $maker['app_id'] );
+						WP_CLI::line( ' | MAKER ID: ' . $maker_status['maker_id'] );
+						WP_CLI::line( ' | NAME: ' . $maker['title'] );
+						WP_CLI::line( ' | EMAIL: ' . $maker['email'] );
+						WP_CLI::line( ' | PHOTO: ' . $maker['photo'] );
+						WP_CLI::line( ' | WEBSITE: ' . $maker['website'] );
+						WP_CLI::line( ' | VIDEO: ' . $maker['video'] );
+						WP_CLI::line( ' | GUID: ' . $maker['gigya'] );
+
+						// Leave some evidence we are done with this application.
+						WP_CLI::line( ' ----------------------------------------' );
+						WP_CLI::line( '' );
 					}
 				}
 			}
 		}
 
-		WP_CLI::line( '' );
-		endwhile;
-		WP_CLI::success( "Boom!" );
+		WP_CLI::success( 'SHAZAM! Job is DONE. Get a beer! Or a Dr. Pepper...' );
 	}
+
 
 	/**
 	 * Delete all of the Makers in the makers custom post type
