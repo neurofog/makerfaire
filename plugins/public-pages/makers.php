@@ -425,7 +425,7 @@ function mf_term_list() {
 add_shortcode( 'mf_terms', 'mf_term_list' );
 
 function mf_switch_category_name( $str ) {
-	return str_replace( 'category', 'category_name', $str );
+	return str_replace( array( 'category', 'post_tag' ), array( 'category_name', 'tag' ), $str );
 }
 
 function mf_merged_terms( $atts ) {
