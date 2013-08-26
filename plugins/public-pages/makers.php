@@ -126,7 +126,7 @@ function mf_public_blurb( $json ) {
 				$makers = $json->m_maker_name;
 				foreach ($makers as $maker) {
 					echo '<div class="media">';
-					if ( isset( $json->m_maker_photo[ $i ] ) ) {
+					if ( !empty( $json->m_maker_photo[ $i ] ) ) {
 						echo '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->m_maker_photo[ $i ], 130, 130, true ) . '" class="media-object thumbnail pull-left" />';
 					} elseif (isset( $json->m_maker_email[ $i ] ) ) {
 						echo get_avatar( $json->m_maker_email[ $i ], 130 ); 
