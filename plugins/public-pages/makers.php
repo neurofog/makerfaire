@@ -149,7 +149,7 @@ function mf_public_blurb( $json ) {
 		echo '<hr>';
 		
 		echo '<div class="lead">';
-		echo ( $json->public_description ) ? Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) : null;
+		echo ( $json->long_description ) ? Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->long_description, "\n" ) ) ) ) : null;
 		echo '</div>';
 		
 		if ( $json->presentation_website || $json->video) {
@@ -381,8 +381,11 @@ function the_mf_content() {
 		mf_the_maker_image( $json );
 		echo '</div><div class="span6">';
 		the_title( '<h3><a href="' . get_permalink() . '">', '</a></h3>' );
+		echo ( isset( $json->form_type ) ) ? '<span class="label label-info">' . wp_kses_post( ucfirst( $json->form_type ) ) . '</span>' : '';
 		if (!empty($json->public_description)) {
-			echo Markdown( wp_kses_post( $json->public_description ) ) ;
+			echo Markdown( wp_kses_post( $json->public_description ) );
+		} elseif ( !empty( $json->long_description ) ) {
+			echo Markdown( wp_kses_post( $json->long_description ) );
 		}
 		echo '<ul class="unstyled">';
 		$tags = get_the_terms( get_the_ID(), 'post_tag' );
