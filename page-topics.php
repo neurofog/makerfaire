@@ -8,6 +8,11 @@
 $paged = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
 $cat = get_query_var( 'category_name' ) ? sanitize_title_for_query( get_query_var( 'category_name' ) ) : '';
 $tag = get_query_var( 'tag' ) ? sanitize_title_for_query( get_query_var( 'tag' ) ) : '';
+$tag_obj = get_term_by( 'slug', $tag, 'post_tag' );
+
+// Check what faire taxonomy we need to display
+$current_faire_slug = get_post_meta( $post->ID, '_faire-tax-archive', true );
+$faire = ( ! empty( $current_faire_slug ) || $current_faire_slug != 'none' ) ? get_term_by( 'slug', sanitize_text_field( $current_faire_slug ), 'faire' ) : '';
 
 get_header(); ?>
 
@@ -21,10 +26,11 @@ get_header(); ?>
 			
 			<div class="page-header">
 				
-				<h1><?php the_title(); ?> <small>World Maker Faire New York 2013</small></h1>	
+				<h1><?php the_title(); ?> <small><?php echo ( ! empty( $faire ) ) ? $faire->name : 'All Faires'; ?></small></h1>
+				<h2><?php echo esc_html( $tag_obj->name ); ?></h2>
 				
 			</div>
-			
+			<p class="pull-right button"><a href="<?php echo get_permalink( $post->post_parent ); ?>">Back to Meet the Makers</a></p>
 			<?php get_search_form(); ?>
 			
 			<?php
@@ -36,7 +42,7 @@ get_header(); ?>
 				'order'			=> 'asc',
 				'posts_per_page'=> 20,
 				'paged'			=> $paged,
-				'faire'			=> 'world-maker-faire-new-york-2013',
+				'faire'			=> ( ! empty( $faire ) ? $faire->slug : '' ),
 				'category_name'	=> $cat,
 				'tag'			=> $tag,
 			);

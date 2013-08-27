@@ -266,7 +266,7 @@
 
 			// Make sure everything is as it's supposed to.
 			if ( isset( $_POST['submission'] ) && $_POST['submission'] == 'submit-current-faire-screen-options' && wp_verify_nonce( $_POST['nonce'], 'current-faire-screen-save' ) ) {
-				var_dump('asdf');
+				
 				// Turn our query string into an array
 				parse_str( sanitize_text_field( $_POST['data'] ), $data );
 

@@ -443,8 +443,11 @@ function mf_merged_terms( $atts ) {
 	$cats = get_terms( array( 'category', 'post_tag' ), $args );
 	$output = '<ul class="columns">';
 	foreach ($cats as $cat) {
-		if ( $atts['faire'] == 'world-maker-faire-new-york-2013' ) {
+		// $atts['faire'] has been deprecated and will be removed once the production server has been updated.
+		if ( isset( $atts['faire'] ) && $atts['faire'] == 'world-maker-faire-new-york-2013' ) {
 			$output .= '<li><a href="' . esc_url( home_url( '/new-york-2013/topics/?' . mf_switch_category_name( $cat->taxonomy ) .'=' . $cat->slug ) ) . '">' . $cat->name . '</a></li>';
+		} elseif ( isset( $atts['faire_url'] ) ) {
+			$output .= '<li><a href="' . esc_url( home_url( esc_attr( $atts['faire_url'] ) . '?' . mf_switch_category_name( $cat->taxonomy ) . '=' . $cat->slug ) ) . '">' . $cat->name . '</a></li>';
 		} else {
 			$output .= '<li><a href="' . get_term_link( $cat ) . '">' . $cat->name . '</a></li>';
 		}
