@@ -147,10 +147,16 @@ function mf_public_blurb( $json ) {
 			echo '<img src="'. esc_url( $url ) . '" class="thumbnail" />';
 		}
 		echo '<hr>';
-		
-		echo '<div class="lead">';
-		echo ( !empty( $json->long_description ) ) ? Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->long_description, "\n" ) ) ) ) : null;
-		echo '</div>';
+
+		if ( isset( $json->long_description ) || isset( $json->public_description ) ) {
+			echo '<div class="lead">';
+			if ( isset( $json->long_description ) ) {
+				echo Markdown( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->long_description, "\n" ) ) ) );
+			} else {
+				echo Markdown( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) );
+			}
+			echo '</div>';
+		}
 		
 		if ( $json->presentation_website || $json->video) {
 			echo '<hr>';
