@@ -162,6 +162,11 @@ jQuery(document).ready(function(){
 		jQuery('html, body').animate({scrollTop:target_top - 50}, 1000);
 		
 	});
+	var exists = jQuery('td.has-video').length;
+	if ( exists === 0 ) {
+		jQuery('td.no-video').remove();
+	}
+	jQuery('table.schedule').slideDown('slow');
 });
 </script>
 
