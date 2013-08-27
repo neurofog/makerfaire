@@ -64,7 +64,7 @@ function mf_public_blurb( $json ) {
 		echo '<hr>';
 		
 		echo '<div class="lead">';
-		echo ( $json->public_description ) ? Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) : null;
+		echo ( !empty( $json->public_description ) ) ? Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) : null;
 		echo '</div>';
 		
 		if ( $json->project_website || $json->project_video ) {
@@ -126,7 +126,7 @@ function mf_public_blurb( $json ) {
 				$makers = $json->m_maker_name;
 				foreach ($makers as $maker) {
 					echo '<div class="media">';
-					if ( !empty( $json->m_maker_photo[ $i ] ) ) {
+					if ( !empty( $json->m_maker_photo[ $i ] ) && strlen( $json->m_maker_photo[ $i ] ) > 1 ) {
 						echo '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->m_maker_photo[ $i ], 130, 130, true ) . '" class="media-object thumbnail pull-left" />';
 					} elseif (isset( $json->m_maker_email[ $i ] ) ) {
 						echo get_avatar( $json->m_maker_email[ $i ], 130 ); 
@@ -149,7 +149,7 @@ function mf_public_blurb( $json ) {
 		echo '<hr>';
 		
 		echo '<div class="lead">';
-		echo ( $json->long_description ) ? Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->long_description, "\n" ) ) ) ) : null;
+		echo ( !empty( $json->long_description ) ) ? Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->long_description, "\n" ) ) ) ) : null;
 		echo '</div>';
 		
 		if ( $json->presentation_website || $json->video) {
@@ -175,7 +175,7 @@ function mf_public_blurb( $json ) {
 			$makers = $json->presenter_name;
 			foreach ($makers as $maker) {
 				echo '<div class="media">';
-				if ( isset( $json->presenter_photo[ $i ] ) ) {
+				if ( !empty( $json->m_maker_photo[ $i ] ) && strlen( $json->m_maker_photo[ $i ] ) > 1 ) {
 					echo '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->presenter_photo[ $i ], 130, 130, true ) . '" class="media-object thumbnail pull-left" />';
 				} elseif (isset( $json->presenter_email[ $i ] )) {
 					echo get_avatar( $json->presenter_email[ $i ], 130 ); 
@@ -727,11 +727,11 @@ function mf_get_scheduled_item( $the_ID ) {
 		$query = new WP_Query( $args );
 		wp_cache_set( $the_ID . '_saturday_schedule', $query, '', 300 );
 	}
-	$output = '<table class="table table-striped table-bordered">';
+	$output = '<table class="hide schedule table table-striped table-bordered">';
 	if ($query->found_posts >= 1 ) {
 		// Set a variable we can use to see if Saturday events were found for the Sunday query
 		$has_saturday_events = true;
-		$output .= '<thead><tr class="info"><td><strong>Day</strong></td><td><strong>Start Time</strong></td><td><strong>End Time</strong></td><td><strong>Locations</strong></td><td><strong>Video Coverage</strong></td></tr></thead><tbody>';
+		$output .= '<thead><tr class="info"><td><strong>Day</strong></td><td><strong>Start Time</strong></td><td><strong>End Time</strong></td><td><strong>Locations</strong></td><td class="no-video"><strong>Video Coverage</strong></td></tr></thead><tbody>';
 		while ( $query->have_posts() ) : $query->the_post();
 			$meta = get_post_meta( get_the_ID());
 			$sched_post = get_post( $meta['mfei_record'][0] );
@@ -746,9 +746,9 @@ function mf_get_scheduled_item( $the_ID ) {
 			$output .= '<td>' . esc_html( $stop ) . '</td>';
 			$output .= '<td>' . get_the_term_list( get_the_ID(), 'location' ) . '</td>';
 			if ( ! empty( $coverage ) ) {
-				$output .= '<td><a href="' . esc_url( $coverage ) . '" class="btn btn-mini btn-primary">Watch Video</a></td>';
+				$output .= '<td class="has-video"><a href="' . esc_url( $coverage ) . '" class="btn btn-mini btn-primary">Watch Video</a></td>';
 			} else {
-				$output .= '<td>No Video Available</td>';
+				$output .= '<td class="no-video"></td>';
 			}
 			$output .= '</tr>';
 		endwhile;
@@ -778,7 +778,7 @@ function mf_get_scheduled_item( $the_ID ) {
 	}
 	if ($query->found_posts >= 1 ) {
 		if ( ! isset( $has_saturday_events ) ) {
-			$output .= '<thead><tr class="info"><td><strong>Day</strong></td><td><strong>Start Time</strong></td><td><strong>End Time</strong></td><td><strong>Locations</strong></td><td><strong>Video Coverage</strong></td></tr></thead><tbody>';
+			$output .= '<thead><tr class="info"><td><strong>Day</strong></td><td><strong>Start Time</strong></td><td><strong>End Time</strong></td><td><strong>Locations</strong></td><td class="no-video"><strong>Video Coverage</strong></td></tr></thead><tbody>';
 		}
 		while ( $query->have_posts() ) : $query->the_post();
 			$meta = get_post_meta( get_the_ID());
@@ -794,9 +794,9 @@ function mf_get_scheduled_item( $the_ID ) {
 			$output .= '<td>' . esc_html( $stop ) . '</td>';
 			$output .= '<td>' . get_the_term_list( get_the_ID(), 'location' ) . '</td>';
 			if ( ! empty( $coverage ) ) {
-				$output .= '<td><a href="' . esc_url( $coverage ) . '" class="btn btn-mini btn-primary">Watch Video</a></td>';
+				$output .= '<td class="has-video"><a href="' . esc_url( $coverage ) . '" class="btn btn-mini btn-primary">Watch Video</a></td>';
 			} else {
-				$output .= '<td>No Video Available</td>';
+				$output .= '<td class="no-video">No Video Available</td>';
 			}
 			$output .= '</tr>';
 		endwhile;
