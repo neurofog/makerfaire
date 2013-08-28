@@ -181,10 +181,18 @@ function mf_public_blurb( $json ) {
 			$makers = $json->presenter_name;
 			foreach ($makers as $maker) {
 				echo '<div class="media">';
-				if ( !empty( $json->m_maker_photo[ $i ] ) && strlen( $json->m_maker_photo[ $i ] ) > 1 ) {
-					echo '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->presenter_photo[ $i ], 130, 130, true ) . '" class="media-object thumbnail pull-left" />';
-				} elseif (isset( $json->presenter_email[ $i ] )) {
-					echo get_avatar( $json->presenter_email[ $i ], 130 ); 
+				if ( is_array( $json->presenter_photo ) ) {
+					if ( !empty( $json->presenter_photo[ $i ] ) && strlen( $json->presenter_photo[ $i ] ) > 1 ) {
+						echo '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->presenter_photo[ $i ], 130, 130, true ) . '" class="media-object thumbnail pull-left" />';
+					} elseif (isset( $json->presenter_email[ $i ] )) {
+						echo get_avatar( $json->presenter_email[ $i ], 130 ); 
+					}
+				} else {
+					if ( !empty( $json->presenter_photo ) && strlen( $json->presenter_photo ) > 1 ) {
+						echo '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->presenter_photo, 130, 130, true ) . '" class="media-object thumbnail pull-left" />';
+					} elseif (isset( $json->presenter_email[ $i ] )) {
+						echo get_avatar( $json->presenter_email[ $i ], 130 ); 
+					}
 				}
 				echo '<div class="media-body">';
 				$title =  (!empty( $json->presenter_title[ $i ] ) ) ? ' &mdash; ' . $json->presenter_title[ $i ] : null;
