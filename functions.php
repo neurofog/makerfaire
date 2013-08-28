@@ -311,7 +311,7 @@ add_filter('the_title', 'mf_clean_title', 10, 2);
 
 function mf_release_shortcode() {
 	$request_id = (!empty($_REQUEST['id']) ? $_REQUEST['id'] : null);
-	$output = '<iframe src="' . esc_url( 'http://makedb.makezine.com/pa/' .  $request_id ) . '" width="620" height="2000" scrolling="auto" frameborder="0"> [Your user agent does not support frames or is currently configured not to display frames.] </iframe>';
+	$output = '<iframe src="' . esc_url( 'http://db.makerfaire.com/pa/' .  $request_id ) . '" width="620" height="2000" scrolling="auto" frameborder="0"> [Your user agent does not support frames or is currently configured not to display frames.] </iframe>';
 	return $output;
 }
 
