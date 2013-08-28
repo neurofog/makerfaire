@@ -280,11 +280,18 @@ if ($type == 'entity') {
 		$stop = get_post_meta(get_the_ID(), 'mfei_stop', true );
 
 		// Really? We need a better data structure here... 
-
-		if ( $day == 'Saturday' ) {
-			$date = '5/18/2013';
-		} elseif ( $day = 'Sunday') {
-			$date = '5/19/2013';
+		if ( $faire == 'world-maker-faire-new-york-2013' ) {
+			if ( $day == 'Saturday' ) {
+				$date = '9/21/2013';
+			} elseif ( $day = 'Sunday') {
+				$date = '9/22/2013';
+			}
+		} else {
+			if ( $day == 'Saturday' ) {
+				$date = '5/18/2013';
+			} elseif ( $day = 'Sunday') {
+				$date = '5/19/2013';
+			}
 		}
 
 		$jsonpost["id"] = get_the_ID();
@@ -296,8 +303,13 @@ if ($type == 'entity') {
 		$jsonpost["thumb_img_url"] = ($url) ? add_query_arg( $size, $url ) : null;
 		$jsonpost["name"] = str_replace( array( '&#8217;', '&#038;'), array( '\'', '&'), htmlspecialchars_decode( get_the_title( $id ) ) );
 		$jsonpost["original_id"] = $id;
-		$jsonpost["time_start"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $start . ' PST' ) ) );
-		$jsonpost["time_stop"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $stop . ' PST') ) );
+		if ( $faire == 'world-maker-faire-new-york-2013' ) {
+			$jsonpost["time_start"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $start . ' EST' ) ) );
+			$jsonpost["time_stop"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $stop . ' EST') ) );	
+		} else {
+			$jsonpost["time_start"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $start . ' PST' ) ) );
+			$jsonpost["time_stop"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $stop . ' PST') ) );
+		}
 		$locs = get_the_terms( get_the_ID(), 'location' );
 		$term = array_shift( array_values( $locs ) );
 		$jsonpost["venue_id_ref"] = $term->term_id;
