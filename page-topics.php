@@ -30,7 +30,7 @@ get_header(); ?>
 				<h2><?php echo esc_html( $tag_obj->name ); ?></h2>
 				
 			</div>
-			<p class="pull-right button"><a href="<?php echo get_permalink( $post->post_parent ); ?>">Back to Meet the Makers</a></p>
+			<p class="pull-right button"><a href="<?php echo get_permalink( absint( $post->post_parent ) ); ?>">Back to Meet the Makers</a></p>
 			<?php get_search_form(); ?>
 			
 			<?php
