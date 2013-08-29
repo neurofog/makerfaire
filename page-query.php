@@ -448,7 +448,13 @@ if ($type == 'entity') {
 				$jsonpost["thumb_img_url"] = null;
 				$jsonpost["large_img_url"] = null;
 			}
-			$jsonpost['description'] = ($exhibit->public_description ? htmlspecialchars_decode( $exhibit->public_description ) : null);
+			if ( !empty($json->long_description ) ) {
+				$jsonpost['description'] = htmlspecialchars_decode( $exhibit->long_description );
+			} elseif ( !empty($json->public_description ) ) {
+				$jsonpost['description'] = htmlspecialchars_decode( $exhibit->public_description );
+			} else {
+				$jsonpost['description'] = null;
+			}
 			$jsonpost['youtube_url'] = ($exhibit->performer_video ? $exhibit->performer_video  : null);
 		}		
 		$locs = get_the_terms( get_the_ID(), 'location' );
