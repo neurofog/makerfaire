@@ -550,11 +550,17 @@ function mf_schedule( $atts ) {
 	extract( shortcode_atts( array(), $atts ) );
 	
 	$output = '';
-	$location = (isset($atts['location'])) ? sanitize_text_field( $atts['location'] ) : '';
+	$location = ( isset($atts['location'] ) ) ? sanitize_text_field( $atts['location'] ) : '';
+	$faire = ( isset($atts['faire'] ) ) ? sanitize_text_field( $atts['faire'] ) : '';
 
 	if (!empty($location)) {
 		$term = wpcom_vip_get_term_by( 'name', $location, 'location');
-		$output .= '<h2><a href="'. get_term_link( $term, 'location' ) . '">' . esc_html( $location ) . '</a></h2>';
+		$url = get_term_link( $term, 'location' );
+		if ( !is_wp_error( $url ) ) {
+			$output .= '<h2><a href="'. esc_url( $url ) . '">' . esc_html( $location ) . '</a></h2>';	
+		} else {
+			$output .= '<h2>' . esc_html( $location ) . '</h2>';
+		}
 		if ( !empty( $term->description ) ) {
 			$output .= '<div class="well well-small">' . Markdown( $term->description ) . '</div>';
 		}
@@ -569,6 +575,7 @@ function mf_schedule( $atts ) {
 			'meta_key'		=> 'mfei_start',
 			'order'			=> 'asc',
 			'posts_per_page'=> '30',
+			'faire'			=> $faire,
 			'meta_query' => array(
 				array(
 					'key' 	=> 'mfei_day',
@@ -651,6 +658,7 @@ function mf_schedule( $atts ) {
 			'meta_key'		=> 'mfei_start',
 			'order'			=> 'asc',
 			'posts_per_page'=> '30',
+			'faire'			=> $faire,
 			'meta_query' => array(
 				array(
 					'key' 	=> 'mfei_day',
@@ -804,7 +812,7 @@ function mf_get_scheduled_item( $the_ID ) {
 			$day = ($meta['mfei_day'][0]) ? $meta['mfei_day'][0] : '' ;
 			$start = ($meta['mfei_start'][0]) ? $meta['mfei_start'][0] : '' ;
 			$stop = ($meta['mfei_stop'][0]) ? $meta['mfei_stop'][0] : '' ;
-			$coverage = ($meta['mfei_coverage'][0]) ? $meta['mfei_coverage'][0] : '';
+			$coverage = ( isset( $meta['mfei_coverage'][0] ) ) ? $meta['mfei_coverage'][0] : '';
 			$output .= '<tr>';
 			$output .= '<td>' . esc_html( $day ) . '</td>';
 			$output .= '<td>' . esc_html( $start ) . '</td>';
