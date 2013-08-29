@@ -3502,6 +3502,7 @@ class MAKER_FAIRE_FORM {
 		$headers = array(
 			'Exhibit',
 			'Photo',
+			'Photo Slug',
 			'Description',
 			'Name',
 			'Bio',
@@ -3526,9 +3527,11 @@ class MAKER_FAIRE_FORM {
 
 			$maker_name = $form['name'] . "\t";
 			$maker_bio  = ( ! is_array( $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] ) ? $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] : $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ][0] ) . "\t";
+			$photo = $form[ $this->merge_fields( 'form_photo', $form['form_type'] ) ];
 
 			$row  = $form[ $this->merge_fields( 'project_name', $form['form_type'] ) ] . "\t";
-			$row .= $form[ $this->merge_fields( 'form_photo', $form['form_type'] ) ] . "\t";
+			$row .= $photo . "\t";
+			$row .= basename( $photo ) . "\t";
 			$row .= ( $form['form_type'] != 'presenter' ) ? $form['public_description'] . "\t" : $form['short_description'] . "\t";
 			$row .= $maker_name;
 			$row .= $maker_bio;
