@@ -42,15 +42,15 @@
 	 * This extra code is nessecary because we only want to load this interface on pages with the page-topics.php template
 	 */
 	function make_faire_topic_metabox() {
-		add_meta_box( 'make_faire_topic', 'Faire', 'make_faire_topic', 'page', 'side', 'default' );
-	}
-	$post_id = $_GET['post'] ? $_GET['post'] : $_POST['post_ID'] ;
-	$template_file = get_post_meta( $post_id, '_wp_page_template', true );
+		$template_file = get_post_meta( get_the_ID(), '_wp_page_template', true );
 
-	// We only want to load our meta box when the Faire Tax Archive Page template is selected
-	if ( $template_file == 'page-topics.php' ) {
-		add_action( 'add_meta_boxes', 'make_faire_topic_metabox' );
+		// We only want to load our meta box when the Faire Tax Archive Page template is selected
+		if ( $template_file == 'page-topics.php' ) {
+			add_meta_box( 'make_faire_topic', 'Faire', 'make_faire_topic', 'page', 'side', 'default' );
+		}
 	}
+	add_action( 'add_meta_boxes', 'make_faire_topic_metabox' );
+
 
 
 	/**
