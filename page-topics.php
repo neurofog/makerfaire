@@ -8,11 +8,11 @@
 $paged = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
 $cat = get_query_var( 'category_name' ) ? sanitize_title_for_query( get_query_var( 'category_name' ) ) : '';
 $tag = get_query_var( 'tag' ) ? sanitize_title_for_query( get_query_var( 'tag' ) ) : '';
-$tag_obj = get_term_by( 'slug', $tag, 'post_tag' );
+$tag_obj = wpcom_vip_get_term_by( 'slug', $tag, 'post_tag' );
 
 // Check what faire taxonomy we need to display
 $current_faire_slug = get_post_meta( $post->ID, '_faire-tax-archive', true );
-$faire = ( ! empty( $current_faire_slug ) || $current_faire_slug != 'none' ) ? get_term_by( 'slug', sanitize_text_field( $current_faire_slug ), 'faire' ) : '';
+$faire = ( ! empty( $current_faire_slug ) || $current_faire_slug != 'none' ) ? wpcom_vip_get_term_by( 'slug', sanitize_text_field( $current_faire_slug ), 'faire' ) : '';
 
 get_header(); ?>
 

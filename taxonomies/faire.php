@@ -70,7 +70,7 @@
 		$output .= '<option value="none">Select A Faire</option>';
 
 		foreach ( $terms as $term ) {
-			$output .= '<option value="' . sanitize_text_field( $term->slug ) . '"' . selected( sanitize_text_field( $current_term ), sanitize_text_field( $term->slug ), false ) . '>' . esc_html( $term->name ) . '</option>';
+			$output .= '<option value="' . esc_attr( $term->slug ) . '"' . selected( esc_attr( $current_term ), esc_attr( $term->slug ), false ) . '>' . esc_html( $term->name ) . '</option>';
 		}
 
 		$output .= '</select>';

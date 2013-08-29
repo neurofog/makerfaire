@@ -457,7 +457,7 @@ function mf_merged_terms( $atts ) {
 		} elseif ( isset( $atts['faire_url'] ) ) { // $atts['faire_url'] replaces $atts['faire']
 			$output .= '<li><a href="' . esc_url( home_url( esc_attr( $atts['faire_url'] ) . '?' . mf_switch_category_name( $cat->taxonomy ) . '=' . $cat->slug ) ) . '">' . esc_html( $cat->name ) . '</a></li>';
 		} else {
-			$output .= '<li><a href="' . esc_url( get_term_link( $cat ) ) . '">' . $cat->name . '</a></li>';
+			$output .= '<li><a href="' . esc_url( get_term_link( $cat ) ) . '">' . esc_html( $cat->name ) . '</a></li>';
 		}
 		
 	}
