@@ -464,9 +464,9 @@ add_action('restrict_manage_posts','mf_restrict_listings_by_faire');
  * If the 'value' parameter is not set it will use term ID for categories, and the term's slug for other taxonomies in the value attribute of the term's <option>.
 */
 
-class SH_Walker_TaxonomyDropdown extends Walker_CategoryDropdown{
+class SH_Walker_TaxonomyDropdown extends Walker_CategoryDropdown {
 
-	function start_el(&$output, $category, $depth, $args) {
+	function start_el ( &$output, $category, $depth = 0, $args = array(), $id = 0 ) {
 		$pad = str_repeat('&nbsp;', $depth * 3);
 		$cat_name = apply_filters('list_cats', $category->name, $category);
 
@@ -486,7 +486,7 @@ class SH_Walker_TaxonomyDropdown extends Walker_CategoryDropdown{
 			$output .= '&nbsp;&nbsp;('. $category->count .')';
 
 		$output .= "</option>\n";
-		}
+	}
 
 }
 

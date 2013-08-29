@@ -344,10 +344,15 @@ class MAKER_FAIRE_FORM {
 			$options['filters']['faire'] = 'world-maker-faire-new-york-2013';
 			$this->build_comments_export( $options );
 		}
-			
+	
+		// Exhibit Signage
+		if ( isset( $_GET['exhibit_signage_csv'] ) )
+			$this->build_exhibit_signage_export( esc_url( $_GET['exhibit_signage_csv'] ) );
+
 		// Presentation Export
 		if ( isset( $_GET['presentation_csv'] ) )
 			$this->build_presentation_exports( esc_attr( $_GET['presentation_csv'] ) );
+
 			
 		$this->upgrade();	
 			
@@ -2825,6 +2830,9 @@ class MAKER_FAIRE_FORM {
 
 				<h2 style="margin-top:40px;">Editorial Reports</h2>
 				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&maker_csv=presenter', 'mf_export_check' ); ?>">Export Editorial Comments</a></h3>
+
+				<h2 style="margin-top:40px;">Exhibit Reports</h2>
+				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&exhibit_signage_csv', 'mf_export_check' ); ?>">Export Exhibit Signage</a></h3>
 					
 				<h2 style="margin-top:40px;">Presentation Reports</h2>
 				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&presentation_csv=manager', 'mf_export_check' ); ?>">Stage Manager Report</a></h3>
@@ -3461,7 +3469,103 @@ class MAKER_FAIRE_FORM {
 			$output .= $row . "\r\n";
 		}
 
+		// Get the time this export was ran. This is used in the file name of the CSV
+		$time_offset = time() - ( 3600 * 7 );
+
 		$this->output_csv( 'EDITORIAL_COMMENTS_' . strtoupper( $options['filters']['faire'] ) . '_' . date( 'M-d-Y', $time_offset ), $output );
+	}
+
+
+	/**
+	 * Exports all accepted exhibits so we can create printed signs for each
+	 * @return void
+	 */
+	private function build_exhibit_signage_export() {
+
+		// Check our nonce
+		if ( isset( $_GET['export_nonce'] ) && ! wp_verify_nonce( $_GET['export_nonce'], 'mf_export_check' ) )
+			return false;
+			
+		// Make sure the user requesting this has the privileges...
+		if ( ! current_user_can( 'edit_others_posts' ) ) 
+			return false;
+
+		$options = array(
+			'filters' => array(
+				'type' => 'exhibit',
+				'post_status' => 'accepted',
+			),
+		);
+
+
+		// Setup the headers we want.
+		$headers = array(
+			'Exhibit',
+			'Photo',
+			'Description',
+			'Name',
+			'Bio',
+		);
+
+		// Process our headers
+		foreach ( $headers as $header ) {
+			$header_titles .= "{$header}\t";
+		}
+
+		$header_titles .= "\r\n";
+
+		// Get our applications
+		$exhibits = $this->get_all_forms( null, $options['filters']['post_status'], $options['filters'] );
+		$results  = array();
+		$body     = '';
+
+		foreach ( $exhibits as $exhibit ) {
+			$bad  = array( "\'", '&amp;', 'u00a0', 'u2013', 'u201c', 'u201d', '00ae', 'rnrn');
+			$good = array( "'",  '&',     ' ',     '-',     '"',     '"',     '®',    ' ');
+			$form = (array) json_decode( str_replace( $bad, $good, $exhibit->post_content ) );
+
+			$maker_name = $form['name'] . "\t";
+			$maker_bio  = ( ! is_array( $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] ) ? $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] : $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ][0] ) . "\t";
+
+			$row  = $form[ $this->merge_fields( 'project_name', $form['form_type'] ) ] . "\t";
+			$row .= $form[ $this->merge_fields( 'form_photo', $form['form_type'] ) ] . "\t";
+			$row .= ( $form['form_type'] != 'presenter' ) ? $form['public_description'] . "\t" : $form['short_description'] . "\t";
+			$row .= $maker_name;
+			$row .= $maker_bio;
+
+			// Contain our entire row into the $body variable
+			$body .= $row . "\r\n";
+			
+			// We need a way to handle and process applications with multiple makers. Let's do that okay?
+			foreach ( array( 'exhibit' => 'm_maker_', 'presenter' => 'presenter' ) as $type => $prefix ) {
+				
+				// Check if the form field contains more than one maker name and email.
+				if ( $form['form_type'] == $type && is_array( $form[ $prefix . 'name' ] ) && is_array( $form[ $prefix . 'email' ] ) ) {
+
+					// Loop through each maker and count them
+					for ( $i = 1; $i < count( $form[ $prefix . 'name' ] ); $i++ ) {
+
+						// Process their first and last name.
+						$add_name = $form[ $prefix . 'name' ][ $i ] . "\t";
+
+						// Add their bio also
+						$add_bio  = $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ][ $i ] . "\t";
+
+						// Lets add their credentials to a new row
+						$add_row = str_replace( $maker_name, $add_name, $row );
+						$add_row = str_replace( $add_bio, $maker_bio, $add_row );
+
+						$body .= $add_row . "\r\n";
+					}
+				}
+			}
+		}
+
+		// Get the time this export was ran. This is used in the file name of the CSV
+		$time_offset = time() - ( 3600 * 7 );
+
+		// Process the list makers CSV
+		$this->output_csv( 'EXHIBIT_SIGNAGE_' . date( 'M-d-Y', $time_offset ), $header_titles . $body );
 	}
 
 
