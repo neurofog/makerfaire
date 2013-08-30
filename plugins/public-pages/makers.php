@@ -700,10 +700,10 @@ function mf_schedule( $atts ) {
 			}
 			$output .= '<h4>' . substr($names_output, 2) . '</h4>';
 		}
-		if (!empty($json->public_description)) {
-			$content_clean = mf_convert_newlines( str_replace('u2014', "&#8212;", $json->public_description ) );
-			
-			$output .= Markdown( wp_kses_post( $content_clean ) ) ;
+		if ( !empty($json->long_description ) ) {
+			$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->long_description, "\n" ) ) ) ) ;
+		} elseif ( !empty($json->public_description ) ) {
+			$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) ;
 		}
 		
 		if ( ! empty( $meta['mfei_coverage'][0] ) )
