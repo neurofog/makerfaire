@@ -63,3 +63,6 @@
 .adblock {
   margin-bottom: 20px;
 }
+.lead ul li {
+  line-height: 120%;
+}
