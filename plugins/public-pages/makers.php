@@ -623,8 +623,8 @@ function mf_schedule( $atts ) {
 			}
 			$output .= '<h4>' . substr($names_output, 2) . '</h4>';
 		}
-		if ( !empty($json->long_description ) ) {
-			$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->long_description, "\n" ) ) ) ) ;
+		if ( !empty($json->short_description ) ) {
+			$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->short_description, "\n" ) ) ) ) ;
 		} elseif ( !empty($json->public_description ) ) {
 			$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) ;
 		}
@@ -700,8 +700,8 @@ function mf_schedule( $atts ) {
 			}
 			$output .= '<h4>' . substr($names_output, 2) . '</h4>';
 		}
-		if ( !empty($json->long_description ) ) {
-			$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->long_description, "\n" ) ) ) ) ;
+		if ( !empty($json->short_description ) ) {
+			$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->short_description, "\n" ) ) ) ) ;
 		} elseif ( !empty($json->public_description ) ) {
 			$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) ;
 		}
