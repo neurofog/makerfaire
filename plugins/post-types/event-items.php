@@ -129,8 +129,9 @@ function makerfaire_meta_box( $post ) {
 		// Check if we are loading from a referring post and add that ID to our Record field
 		if ( isset( $_GET['refer_id'] ) && ! empty( $_GET['refer_id'] ) ) {
 			echo  '<input type="text" name="mfei_record" id="mfei_record" value="' . intval( $_GET['refer_id'] ) . '" />';
-		} elseif ( !empty( $meta['mfei_record'][0] ) ) {
-			echo '<input type="text" name="mfei_record" id="mfei_record" value="' . esc_attr( $meta['mfei_record'][0] ) . '" />';
+		} else {
+			$id = ( !empty( $meta['mfei_record'][0] ) ) ? esc_attr( $meta['mfei_record'][0] ) : '';
+			echo '<input type="text" name="mfei_record" id="mfei_record" value="' . $id . '" />';
 		} 
 	?>
 	<a title="Edit event items" href="#" class="post-edit-link">View Application</a> (opens new window with given application)

@@ -85,7 +85,7 @@
 	function make_faire_topic_save_metabox( $post_id ) {
 		
 		// Make sure we passed the right nonce...
-		if ( ! wp_verify_nonce( $_POST['make-faire-tax'], 'save_faire_archive_tax' ) )
+		if ( isset( $_POST['make-faire-tax'] ) && !wp_verify_nonce( $_POST['make-faire-tax'], 'save_faire_archive_tax' ) )
 			return false;
 
 		// Check the user privileges...
