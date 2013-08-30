@@ -3500,6 +3500,7 @@ class MAKER_FAIRE_FORM {
 
 		// Setup the headers we want.
 		$headers = array(
+			'ID',
 			'Exhibit',
 			'Photo',
 			'Photo Slug',
@@ -3509,6 +3510,7 @@ class MAKER_FAIRE_FORM {
 		);
 
 		// Process our headers
+		$header_titles = '';
 		foreach ( $headers as $header ) {
 			$header_titles .= "{$header}\t";
 		}
@@ -3525,11 +3527,12 @@ class MAKER_FAIRE_FORM {
 			$good = array( "'",  '&',     ' ',     '-',     '"',     '"',     '®',    ' ');
 			$form = (array) json_decode( str_replace( $bad, $good, $exhibit->post_content ) );
 
-			$maker_name = $form['name'] . "\t";
+			$maker_name = ( !empty( $form['name'] ) ) ? $form['name'] . "\t" : "\t";
 			$maker_bio  = ( ! is_array( $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] ) ? $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] : $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ][0] ) . "\t";
 			$photo = $form[ $this->merge_fields( 'form_photo', $form['form_type'] ) ];
 
-			$row  = $form[ $this->merge_fields( 'project_name', $form['form_type'] ) ] . "\t";
+			$row  = $exhibit->ID . "\t";
+			$row .= $form[ $this->merge_fields( 'project_name', $form['form_type'] ) ] . "\t";
 			$row .= $photo . "\t";
 			$row .= basename( $photo ) . "\t";
 			$row .= ( $form['form_type'] != 'presenter' ) ? $form['public_description'] . "\t" : $form['short_description'] . "\t";
