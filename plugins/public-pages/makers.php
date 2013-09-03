@@ -602,19 +602,19 @@ function mf_schedule( $atts ) {
 		if (isset($json->project_photo) or isset($json->presentation_photo) or isset($json->performer_photo) or has_post_thumbnail( get_the_ID() ) ) {
 			if ( get_the_post_thumbnail() ) {
 				$output .= '<div class="pull-left thumbnail"><a href="';
-				$output .= get_permalink( $sched_post->ID) . '">';
+				$output .= get_permalink( $sched_post ) . '">';
 				$output .= get_the_post_thumbnail( get_the_ID(), 'schedule-thumb' );
 				$output .= '</a></div>';
 			} else {
 				$output .= '<div class="pull-left thumbnail"><a href="';
-				$output .= get_permalink( $sched_post->ID) . '">';
+				$output .= get_permalink( $sched_post ) . '">';
 				$output .= '<img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 140, 140 ) . '" alt="' . get_the_title( $sched_post->ID ) .'" />';
 				$output .= '</a></div>';
 			}
 		}
 		$output .= '</td>';
 		$output .= '<td>';
-		$output .= '<h3><a href="' . get_permalink( $sched_post->ID) . '">' . get_the_title( $sched_post->ID ) . '</a></h3>';
+		$output .= '<h3><a href="' . get_permalink( $sched_post ) . '">' . get_the_title( $sched_post->ID ) . '</a></h3>';
 		if ( !empty( $json->presenter_name ) ) {
 			$names = $json->presenter_name;
 			$names_output = '';
@@ -683,15 +683,22 @@ function mf_schedule( $atts ) {
 		$output .= '<td width="150">';
 		$output .= '<h5>' . esc_html( $day ) . '</h5>';
 		$output .= '<p>' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</p>';
-		if (isset($json->project_photo) or isset($json->presentation_photo) or isset($json->performer_photo) ) {
-			$output .= '<div class="pull-left thumbnail"><a href="';
-			$output .= get_permalink( $sched_post->ID) . '">';
-			$output .= '<img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 140, 140 ) . '" alt="' . get_the_title( $sched_post->ID ) .'" />';
-			$output .= '</a></div>';
+		if (isset($json->project_photo) or isset($json->presentation_photo) or isset($json->performer_photo) or has_post_thumbnail( get_the_ID() ) ) {
+			if ( get_the_post_thumbnail() ) {
+				$output .= '<div class="pull-left thumbnail"><a href="';
+				$output .= get_permalink( $sched_post ) . '">';
+				$output .= get_the_post_thumbnail( get_the_ID(), 'schedule-thumb' );
+				$output .= '</a></div>';
+			} else {
+				$output .= '<div class="pull-left thumbnail"><a href="';
+				$output .= get_permalink( $sched_post ) . '">';
+				$output .= '<img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 140, 140 ) . '" alt="' . get_the_title( $sched_post->ID ) .'" />';
+				$output .= '</a></div>';
+			}
 		}
 		$output .= '</td>';
 		$output .= '<td>';
-		$output .= '<h3><a href="' . get_permalink( $sched_post->ID) . '">' . get_the_title( $sched_post->ID ) . '</a></h3>';
+		$output .= '<h3><a href="' . get_permalink( $sched_post ) . '">' . get_the_title( $sched_post->ID ) . '</a></h3>';
 		if ( !empty( $json->presenter_name ) ) {
 			$names = $json->presenter_name;
 			$names_output = '';
