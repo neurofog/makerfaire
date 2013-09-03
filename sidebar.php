@@ -79,7 +79,7 @@
 			<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/disney.png" alt="Disney" class="center"></a>
 		</div>
 
-		<h3>Goldsmith Sponsor</h3>
+		<h3>Goldsmith Sponsors</h3>
 
 		<div class="gold center">
 
@@ -101,7 +101,7 @@
 
 		</div>
 
-		<h3>Silversmith Sponsor</h3>
+		<h3>Silversmith Sponsors</h3>
 
 		<div id="myCarousel" class="carousel slide">
 			<div class="carousel-inner">
@@ -109,7 +109,7 @@
 			</div>
 		</div>
 
-		<h3>Coppersmith Sponsor</h3>
+		<h3>Coppersmith Sponsors</h3>
 
 		<div id="myCarousel" class="carousel slide">
 			<div class="carousel-inner">
