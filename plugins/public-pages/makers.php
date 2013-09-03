@@ -608,7 +608,7 @@ function mf_schedule( $atts ) {
 			} else {
 				$output .= '<div class="pull-left thumbnail"><a href="';
 				$output .= get_permalink( $sched_post ) . '">';
-				$output .= '<img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 140, 140 ) . '" alt="' . get_the_title( $sched_post->ID ) .'" />';
+				$output .= '<img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 140, 140 ) . '" alt="' . esc_attr( get_the_title( $sched_post->ID ) ) .'" />';
 				$output .= '</a></div>';
 			}
 		}
@@ -692,7 +692,7 @@ function mf_schedule( $atts ) {
 			} else {
 				$output .= '<div class="pull-left thumbnail"><a href="';
 				$output .= get_permalink( $sched_post ) . '">';
-				$output .= '<img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 140, 140 ) . '" alt="' . get_the_title( $sched_post->ID ) .'" />';
+				$output .= '<img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 140, 140 ) . '" alt="' . esc_attr( get_the_title( $sched_post->ID ) ) .'" />';
 				$output .= '</a></div>';
 			}
 		}
