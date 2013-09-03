@@ -70,12 +70,30 @@ if ($type == 'entity') {
 	// Loop through the posts
 	foreach ($posts as $post) {
 		$exhibit = json_decode( mf_clean_content( $post->post_content ) );
+
 		if ( isset( $exhibit->form_type ) ) {
 			$jsonpost["type"] = $exhibit->form_type;
 		}
 		
 		$jsonpost["id"] = get_the_ID();
-		$jsonpost["child_id_refs"] = get_the_ID();
+
+		// We need our Makers ID's so the exhibits can be linked to their maker profiles in the app.
+		$maker_args = array(
+			'post_type' 	 => 'maker',
+			'posts_per_page' => 20,
+			'faire'			 => $faire,
+			'meta_key'		 => 'mfei_record',
+			'meta_value'	 => get_the_ID()
+
+		);
+		$app_makers = new WP_Query( $maker_args );
+		$maker_ids = $app_makers->posts;
+		$maker_post_id = array();
+		foreach( $maker_ids as $maker_id ) {
+			array_push( $maker_post_id, absint( $maker_id->ID ) );
+		}
+		$jsonpost["child_id_refs"] = $maker_post_id;
+
 		$jsonpost["name"] = html_entity_decode( get_the_title(), ENT_COMPAT, 'utf-8' );
 		$jsonpost["original_id"] = get_the_ID();
 		$url = mf_get_the_maker_image( $exhibit );
