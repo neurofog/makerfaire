@@ -1,7 +1,7 @@
 <?php 
 	// Template Name: App Redirect 
 	
-	if ( jetpack_is_mobile( 'any', true ) ) {
+	if ( function_exists( 'jetpack_is_mobile' ) && jetpack_is_mobile() ) {
 		if ( class_exists( 'Jetpack_User_Agent_Info' ) && Jetpack_User_Agent_Info::is_iphone_or_ipod() ) {
 			header( 'Location: https://itunes.apple.com/us/app/maker-faire-the-official-app/id641794889' );
 		} elseif ( class_exists( 'Jetpack_User_Agent_Info' ) && Jetpack_User_Agent_Info::is_android() ) {
