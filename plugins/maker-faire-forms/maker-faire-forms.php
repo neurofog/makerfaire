@@ -3503,7 +3503,7 @@ class MAKER_FAIRE_FORM {
 			'ID',
 			'Exhibit',
 			'Photo',
-			'Photo Slug',
+			'@Photo_Slug',
 			'Description',
 			'Name',
 			'Bio',
@@ -3523,12 +3523,46 @@ class MAKER_FAIRE_FORM {
 		$body     = '';
 
 		foreach ( $exhibits as $exhibit ) {
-			$bad  = array( "\'", '&amp;', 'u00a0', 'u2013', 'u201c', 'u201d', '00ae', 'rnrn');
-			$good = array( "'",  '&',     ' ',     '-',     '"',     '"',     '®',    ' ');
+			$bad  = array( "\'", '&amp;', 'u00a0', 'u2013', 'u201c', 'u201d', '00ae', 'rnrn', 'u016f', 'u0161');
+			$good = array( "'",  '&',     ' ',     '-',     '"',     '"',     '®',    ' ',    'ů',     'š');
 			$form = (array) json_decode( str_replace( $bad, $good, $exhibit->post_content ) );
 
-			$maker_name = ( !empty( $form['name'] ) ) ? $form['name'] . "\t" : "\t";
-			$maker_bio  = ( ! is_array( $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] ) ? $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] : $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ][0] ) . "\t";
+			// var_dump($form);
+
+			// Process our name field. We'll want to handle exhibit maker types differently.
+			if ( $form['form_type'] == 'exhibit' ) {
+				switch ( $form['maker'] ) {
+					case 'One maker':
+						$maker_name = ( ! empty( $form['name'] ) ? $form['name'] : '' ) ."\t";
+						$maker_bio  = ( ! empty( $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] ) ? $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] : '' ) . "\t";
+						break;
+					
+					case 'A list of makers':
+						$count = 1;
+						if ( is_array( $form['m_maker_name'] ) ) {
+							$maker_name = '';
+							foreach( $form['m_maker_name'] as $m_name ) {
+								$separator = ( $count == 1 ) ? '' : ', ';
+								$maker_name .= ( ! empty( $m_name ) ? $separator . $m_name : $separator );
+								$count++;
+							}
+							$maker_name .= "\t";
+							$maker_bio = '';
+						} else {
+							$maker_name = ( ! empty( $form['m_maker_name'] ) ? $form['m_maker_name'] : '' ) . "\t";
+							$maker_bio  = ( ! empty( $form['m_maker_bio'] ) ? $form['m_maker_bio'] : '' ) . "\t";
+						}
+						break;
+
+					case 'A group or association':
+						$maker_name = ( ! empty( $form['group_name'] ) ? $form['group_name'] : '' ) . "\t";
+						$maker_bio  = ( ! empty( $form['group_bio'] ) ? $form['group_bio'] : '' ) . "\t";
+						break;
+				}
+			} else {
+				$maker_name = ( ! empty( $form['name'] ) ? $form['name'] : '' ) . "\t";
+				$maker_bio  = ( ! is_array( $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] ) ? $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] : $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ][0] ) . "\t";
+			}
 			$photo = $form[ $this->merge_fields( 'form_photo', $form['form_type'] ) ];
 
 			$row  = $exhibit->ID . "\t";
@@ -3542,29 +3576,29 @@ class MAKER_FAIRE_FORM {
 			// Contain our entire row into the $body variable
 			$body .= $row . "\r\n";
 			
-			// We need a way to handle and process applications with multiple makers. Let's do that okay?
-			foreach ( array( 'exhibit' => 'm_maker_', 'presenter' => 'presenter' ) as $type => $prefix ) {
+			// // We need a way to handle and process applications with multiple makers. Let's do that okay?
+			// foreach ( array( 'exhibit' => 'm_maker_', 'presenter' => 'presenter' ) as $type => $prefix ) {
 				
-				// Check if the form field contains more than one maker name and email.
-				if ( $form['form_type'] == $type && is_array( $form[ $prefix . 'name' ] ) && is_array( $form[ $prefix . 'email' ] ) ) {
+			// 	// Check if the form field contains more than one maker name and email.
+			// 	if ( $form['form_type'] == $type && is_array( $form[ $prefix . 'name' ] ) && is_array( $form[ $prefix . 'email' ] ) ) {
 
-					// Loop through each maker and count them
-					for ( $i = 1; $i < count( $form[ $prefix . 'name' ] ); $i++ ) {
+			// 		// Loop through each maker and count them
+			// 		for ( $i = 1; $i < count( $form[ $prefix . 'name' ] ); $i++ ) {
 
-						// Process their first and last name.
-						$add_name = $form[ $prefix . 'name' ][ $i ] . "\t";
+			// 			// Process their first and last name.
+			// 			$add_name = $form[ $prefix . 'name' ][ $i ] . "\t";
 
-						// Add their bio also
-						$add_bio  = $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ][ $i ] . "\t";
+			// 			// Add their bio also
+			// 			$add_bio  = $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ][ $i ] . "\t";
 
-						// Lets add their credentials to a new row
-						$add_row = str_replace( $maker_name, $add_name, $row );
-						$add_row = str_replace( $add_bio, $maker_bio, $add_row );
+			// 			// Lets add their credentials to a new row
+			// 			$add_row = str_replace( $maker_name, $add_name, $row );
+			// 			$add_row = str_replace( $add_bio, $maker_bio, $add_row );
 
-						$body .= $add_row . "\r\n";
-					}
-				}
-			}
+			// 			$body .= $add_row . "\r\n";
+			// 		}
+			// 	}
+			// }
 		}
 
 		// Get the time this export was ran. This is used in the file name of the CSV
