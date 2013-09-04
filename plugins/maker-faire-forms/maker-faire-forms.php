@@ -2954,12 +2954,14 @@ class MAKER_FAIRE_FORM {
 						$data['m_maker_name_' . $i ] 	= '';
 						$data['m_maker_email_' . $i ] 	= '';
 						$data['m_maker_gigyaid_' . $i ] = '';
+						$data['m_maker_photo_' . $i ]   = '';
 					}
 				} elseif ( $key == 'presenter_gigyaid' ) {
 					for ( $i = 2; $i < 5; $i++ ) {
 						$data['presenter_name_' . $i ] 	  = '';
 						$data['presenter_email_' . $i ]   = '';
-						$data['presneter_gigyaid_' . $i ] = '';
+						$data['presenter_gigyaid_' . $i ] = '';
+						$data['presenter_photo_' . $i ]   = '';
 					}
 				}
 			}
@@ -3037,10 +3039,12 @@ class MAKER_FAIRE_FORM {
 			$multi = array( 
 				'm_maker_name', 
 				'm_maker_email', 
-				'm_maker_gigyaid', 
+				'm_maker_gigyaid',
+				'm_maker_photo', 
 				'presenter_name', 
 				'presenter_email', 
-				'presenter_gigyaid' 
+				'presenter_gigyaid',
+				'presenter_photo',
 			);
 
 			// define our CSV rows
@@ -3065,14 +3069,14 @@ class MAKER_FAIRE_FORM {
 					// Process a makers info
 					if ( $key == 'm_maker_gigyaid' ) {
 						for ( $i = 1; $i < 4; $i++ ) {
-							foreach ( array( 'm_maker_name', 'm_maker_email', 'm_maker_gigyaid' ) as $n ) {
+							foreach ( array( 'm_maker_name', 'm_maker_email', 'm_maker_gigyaid', 'm_maker_photo' ) as $n ) {
 								$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ][ $i ];
 								$row .= "\t" . $form[ $n ][ $i ];
 							}
 						}
 					} elseif( $key == 'presenter_gigyaid' ) {
 						for ( $i = 1; $i < 4; $i++ ) {
-							foreach ( array( 'presenter_name', 'presenter_email', 'presenter_gigyaid' ) as $n ) {
+							foreach ( array( 'presenter_name', 'presenter_email', 'presenter_gigyaid', 'presenter_photo' ) as $n ) {
 								$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ][ $i ];
 								$row .= "\t" . $form[ $n ][ $i ];
 							}
@@ -3387,7 +3391,7 @@ class MAKER_FAIRE_FORM {
 			$body .= $row . "\r\n";
 			
 			// We need a way to handle and process applications with multiple makers. Let's do that okay?
-			foreach ( array( 'exhibit' => 'm_maker_', 'presenter' => 'presenter' ) as $type => $prefix ) {
+			foreach ( array( 'exhibit' => 'm_maker_', 'presenter' => 'presenter_' ) as $type => $prefix ) {
 				
 				// Check if the form field contains more than one maker name and email.
 				if ( $form['form_type'] == $type && is_array( $form[ $prefix . 'name' ] ) && is_array( $form[ $prefix . 'email' ] ) ) {
