@@ -3527,8 +3527,6 @@ class MAKER_FAIRE_FORM {
 			$good = array( "'",  '&',     ' ',     '-',     '"',     '"',     '®',    ' ',    'ů',     'š');
 			$form = (array) json_decode( str_replace( $bad, $good, $exhibit->post_content ) );
 
-			// var_dump($form);
-
 			// Process our name field. We'll want to handle exhibit maker types differently.
 			if ( $form['form_type'] == 'exhibit' ) {
 				switch ( $form['maker'] ) {
