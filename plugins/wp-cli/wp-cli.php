@@ -89,7 +89,7 @@ class MAKE_CLI extends WP_CLI_Command {
 
 	}
 	/**
-	 * Add tags and cats to posts.
+	 * Find hands on posts, and then assign them as a tag.
 	 * Read the category and tag out of the JSON array, and then assign to the post.
 	 *
 	 * @subcommand hands

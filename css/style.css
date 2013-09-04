@@ -66,3 +66,7 @@
 .lead ul li {
   line-height: 120%;
 }
+.table-schedule thead tr th {
+  background-color: #E1E1E1;
+  font-size: 16px;
+}

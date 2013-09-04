@@ -544,7 +544,9 @@ function mf_featured_makers_home() {
 	return $output;
 }
 
-
+/**
+ * Generate the schedule for the schedule page. Based on a shortcode. Pass in the ID, and get the schedule for both days.
+ */
 function mf_schedule( $atts ) {
 
 	extract( shortcode_atts( array(), $atts ) );
@@ -587,7 +589,10 @@ function mf_schedule( $atts ) {
 		wp_cache_set( $location . '_saturday_schedule', $query, '', 300 );
 	}
 
-	$output .= '<table class="table table-striped table-bordered">';
+	$output .= '<table class="table table-striped table-bordered table-schedule">';
+	if ( $faire == 'world-maker-faire-new-york-2013' ) {
+		$output .= '<thead><tr><th colspan="2">September 21st, 2013</th></tr></thead>';
+	}
 	while ( $query->have_posts() ) : $query->the_post();
 		$meta = get_post_meta( get_the_ID() );
 		$sched_post = get_post( $meta['mfei_record'][0] );
@@ -671,7 +676,10 @@ function mf_schedule( $atts ) {
 		$query = new WP_Query( $args );
 		wp_cache_set( $location . '_sunday_schedule', $query, '', 300 );
 	}
-	$output .= '<table class="table table-striped table-bordered">';
+	$output .= '<table class="table table-striped table-bordered table-schedule">';
+	if ( $faire == 'world-maker-faire-new-york-2013' ) {
+		$output .= '<thead><tr><th colspan="2">September 22nd, 2013</th></tr></thead>';
+	}
 	while ( $query->have_posts() ) : $query->the_post();
 		$meta = get_post_meta( get_the_ID());
 		$sched_post = get_post( $meta['mfei_record'][0] );
