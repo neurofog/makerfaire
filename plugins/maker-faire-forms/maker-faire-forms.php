@@ -3575,30 +3575,7 @@ class MAKER_FAIRE_FORM {
 
 			// Contain our entire row into the $body variable
 			$body .= $row . "\r\n";
-			
-			// // We need a way to handle and process applications with multiple makers. Let's do that okay?
-			// foreach ( array( 'exhibit' => 'm_maker_', 'presenter' => 'presenter' ) as $type => $prefix ) {
-				
-			// 	// Check if the form field contains more than one maker name and email.
-			// 	if ( $form['form_type'] == $type && is_array( $form[ $prefix . 'name' ] ) && is_array( $form[ $prefix . 'email' ] ) ) {
 
-			// 		// Loop through each maker and count them
-			// 		for ( $i = 1; $i < count( $form[ $prefix . 'name' ] ); $i++ ) {
-
-			// 			// Process their first and last name.
-			// 			$add_name = $form[ $prefix . 'name' ][ $i ] . "\t";
-
-			// 			// Add their bio also
-			// 			$add_bio  = $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ][ $i ] . "\t";
-
-			// 			// Lets add their credentials to a new row
-			// 			$add_row = str_replace( $maker_name, $add_name, $row );
-			// 			$add_row = str_replace( $add_bio, $maker_bio, $add_row );
-
-			// 			$body .= $add_row . "\r\n";
-			// 		}
-			// 	}
-			// }
 		}
 
 		// Get the time this export was ran. This is used in the file name of the CSV
