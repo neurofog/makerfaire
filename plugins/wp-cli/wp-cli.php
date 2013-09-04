@@ -88,6 +88,50 @@ class MAKE_CLI extends WP_CLI_Command {
 		WP_CLI::success( "Boom!" );
 
 	}
+	/**
+	 * Add tags and cats to posts.
+	 * Read the category and tag out of the JSON array, and then assign to the post.
+	 *
+	 * @subcommand hands
+	 * 
+	 */
+	public function hands_on( $args, $assoc_args ) {
+
+		$args = array(
+			'posts_per_page'			=> 2000,
+			'post_type'					=> 'mf_form',
+			'post_status'				=> 'any',
+
+			// Prevent new posts from affecting the order
+			'orderby' 					=> 'ID',
+			'order' 					=> 'ASC',
+
+			// Speed this up
+			'no_found_rows' => true,
+			'update_post_meta_cache'	=> false,
+			'update_post_term_cache'	=> false,
+		);
+
+		// Get the first set of posts
+		$query = new WP_Query( $args );
+		WP_CLI::line( 'Number of posts found: ' . $query->found_posts );
+		while ( $query->have_posts() ) : $query->the_post();
+			global $post;
+			setup_postdata($post);
+			WP_CLI::line( get_the_title() );
+			$json_post = json_decode( str_replace( "\'", "'", get_the_content() ) );
+
+			if ( isset( $json_post->hands_on ) && ( $json_post->hands_on == 'Yes' ) ) {
+				$result = wp_set_object_terms( get_the_ID(), 'hands-on', 'post_tag', true );
+				WP_CLI::line('Hands On:');
+				if ( !empty( $result ) ) {
+					WP_CLI::success( get_the_title() );
+				}	
+			}
+		endwhile;
+		WP_CLI::success( "Boom!" );
+
+	}
 
 	/**
 	 * Inserts places from Make: Projects
