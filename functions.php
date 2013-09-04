@@ -454,3 +454,22 @@ function mf_send_hipchat_notification( $message = 'Default Message', $from = 'Ma
 	$url = add_query_arg( $opts, $base );
 	$json = wpcom_vip_file_get_contents( $url );
 }
+
+// Redirect mobile users on iOS or Android to their app stores if set.
+function page_redirect_to_app_stores() {
+	if ( ! is_page( 'app' ) && function_exists( 'jetpack_is_mobile' ) )
+		return;
+ 
+	$redirect_to = '';
+ 
+ 	if ( Jetpack_User_Agent_Info::is_iphone_or_ipod() )
+		$redirect_to = 'https://itunes.apple.com/us/app/maker-faire-the-official-app/id641794889';
+	elseif ( Jetpack_User_Agent_Info::is_android() )
+		$redirect_to = 'https://play.google.com/store/apps/details?id=com.xomodigital.makerfaire';
+ 	
+	if ( ! empty( $redirect_to ) ) {
+		wp_redirect( $redirect_to, 301 );  // Permanent redirect
+		exit;
+	}
+}
+add_action( 'template_redirect', 'page_redirect_to_app_stores' );
