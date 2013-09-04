@@ -4103,7 +4103,7 @@ class MAKER_FAIRE_FORM {
 			$maker_post['ID'] = $maker_id;
 
 			// Update our maker post
-			// $maker_id_updated = wp_update_post( $maker_post );
+			$maker_id_updated = wp_update_post( $maker_post );
 
 			// Cheack if everything went well when creating our post
 			( is_wp_error( $maker_id_updated ) ) ? $messages['errors'][] .= 'MAKER UPDATE FAILED' : $messages['success'][] .= 'MAKER UPDATED';
