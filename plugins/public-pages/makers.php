@@ -556,22 +556,20 @@ function mf_schedule( $atts ) {
 	$faire = ( isset($atts['faire'] ) ) ? sanitize_text_field( $atts['faire'] ) : '';
 
 	if (!empty($location)) {
-		$term = wpcom_vip_get_term_by( 'name', $location, 'location');
-		$url = get_term_link( $term, 'location' );
-		if ( !is_wp_error( $url ) ) {
-			$output .= '<h2><a href="'. esc_url( $url ) . '">' . esc_html( $location ) . '</a></h2>';	
-		} else {
-			$output .= '<h2>' . esc_html( $location ) . '</h2>';
-		}
-		if ( !empty( $term->description ) ) {
-			$output .= '<div class="well well-small">' . Markdown( $term->description ) . '</div>';
-		}
+		$term = wpcom_vip_get_term_by( 'id', $location, 'location');
+		$url = get_term_link( $term );
+		if ( !is_wp_error( $url ) )
+			$output .= '<h2><a href="'. esc_url( $url ) . '">' . esc_html( $term->name ) . '</a></h2>';	
+			if ( !empty( $term->description ) )
+				$output .= '<div class="alert alert-info">' . Markdown( $term->description ) . '</div>';
 	}
 
 	$query = wp_cache_get( $location . '_saturday_schedule' );
+	if( !isset( $term->slug ) )
+		return;
 	if( $query == false ) {
 		$args = array( 
-			'location' 		=> $location,
+			'location' 		=> sanitize_title( $term->slug ),
 			'post_type'		=> 'event-items',
 			'orderby' 		=> 'meta_value', 
 			'meta_key'		=> 'mfei_start',
@@ -659,7 +657,7 @@ function mf_schedule( $atts ) {
 	$query = wp_cache_get( $location . '_sunday_schedule' );
 	if( $query == false ) {
 		$args = array( 
-			'location' 		=> $location,
+			'location' 		=> sanitize_title( $term->slug ),
 			'post_type'		=> 'event-items',
 			'orderby' 		=> 'meta_value', 
 			'meta_key'		=> 'mfei_start',
