@@ -252,7 +252,7 @@ function mf_public_blurb( $json ) {
 	// Let's get the grouped projects
 	$terms = get_the_terms( get_the_ID(), 'group' );
 	if ( $terms ) {
-		echo '<h4>Other exhibits in this group:</h4>';
+		echo '<h3>Other exhibits in this group:</h3>';
 		foreach ( $terms as $term ) {
 			$args = array( 
 				'tax_query' => array(
