@@ -456,7 +456,7 @@ function mf_send_hipchat_notification( $message = 'Default Message', $from = 'Ma
 }
 
 // Redirect mobile users on iOS or Android to their app stores if set.
-function page_redirect_to_app_stores() {
+function mf_page_redirect_to_app_stores() {
 	if ( ! is_page( 'app' ) && function_exists( 'jetpack_is_mobile' ) )
 		return;
  
@@ -472,4 +472,4 @@ function page_redirect_to_app_stores() {
 		exit;
 	}
 }
-add_action( 'template_redirect', 'page_redirect_to_app_stores' );
+add_action( 'template_redirect', 'mf_page_redirect_to_app_stores' );
