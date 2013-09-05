@@ -473,3 +473,65 @@ function mf_page_redirect_to_app_stores() {
 	}
 }
 add_action( 'template_redirect', 'mf_page_redirect_to_app_stores' );
+
+
+add_action( 'admin_head', 'make_cpt_icons' );
+/**
+ * Adds icons for the custom post types that are in the admin.
+ */
+function make_cpt_icons() { ?>
+	<style type="text/css" media="screen">
+		.icon16.icon-event-items:before,
+		#adminmenu #menu-posts-event-items div.wp-menu-image:before {
+			content: '\f145';
+		}
+		.icon16.icon-dashboard:before,
+		#adminmenu #menu-dashboard div.wp-menu-image:before {
+			content: '\f226';
+		}
+		.icon16.icon-post:before,
+		#adminmenu #menu-posts div.wp-menu-image:before {
+			content: '\f109';
+		}
+		.icon16.icon-media:before,
+		#adminmenu #menu-media div.wp-menu-image:before {
+			content: '\f104';
+		}
+		.icon16.icon-comments:before,
+		#adminmenu #menu-comments div.wp-menu-image:before {
+			content: '\f101';
+		}
+		.icon16.icon-page:before,
+		#adminmenu #menu-pages div.wp-menu-image:before {
+			content: '\f105';
+		}
+		.icon16.icon-post:before,
+		#adminmenu #menu-posts-mf_form div.wp-menu-image:before {
+			content: '\f116';
+		}
+		.icon16.icon-post:before,
+		#adminmenu #menu-posts-maker div.wp-menu-image:before {
+			content: '\f307';
+		}
+		.icon16.icon-appearance:before,
+		#adminmenu #menu-appearance div.wp-menu-image:before {
+			content: '\f100';
+		}
+		.icon16.icon-plugins:before,
+		#adminmenu #menu-plugins div.wp-menu-image:before {
+			content: '\f106';
+		}
+		.icon16.icon-users:before,
+		#adminmenu #menu-users div.wp-menu-image:before {
+			content: '\f110';
+		}
+		.icon16.icon-tools:before,
+		#adminmenu #menu-tools div.wp-menu-image:before {
+			content: '\f107';
+		}
+		.icon16.icon-settings:before,
+		#adminmenu #menu-settings div.wp-menu-image:before {
+			content: '\f111';
+		}
+	</style>
+<?php }

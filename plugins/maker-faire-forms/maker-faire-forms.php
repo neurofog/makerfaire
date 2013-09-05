@@ -301,7 +301,6 @@ class MAKER_FAIRE_FORM {
 			'has_archive'        => false,
 			'hierarchical'       => true,
 			'menu_position'      => null,
-			'menu_icon'          => plugins_url( 'assets/i/admin-icon.png', __FILE__ ),
 			'supports'           => array( 'title', 'revisions' ),
 			'taxonomies'		 => array( 'category', 'post_tag' ),
 			'rewrite'            => array( 'slug' => 'makers', 'with_front' => false )
