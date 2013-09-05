@@ -66,6 +66,14 @@
 .lead ul li {
   line-height: 120%;
 }
+.search .search-title {
+  margin-bottom: 5px;
+}
+.search #faire-dropdown-search {
+  position: relative;
+  top: 1px;
+  margin: 0 7px;
+}
 .table-schedule thead tr th {
   background-color: #E1E1E1;
   font-size: 16px;
