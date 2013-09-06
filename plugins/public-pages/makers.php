@@ -587,6 +587,7 @@ function mf_schedule( $atts ) {
 		wp_cache_set( $location . '_saturday_schedule', $query, '', 300 );
 	}
 
+	if ( $query->found_posts >= 1 ) :
 	$output .= '<table class="table table-striped table-bordered table-schedule">';
 	if ( $faire == 'world-maker-faire-new-york-2013' ) {
 		$output .= '<thead><tr><th colspan="2">September 21st, 2013</th></tr></thead>';
@@ -650,10 +651,12 @@ function mf_schedule( $atts ) {
 		$output .= '</tr>';
 	endwhile;
 	$output .= '</table>';
+	endif;
 	wp_reset_postdata();
 
 	// Roll the schedule for Sunday.
 
+	if ( $query->found_posts >= 1 ) :
 	$query = wp_cache_get( $location . '_sunday_schedule' );
 	if( $query == false ) {
 		$args = array( 
@@ -737,6 +740,7 @@ function mf_schedule( $atts ) {
 		$output .= '</tr>';
 	endwhile;
 	$output .= '</table>';
+	endif;
 	wp_reset_postdata();
 	return $output;
 }
