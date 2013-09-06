@@ -545,8 +545,8 @@ class MAKER_FAIRE_FORM {
 			$post = get_post( absint( $id ) );
 		}
 
-		$bad  = array( '&#039;', "\'", '&#8217;', '&#38;', '&#038;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;', 'u2018', 'u2019' );
-   		$good = array( "'",      "'",  "'",       "&",     "&",      '"',     '"',      '–',       '>',    '...',     "'",     "'",    );
+		$bad  = array( '&#039;', "\'", '&#8217;', '&#38;', '&#038;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;', 'u2018', 'u2019', 'u2014' );
+		$good = array( "'",      "'",  "'",       "&",     "&",      '"',     '"',      '–',       '>',    '...',     "'",     "'",     "—"   );
 		$data = json_decode( str_replace( $bad, $good, $post->post_content ) );
 
 		if( $args['id'] == 'mf_save' ) { 
@@ -1187,7 +1187,7 @@ class MAKER_FAIRE_FORM {
 		
 		if ( $this->is_textarea( $key ) ) : ?>
 		
-			<textarea name="<?php echo esc_attr( $type . '[' . $key . ']' ); ?>" /><?php echo htmlspecialchars_decode( esc_textarea( $this->convert_newlines( $value, "\n" ) ) ); ?></textarea>
+			<textarea name="<?php echo esc_attr( $type . '[' . $key . ']' ); ?>" /><?php echo htmlspecialchars( esc_textarea( $this->convert_newlines( $value, "\n" ) ) ); ?></textarea>
 			
 		<?php elseif ( array_key_exists( $key, $checkboxes ) ) : ?>
 		

@@ -3,6 +3,12 @@
  * Public Page Functions for Makers
  */
 
+function mf_character_fixer( $str ) {
+	$bad  = array( '&#039;', "\'", '&#8217;', '&#38;', '&#038;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;', 'u2018', 'u2019', 'u2014' );
+	$good = array( "'",      "'",  "'",       "&",     "&",      '"',     '"',      '–',       '>',    '...',     "'",     "'",     "—"   );
+	return str_replace( $bad, $good, $str );
+}
+
 function mf_convert_newlines( $str, $replace = '<br />' ) {
 	$s = array('nn-', ' nn', '.nn', '<br />rn');
 	return str_replace($s, $replace, $str);
