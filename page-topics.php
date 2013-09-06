@@ -30,7 +30,7 @@ get_header(); ?>
 				<h2><?php echo esc_html( $tag_obj->name ); ?></h2>
 				
 			</div>
-			<p class="pull-right button"><a href="<?php echo get_permalink( absint( $post->post_parent ) ); ?>">Back to Meet the Makers</a></p>
+			<p class="pull-right button"><a href="<?php echo get_permalink( absint( $post->post_parent ) ); ?>/maker-info">Back to Meet the Makers</a></p>
 			<form role="search" method="get" class="form-search" id="searchform" action="<?php echo home_url( '/' ); ?>">
 				<input type="text" value="<?php echo get_search_query( true ); ?>" name="s" id="s" class="input-medium search-query" />
 				<input type="hidden" name="post_type" value="mf_form" />
