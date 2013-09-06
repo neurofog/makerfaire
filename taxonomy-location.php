@@ -10,7 +10,7 @@
 
 			<?php 
 				$term_obj = get_queried_object();
-				echo mf_schedule( array( 'location' => $term_obj->name ) );
+				echo mf_schedule( array( 'location' => $term_obj->term_id ) );
 			?>
 
 		</div><!--Content-->
