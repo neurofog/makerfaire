@@ -866,3 +866,70 @@ function mf_get_scheduled_item( $the_ID ) {
 	wp_reset_postdata();
 
 }
+
+/**
+ * The Video/Image Gallery
+ *
+ * Wanted to extend our Bootstrap Slideshow so that you could put in Post IDs and get back a slideshow.
+ * Basically the same thing that the default slideshow does, so why not use that!
+ *
+ * @since 1.0
+ *
+ * @param array $attr Attributes of the shortcode.
+ * @return string HTML content to display gallery.
+ */
+function make_video_photo_gallery( $attr ) {
+
+	$posts = explode( ',', $attr['ids'] );
+
+	$rand = mt_rand( 0, get_the_ID() );
+
+	global $post;
+
+	$output = '<div id="myCarousel-' . $rand . '" class="carousel slide" data-interval=""><div class="carousel-inner">';
+	$i = 0;
+
+	foreach( $posts as $post ) {
+		if ( strpos( $post, 'youtu' ) ) {
+			$youtube = true;
+		} else {
+			$post = get_post( $post );
+			setup_postdata( $post );
+			$youtube = false;
+		}
+		$i++;
+
+		if ($i == 1) {
+			$output .= '<div class="item active">';	
+		} else {
+			$output .= '<div class="item">';
+		}
+		if ( $youtube == false ) {
+			if ( get_post_type() == 'video' ) {
+				$url = get_post_meta( get_the_ID(), 'Link', true );
+				$output .= do_shortcode('[youtube='. esc_url( $url ) .'&w=620]');
+			} else {
+				$output .= wp_get_attachment_image( get_the_ID(), 'medium' );
+			}
+			if (isset($post->post_title)) {
+				$output .= '<div class="carousel-caption" style="position:relative;">';
+				$output .= '<h4>' . get_the_title() . '</h4>';
+				$output .= ( isset( $post->post_excerpt ) ) ? Markdown( wp_kses_post( $post->post_excerpt ) ) : '';
+				$output .= '</div>';
+			}
+		} else {
+			$output .= do_shortcode('[youtube='. esc_url( $post ) .'&w=620]');
+		}
+		$output .= '</div>';
+		
+	} //foreach
+	wp_reset_postdata();
+	$output .= '</div>
+		<a class="topper left carousel-control" href="#myCarousel-' . $rand . '" data-slide="prev">‹</a>
+		<a class="topper right carousel-control" href="#myCarousel-' . $rand . '" data-slide="next">›</a>
+	</div>';
+	$output .= '<div class="clearfix"></div>';
+	return $output;
+}
+
+add_shortcode( 'video_gallery', 'make_video_photo_gallery' );
