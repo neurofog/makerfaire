@@ -564,10 +564,12 @@ function mf_schedule( $atts ) {
 	if (!empty($location)) {
 		$term = wpcom_vip_get_term_by( 'id', $location, 'location');
 		$url = get_term_link( $term );
-		if ( !is_wp_error( $url ) )
-			$output .= '<h2><a href="'. esc_url( $url ) . '">' . esc_html( $term->name ) . '</a></h2>';	
+		if ( !is_wp_error( $url ) ) {
+			$output .= '<a href="' . esc_url( home_url( '/stage-schedule/?location=' . $term->slug ) ) . '" class="pull-right" style="position:relative; top:7px;"><img src="' . get_stylesheet_directory_uri() . '/images/print-ico.png" alt="Print this schedule" /></a>';
+			$output .= '<h2><a href="'. esc_url( $url ) . '">' . esc_html( $term->name ) . '</a></h2>';
 			if ( !empty( $term->description ) )
 				$output .= '<div class="alert alert-info">' . Markdown( $term->description ) . '</div>';
+		}
 	}
 
 	$query = wp_cache_get( $location . '_saturday_schedule' );
