@@ -3,8 +3,12 @@
 if ( isset( $_GET['location'] ) )
     $location = sanitize_title_for_query( $_GET['location'] );
 
-if ( ! isset( $_GET['description'] ) ) 
-    $public_description = true;
+if ( ! isset( $_GET['description'] ) ) {
+    $short_description = true;
+} else {
+    $short_description = false;
+}
+    
 
 if ( isset( $_GET['day'] ) )
     $day = sanitize_title_for_query( $_GET['day'] );
@@ -17,8 +21,7 @@ if ( ! empty( $location ) )
  * @param  String $location [description]
  * @return [type]           [description]
  */
-function get_schedule_list( $location, $public_description = false, $day = '' ) {
-
+function get_schedule_list( $location, $short_description = false, $day = '' ) {
     $output = '';
     $saturday = wp_cache_get( $location . '_saturday_schedule' );
     if( $saturday == false ) {
@@ -45,7 +48,7 @@ function get_schedule_list( $location, $public_description = false, $day = '' ) 
     while ( $saturday->have_posts() ) : $saturday->the_post();
         $meta = get_post_meta( get_the_ID());
         $sched_post = get_post( $meta['mfei_record'][0] );
-        $json = json_decode( str_replace( "\'", "'", $sched_post->post_content ) );
+        $json = json_decode( mf_convert_newlines( mf_character_fixer( $sched_post->post_content ) ) );
         $day = ($meta['mfei_day'][0]) ? $meta['mfei_day'][0] : '' ;
         $start = ($meta['mfei_start'][0]) ? $meta['mfei_start'][0] : '';
         $stop = ($meta['mfei_stop'][0]) ? $meta['mfei_stop'][0] : '';
@@ -58,10 +61,6 @@ function get_schedule_list( $location, $public_description = false, $day = '' ) 
         $output .= '<h2 style="font-size:.9em; color:#333; margin-top:3px;">' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</h2>';
         $output .= '</td>';
         $output .= '<td>';
-        if ( isset ( $location ) ) {
-            $stage = get_the_terms( $post->ID, 'location' );
-            $output .= '<h1 style="margin-top:0;">' . $stage[0] . '</h1>'; 
-        }
         $output .= '<h3 style="margin-top:0;">' . get_the_title( $sched_post->ID ) . '</h3>';
         if ( ! empty( $json->presenter_name ) ) {
             $names = $json->presenter_name;
@@ -69,10 +68,10 @@ function get_schedule_list( $location, $public_description = false, $day = '' ) 
             foreach ( $names as $name ) {
                 $names_output .= ', ' . $name;
             }
-            $output .= '<h5 style="margin:5px 0 0; color:#666;">' . substr($names_output, 2) . '</h5>';
+            $output .= '<h4 style="margin:5px 0 0; color:#666;">' . substr($names_output, 2) . '</h4>';
         }
-        if ( isset( $public_description ) && ! empty( $json->public_description) ) {
-            $output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) ;
+        if ( $short_description == true && ! empty( $json->short_description) ) {
+            $output .= Markdown ( mf_character_fixer( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->short_description, "\n" ) ) ) ) );
         }
         $output .= '<tr><td colspan="2"><div style="border-bottom:2px solid #ccc;"></div></td></tr>';
         $output .= '</td>';
@@ -106,7 +105,7 @@ function get_schedule_list( $location, $public_description = false, $day = '' ) 
     while ( $sunday->have_posts() ) : $sunday->the_post();
         $meta = get_post_meta( get_the_ID());
         $sched_post = get_post( $meta['mfei_record'][0] );
-        $json = json_decode( str_replace( "\'", "'", $sched_post->post_content ) );
+        $json = json_decode( mf_convert_newlines( mf_character_fixer( $sched_post->post_content ) ) );
         $day = ($meta['mfei_day'][0]) ? $meta['mfei_day'][0] : '' ;
         $start = ($meta['mfei_start'][0]) ? $meta['mfei_start'][0] : '';
         $stop = ($meta['mfei_stop'][0]) ? $meta['mfei_stop'][0] : '';
@@ -119,10 +118,6 @@ function get_schedule_list( $location, $public_description = false, $day = '' ) 
         $output .= '<h2 style="font-size:.9em; color:#333; margin-top:3px;">' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</h2>';
         $output .= '</td>';
         $output .= '<td>';
-        if ( isset ( $location ) ) {
-            $stage = get_the_terms( $post->ID, 'location' );
-            $output .= '<h1 style="margin-top:0;">' . $stage[0] . '</h1>'; 
-        }
         $output .= '<h3 style="margin-top:0;">' . get_the_title( $sched_post->ID ) . '</h3>';
         if ( ! empty( $json->presenter_name ) ) {
             $names = $json->presenter_name;
@@ -130,10 +125,10 @@ function get_schedule_list( $location, $public_description = false, $day = '' ) 
             foreach ( $names as $name ) {
                 $names_output .= ', ' . $name;
             }
-            $output .= '<h5 style="margin:5px 0 0; color:#666;">' . substr($names_output, 2) . '</h5>';
+            $output .= '<h4 style="margin:5px 0 0; color:#666;">' . substr($names_output, 2) . '</h4>';
         }
-        if ( isset( $public_description ) && ! empty( $json->public_description) ) {
-            $output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) ;
+        if ( $short_description == true && ! empty( $json->short_description) ) {
+            $output .= Markdown ( mf_character_fixer( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->short_description, "\n" ) ) ) ) );
         }
         $output .= '<tr><td colspan="2"><div style="border-bottom:2px solid #ccc;"></div></td></tr>';
         $output .= '</td>';
@@ -171,6 +166,6 @@ function get_schedule_list( $location, $public_description = false, $day = '' ) 
         <p></p>
         <p></p>
         <p></p>
-        <?php echo get_schedule_list( $location, $public_description, $day ); ?>
+        <?php echo get_schedule_list( $location, $short_description, $day ); ?>
     </body>
 </html>
