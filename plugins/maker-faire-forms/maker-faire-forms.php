@@ -657,11 +657,7 @@ class MAKER_FAIRE_FORM {
 				$jdb = '[SUCCESS] : ' . date( 'M jS, Y g:i A', $jdb_success - ( 7 * 3600 ) );	
 			}
 			
-			$photo = $data->{ $this->merge_fields( 'form_photo_thumb', $data->form_type ) };
-
-			// Check if a photo exists
-			if ( '' == $photo )
-				$photo = $data->{ $this->merge_fields( 'form_photo', $data->form_type ) };
+			$photo = $data->{ $this->merge_fields( 'form_photo', $data->form_type ) };
 
 			// Check if we are loading the public description or a short description
 			if ( isset( $data->public_description ) ) {
