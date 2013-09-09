@@ -583,6 +583,7 @@ class MAKER_FAIRE_FORM {
 							<a href="<?php echo get_delete_post_link( $post->ID ); ?>" class="submitdelete deletion">Move to Trash</a>
 						</div>
 						<div id="publishing-action">
+							<a href="<?php echo post_permalink( $post->ID ) ?>" class="button button-large" style="margin-bottom:8px;" title="<?php esc_attr( the_title() ); ?>">View Post</a><br>
 							<input type="submit" value="Save Application" accesskey="p" id="publish" class="button button-primary button-large" name="save">
 						</div>
 					</div>
@@ -3530,7 +3531,7 @@ class MAKER_FAIRE_FORM {
 			if ( $form['form_type'] == 'exhibit' ) {
 				switch ( $form['maker'] ) {
 					case 'One maker':
-						$maker_name = ( ! empty( $form['name'] ) ? $form['name'] : '' ) ."\t";
+						$maker_name = ( ! empty( $form['maker_name'] ) ? $form['maker_name'] : '' ) ."\t";
 						$maker_bio  = ( ! empty( $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] ) ? $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] : '' ) . "\t";
 						break;
 					
@@ -3615,6 +3616,7 @@ class MAKER_FAIRE_FORM {
 		$args = array(
 			'posts_per_page' => 1999,
 			'post_type' 	 => 'mf_form',
+			'faire' 		 => $GLOBALS['current_faire'],
 			'meta_query' 	 => array( array( 'key' => '_mf_form_type', 'value' => 'presenter' ) )
 		);
 
@@ -3640,8 +3642,10 @@ class MAKER_FAIRE_FORM {
 			$locs  = get_the_terms( $mfei->ID, 'location' );
 			$locst = "";
 			
-			foreach( $locs as $loc ) {
-				$locst .= ", ".$loc->name;
+			if ( $locs ) {
+				foreach( $locs as $loc ) {
+					$locst .= ( isset( $loc->name ) ) ? ", " . $loc->name : ", ";
+				}
 			}
 			
 			$locst = htmlspecialchars_decode( substr( $locst, 2 ) );
