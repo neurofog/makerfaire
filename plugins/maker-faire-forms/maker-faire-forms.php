@@ -1440,8 +1440,8 @@ class MAKER_FAIRE_FORM {
 		$post_id = absint( $_POST['ID'] );
 
 		// grab post as ref to get the content
-		$post =& get_post( $post_id );
-		$wf   =  get_post_meta( $post_id, '_mf_waiting_for', true );
+		$post = get_post( $post_id );
+		$wf   = get_post_meta( $post_id, '_mf_waiting_for', true );
 
 		//SANITIZE POST STATUS | post status ( proposed, waiting-for-info, accepted, rejected, cancelled )
 		$post_status = sanitize_key( $_POST['post_status'] );
