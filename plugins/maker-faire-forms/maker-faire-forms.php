@@ -3617,7 +3617,7 @@ class MAKER_FAIRE_FORM {
 			'posts_per_page' => 1999,
 			'post_type' 	 => 'mf_form',
 			'faire' 		 => $GLOBALS['current_faire'],
-			'meta_query' 	 => array( array( 'key' => '_mf_form_type', 'value' => 'presenter' ) )
+			'type'			 => 'presenter'
 		);
 
 		$ps    = new WP_Query($args);
