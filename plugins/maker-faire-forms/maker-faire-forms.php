@@ -1184,7 +1184,7 @@ class MAKER_FAIRE_FORM {
 		
 		if ( $this->is_textarea( $key ) ) : ?>
 		
-			<textarea name="<?php echo esc_attr( $type . '[' . $key . ']' ); ?>" /><?php echo htmlspecialchars( esc_textarea( $this->convert_newlines( $value, "\n" ) ) ); ?></textarea>
+			<textarea name="<?php echo esc_attr( $type . '[' . $key . ']' ); ?>" /><?php echo htmlspecialchars_decode( esc_textarea( $this->convert_newlines( $value, "\n" ) ) ); ?></textarea>
 			
 		<?php elseif ( array_key_exists( $key, $checkboxes ) ) : ?>
 		

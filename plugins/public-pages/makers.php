@@ -6,7 +6,7 @@
 function mf_character_fixer( $str ) {
 	$bad  = array( '&#039l', "\'", '&#8217;', '&#38;', '&amp;', '&quot;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;', 'u2018', 'u2019', 'u2014', 'u201d', 'u201c' );
 	$good = array( "'",      "'",  "'",       "&",	   '&',		'\"',     '"',     '"',      '–',       '>',    '...',     "'",     "'",     "—",     '\"',    '\"'   );
-	return str_replace( $bad, $good, stripslashes( $str ) );
+	return str_replace( $bad, $good, $str );
 }
 
 function mf_convert_newlines( $str, $replace = '<br />' ) {
