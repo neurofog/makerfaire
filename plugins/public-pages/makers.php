@@ -164,11 +164,15 @@ function mf_public_blurb( $json ) {
 			echo '</div>';
 		}
 		
-		if ( $json->presentation_website || $json->video) {
+		if ( $json->presentation_website || $json->video ) {
 			echo '<hr>';
 			echo ( !empty( $json->presentation_website ) ) ? '<a class="btn btn-info" href="'. esc_url( $json->presentation_website ) . '"><i class="icon-home icon-white"></i> Website</a>' : null ;
 			echo ' ';
 			echo ( !empty( $json->video ) ) ? '<a class="btn btn-info" href="'. esc_url( $json->video ) . '"><i class="icon-facetime-video icon-white"></i> Video</a>' : null ;
+			if (!empty( $json->video ) ) {
+				echo '<hr />';
+				echo wpcom_vip_wp_oembed_get( esc_url( $json->video ), array( 'width'=>620 ) );
+			}
 			echo '<hr>';
 		}
 
@@ -242,6 +246,10 @@ function mf_public_blurb( $json ) {
 			echo ( !empty( $json->performer_website ) ) ? '<a class="btn btn-info" href="'. esc_url( $json->performer_website ) . '"><i class="icon-home icon-white"></i> Website</a>' : null ;
 			echo ' ';
 			echo ( !empty( $json->performer_video ) ) ? '<a class="btn btn-info" href="'. esc_url( $json->performer_video ) . '"><i class="icon-facetime-video icon-white"></i> Video</a>' : null ;
+			if (!empty( $json->performer_video ) ) {
+				echo '<hr />';
+				echo wpcom_vip_wp_oembed_get( esc_url( $json->performer_video ), array( 'width'=>620 ) );
+			}
 			echo '<hr>';
 		}
 
