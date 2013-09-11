@@ -62,6 +62,25 @@ add_filter( 'post_updated_messages', 'event_items_updated_messages' );
 
 
 /**
+ * Some users like to schedule applications to a stage. When they are done scheduleing, they like to press, "preview changes" on the schedule edit screen.
+ * This is no bueno because it tries to load the page template for the event items post type, which is nothing more than a way to connect locations and applications at a certain time.
+ * This function will fix that by listening for this post type request and we'll redirect to the application ID assigned to it.
+ * @return void
+ */
+function mf_redirect_to_parent_permalink() {
+	global $post;
+
+	if ( get_post_type() == 'event-items' ) {
+		$app_id = get_post_meta( $post->ID, 'mfei_record', true );
+
+		if ( ! empty( $app_id ) && absint( $app_id ) )
+			wp_redirect( get_permalink( $app_id ) );
+	}
+}
+add_action( 'template_redirect', 'mf_redirect_to_parent_permalink' );
+
+
+/**
  * Function to generate a mailto: link with the presentation details.
  */
 
