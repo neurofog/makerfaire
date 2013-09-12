@@ -73,8 +73,10 @@ function mf_redirect_to_parent_permalink() {
 	if ( get_post_type() == 'event-items' ) {
 		$app_id = get_post_meta( $post->ID, 'mfei_record', true );
 
-		if ( ! empty( $app_id ) && absint( $app_id ) )
-			wp_redirect( get_permalink( $app_id ) );
+		if ( ! empty( $app_id ) && absint( $app_id ) ) {
+			wp_safe_redirect( get_permalink( $app_id ) );
+			exit();
+		}
 	}
 }
 add_action( 'template_redirect', 'mf_redirect_to_parent_permalink' );
