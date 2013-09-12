@@ -1,0 +1,31 @@
+.formflow-form {
+	fieldset {
+		margin:1.5em 0 0;
+		padding:0;
+		ol, ul {
+			padding:0;
+			margin:0;
+			list-style:none;
+		}
+		li.left {
+			label {
+				float:left;
+				width:10em;
+				margin-right:1em;
+			}
+			.ff_description {
+				position:relative;
+				left:11em;
+			}
+		}
+		&.submit { border-style:none; }
+	}
+
+	label { display:block; }
+
+	legend {
+		margin:0;
+		color:#000;
+		font-weight:bold;
+	}
+}

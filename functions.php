@@ -9,6 +9,9 @@ require_once( WP_CONTENT_DIR . '/themes/vip/plugins/vip-init.php' );
 // include maker-faire-forms plugin
 require_once( __DIR__ . '/plugins/maker-faire-forms/maker-faire-forms.php' );
 
+// Include our new Maker Faire Application Forms plugin
+require_once( __DIR__ . '/plugins/applications/applications.php' );
+
 // include maker-faire-forms plugin
 require_once( __DIR__ . '/plugins/public-pages/makers.php' );
 
