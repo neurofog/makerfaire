@@ -4011,12 +4011,13 @@ class MAKER_FAIRE_FORM {
 	* @param int $offset Offset of posts to sync
 	* @param int $length Length of sync batch
 	* =====================================================================*/
-	private function sync_all_status_jdb( $offset = 0, $length = 100 ) {
+	private function sync_all_status_jdb( $offset = 0, $length = 100, $faire = 'world-maker-faire-new-york-2013' ) {
 		
 		$args = array(
 			'posts_per_page' => intval( $length ),
 			'offset'         => intval( $offset ),
-			'post_type'      => 'mf_form'
+			'post_type'      => 'mf_form',
+			'faire'			 => $faire,
 		);
 
 		$ps      = new WP_Query( $args );
