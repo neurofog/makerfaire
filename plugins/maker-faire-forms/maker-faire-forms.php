@@ -2953,6 +2953,7 @@ class MAKER_FAIRE_FORM {
 						$data['m_maker_email_' . $i ] 	= '';
 						$data['m_maker_gigyaid_' . $i ] = '';
 						$data['m_maker_photo_' . $i ]   = '';
+						$data['m_maker_twitter_' . $i ] = '';
 					}
 				} elseif ( $key == 'presenter_gigyaid' ) {
 					for ( $i = 2; $i < 5; $i++ ) {
@@ -2960,6 +2961,7 @@ class MAKER_FAIRE_FORM {
 						$data['presenter_email_' . $i ]   = '';
 						$data['presenter_gigyaid_' . $i ] = '';
 						$data['presenter_photo_' . $i ]   = '';
+						$data['presenter_twitter_' . $i ] = '';
 					}
 				}
 			}
@@ -3038,11 +3040,13 @@ class MAKER_FAIRE_FORM {
 				'm_maker_name', 
 				'm_maker_email', 
 				'm_maker_gigyaid',
-				'm_maker_photo', 
+				'm_maker_photo',
+				'm_maker_twitter',
 				'presenter_name', 
 				'presenter_email', 
 				'presenter_gigyaid',
 				'presenter_photo',
+				'presenter_twitter',
 			);
 
 			// define our CSV rows
@@ -3067,16 +3071,27 @@ class MAKER_FAIRE_FORM {
 					// Process a makers info
 					if ( $key == 'm_maker_gigyaid' ) {
 						for ( $i = 1; $i < 4; $i++ ) {
-							foreach ( array( 'm_maker_name', 'm_maker_email', 'm_maker_gigyaid', 'm_maker_photo' ) as $n ) {
-								$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ][ $i ];
-								$row .= "\t" . $form[ $n ][ $i ];
+							foreach ( array( 'm_maker_name', 'm_maker_email', 'm_maker_gigyaid', 'm_maker_photo', 'm_maker_twitter' ) as $n ) {
+								if ( $n != 'm_maker_twitter' ) {
+									$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ][ $i ];
+									$row .= "\t" . $form[ $n ][ $i ];
+								} else {
+									$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ];
+									$row .= "\t" . $form[ $n ];
+								}
 							}
 						}
 					} elseif( $key == 'presenter_gigyaid' ) {
 						for ( $i = 1; $i < 4; $i++ ) {
-							foreach ( array( 'presenter_name', 'presenter_email', 'presenter_gigyaid', 'presenter_photo' ) as $n ) {
-								$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ][ $i ];
-								$row .= "\t" . $form[ $n ][ $i ];
+							foreach ( array( 'presenter_name', 'presenter_email', 'presenter_gigyaid', 'presenter_photo', 'presenter_twitter' ) as $n ) {
+								if ( $n != 'presenter_twitter' ) {
+									$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ][ $i ];
+									$row .= "\t" . $form[ $n ][ $i ];
+								} else {
+									$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ];
+									$row .= "\t" . $form[ $n ];
+								}
+								
 							}
 						}
 					}
@@ -3602,7 +3617,7 @@ class MAKER_FAIRE_FORM {
 
 		//EXPORT TYPES
 		if( $type == 'manager' ) {
-			$output = "Start Time\tEnd Time\tDate\tLocation\tProject ID\tProject Name\tType\tFirst Name\tLast Name\tEmail\tPhone\tSpecial Requests\r\n";
+			$output = "Start Time\tEnd Time\tDate\tLocation\tProject ID\tProject Name\tType\tFirst Name\tLast Name\tEmail\tPhone\tTwitter\tSpecial Requests\r\n";
 			$title  = 'MANAGER_REPORT_';
 		} elseif( $type == 'signage' ) {
 			$output = "Location\tStart Time\tEnd Time\tDay\tProject Title\tPresenter Name(s)\r\n";
@@ -3677,6 +3692,7 @@ class MAKER_FAIRE_FORM {
 					$line .= $lname."\t";
 					$line .= $form['email']."\t";
 					$line .= $form['phone1']."\t";
+					$line .= $form['presenter_twitter']."\t";
 					$line .= '"'.$form['special_requests']."\"\r\n";				
 				}
 				
