@@ -3693,7 +3693,7 @@ class MAKER_FAIRE_FORM {
 					$line .= $form['email']."\t";
 					$line .= $form['phone1']."\t";
 					$line .= $form['presenter_twitter']."\t";
-					$line .= '"'.$form['special_requests']."\"\r\n";				
+					$line .= $form['special_requests']."\t\r\n";
 				}
 				
 				$line = substr( $line, 0, -4 );
