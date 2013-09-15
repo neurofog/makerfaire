@@ -80,7 +80,7 @@ add_action( 'admin_enqueue_scripts', 'make_enqueue_admin_scripts' );
 
 
 function makerfaire_get_news() {
-	$url = 'http://blog.makezine.com/maker-faire-news/';
+	$url = 'http://makezine.com/maker-faire-news/';
 	$output = wpcom_vip_file_get_contents( $url, 3, 60*60,  array( 'obey_cache_control_header' => false ) );
 	return $output;
 }
@@ -88,7 +88,7 @@ function makerfaire_get_news() {
 add_shortcode('news', 'makerfaire_get_news');
 
 function makerfaire_get_beat() {
-	$url = 'http://blog.makezine.com/beat-reports/';
+	$url = 'http://makezine.com/beat-reports/';
 	$output = wpcom_vip_file_get_contents( $url, 3, 60*60,  array( 'obey_cache_control_header' => false ) );
 	return $output;
 }
@@ -97,11 +97,18 @@ add_shortcode('mf_beat_reports', 'makerfaire_get_beat');
 
 function makerfaire_sidebar_news() {
 
-	$url = 'http://blog.makezine.com/maker-faire-news-sidebar/';
+	$url = 'http://makezine.com/maker-faire-news-sidebar/';
 	$output = wpcom_vip_file_get_contents( $url, 3, 60*60,  array( 'obey_cache_control_header' => false ) );
 	return $output;
 
 }
+
+function makerfaire_get_slider() {
+	$url = 'http://makezine.com/maker-faire-featured-slider/';
+	$output = wpcom_vip_file_get_contents( $url, 3, 60*60,  array( 'obey_cache_control_header' => false ) );
+	return $output;
+}
+add_shortcode( 'mf-featured-slider', 'makerfaire_get_slider' );
 
 /**
  * Make the 'accepted' status public so that forms can be shown
@@ -117,7 +124,7 @@ add_action( 'init', function() {
 }, 400 );
 
 function makerfaire_index_feed($n = 4) {
-	$f = fetch_feed('http://blog.makezine.com/tag/maker-faire/feed/'); 
+	$f = fetch_feed('http://makezine.com/tag/maker-faire/feed/'); 
 
 	if(is_wp_error($f))
 		return false;
@@ -233,7 +240,7 @@ add_shortcode( 'newsletter', 'makerfaire_newsletter_shortcode' );
 function makerfaire_news_rss() { ?>
 	<div class="newsies">
 		<div class="news post">
-			<h3 style="color: #fc040c;"><a href="http://blog.makezine.com/tag/maker-faire/">Latest Maker Faire News</a></h3>
+			<h3 style="color: #fc040c;"><a href="http://makezine.com/tag/maker-faire/">Latest Maker Faire News</a></h3>
 			<?php 
 			$fs = makerfaire_index_feed();
 
@@ -257,7 +264,7 @@ function makerfaire_news_rss() { ?>
 			<?php endforeach; ?> 
 		</div>
 	</div>
-	<h4><a href="http://blog.makezine.com/tag/maker-faire/">Read More &rarr;</a></h4>
+	<h4><a href="http://makezine.com/tag/maker-faire/">Read More &rarr;</a></h4>
 <?php }
 
 function makerfaire_widgets_init() {
