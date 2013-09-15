@@ -72,18 +72,18 @@
 
 	jQuery(document).ready(function(){
 
-		jQuery('.dropdown-toggle').dropdown()
-		jQuery('#north').tab('show')
-		jQuery('#myModal').modal('hide')
-		jQuery('#featuredMakers').carousel({
+		jQuery('.dropdown-toggle').dropdown();
+		jQuery('#north').tab('show');
+		jQuery('#myModal').modal('hide');
+		jQuery('#featuredMakers, #mf-featured-slider').carousel({
 			interval: 5000
-		})
+		});
 		jQuery('.carousel').carousel({
 			interval: 4000
-		})
+		});
 		jQuery('.sponsorCarousel').carousel({
 			interval: 3000
-		})
+		});
 	});
 
 </script>
