@@ -13,18 +13,5 @@ jQuery( document ).ready( function( $ ) {
 			$( '#post-lock-dialog' ).remove();
 		} );
 	}
-
-	// Remove any terms that are from previous faires.
-	$( '#locationchecklist > li > label' ).each( function() {
-		// Get the current text
-		var location_name = $(this).text();
-
-		// Check if the string does NOT start with a_ (our unique identifiyer for WMFNY13)
-		// In the future we will be removing this and finding a better solution.
-		if ( location_name.indexOf('a_') === -1 ) {
-			$(this).parent().hide();
-		}
-	});
-
 	
 } );

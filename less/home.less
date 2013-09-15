@@ -1,0 +1,191 @@
+// New Homepage styles. Main content
+.home-page {
+	.top-header {
+		font-family:'Helvertica Neue', sans-serif;
+		margin-bottom:19px;
+	}
+	.big-title {
+		color:#ed1c24;
+		font-size:28px;
+		text-transform:uppercase;
+		line-height:1em;
+		span {
+			font-size:38px;
+			line-height:.8em;
+		}
+	}
+	.right-border {
+		border-right:3px solid #ed1c24;
+	}
+	.exhibit-types {
+		color:#464646;
+		font-size:24px;
+		ul {
+			list-style:none;
+			margin:0;
+			padding:0;
+		}
+		li {
+			padding:0;
+			line-height:1.2em;
+			font-weight:600;
+			display:inline;
+		}
+	}
+	.bulleted {
+		li:after, .bulleted-after:after {
+			content: " \2022";
+			font-size:30px;
+			color:#ed1c24;
+			position:relative;
+			top:3px;
+		}
+		li.no-bull:after {
+			content: "";
+			top:0;
+			color:transparent;
+			font-size:1em;
+		}
+	}
+	.bulleted-after {
+		text-decoration:none;
+	}
+	.top-featured {
+		margin-bottom:19px;
+	}
+	.top-content {
+		font-size:16px;
+		.big-title {
+			font-size:23px;
+			margin-bottom:19px;
+		}
+		.arrowfy {
+			list-style:none;
+			margin:0;
+			padding:0;
+			li {
+				margin-bottom:17px;
+				padding-left:17px;
+				background:url('images/bullet-arrow.png') 0 3px no-repeat;
+			}
+		}
+	}
+	.upcoming-faires {
+		&.thumbnail {
+			border-color:#ccc;
+			padding:0;
+			margin-bottom:15px;
+		}
+		.border-bottom {
+			border-bottom:1px solid #ccc;
+			padding:4px 8px;
+		}
+		h3, .border-bottom p {
+			font-size:18px;
+			line-height:1em;
+			text-transform:uppercase;
+			display:inline-block;
+		}
+		.aligncenter {
+			text-align:center;
+			padding:8px;
+		}
+	}
+	.faire-headline {
+		font-size:18px;
+		margin-bottom:7px;
+		a {
+			font-size:20px;
+		}
+	}
+	.aligncenter p {
+		font-size:18px;
+	}
+}
+
+body.home .stage1 {
+	
+	// Styles are for Maker Faire NY 2013 stage 1
+	.stage1-header {
+		margin:-20px 0 20px;
+		text-align:center;
+	}
+	#mf-featured-slider {
+		background:#018ed6;
+		padding:8px;
+		.item img {
+			width:366px;
+			height:342px;
+		}
+		.carousel-caption {
+			background:transparent;
+			width:35%;
+			left:auto;
+			top:0;
+			bottom:auto;
+			.cap-title {
+				font-size:24px;
+			}
+			.cap-body {
+				font-size:25px;
+				line-height:1.2em;
+				font-weight:normal;
+				a {
+					color:#fff;
+				}
+			}
+		}
+		.carousel-control {
+			top:50%;
+			background:#00476b;
+			border:1px solid #00324b;
+			font-size:28px;
+			width:30px;
+			height:46px;
+			transition:opacity .3s;
+			border-radius:0;
+			border-top-left-radius:5px;
+			border-bottom-left-radius:5px;
+			span {
+				line-height:1.4em;
+				width:auto;
+				height:auto;
+				background-image:none;
+			}
+			&.left {
+				left:0px;
+				border-radius:0px;
+				border-top-right-radius:5px;
+				border-bottom-right-raidus:5px;
+			}
+			&.right {
+				right:0px;
+			}
+		}
+	}
+	.top-content {
+		margin-bottom:20px;
+		.span3 {
+			background:#018ed6;
+			padding:5px;
+			width:126px;
+			border-radius:5px;
+			text-align:center;
+			margin-right:12px;
+			h2 {
+				margin-bottom:10px;
+				a {
+					color:#fff;
+					font-size:25px;
+					line-height:24px;
+					font-family:"Proxima Nova", sans-serif;
+					font-weight:normal;
+					text-transform:capitalize;
+				}
+			}
+			&.last {
+				margin-right:0;
+			}
+		}
+	}
+}
