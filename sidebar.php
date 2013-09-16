@@ -4,7 +4,6 @@
 
 		<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/mr-makey.png" alt="Mr. Makey" class="makey pull-left">
 		<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/countdown.png" alt="Mr. Makey" class="counter pull-left">
-		<h5>Sept 21 &amp; 22, New York Hall of Science</h5>
 
 		<div class="countdown">
 
@@ -27,7 +26,13 @@
 
 		<p class="buy-tickets"><a href="http://makerfairenyc.eventbrite.com/"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/buy-tickets.png" alt="Buy tickets for Maker Faire" class=""></a></p>
 
-		<hr>
+		<h5 class="count-down-sub">September 21 &amp; 22<br />
+			New York Hall of Science</h4>
+		<h5 class="count-down-sub-sub">Sat. 10 AM - 7 PM | Sun. 10 AM - 6 PM</h5>
+
+	</div>
+
+	<div class="sidebar-bordered">
 
 		<h3>Get news and updates on all faires and calls for makers.</h3>
 
@@ -68,6 +73,21 @@
 			</ul>
 		</div>
 
+	</div>
+
+	<!-- Beginning Sync AdSlot 2 for Ad unit header ### size: [[300,250]]  -->
+	<!-- <div id='div-gpt-ad-664089004995786621-2' class="adblock">
+		<script type='text/javascript'>
+			googletag.cmd.push(function(){googletag.display('div-gpt-ad-664089004995786621-2')});
+		</script>
+	</div> -->
+	<!-- End AdSlot 2 -->
+
+	<div class="center twitter">
+		<a href="https://twitter.com/makerfaire" class="twitter-follow-button" data-show-count="false" data-size="large">Follow @makerfaire</a>
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+		<a class="twitter-timeline" href="https://twitter.com/search?q=%23makerfaire" data-widget-id="322225978648698880">Tweets about "#makerfaire"</a>
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 	</div>
 
 	<div class="sidebar-bordered sponsored">
@@ -118,21 +138,6 @@
 		
 		</div>
 
-	</div>
-
-	<!-- Beginning Sync AdSlot 2 for Ad unit header ### size: [[300,250]]  -->
-	<div id='div-gpt-ad-664089004995786621-2' class="adblock">
-		<script type='text/javascript'>
-			googletag.cmd.push(function(){googletag.display('div-gpt-ad-664089004995786621-2')});
-		</script>
-	</div>
-	<!-- End AdSlot 2 -->
-
-	<div class="center twitter">
-		<a href="https://twitter.com/makerfaire" class="twitter-follow-button" data-show-count="false" data-size="large">Follow @makerfaire</a>
-		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-		<a class="twitter-timeline" href="https://twitter.com/search?q=%23makerfaire" data-widget-id="322225978648698880">Tweets about "#makerfaire"</a>
-		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 	</div>
 
 	<!-- Beginning Sync AdSlot 3 for Ad unit header ### size: [[300,250]]  -->

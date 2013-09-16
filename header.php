@@ -66,16 +66,16 @@ Topbar
 		<div class="nav-collapse">
 			<ul class="nav">
 				<li class="red"><a  class="red" href="http://makezine.com">MAKE</a></li>
-							<li class=""><a href="http://blog.makezine.com">Blog</a></li>
-							<li class=""><a href="http://makezine.com/magazine">Magazine</a></li>
+							<li class=""><a href="http://makezine.com/blog/">Blog</a></li>
+							<li class=""><a href="http://makezine.com/magazine/">Magazine</a></li>
 							<li class=""><a href="http://makerfaire.com">Maker Faire</a></li>
-							<li class=""><a href="http://makezine.com">Make: Projects</a></li>
+							<li class=""><a href="http://makezine.com/projects/">Make: Projects</a></li>
 							<li class=""><a href="http://makershed.com">Maker Shed</a></li>
 							<li class=""><a href="http://kits.makezine.com">Kits</a></li>
 			</ul>
 			<ul class="nav pull-right">
 				<li>
-					<form action="http://blog.makezine.com/search/" class="form-horizontal form-search"> 
+					<form action="http://makezine.com/search/" class="form-horizontal form-search"> 
 						<input type="hidden" name="as_sitesearch" value="makerfaire.com" /> 
 						<input type="text" name="q" class="span2" /> 
 						<input type="submit" class="btn btn-primary" value="Search" /> 
@@ -93,17 +93,17 @@ Topbar
 
 	<div class="container">
 	
-		<div class="topad">
+		<!-- <div class="topad"> -->
 							
 			<!-- Beginning Sync AdSlot 1 for Ad unit header ### size: [[728,90]]  -->
-			<div id='div-gpt-ad-664089004995786621-1'>
+			<!-- <div id='div-gpt-ad-664089004995786621-1'>
 				<script type='text/javascript'>
 					googletag.cmd.push(function(){googletag.display('div-gpt-ad-664089004995786621-1')});
 				</script>
-			</div>
+			</div> -->
 			<!-- End AdSlot 1 -->
 			
-		</div>
+		<!-- </div> -->
 
 		<p class="tagline"><a href="http://disney.com"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/disney.png" alt="Disney"></a></p>
 		
