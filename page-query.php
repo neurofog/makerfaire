@@ -88,10 +88,8 @@ if ($type == 'entity') {
 		);
 		$app_makers = new WP_Query( $maker_args );
 		$maker_ids = $app_makers->posts;
-		// var_dump( $maker_ids );
 		$maker_post_id = array();
 		foreach( $maker_ids as $maker_id ) {
-			var_dump( $maker_id->ID );
 			array_push( $maker_post_id, absint( $maker_id->ID ) );
 		}
 		$jsonpost["child_id_refs"] = $maker_post_id;
