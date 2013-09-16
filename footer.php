@@ -67,7 +67,6 @@
 	
 </div>
 <script src="<?php echo get_template_directory_uri(); ?>/js/bootstrap.js"></script>
-<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tab.js"></script>
 <script type="text/javascript">
 
 	jQuery(document).ready(function(){
