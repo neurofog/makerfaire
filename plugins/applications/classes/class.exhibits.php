@@ -34,7 +34,7 @@
 				'nonce_name' => 'formflow_nonce', // Nonce name. This is the name of the nonce hidden form field to be created.
 			),
 			'create-post' => array(  // We can setup our form to create a new post on save. YAY!
-				'form_title' => 'app-name', // The NAME FIELD of the form field we want to set as our post title
+				'form_title' => 'project_name', // The NAME FIELD of the form field we want to set as our post title
 				'post_type' => 'mf_form', // Pass the post type name
 				'post_status' => 'proposed', // Pass the post status. If empty or not set, 'publish' is default
 			),
@@ -51,6 +51,26 @@
 		public $form = array(
 			array(
 				'id'   	   => 1,
+				'type' 	   => 'hidden',
+				'required' => false,
+				'args' 	   => array(
+					'id'		  => 'form-type',
+					'name'	  	  => 'form_type',
+					'value'		  => 'exhibit',
+				),
+			),
+			array(
+				'id'   	   => 2,
+				'type' 	   => 'hidden',
+				'required' => false,
+				'args' 	   => array(
+					'id'		  => 'faire',
+					'name'	  	  => 'maker_faire',
+					'value'		  => '2013_newyork',
+				),
+			),
+			array(
+				'id'   	   => 3,
 				'type' 	   => 'text',
 				'required' => true,
 				'args' 	   => array(
@@ -62,7 +82,7 @@
 				),
 			),
 			array(
-				'id'   	   => 2,
+				'id'   	   => 4,
 				'type' 	   => 'textarea',
 				'required' => true,
 				'args' 	   => array(
@@ -73,7 +93,7 @@
 				),
 			),
 			array(
-				'id'   	   => 3,
+				'id'   	   => 5,
 				'type' 	   => 'textarea',
 				'required' => true,
 				'args' 	   => array(
@@ -85,7 +105,7 @@
 				),
 			),
 			array(
-				'id'   	   => 4,
+				'id'   	   => 6,
 				'type' 	   => 'image',
 				'required' => true,
 				'args' 	   => array(
@@ -96,7 +116,7 @@
 				),
 			),
 			array(
-				'id'   	   => 5,
+				'id'   	   => 7,
 				'type' 	   => 'url',
 				'required' => false,
 				'args' 	   => array(
@@ -107,7 +127,7 @@
 				),
 			),
 			array(
-				'id'   	   => 6,
+				'id'   	   => 8,
 				'type' 	   => 'url',
 				'required' => false,
 				'args' 	   => array(
@@ -118,7 +138,7 @@
 				),
 			),
 			array(
-				'id'   	   => 7,
+				'id'   	   => 9,
 				'type' 	   => 'radio',
 				'required' => true,
 				'args' 	   => array(
@@ -133,7 +153,7 @@
 				),
 			),
 			array(
-				'id'   	   => 8,
+				'id'   	   => 10,
 				'type' 	   => 'radio',
 				'required' => true,
 				'args' 	   => array(
@@ -149,7 +169,7 @@
 				),
 			),
 			array(
-				'id'   	   => 9,
+				'id'   	   => 11,
 				'type' 	   => 'radio',
 				'required' => false,
 				'args' 	   => array(
@@ -163,7 +183,7 @@
 				),
 			),
 			array(
-				'id'   	   => 10,
+				'id'   	   => 12,
 				'type' 	   => 'radio',
 				'required' => false,
 				'args' 	   => array(

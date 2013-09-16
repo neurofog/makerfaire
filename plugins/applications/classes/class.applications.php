@@ -328,11 +328,15 @@
 			if ( ! isset( $data['ff-submitted'] ) && ! $data['ff-submitted'] && ! isset( $data['formflow_nonce'] ) && ! wp_verify_nonce( $data['formflow_nonce'], 'save_form' ) )
 				return;
 
+			// First we want to clean everything...
+			$clean_content = $this->form_clean_data( $data );
+
+			// We'll want to get our post information we set in the settings too.
 			$post_info = $this->settings['create-post'];
 
 			$post = array(
 				'post_title'   => ( isset( $post_info['form_title'] ) && ! empty( $post_info['form_title'] ) ) ? sanitize_text_field( $data[ $post_info['form_title'] ] ) : '',
-				'post_content' => json_encode( $_POST ),
+				'post_content' => json_encode( $data ),
 				'post_status'  => ( isset( $post_info['post_status'] ) && ! empty( $post_info['post_status'] ) ) ? esc_attr( $post_info['post_status'] ) : 'publish',
 				'post_type'	   => ( isset( $post_info['post_type'] ) && ! empty( $post_info['post_type'] ) ) ? esc_attr( $post_info['post_type'] ) : 'post',
 			);
@@ -345,6 +349,34 @@
 				return $post;
 			}
 
+		}
+
+
+		/**
+		 * Clean and validate all content passed.
+		 * @param  array $data The array that contains our content we want to addd
+		 * @return array
+		 *
+		 * @version  0.1
+		 * @since    0.1
+		 */
+		private function form_clean_data( $data ) {
+
+			$form_fields = $this->form;
+			$clean_data = array();
+
+			if ( is_array( $data ) ) {
+				var_dump($form_fields);
+				foreach ( $data as $key => $value ) {
+
+					// Check that the data being passed is what we want. Rmove the rest.
+					if ( $this->in_array_r( $key, $form_fields, true ) ) {
+						$clean_data[ $key ] = $value;
+					}
+				}
+			}
+
+			var_dump($clean_data);
 		}
 
 
@@ -958,6 +990,33 @@
 		 */
 		private function get_hidden_field( $args ) {
 
+			if ( ! empty( $args ) ) {
+				$output = '<input type="hidden"';
+
+					// Set our name field, if one doesn't exist, use the label
+					if ( isset( $args['name'] ) ) {
+						$output .= ' name="' . esc_attr( $args['name'] ) . '"';
+					} else {
+						$output .= ' name="' . esc_attr( sanitize_title( $args['label'] ) ) . '"';
+					}
+
+					// Check for an ID
+					if ( isset( $args['id'] ) )
+						$output .= ' id="' . esc_attr( $args['id'] ) . '"';
+
+					// Check for a class
+					if ( isset( $args['class'] ) )
+						$output .= ' class="' . esc_attr( $args['class'] ) . '"';
+
+					// Add our value
+					if ( isset( $args['value'] ) )
+						$output .= ' value="' . esc_attr( $args['value'] ) . '"';
+
+				$output .= ' />';
+
+				return $output;
+			}
+
 		}
 
 
@@ -1046,6 +1105,28 @@
 			<?php else : ?>
 				<?php echo $this->no_items(); ?>
 			<?php endif;
+		}
+
+
+		/**
+		 * Random little function that helps us iterate through a multidimensional array.
+		 * Works just like in_array() by searching haystack for needle using loose comparison unless strict is set but with multidimensional arrays.
+		 * @param  string|array  $needle   If needle is a string, the comparison is done in a case-sensitive manner.
+		 * @param  array         $haystack The array
+		 * @param  boolean       $strict   If the third parameter strict is set to TRUE then the in_array() function will also check the types of the needle in the haystack.
+		 * @return boolean
+		 *
+		 * @version  0.1
+		 * @since    0.1
+		 */
+		private function in_array_r( $needle, $haystack, $strict = false ) {
+		    foreach ( $haystack as $item ) {
+		        if ( ( $strict ? $item === $needle : $item == $needle ) || ( is_array( $item ) && $this->in_array_r( $needle, $item, $strict ) ) ) {
+		            return true;
+		        }
+		    }
+
+		    return false;
 		}
 
 	}
