@@ -71,18 +71,18 @@
 
 	jQuery(document).ready(function(){
 
-		jQuery('.dropdown-toggle').dropdown()
-		jQuery('#north').tab('show')
-		jQuery('#myModal').modal('hide')
-		jQuery('#featuredMakers').carousel({
+		jQuery('.dropdown-toggle').dropdown();
+		jQuery('#north').tab('show');
+		jQuery('#myModal').modal('hide');
+		jQuery('#featuredMakers, #mf-featured-slider').carousel({
 			interval: 5000
-		})
+		});
 		jQuery('.carousel').carousel({
 			interval: 4000
-		})
+		});
 		jQuery('.sponsorCarousel').carousel({
 			interval: 3000
-		})
+		});
 	});
 
 </script>
@@ -167,6 +167,14 @@ jQuery(document).ready(function(){
 	}
 	jQuery('table.schedule').slideDown('slow');
 });
+</script>
+
+<?php // Adding Crazy Egg tracking ?>
+<script type="text/javascript">
+setTimeout(function(){var a=document.createElement("script");
+var b=document.getElementsByTagName("script")[0];
+a.src=document.location.protocol+"//dnn506yrbagrg.cloudfront.net/pages/scripts/0013/2533.js?"+Math.floor(new Date().getTime()/3600000);
+a.async=true;a.type="text/javascript";b.parentNode.insertBefore(a,b)}, 1);
 </script>
 
 <?php wp_footer(); ?>

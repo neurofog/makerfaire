@@ -301,7 +301,6 @@ class MAKER_FAIRE_FORM {
 			'has_archive'        => false,
 			'hierarchical'       => true,
 			'menu_position'      => null,
-			'menu_icon'          => plugins_url( 'assets/i/admin-icon.png', __FILE__ ),
 			'supports'           => array( 'title', 'revisions' ),
 			'taxonomies'		 => array( 'category', 'post_tag' ),
 			'rewrite'            => array( 'slug' => 'makers', 'with_front' => false )
@@ -546,8 +545,8 @@ class MAKER_FAIRE_FORM {
 			$post = get_post( absint( $id ) );
 		}
 
-		$bad  = array( '&#039;', "\'", '&#8217;', '&#38;', '&#038;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;', 'u2018', 'u2019' );
-   		$good = array( "'",      "'",  "'",       "&",     "&",      '"',     '"',      '–',       '>',    '...',     "'",     "'",    );
+		$bad  = array( '&#039;', "\'", '&#8217;', '&#38;', '&#038;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;', 'u2018', 'u2019', 'u2014' );
+		$good = array( "'",      "'",  "'",       "&",     "&",      '"',     '"',      '–',       '>',    '...',     "'",     "'",     "—"   );
 		$data = json_decode( str_replace( $bad, $good, $post->post_content ) );
 
 		if( $args['id'] == 'mf_save' ) { 
@@ -584,6 +583,7 @@ class MAKER_FAIRE_FORM {
 							<a href="<?php echo get_delete_post_link( $post->ID ); ?>" class="submitdelete deletion">Move to Trash</a>
 						</div>
 						<div id="publishing-action">
+							<a href="<?php echo post_permalink( $post->ID ) ?>" class="button button-large" style="margin-bottom:8px;" title="<?php esc_attr( the_title() ); ?>">View Post</a><br>
 							<input type="submit" value="Save Application" accesskey="p" id="publish" class="button button-primary button-large" name="save">
 						</div>
 					</div>
@@ -658,11 +658,7 @@ class MAKER_FAIRE_FORM {
 				$jdb = '[SUCCESS] : ' . date( 'M jS, Y g:i A', $jdb_success - ( 7 * 3600 ) );	
 			}
 			
-			$photo = $data->{ $this->merge_fields( 'form_photo_thumb', $data->form_type ) };
-
-			// Check if a photo exists
-			if ( '' == $photo )
-				$photo = $data->{ $this->merge_fields( 'form_photo', $data->form_type ) };
+			$photo = $data->{ $this->merge_fields( 'form_photo', $data->form_type ) };
 
 			// Check if we are loading the public description or a short description
 			if ( isset( $data->public_description ) ) {
@@ -2957,6 +2953,7 @@ class MAKER_FAIRE_FORM {
 						$data['m_maker_email_' . $i ] 	= '';
 						$data['m_maker_gigyaid_' . $i ] = '';
 						$data['m_maker_photo_' . $i ]   = '';
+						$data['m_maker_twitter_' . $i ] = '';
 					}
 				} elseif ( $key == 'presenter_gigyaid' ) {
 					for ( $i = 2; $i < 5; $i++ ) {
@@ -2964,6 +2961,7 @@ class MAKER_FAIRE_FORM {
 						$data['presenter_email_' . $i ]   = '';
 						$data['presenter_gigyaid_' . $i ] = '';
 						$data['presenter_photo_' . $i ]   = '';
+						$data['presenter_twitter_' . $i ] = '';
 					}
 				}
 			}
@@ -3042,11 +3040,13 @@ class MAKER_FAIRE_FORM {
 				'm_maker_name', 
 				'm_maker_email', 
 				'm_maker_gigyaid',
-				'm_maker_photo', 
+				'm_maker_photo',
+				'm_maker_twitter',
 				'presenter_name', 
 				'presenter_email', 
 				'presenter_gigyaid',
 				'presenter_photo',
+				'presenter_twitter',
 			);
 
 			// define our CSV rows
@@ -3071,16 +3071,27 @@ class MAKER_FAIRE_FORM {
 					// Process a makers info
 					if ( $key == 'm_maker_gigyaid' ) {
 						for ( $i = 1; $i < 4; $i++ ) {
-							foreach ( array( 'm_maker_name', 'm_maker_email', 'm_maker_gigyaid', 'm_maker_photo' ) as $n ) {
-								$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ][ $i ];
-								$row .= "\t" . $form[ $n ][ $i ];
+							foreach ( array( 'm_maker_name', 'm_maker_email', 'm_maker_gigyaid', 'm_maker_photo', 'm_maker_twitter' ) as $n ) {
+								if ( $n != 'm_maker_twitter' ) {
+									$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ][ $i ];
+									$row .= "\t" . $form[ $n ][ $i ];
+								} else {
+									$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ];
+									$row .= "\t" . $form[ $n ];
+								}
 							}
 						}
 					} elseif( $key == 'presenter_gigyaid' ) {
 						for ( $i = 1; $i < 4; $i++ ) {
-							foreach ( array( 'presenter_name', 'presenter_email', 'presenter_gigyaid', 'presenter_photo' ) as $n ) {
-								$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ][ $i ];
-								$row .= "\t" . $form[ $n ][ $i ];
+							foreach ( array( 'presenter_name', 'presenter_email', 'presenter_gigyaid', 'presenter_photo', 'presenter_twitter' ) as $n ) {
+								if ( $n != 'presenter_twitter' ) {
+									$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ][ $i ];
+									$row .= "\t" . $form[ $n ][ $i ];
+								} else {
+									$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ];
+									$row .= "\t" . $form[ $n ];
+								}
+								
 							}
 						}
 					}
@@ -3537,7 +3548,7 @@ class MAKER_FAIRE_FORM {
 			if ( $form['form_type'] == 'exhibit' ) {
 				switch ( $form['maker'] ) {
 					case 'One maker':
-						$maker_name = ( ! empty( $form['name'] ) ? $form['name'] : '' ) ."\t";
+						$maker_name = ( ! empty( $form['maker_name'] ) ? $form['maker_name'] : '' ) ."\t";
 						$maker_bio  = ( ! empty( $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] ) ? $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] : '' ) . "\t";
 						break;
 					
@@ -3606,7 +3617,7 @@ class MAKER_FAIRE_FORM {
 
 		//EXPORT TYPES
 		if( $type == 'manager' ) {
-			$output = "Start Time\tEnd Time\tDate\tLocation\tProject ID\tProject Name\tType\tFirst Name\tLast Name\tEmail\tPhone\tSpecial Requests\r\n";
+			$output = "Start Time\tEnd Time\tDate\tLocation\tProject ID\tProject Name\tType\tFirst Name\tLast Name\tEmail\tPhone\tTwitter\tSpecial Requests\r\n";
 			$title  = 'MANAGER_REPORT_';
 		} elseif( $type == 'signage' ) {
 			$output = "Location\tStart Time\tEnd Time\tDay\tProject Title\tPresenter Name(s)\r\n";
@@ -3622,7 +3633,8 @@ class MAKER_FAIRE_FORM {
 		$args = array(
 			'posts_per_page' => 1999,
 			'post_type' 	 => 'mf_form',
-			'meta_query' 	 => array( array( 'key' => '_mf_form_type', 'value' => 'presenter' ) )
+			'faire' 		 => $GLOBALS['current_faire'],
+			'type'			 => 'presenter'
 		);
 
 		$ps    = new WP_Query($args);
@@ -3647,8 +3659,10 @@ class MAKER_FAIRE_FORM {
 			$locs  = get_the_terms( $mfei->ID, 'location' );
 			$locst = "";
 			
-			foreach( $locs as $loc ) {
-				$locst .= ", ".$loc->name;
+			if ( $locs ) {
+				foreach( $locs as $loc ) {
+					$locst .= ( isset( $loc->name ) ) ? ", " . $loc->name : ", ";
+				}
 			}
 			
 			$locst = htmlspecialchars_decode( substr( $locst, 2 ) );
@@ -3678,7 +3692,8 @@ class MAKER_FAIRE_FORM {
 					$line .= $lname."\t";
 					$line .= $form['email']."\t";
 					$line .= $form['phone1']."\t";
-					$line .= '"'.$form['special_requests']."\"\r\n";				
+					$line .= $form['presenter_twitter']."\t";
+					$line .= $form['special_requests']."\t\r\n";
 				}
 				
 				$line = substr( $line, 0, -4 );
@@ -4017,7 +4032,8 @@ class MAKER_FAIRE_FORM {
 		$args = array(
 			'posts_per_page' => intval( $length ),
 			'offset'         => intval( $offset ),
-			'post_type'      => 'mf_form'
+			'post_type'      => 'mf_form',
+			'faire'			 => $GLOBALS['current_faire'],
 		);
 
 		$ps      = new WP_Query( $args );

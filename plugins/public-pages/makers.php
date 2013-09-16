@@ -6,7 +6,7 @@
 function mf_character_fixer( $str ) {
 	$bad  = array( '&#039l', "\'", '&#8217;', '&#38;', '&amp;', '&quot;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;', 'u2018', 'u2019', 'u2014', 'u201d', 'u201c' );
 	$good = array( "'",      "'",  "'",       "&",	   '&',		'\"',     '"',     '"',      '–',       '>',    '...',     "'",     "'",     "—",     '\"',    '\"'   );
-	return str_replace( $bad, $good, stripslashes( $str ) );
+	return str_replace( $bad, $good, $str );
 }
 
 function mf_convert_newlines( $str, $replace = '<br />' ) {
@@ -164,11 +164,15 @@ function mf_public_blurb( $json ) {
 			echo '</div>';
 		}
 		
-		if ( $json->presentation_website || $json->video) {
+		if ( $json->presentation_website || $json->video ) {
 			echo '<hr>';
 			echo ( !empty( $json->presentation_website ) ) ? '<a class="btn btn-info" href="'. esc_url( $json->presentation_website ) . '"><i class="icon-home icon-white"></i> Website</a>' : null ;
 			echo ' ';
 			echo ( !empty( $json->video ) ) ? '<a class="btn btn-info" href="'. esc_url( $json->video ) . '"><i class="icon-facetime-video icon-white"></i> Video</a>' : null ;
+			if (!empty( $json->video ) ) {
+				echo '<hr />';
+				echo wpcom_vip_wp_oembed_get( esc_url( $json->video ), array( 'width'=>620 ) );
+			}
 			echo '<hr>';
 		}
 
@@ -242,6 +246,10 @@ function mf_public_blurb( $json ) {
 			echo ( !empty( $json->performer_website ) ) ? '<a class="btn btn-info" href="'. esc_url( $json->performer_website ) . '"><i class="icon-home icon-white"></i> Website</a>' : null ;
 			echo ' ';
 			echo ( !empty( $json->performer_video ) ) ? '<a class="btn btn-info" href="'. esc_url( $json->performer_video ) . '"><i class="icon-facetime-video icon-white"></i> Video</a>' : null ;
+			if (!empty( $json->performer_video ) ) {
+				echo '<hr />';
+				echo wpcom_vip_wp_oembed_get( esc_url( $json->performer_video ), array( 'width'=>620 ) );
+			}
 			echo '<hr>';
 		}
 
@@ -258,7 +266,7 @@ function mf_public_blurb( $json ) {
 	// Let's get the grouped projects
 	$terms = get_the_terms( get_the_ID(), 'group' );
 	if ( $terms ) {
-		echo '<h4>Other exhibits in this group:</h4>';
+		echo '<h3>Other exhibits in this group:</h3>';
 		foreach ( $terms as $term ) {
 			$args = array( 
 				'tax_query' => array(
@@ -562,22 +570,22 @@ function mf_schedule( $atts ) {
 	$faire = ( isset($atts['faire'] ) ) ? sanitize_text_field( $atts['faire'] ) : '';
 
 	if (!empty($location)) {
-		$term = wpcom_vip_get_term_by( 'name', $location, 'location');
-		$url = get_term_link( $term, 'location' );
+		$term = wpcom_vip_get_term_by( 'id', $location, 'location');
+		$url = get_term_link( $term );
 		if ( !is_wp_error( $url ) ) {
-			$output .= '<h2><a href="'. esc_url( $url ) . '">' . esc_html( $location ) . '</a></h2>';	
-		} else {
-			$output .= '<h2>' . esc_html( $location ) . '</h2>';
-		}
-		if ( !empty( $term->description ) ) {
-			$output .= '<div class="well well-small">' . Markdown( $term->description ) . '</div>';
+			$output .= '<a href="' . esc_url( home_url( '/stage-schedule/?location=' . $term->slug ) ) . '" class="pull-right" style="position:relative; top:7px;"><img src="' . get_stylesheet_directory_uri() . '/images/print-ico.png" alt="Print this schedule" /></a>';
+			$output .= '<h2><a href="'. esc_url( $url ) . '">' . esc_html( $term->name ) . '</a></h2>';
+			if ( !empty( $term->description ) )
+				$output .= '<div class="alert alert-info">' . Markdown( $term->description ) . '</div>';
 		}
 	}
 
 	$query = wp_cache_get( $location . '_saturday_schedule' );
+	if( !isset( $term->slug ) )
+		return;
 	if( $query == false ) {
 		$args = array( 
-			'location' 		=> $location,
+			'location' 		=> sanitize_title( $term->slug ),
 			'post_type'		=> 'event-items',
 			'orderby' 		=> 'meta_value', 
 			'meta_key'		=> 'mfei_start',
@@ -595,6 +603,7 @@ function mf_schedule( $atts ) {
 		wp_cache_set( $location . '_saturday_schedule', $query, '', 300 );
 	}
 
+	if ( $query->found_posts >= 1 ) :
 	$output .= '<table class="table table-striped table-bordered table-schedule">';
 	if ( $faire == 'world-maker-faire-new-york-2013' ) {
 		$output .= '<thead><tr><th colspan="2">September 21st, 2013</th></tr></thead>';
@@ -610,11 +619,16 @@ function mf_schedule( $atts ) {
 		$output .= '<td width="150" style="max-width:150px;">';
 		$output .= '<h5>' . esc_html( $day ) . '</h5>';
 		$output .= '<p>' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</p>';
-		if (isset($json->project_photo) or isset($json->presentation_photo) or isset($json->performer_photo) or has_post_thumbnail( get_the_ID() ) ) {
+		if ( isset( $json->presenter_photo ) or isset($json->project_photo) or isset($json->presentation_photo) or isset($json->performer_photo) or has_post_thumbnail( get_the_ID() ) ) {
 			if ( get_the_post_thumbnail() ) {
 				$output .= '<div class="pull-left thumbnail"><a href="';
 				$output .= get_permalink( $sched_post ) . '">';
 				$output .= get_the_post_thumbnail( get_the_ID(), 'schedule-thumb' );
+				$output .= '</a></div>';
+			} elseif ( isset( $json->presenter_photo[0] ) && !is_array( $json->presenter_photo[0] ) && strlen( $json->presenter_photo[0] ) > 5 ) {
+				$output .= '<div class="pull-left thumbnail"><a href="';
+				$output .= get_permalink( $sched_post ) . '">';
+				$output .= '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->presenter_photo[0], 140, 140 ) . '" alt="' . esc_attr( get_the_title( $sched_post->ID ) ) .'" />';
 				$output .= '</a></div>';
 			} else {
 				$output .= '<div class="pull-left thumbnail"><a href="';
@@ -658,14 +672,16 @@ function mf_schedule( $atts ) {
 		$output .= '</tr>';
 	endwhile;
 	$output .= '</table>';
+	endif;
 	wp_reset_postdata();
 
 	// Roll the schedule for Sunday.
 
+	if ( $query->found_posts >= 1 ) :
 	$query = wp_cache_get( $location . '_sunday_schedule' );
 	if( $query == false ) {
 		$args = array( 
-			'location' 		=> $location,
+			'location' 		=> sanitize_title( $term->slug ),
 			'post_type'		=> 'event-items',
 			'orderby' 		=> 'meta_value', 
 			'meta_key'		=> 'mfei_start',
@@ -697,11 +713,16 @@ function mf_schedule( $atts ) {
 		$output .= '<td width="150">';
 		$output .= '<h5>' . esc_html( $day ) . '</h5>';
 		$output .= '<p>' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</p>';
-		if (isset($json->project_photo) or isset($json->presentation_photo) or isset($json->performer_photo) or has_post_thumbnail( get_the_ID() ) ) {
+		if ( isset( $json->presenter_photo ) or isset($json->project_photo) or isset($json->presentation_photo) or isset($json->performer_photo) or has_post_thumbnail( get_the_ID() ) ) {
 			if ( get_the_post_thumbnail() ) {
 				$output .= '<div class="pull-left thumbnail"><a href="';
 				$output .= get_permalink( $sched_post ) . '">';
 				$output .= get_the_post_thumbnail( get_the_ID(), 'schedule-thumb' );
+				$output .= '</a></div>';
+			} elseif ( isset( $json->presenter_photo[0] ) && !is_array( $json->presenter_photo[0] ) && strlen( $json->presenter_photo[0] ) > 5 ) {
+				$output .= '<div class="pull-left thumbnail"><a href="';
+				$output .= get_permalink( $sched_post ) . '">';
+				$output .= '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->presenter_photo[0], 140, 140 ) . '" alt="' . esc_attr( get_the_title( $sched_post->ID ) ) .'" />';
 				$output .= '</a></div>';
 			} else {
 				$output .= '<div class="pull-left thumbnail"><a href="';
@@ -745,6 +766,7 @@ function mf_schedule( $atts ) {
 		$output .= '</tr>';
 	endwhile;
 	$output .= '</table>';
+	endif;
 	wp_reset_postdata();
 	return $output;
 }
@@ -854,3 +876,70 @@ function mf_get_scheduled_item( $the_ID ) {
 	wp_reset_postdata();
 
 }
+
+/**
+ * The Video/Image Gallery
+ *
+ * Wanted to extend our Bootstrap Slideshow so that you could put in Post IDs and get back a slideshow.
+ * Basically the same thing that the default slideshow does, so why not use that!
+ *
+ * @since 1.0
+ *
+ * @param array $attr Attributes of the shortcode.
+ * @return string HTML content to display gallery.
+ */
+function make_video_photo_gallery( $attr ) {
+
+	$posts = explode( ',', $attr['ids'] );
+
+	$rand = mt_rand( 0, get_the_ID() );
+
+	global $post;
+
+	$output = '<div id="myCarousel-' . $rand . '" class="carousel slide" data-interval=""><div class="carousel-inner">';
+	$i = 0;
+
+	foreach( $posts as $post ) {
+		if ( strpos( $post, 'youtu' ) ) {
+			$youtube = true;
+		} else {
+			$post = get_post( $post );
+			setup_postdata( $post );
+			$youtube = false;
+		}
+		$i++;
+
+		if ($i == 1) {
+			$output .= '<div class="item active">';	
+		} else {
+			$output .= '<div class="item">';
+		}
+		if ( $youtube == false ) {
+			if ( get_post_type() == 'video' ) {
+				$url = get_post_meta( get_the_ID(), 'Link', true );
+				$output .= do_shortcode('[youtube='. esc_url( $url ) .'&w=620]');
+			} else {
+				$output .= wp_get_attachment_image( get_the_ID(), 'medium' );
+			}
+			if (isset($post->post_title)) {
+				$output .= '<div class="carousel-caption" style="position:relative;">';
+				$output .= '<h4>' . get_the_title() . '</h4>';
+				$output .= ( isset( $post->post_excerpt ) ) ? Markdown( wp_kses_post( $post->post_excerpt ) ) : '';
+				$output .= '</div>';
+			}
+		} else {
+			$output .= do_shortcode('[youtube='. esc_url( $post ) .'&w=620]');
+		}
+		$output .= '</div>';
+		
+	} //foreach
+	wp_reset_postdata();
+	$output .= '</div>
+		<a class="topper left carousel-control" href="#myCarousel-' . $rand . '" data-slide="prev">‹</a>
+		<a class="topper right carousel-control" href="#myCarousel-' . $rand . '" data-slide="next">›</a>
+	</div>';
+	$output .= '<div class="clearfix"></div>';
+	return $output;
+}
+
+add_shortcode( 'video_gallery', 'make_video_photo_gallery' );

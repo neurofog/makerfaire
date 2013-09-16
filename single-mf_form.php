@@ -18,7 +18,7 @@ get_header(); ?>
 				<?php 
 					$content = get_the_content();
 					// Adding the Ohm for one Maker... Will probably pull this out at somepoint.
-					$json = json_decode( str_replace( array("\'", "u03a9", "u2019"), array("'", '&#8486;', '&rsquo;'), $content ) );
+					$json = json_decode( mf_character_fixer( $content ) );
 				?>
 				
 				<article <?php post_class(); ?>>
