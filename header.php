@@ -92,18 +92,6 @@ Topbar
 <header id="header">
 
 	<div class="container">
-	
-		<!-- <div class="topad"> -->
-							
-			<!-- Beginning Sync AdSlot 1 for Ad unit header ### size: [[728,90]]  -->
-			<!-- <div id='div-gpt-ad-664089004995786621-1'>
-				<script type='text/javascript'>
-					googletag.cmd.push(function(){googletag.display('div-gpt-ad-664089004995786621-1')});
-				</script>
-			</div> -->
-			<!-- End AdSlot 1 -->
-			
-		<!-- </div> -->
 
 		<p class="tagline"><a href="http://disney.com"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/disney.png" alt="Disney"></a></p>
 		
