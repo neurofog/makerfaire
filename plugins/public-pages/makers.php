@@ -404,7 +404,7 @@ function mf_get_the_maker_image( $json ) {
 function the_mf_content() {
 	if ( get_post_type() == 'mf_form' ) {
 		$content = get_the_content();
-		$json = json_decode( str_replace( "\'", "'", $content ) );
+		$json = json_decode( mf_convert_newlines( mf_character_fixer( str_replace( "\'", "'", $content ) ) ) );
 		echo '<div class="row"><div class="span2">';
 		mf_the_maker_image( $json );
 		echo '</div><div class="span6">';
