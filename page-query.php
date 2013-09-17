@@ -175,7 +175,7 @@ if ($type == 'entity') {
 /**
  * Venue Feed
  */
-	include_once 'plugins/wp-cli/placement.php';
+	include_once 'plugins/query/bay-area-locations.php';
 	$terms = get_terms('location', array( 'hide_empty' => 0 ) );
 	// Start of the XOMO header
 	$header = array( 'header' =>
