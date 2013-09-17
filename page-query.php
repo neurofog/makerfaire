@@ -115,7 +115,7 @@ if ($type == 'entity') {
 			$jsonpost["venue_id_ref"] = null;
 		}
 		
-		$cats = get_the_terms( get_the_ID(), array( 'category', 'post_tag' ) );
+		$cats = get_the_terms( get_the_ID(), array( 'category', 'post_tag', 'group' ) );
 		$category_id_refs = array();
 		if ($cats) {
 			foreach ( $cats as $cat ) {
@@ -216,7 +216,7 @@ if ($type == 'entity') {
 	echo json_encode( $merged );
 	
 } elseif( $type == 'category') {
-	$terms = get_terms(array( 'category', 'post_tag' ), array( 'hide_empty' => 0 ) );
+	$terms = get_terms(array( 'category', 'post_tag', 'group' ), array( 'hide_empty' => 0 ) );
 	// Start of the XOMO header
 	$header = array( 'header' =>
 		array(
