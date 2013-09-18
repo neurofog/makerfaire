@@ -61,24 +61,10 @@
 
 		<h3>Goldsmith Sponsor</h3>
 
-		<div class="gold center">
-
-			<div class="row-fluid">
-
-				<div class="span6">
-
-					<a href="http://www.radioshack.com/"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/radio-shack.png" alt="Radio Shack"></a>
-
-				</div>
-
-				<div class="span6">
-
-					<a href="http://www.zazzle.com/"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/sponsors/zazzle.png" alt="Zazzle" class="zazzle"></a>
-
-				</div>
-
+		<div id="myCarousel" class="carousel slide">
+			<div class="carousel-inner">
+				<?php mf_sponsor_carousel( 'Goldsmith Sponsor' ); ?>
 			</div>
-
 		</div>
 
 		<h3>Silversmith Sponsor</h3>
