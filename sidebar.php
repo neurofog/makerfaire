@@ -95,7 +95,7 @@
 
 		<div id="myCarousel" class="carousel slide">
 			<div class="carousel-inner">
-				<?php mf_sponsor_carousel( 'Goldsmith Sponsor' ); ?>
+				<?php echo mf_sponsor_carousel( 'Goldsmith Sponsor' ); ?>
 			</div>
 		</div>
 
