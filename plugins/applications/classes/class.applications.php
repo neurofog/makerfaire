@@ -18,7 +18,7 @@
 		 * @version  0.1
 		 * @since    0.1
 		 */
-		private $form_debug = true;
+		private $form_debug = false;
 
 
 		/**
@@ -47,6 +47,9 @@
 				'form_title' => 'first-text', // The NAME FIELD of the form field we want to set as our post title
 				'post_type' => 'page', // Pass the post type name
 				'post_status' => 'draft', // Pass the post status. If empty or not set, 'publish' is default
+				'tax_query' => array( // You can also set taxonomies when saving post. TODO: Finish this.
+					'faire' => 'world-maker-faire-new-york-2013' // Taxonomy ID or slug
+				),
 			),
 		);
 
@@ -279,9 +282,11 @@
 		 * @since   0.1
 		 */
 		public function no_items() {
-			echo '<h3>These are not the forms you are looking for...</h3>';
-			echo '<p>Whooooops! Looks like there are no forms to process..</p>';
-			echo '<p>Make sure you provide an array of form fields to output.</p>';
+			$output = '<h3>These are not the forms you are looking for...</h3>';
+			$output .= '<p>Whooooops! Looks like there are no forms to process..</p>';
+			$output .= '<p>Make sure you provide an array of form fields to output.</p>';
+
+			echo $output;
 		}
 
 
@@ -294,10 +299,17 @@
 		 */
 		private function form_action_refresh() {
 
-			// Make sure we submitted our form and do it securely
-			if ( ! isset( $_POST['ff-submitted'] ) && ! $_POST['ff-submitted'] && ! isset( $_POST['formflow_nonce'] ) && ! wp_verify_nonce( $_POST['formflow_nonce'], 'save_form' ) )
+			// Check if the user is even logged in
+			if ( ! is_user_logged_in() )
 				return;
 
+			// Check that we even passed anything to process...
+			if ( empty( $_POST ) )
+				return;
+
+			// Lastly, we'll make sure something was submitted the form and check we passed the correct nonce
+			if ( ! isset( $_POST['ff-submitted'] ) && ! $_POST['ff-submitted'] && ! isset( $_POST['formflow_nonce'] ) && ! wp_verify_nonce( $_POST['formflow_nonce'], 'save_form' ) )
+				return;
 
 			// Check if we want our form to create a post on save.
 			if ( isset( $this->settings['create-post'] ) ) {
@@ -329,7 +341,7 @@
 				return;
 
 			// First we want to clean everything...
-			$clean_content = $this->form_clean_data( $data );
+			$data = $this->form_clean_data( $data );
 
 			// We'll want to get our post information we set in the settings too.
 			$post_info = $this->settings['create-post'];
@@ -366,17 +378,43 @@
 			$clean_data = array();
 
 			if ( is_array( $data ) ) {
-				var_dump($form_fields);
+				$count = 0;
 				foreach ( $data as $key => $value ) {
 
 					// Check that the data being passed is what we want. Rmove the rest.
 					if ( $this->in_array_r( $key, $form_fields, true ) ) {
-						$clean_data[ $key ] = $value;
+
+						// Sanitize the $key
+						$key = sanitize_title_with_dashes( $key );
+
+						switch( $form_fields[ $count ]['type'] ) {
+							case 'textarea':
+								$clean_data[ $key ] = esc_textarea( $value );
+								break;
+							case 'number':
+							case 'date':
+							case 'phone':
+								$clean_data[ $key ] = intval( $value );
+								break;
+							case 'image':
+							case 'url':
+								$clean_data[ $key ] = esc_url( $value );
+								break;
+							case 'text':
+							case 'dropdown':
+							case 'multiselect':
+							case 'checkbox':
+							case 'radio':
+							case 'hidden':
+							default:
+								$clean_data[ $key ] = sanitize_text_field( $value );
+						}
+						$count++;
 					}
 				}
 			}
 
-			var_dump($clean_data);
+			return $clean_data;
 		}
 
 
@@ -393,6 +431,15 @@
 			// Get the form data
 			$fields = $this->form;
 			$output = '';
+
+			// Check if we are viewing an existing application and pull it's data into the form fields
+			$set_values = $this->get_existing_application();
+
+			// Check if the application we are building already exists and we have data to display
+			// if ( ! $set_values )
+			// 	$args = wp_parse_args( $set_values, $field['args'] );
+
+			// var_dump($set_values);
 
 			foreach ( $fields as $field ) {
 				$args         = ( isset( $field['args'] ) ) ? $field['args'] : '';
@@ -451,7 +498,7 @@
 						$output .= '<div class="ff_description">' . wp_kses_post( $args['description'] ) . '</div>';
 
 					// Return the proper form field
-					$output .= $this->get_field( $field['type'], $args );
+					$output .= $this->get_field( $field['type'], $args, $set_values );
 
 					// If left aligned form fields are set, let's add the description below the form field
 					if ( isset( $args['description'] ) && ! empty( $args['description'] ) && $alignment_left )
@@ -538,7 +585,8 @@
 				case 'html':
 					return $this->get_html_block( $args );
 					break;
-				case 'section':
+				case 'section-end':
+				case 'section-start':
 					return $this->get_section_wrapper( $args );
 					break;
 				case 'page-break':
@@ -1057,14 +1105,20 @@
 
 
 		/**
-		 * Calling this method will process all form inputs and pass them to the save method.
-		 * @return string
+		 * Calling this method will Check for a $_GET URL that contains the ID of an application.
+		 * This will then process the existing fields and append them to the application form.
+		 * @return Array/Boolean
 		 *
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function process_form() {
+		private function get_existing_application() {
 
+			// Check if we are passing an ID (must be a positive number!)
+			if ( ! isset( $_GET['id'] ) || ! absint( $_GET['id'] ) )
+				return false;
+
+			return true;
 		}
 
 
@@ -1081,7 +1135,7 @@
 			$settings = $this->settings;
 
 			if ( $this->has_form_fields() ) : ?>
-				<form action="<?php $this->process_form(); ?>" method="<?php echo $settings['method']; ?>" class="formflow-form">
+				<form method="<?php echo $settings['method']; ?>" class="formflow-form">
 					<fieldset>
 						
 						<?php if ( isset( $settings['title'] ) && ! empty( $settings['title'] ) ) : ?>
