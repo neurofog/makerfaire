@@ -64,7 +64,7 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
             $output .= '<h2 style="font-size:.9em; color:#333; margin-top:3px;">' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</h2>';
             $output .= '</td>';
             $output .= '<td>';
-            $output .= '<h3 style="margin-top:0;">' . get_the_title( $sched_post->ID ) . '</h3>';
+            $output .= '<h3 style="margin-top:0;">' . esc_html( get_the_title( $sched_post->ID ) ) . '</h3>';
             if ( ! empty( $json->presenter_name ) ) {
                 $names = $json->presenter_name;
                 $names_output = '';
@@ -124,7 +124,7 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
             $output .= '<h2 style="font-size:.9em; color:#333; margin-top:3px;">' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</h2>';
             $output .= '</td>';
             $output .= '<td>';
-            $output .= '<h3 style="margin-top:0;">' . get_the_title( $sched_post->ID ) . '</h3>';
+            $output .= '<h3 style="margin-top:0;">' . esc_html( get_the_title( $sched_post->ID ) ) . '</h3>';
             if ( ! empty( $json->presenter_name ) ) {
                 $names = $json->presenter_name;
                 $names_output = '';
