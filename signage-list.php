@@ -69,12 +69,12 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
                 $names = $json->presenter_name;
                 $names_output = '';
                 foreach ( $names as $name ) {
-                    $names_output .= ', ' . $name;
+                    $names_output .= ', ' . esc_html( $name );
                 }
                 $output .= '<h4 style="margin:5px 0 0; color:#666;">' . substr($names_output, 2) . '</h4>';
             }
             if ( $short_description == true && ! empty( $json->short_description) ) {
-                $output .= Markdown ( mf_character_fixer( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->short_description, "\n" ) ) ) ) );
+                $output .= Markdown ( mf_character_fixer( stripslashes( wp_filter_post_kses( mf_convert_newlines( esc_html( $json->short_description ), "\n" ) ) ) ) );
             }
             $output .= '<tr><td colspan="2"><div style="border-bottom:2px solid #ccc;"></div></td></tr>';
             $output .= '</td>';
@@ -129,12 +129,12 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
                 $names = $json->presenter_name;
                 $names_output = '';
                 foreach ( $names as $name ) {
-                    $names_output .= ', ' . $name;
+                    $names_output .= ', ' . esc_html( $name );
                 }
                 $output .= '<h4 style="margin:5px 0 0; color:#666;">' . substr($names_output, 2) . '</h4>';
             }
             if ( $short_description == true && ! empty( $json->short_description) ) {
-                $output .= Markdown ( mf_character_fixer( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->short_description, "\n" ) ) ) ) );
+                $output .= Markdown ( mf_character_fixer( stripslashes( wp_filter_post_kses( mf_convert_newlines( esc_html( $json->short_description ), "\n" ) ) ) ) );
             }
             $output .= '<tr><td colspan="2"><div style="border-bottom:2px solid #ccc;"></div></td></tr>';
             $output .= '</td>';
@@ -156,7 +156,7 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Stage Signage - <?php echo $location; ?></title>
+        <title>Stage Signage - <?php echo sanitize_title( $location ); ?></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
         <style>
@@ -166,9 +166,9 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
         </style>
     </head>
     <body>
-        <h1 style="font-size:2.2em; margin:31px 0 0; max-width:75%;"><?php echo ucwords( str_replace( '-', ' ', $location ) ); ?></h1>
+        <h1 style="font-size:2.2em; margin:31px 0 0; max-width:75%;"><?php echo ucwords( str_replace( '-', ' ', esc_html( $location ) ) ); ?></h1>
         <?php if ( ! empty( $term->description ) ) {
-            echo '<div style="font-weight:normal; margin-top:-15px; margin-left:5px; text-decoration:italic;">' . Markdown( $term->description ) . '</div>';
+            echo '<div style="font-weight:normal; margin-top:-15px; margin-left:5px; text-decoration:italic;">' . Markdown( esc_html( $term->description ) ) . '</div>';
         } ?>
         <h2 style="position:absolute; top:16px; right:30px;"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/logo.jpg" style="width:200px;" alt="" ></h2>
         <p></p>
