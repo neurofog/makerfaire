@@ -3,31 +3,11 @@
 	<div class="sidebar-bordered">
 
 		<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/mr-makey.png" alt="Mr. Makey" class="makey pull-left">
-		<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/countdown.png" alt="Mr. Makey" class="counter pull-left">
-
-		<div class="countdown">
-
-			<script type="text/javascript">
-
-				jQuery(document).ready(function() {
-					mfba = new Date(2013, 9-1, 21, 9, 00);
-					jQuery('.countdown').countdown({
-						until: mfba,
-						timezone: -5,
-						format: 'DHMS',
-						layout:'<div class="countdown-numbers"><table><tr><th>{dnn}</th><th>{sep}</td><th>{hnn}</th><th>{sep}</td><th>{mnn}</th><th>{sep}</td><th>{snn}</th></tr><tr class="time"><td>Days</td><td></td><td>Hours</td><td></td><td>Minutes</td><td></td><td>Seconds</td></tr></table></div>',
-						timeSeparator:'<span class="separator">:</span>',
-					});
-
-				});
-			</script>
-
-		</div>
+		<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/countdown.png" alt="New York Maker Faire" class="counter pull-left"
 
 		<p class="buy-tickets"><a href="http://makerfairenyc.eventbrite.com/"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/buy-tickets.png" alt="Buy tickets for Maker Faire" class=""></a></p>
 
-		<h5 class="count-down-sub">September 21 &amp; 22<br />
-			New York Hall of Science</h4>
+		<h5 class="count-down-sub">New York Hall of Science</h4>
 		<h5 class="count-down-sub-sub">Sat. 10 AM - 7 PM | Sun. 10 AM - 6 PM</h5>
 
 	</div>
