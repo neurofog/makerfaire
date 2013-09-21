@@ -126,6 +126,9 @@ if ($type == 'entity') {
 		if ( !empty($exhibit->public_description) ) {
 			$booth = get_post_meta( get_the_ID(), 'booth', true );
 			$jsonpost["description"] = ( !empty( $booth ) ) ? '<strong>Location: ' . $booth . '</strong><br />' . $exhibit->public_description : $exhibit->public_description ;
+		} elseif ( !empty( $exhibit->short_description)) {
+			$booth = get_post_meta( get_the_ID(), 'booth', true );
+			$jsonpost["description"] = ( !empty( $booth ) ) ? '<strong>Location: ' . $booth . '</strong><br />' . $exhibit->short_description : $exhibit->short_description;
 		} else {
 			$jsonpost["description"] = null;
 		}
