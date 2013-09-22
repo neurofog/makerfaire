@@ -103,7 +103,7 @@
 	}
 }
 
-body.home .stage1 {
+body.home .stage1, body.home .stage3 {
 	
 	// Styles are for Maker Faire NY 2013 stage 1
 	.stage1-header {
@@ -166,7 +166,7 @@ body.home .stage1 {
 	}
 	.top-content {
 		margin-bottom:20px;
-		.span3 {
+		.span3, .span4 {
 			background:#018ed6;
 			padding:5px;
 			width:126px;
@@ -187,6 +187,44 @@ body.home .stage1 {
 			&.last {
 				margin-right:0;
 			}
+		}
+	}
+}
+
+body.home .stage3 {
+	h1 { margin-bottom:0; }
+	#mf-featured-slider {
+		.carousel-inner {
+			width:531px;
+			height:331px;
+			margin:0 auto;
+		}
+		.item img {
+			width:100%;
+			height:auto;
+			float:none;
+		}
+		.carousel-caption {
+			width:505px;
+			padding:13px;
+			float:none;
+			top:auto;
+			bottom:23px;
+			background:rgba(37,37,37,.6);
+			p {
+				margin:0;
+				font-family:"Proxima Nova", sans-serif;
+				font-size:20px;
+				color:#fff;
+			}
+		}
+	}
+	.top-content {
+		.span4 {
+			width:175px;
+			height:237px;
+			margin-right:19px;
+			h2 a { font-size:23px; }
 		}
 	}
 }
