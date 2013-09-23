@@ -84,7 +84,7 @@ add_action( 'admin_enqueue_scripts', 'make_enqueue_admin_scripts' );
 
 function makerfaire_get_news() {
 	$url = 'http://makezine.com/maker-faire-news/';
-	$output = wpcom_vip_file_get_contents( $url, 3, 60*60,  array( 'obey_cache_control_header' => false ) );
+	$output = wpcom_vip_file_get_contents( $url, 3, 60,  array( 'obey_cache_control_header' => false ) );
 	return $output;
 }
 
@@ -108,7 +108,7 @@ function makerfaire_sidebar_news() {
 
 function makerfaire_get_slider() {
 	$url = 'http://makezine.com/maker-faire-featured-slider/';
-	$output = wpcom_vip_file_get_contents( $url, 3, 60*60,  array( 'obey_cache_control_header' => false ) );
+	$output = wpcom_vip_file_get_contents( $url, 3, 60,  array( 'obey_cache_control_header' => false ) );
 	return $output;
 }
 add_shortcode( 'mf-featured-slider', 'makerfaire_get_slider' );

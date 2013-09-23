@@ -115,7 +115,7 @@ if ($type == 'entity') {
 			$jsonpost["venue_id_ref"] = null;
 		}
 		
-		$cats = get_the_terms( get_the_ID(), array( 'category', 'post_tag' ) );
+		$cats = get_the_terms( get_the_ID(), array( 'category', 'post_tag', 'group' ) );
 		$category_id_refs = array();
 		if ($cats) {
 			foreach ( $cats as $cat ) {
@@ -126,6 +126,9 @@ if ($type == 'entity') {
 		if ( !empty($exhibit->public_description) ) {
 			$booth = get_post_meta( get_the_ID(), 'booth', true );
 			$jsonpost["description"] = ( !empty( $booth ) ) ? '<strong>Location: ' . $booth . '</strong><br />' . $exhibit->public_description : $exhibit->public_description ;
+		} elseif ( !empty( $exhibit->short_description)) {
+			$booth = get_post_meta( get_the_ID(), 'booth', true );
+			$jsonpost["description"] = ( !empty( $booth ) ) ? '<strong>Location: ' . $booth . '</strong><br />' . $exhibit->short_description : $exhibit->short_description;
 		} else {
 			$jsonpost["description"] = null;
 		}
@@ -175,6 +178,7 @@ if ($type == 'entity') {
 /**
  * Venue Feed
  */
+	include_once 'plugins/query/bay-area-locations.php';
 	$terms = get_terms('location', array( 'hide_empty' => 0 ) );
 	// Start of the XOMO header
 	$header = array( 'header' =>
@@ -186,27 +190,27 @@ if ($type == 'entity') {
 	// Init the entities header
 	$venues = array();
 	foreach ( $terms as $term ) {
-
-		$term_id = intval( $term->term_id );
-		$venue['id'] = $term->term_id;
-		$venue['original_id'] = $term->term_id;
-		if ( $term->parent == 0 ) {
-			$venue['name'] = mf_clean_content( $term->name );
-		} else {
-			$parent = get_term( $term->parent, 'location' );
-			$venue['name'] = mf_clean_content( $parent->name . ' » ' . $term->name );
+		if ( !in_array( $term->term_id, $bayarea_locations) ) {
+			$term_id = intval( $term->term_id );
+			$venue['id'] = $term->term_id;
+			$venue['original_id'] = $term->term_id;
+			if ( $term->parent == 0 ) {
+				$venue['name'] = mf_clean_content( $term->name );
+			} else {
+				$parent = get_term( $term->parent, 'location' );
+				$venue['name'] = mf_clean_content( $parent->name . ' » ' . $term->name );
+			}
+			$venue['description'] = mf_clean_content( $term->description );
+			$venue['latitide'] = (isset($loc_data[$term_id]['lat'])) ? $loc_data[$term_id]['lat'] : null;
+			$venue['longitude'] = (isset($loc_data[$term_id]['long'])) ? $loc_data[$term_id]['long'] : null;
+			$stages = array( 654896, 921378, 27475665, 36578739, 129846826, 156780557, 164745398, 164745444, 164745603, 164940502, 166795193, 166939701, 166956526, 166958578, 166958636, 166959119, 166959439 );
+			if ( in_array( $term->term_id, $stages) ) {
+				$venue['category_id_ref_list']  = array( 81264 ); // Stage
+			} else {
+				$venue['category_id_ref_list']  = array( 39727 ); // Exhibit
+			}
+			array_push($venues, $venue);
 		}
-		//$venue['name'] = $term->name;
-		$venue['description'] = mf_clean_content( $term->description );
-		$venue['latitide'] = (isset($loc_data[$term_id]['lat'])) ? $loc_data[$term_id]['lat'] : null;
-		$venue['longitude'] = (isset($loc_data[$term_id]['long'])) ? $loc_data[$term_id]['long'] : null;
-		$stages = array( 654896, 921378, 27475665, 36578739, 129846826, 156780557, 164745398, 164745444, 164745603, 164940502, 166795193, 166939701, 166956526, 166958578, 166958636, 166959119, 166959439 );
-		if ( in_array( $term->term_id, $stages) ) {
-			$venue['category_id_ref_list']  = array( 81264 ); // Stage
-		} else {
-			$venue['category_id_ref_list']  = array( 39727 ); // Exhibit
-		}
-		array_push($venues, $venue);
 	}
 	
 	$merged = array_merge($header,array('venue' => $venues, ) );
@@ -215,7 +219,7 @@ if ($type == 'entity') {
 	echo json_encode( $merged );
 	
 } elseif( $type == 'category') {
-	$terms = get_terms(array( 'category', 'post_tag' ), array( 'hide_empty' => 0 ) );
+	$terms = get_terms(array( 'category', 'post_tag', 'group' ), array( 'hide_empty' => 0 ) );
 	// Start of the XOMO header
 	$header = array( 'header' =>
 		array(

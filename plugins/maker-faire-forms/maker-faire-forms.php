@@ -687,6 +687,9 @@ class MAKER_FAIRE_FORM {
 							</tr>
 							<?php
 
+								// Store the current application ID so we can return it within the loop
+								$parent_post_id = get_the_ID();
+
 								// Jake's fancy cached events query found in 'plugins/public-pages/makers.php' in mf_get_scheduled_item()
 								// The function output things for the front-end and all we want is the data.
 								$get_events = wp_cache_get( $post->ID . '_schedule' );
@@ -723,6 +726,22 @@ class MAKER_FAIRE_FORM {
 										// Setup the edit URL and add an edit link to the admin area
 										$edit_event_url = get_edit_post_link();
 
+										// Get the location name that is scheduled
+										$locations = get_the_terms( get_the_ID(), 'location' );
+
+										// Show the location this event is setup for
+										if ( $locations ) : 
+											$locs = '';
+											$count = 1;
+											foreach ( $locations as $location ) {
+												$locs = ( $count > 1 ) ? $location->name . ', ' : $location->name;
+											} ?>
+											<tr>
+												<td style="width:80px;" valign="top"><strong>Location:</strong></td>
+												<td valign="top"><?php echo esc_html( $locs ); ?></td>
+											</tr>
+										<?php endif;
+
 										// Check that fields are set, and display them as needed.
 										if ( ! empty( $event_record['mfei_day'][0] ) ) : ?>
 											<tr>
@@ -749,7 +768,7 @@ class MAKER_FAIRE_FORM {
 									<?php endwhile; ?>
 									<tr>
 										<td style="width:80px;" valign="top"><strong>Schedule:</strong></a></td>
-										<td valign="top"><a href="<?php echo admin_url(); ?>post-new.php?post_type=event-items&amp;refer_id=<?php echo get_the_ID(); ?>">Schedule Another Event</a></td>
+										<td valign="top"><a href="<?php echo admin_url(); ?>post-new.php?post_type=event-items&amp;refer_id=<?php echo absint( $parent_post_id ); ?>">Schedule Another Event</a></td>
 									</tr>
 								<?php } else { ?>
 									<tr>

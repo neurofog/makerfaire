@@ -404,7 +404,7 @@ function mf_get_the_maker_image( $json ) {
 function the_mf_content() {
 	if ( get_post_type() == 'mf_form' ) {
 		$content = get_the_content();
-		$json = json_decode( str_replace( "\'", "'", $content ) );
+		$json = json_decode( mf_convert_newlines( mf_character_fixer( str_replace( "\'", "'", $content ) ) ) );
 		echo '<div class="row"><div class="span2">';
 		mf_the_maker_image( $json );
 		echo '</div><div class="span6">';
@@ -559,6 +559,29 @@ function mf_featured_makers_home() {
 }
 
 /**
+ * Add the description to stages the hard way.
+ */
+function mf_stage_description( $term ) {
+	$output = '';
+	if ( $term->term_id == 192277117 ) {
+		$output .= '<div class="alert alert-info">' . Markdown( 'Conversations about emerging tech, new practices &amp; community' ) . '</div>';
+	} elseif ( $term->term_id == 192277675 ) {
+		$output .= '<div class="alert alert-info">' . Markdown( 'How-to on microcontrollers, robotics, and circuit boards' ) . '</div>';
+	} elseif ( $term->term_id == 192277685 ) {
+		$output .= '<div class="alert alert-info">' . Markdown( '3DP machines, materials, makers and applications' ) . '</div>';
+	} elseif ( $term->term_id == 192277716 ) {
+		$output .= '<div class="alert alert-info">' . Markdown( 'Product demos and tech how-tos' ) . '</div>';
+	} elseif ( $term->term_id == 192277788 ) {
+		$output .= '<div class="alert alert-info">' . Markdown( 'Design, craft, sustainability and domestic arts' ) . '</div>';
+	} elseif ( $term->term_id == 192277738 ) {
+		$output .= '<div class="alert alert-info">' . Markdown( 'Teachers and makers on making in education' ) . '</div>';
+	} elseif ( !empty( $term->description ) ) {
+		$output .= '<div class="alert alert-info">' . Markdown( $term->description ) . '</div>';
+	}
+	return $output;
+}
+
+/**
  * Generate the schedule for the schedule page. Based on a shortcode. Pass in the ID, and get the schedule for both days.
  */
 function mf_schedule( $atts ) {
@@ -575,8 +598,7 @@ function mf_schedule( $atts ) {
 		if ( !is_wp_error( $url ) ) {
 			$output .= '<a href="' . esc_url( home_url( '/stage-schedule/?location=' . $term->slug ) ) . '" class="pull-right" style="position:relative; top:7px;"><img src="' . get_stylesheet_directory_uri() . '/images/print-ico.png" alt="Print this schedule" /></a>';
 			$output .= '<h2><a href="'. esc_url( $url ) . '">' . esc_html( $term->name ) . '</a></h2>';
-			if ( !empty( $term->description ) )
-				$output .= '<div class="alert alert-info">' . Markdown( $term->description ) . '</div>';
+			$output .= mf_stage_description( $term );
 		}
 	}
 
