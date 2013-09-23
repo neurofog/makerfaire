@@ -485,17 +485,12 @@ header .blurb {
 }
 .navi .menu > li#menu-item-10563 > a,
 .navi .menu > li#menu-item-922 > a,
-.navi .menu > li#menu-item-895 > a{
+.navi .menu > li#menu-item-895 > a {
 	background-image: url('images/nav_04.png');
 	background-repeat: no-repeat;
 	display:block;
 	height:65px;
 	width:92px;
-}
-.navi .menu > li#menu-item-10563 > a,
-.navi .menu > li#menu-item-922 > a,
-.navi .menu > li#menu-item-895 > a {
-	width: 88px;
 }
 .navi .menu > li > a div{
 	display:none;
