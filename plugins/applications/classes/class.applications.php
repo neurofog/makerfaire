@@ -28,7 +28,7 @@
 		 * @version  0.1
 		 * @since    0.1
 		 */
-		private $demo_settings = array(
+		private $demo_5settings = array(
 			'title' => 'Form Title',
 			'description' => 'This is my form description, if I want one...',
 			'label_left' => false,				// Define where if you want labels to left or stacked
@@ -426,20 +426,16 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function fields( $alignment_left = false ) {
+		private function fields( $data, $alignment_left = false ) {
 
 			// Get the form data
 			$fields = $this->form;
 			$output = '';
 
-			// Check if we are viewing an existing application and pull it's data into the form fields
-			$set_values = $this->get_existing_application();
+			// Take our exisiting form content and process it
+			$data = json_decode( $data );
 
-			// Check if the application we are building already exists and we have data to display
-			// if ( ! $set_values )
-			// 	$args = wp_parse_args( $set_values, $field['args'] );
-
-			// var_dump($set_values);
+			var_dump($data);
 
 			foreach ( $fields as $field ) {
 				$args         = ( isset( $field['args'] ) ) ? $field['args'] : '';
@@ -498,7 +494,7 @@
 						$output .= '<div class="ff_description">' . wp_kses_post( $args['description'] ) . '</div>';
 
 					// Return the proper form field
-					$output .= $this->get_field( $field['type'], $args, $set_values );
+					$output .= $this->get_field( $field['type'], $args, $data );
 
 					// If left aligned form fields are set, let's add the description below the form field
 					if ( isset( $args['description'] ) && ! empty( $args['description'] ) && $alignment_left )
@@ -544,53 +540,53 @@
 
 			switch ( $type ) {
 				case 'text':
-					return $this->get_text_field( $args );
+					return $this->get_text_field( $args, $data );
 					break;
 				case 'textarea':
-					return $this->get_textarea( $args );
+					return $this->get_textarea( $args, $data );
 					break;
 				case 'dropdown':
-					return $this->get_dropdown( $args );
+					return $this->get_dropdown( $args, $data );
 					break;
 				case 'multiselect':
-					return $this->get_multiselect( $args );
+					return $this->get_multiselect( $args, $data );
 					break;
 				case 'number':
-					return $this->get_number_field( $args );
+					return $this->get_number_field( $args, $data );
 					break;
 				case 'checkbox':
-					return $this->get_checkbox( $args );
+					return $this->get_checkbox( $args, $data );
 					break;
 				case 'radio':
-					return $this->get_radio( $args );
+					return $this->get_radio( $args, $data );
 					break;
 				case 'image':
-					return $this->get_image_upload( $args );
+					return $this->get_image_upload( $args, $data );
 					break;
 				case 'file':
-					return $this->get_file_upload( $args );
+					return $this->get_file_upload( $args, $data );
 					break;
 				case 'date':
-					return $this->get_date_field( $args );
+					return $this->get_date_field( $args, $data );
 					break;
 				case 'phone':
-					return $this->get_phone_field( $args );
+					return $this->get_phone_field( $args, $data );
 					break;
 				case 'url':
-					return $this->get_url_field( $args );
+					return $this->get_url_field( $args, $data );
 					break;
 				case 'hidden':
-					return $this->get_hidden_field( $args );
+					return $this->get_hidden_field( $args, $data );
 					break;
 				case 'html':
-					return $this->get_html_block( $args );
+					return $this->get_html_block( $args, $data );
 					break;
 				case 'section-end':
 				case 'section-start':
-					return $this->get_section_wrapper( $args );
+					return $this->get_section_wrapper( $args, $data );
 					break;
 				case 'page-break':
-					return $this->get_page_break( $args );
+					return $this->get_page_break( $args, $data );
 					break;
 			}
 
@@ -604,14 +600,18 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_text_field( $args ) {
+		private function get_text_field( $args, $data ) {
 
 			if ( ! empty( $args ) ) {
+
+				$name = $this->merge_fields( $args['name'], 'name' );
+
+				var_dump($name);
 				$output = '<input type="text"';
 
 					// Set our name field, if one doesn't exist, use the label
-					if ( isset( $args['name'] ) ) {
-						$output .= ' name="' . esc_attr( $args['name'] ) . '"';
+					if ( isset( $name ) ) {
+						$output .= ' name="' . esc_attr(  ) . '"';
 					} else {
 						$output .= ' name="' . esc_attr( sanitize_title( $args['label'] ) ) . '"';
 					}
@@ -628,6 +628,10 @@
 					if ( isset( $args['placeholder'] ) )
 						$output .= ' placeholder="' . esc_attr( $args['placeholder'] ) . '"';
 
+					// Add our exisiting data if it exists
+					//if ( isset ( $data[ $name ] ) && ! empty( $data[ $name ] ) )
+						$output .= ' value="' . sanitize_text_field( $data[ $name ] ) . '"';
+
 				$output .= ' />';
 
 				return $output;
@@ -643,7 +647,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_textarea( $args ) {
+		private function get_textarea( $args, $data ) {
 
 			if ( ! empty( $args ) ) {
 				$output = '<textarea';
@@ -686,7 +690,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_dropdown( $args ) {
+		private function get_dropdown( $args, $data ) {
 
 			if ( ! empty( $args ) ) {
 				$output = '<select';
@@ -727,7 +731,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_multiselect( $args ) {
+		private function get_multiselect( $args, $data ) {
 
 			if ( ! empty( $args ) ) {
 				$output = '<select';
@@ -767,7 +771,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_number_field( $args ) {
+		private function get_number_field( $args, $data ) {
 
 			if ( ! empty( $args ) ) {
 				$output = '<input type="number"';
@@ -814,7 +818,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_checkbox( $args ) {
+		private function get_checkbox( $args, $data ) {
 
 			if ( ! empty( $args ) ) {
 
@@ -870,7 +874,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_radio( $args ) {
+		private function get_radio( $args, $data ) {
 
 			if ( ! empty( $args ) ) {
 
@@ -926,7 +930,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_image_upload( $args ) {
+		private function get_image_upload( $args, $data ) {
 
 			if ( ! empty( $args ) ) {
 				$output = '<input type="file"';
@@ -961,7 +965,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_file_upload( $args ) {
+		private function get_file_upload( $args, $data ) {
 
 		}
 
@@ -973,7 +977,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_date_field( $args ) {
+		private function get_date_field( $args, $data ) {
 
 		}
 
@@ -985,7 +989,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_phone_field( $args ) {
+		private function get_phone_field( $args, $data ) {
 
 		}
 
@@ -997,7 +1001,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_url_field( $args ) {
+		private function get_url_field( $args, $data ) {
 
 			if ( ! empty( $args ) ) {
 				$output = '<input type="text"';
@@ -1036,7 +1040,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_hidden_field( $args ) {
+		private function get_hidden_field( $args, $data ) {
 
 			if ( ! empty( $args ) ) {
 				$output = '<input type="hidden"';
@@ -1075,7 +1079,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_html_block( $args ) {
+		private function get_html_block( $args, $data ) {
 
 		}
 
@@ -1087,7 +1091,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_section_wrapper( $args ) {
+		private function get_section_wrapper( $args, $data ) {
 
 		}
 
@@ -1099,7 +1103,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_page_break( $args ) {
+		private function get_page_break( $args, $data ) {
 
 		}
 
@@ -1112,13 +1116,16 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_existing_application() {
+		private function get_application_data() {
 
 			// Check if we are passing an ID (must be a positive number!)
-			if ( ! isset( $_GET['id'] ) || ! absint( $_GET['id'] ) )
+			if ( ! isset( $_GET['app_id'] ) || ! absint( $_GET['app_id'] ) )
 				return false;
 
-			return true;
+			// Return the post object
+			$data = get_post( $_GET['app_id'] );
+			
+			return $data;
 		}
 
 
@@ -1134,6 +1141,9 @@
 			// Get our custom form settings
 			$settings = $this->settings;
 
+			// Check if the form has any existing data
+			$data = $this->get_application_data();
+
 			if ( $this->has_form_fields() ) : ?>
 				<form method="<?php echo $settings['method']; ?>" class="formflow-form">
 					<fieldset>
@@ -1147,7 +1157,7 @@
 						<?php endif; ?>
 
 						<ol>
-							<?php echo $this->fields( $settings['label_left'] ); ?>
+							<?php echo $this->fields( $data->post_content, $settings['label_left'] ); ?>
 						</ol>
 					</fieldset>
 					<fieldset class="submit">
@@ -1181,6 +1191,78 @@
 		    }
 
 		    return false;
+		}
+
+
+		/**
+		 * Checks multiple names and merge them together to return the proper result
+		 * This function is a hand over from Maker Faire forms v1. We kept this for backwards compatibility
+		 * Although, this has been modified to check if the value sent exists.
+		 * @param  [type] $key  [description]
+		 * @param  [type] $type [description]
+		 * @return [type]       [description]
+		 */
+		public function merge_fields( $key, $type ) {
+			$values = array( 
+				'project_name'     => array( 
+					'exhibit'   => 'project_name', 
+					'performer' => 'performer_name', 
+					'presenter' => 'presentation_name'
+				),
+				'form_photo'       => array( 
+					'exhibit'   => 'project_photo', 
+					'performer' => 'performer_photo', 
+					'presenter' => 'presentation_photo'
+				),
+				'form_photo_thumb' => array( 
+					'exhibit'   => 'project_photo_thumb', 
+					'performer' => 'performer_photo_thumb', 
+					'presenter' => 'presentation_photo_thumb'
+				),
+				'project_website'  => array( 
+					'exhibit'   => 'project_website', 
+					'performer' => 'performer_website', 
+					'presenter' => 'presentation_website'
+				),
+				'project_video'    => array( 
+					'exhibit'   => 'project_video', 
+					'performer' => 'performer_video', 
+					'presenter' => 'video'
+				),
+				'user_photo'       => array( 
+					'exhibit'   => 'maker_photo', 
+					'performer' => 'performer_photo', 
+					'presenter' => 'presenter_photo' 
+				),
+				'user_photo_thumb' => array( 
+					'exhibit'   => 'maker_photo_thumb', 
+					'performer' => 'performer_photo_thumb', 
+					'presenter' => 'presenter_photo_thumb' 
+				),
+				'user_bio'         => array( 
+					'exhibit'   => 'maker_bio', 
+					'performer' => 'private_description',
+					'presenter' => 'presenter_bio' 
+				),
+				'user_gigya'	   => array(
+					'exhibit'	=> 'm_maker_gigyaid',
+					'performer' => 'uid',
+					'presenter' => 'presenter_gigyaid'
+				),
+			);
+
+			if ( $type && isset( $values[ $key ][ $type ] ) )
+				return $values[ $key ][ $type ];
+
+			if ( $type && ! isset( $values[ $key ][ $type ] ) )
+				return $key;
+
+			foreach ( $values as $name => $value ) {
+				if ( ! $type && in_array( $key, $value ) )
+					return $name;
+			}
+
+			return $key;
 		}
 
 	}
