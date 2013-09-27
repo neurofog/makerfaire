@@ -448,7 +448,8 @@ header .blurb {
 }
 .navi .menu > li#menu-item-14336 > a,
 .navi .menu > li#menu-item-5612 > a,
-.navi .menu > li#menu-item-10013 > a{
+.navi .menu > li#menu-item-10013 > a
+.navi .menu > li#menu-item-11> a {
 	background-image: url('images/whats-it-about.png');
 	background-repeat: no-repeat;
 	display:block;
@@ -457,7 +458,8 @@ header .blurb {
 }
 .navi .menu > li#menu-item-14280 > a,
 .navi .menu > li#menu-item-5037 > a,
-.navi .menu > li#menu-item-899 > a{
+.navi .menu > li#menu-item-899 > a
+.navi .menu > li#menu-item-12 > a {
 	background-image: url('images/check-out-the-program.png');
 	background-repeat: no-repeat;
 	display:block;
@@ -466,7 +468,8 @@ header .blurb {
 }
 .navi .menu > li#menu-item-14334 > a,
 .navi .menu > li#menu-item-5039 > a,
-.navi .menu > li#menu-item-900 > a{
+.navi .menu > li#menu-item-900 > a
+.navi .menu > li#menu-item-13 > a {
 	background-image: url('images/how-to-participate.png');
 	background-repeat: no-repeat;
 	display:block;
@@ -475,7 +478,8 @@ header .blurb {
 }
 .navi .menu > li#menu-item-14278 > a,
 .navi .menu > li#menu-item-917 > a,
-.navi .menu > li#menu-item-893 > a{
+.navi .menu > li#menu-item-893 > a
+.navi .menu > li#menu-item-14 > a {
 	background-image: url('images/nav_03.png');
 	background-repeat: no-repeat;
 	display:block;
@@ -484,7 +488,8 @@ header .blurb {
 }
 .navi .menu > li#menu-item-10563 > a,
 .navi .menu > li#menu-item-922 > a,
-.navi .menu > li#menu-item-895 > a {
+.navi .menu > li#menu-item-895 > a 
+.navi .menu > li#menu-item-15 > a {
 	background-image: url('images/nav_04.png');
 	background-repeat: no-repeat;
 	display:block;
