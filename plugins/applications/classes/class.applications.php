@@ -336,9 +336,25 @@
 		 */
 		private function form_save_post( $data ) {
 
+			// Don't run unless the user is logged in.
+			if ( ! is_user_logged_in() )
+				return;
+
 			// Make sure we submitted our form one more time...
 			if ( ! isset( $data['ff-submitted'] ) && ! $data['ff-submitted'] && ! isset( $data['formflow_nonce'] ) && ! wp_verify_nonce( $data['formflow_nonce'], 'save_form' ) )
 				return;
+
+			// If we are loading an existing application for updating, we'll want to make sure the current logged in user
+			// is the author or submitter of that application. Or else, we'll abort and return an error message.
+			if ( isset( $data['author_id'] ) && absint( $data['author_id'] ) ) {
+				global $current_user;
+				get_currentuserinfo();
+				$author_id = absint( $data['author_id'] );
+				$author_meta = get_the_author_meta( 'display_name', $author_id );
+
+				if ( $current_user->ID != $data['author_id'] )
+					exit( 'You do not have the proper privileges to edit this application! Only \'<em>' . esc_html( $author_meta ) . '</em>\' is allowed to edit.' );
+			}
 
 			// First we want to clean everything...
 			$data = $this->form_clean_data( $data );
@@ -354,9 +370,16 @@
 			);
 
 			if ( ! $this->form_debug ) {
-				$new_post = wp_insert_post( $post );
+				if ( isset( $_GET['app_id'] ) && absint( $_GET['app_id'] ) ) {
+					$post['ID'] = absint( $_GET['app_id'] );
+					$updated_post = wp_update_post( $post );
 
-				return $new_post;
+					return $updated_post;
+				} else {
+					$new_post = wp_insert_post( $post );
+
+					return $new_post;
+				}
 			} else {
 				return $post;
 			}
@@ -432,10 +455,8 @@
 			$fields = $this->form;
 			$output = '';
 
-			// Take our exisiting form content and process it
-			$data = json_decode( $data );
-
-			var_dump($data);
+			// Take our exisiting form content and process it and turn it into an array
+			$data = (array) json_decode( $data );
 
 			foreach ( $fields as $field ) {
 				$args         = ( isset( $field['args'] ) ) ? $field['args'] : '';
@@ -457,9 +478,10 @@
 					if ( isset( $args['w_id'] ) && ! empty( $args['w_id'] ) )
 						$output .= ' id="' . esc_attr( $args['w_id'] ) . '"';
 
-					// Set a wrapper class if present.
-					if ( isset( $args['w_class'] )  && ! empty( $args['w_class'] ) )
-						$output .= ' class="' . esc_attr( $args['w_class'] ) . '"';
+					// Set custom classes if set.
+					$custom_class = ( isset( $args['w_class'] ) && ! empty( $args['w_class'] ) ) ? ' ' . esc_attr( $args['w_class'] ) : '';
+					$wrapper_class = ( $field['type'] != 'hidden' ) ? 'form-field' : 'form-field hidden';
+					$output .= ' class="' . $wrapper_class . $custom_class . '"';
 
 					// Check if the field is required
 					if ( $field['required'] )
@@ -472,33 +494,39 @@
 				// Close the opening li tag.
 				$output .= '>';
 
-					// Create the opening label.
-					$output .= '<label';
+					// Hide the label and description if we have a hidden field
+					if ( $field['type'] != 'hidden' ) {
 
-						// Set our for value if a form id.
-						if ( isset( $args['id'] ) && ! empty( $args['id'] ) )
-							$output .= ' for="' . esc_attr( $args['id'] ) . '"';
+						// Create the opening label.
+						$output .= '<label';
 
-					// Close the opening label tag.
-					$output .= '>';
+							// Set our for value if a form id.
+							if ( isset( $args['id'] ) && ! empty( $args['id'] ) )
+								$output .= ' for="' . esc_attr( $args['id'] ) . '"';
 
-						// Check that a label exists...
-						if ( isset( $args['label'] ) && ! empty( $args['label'] ) )
-							$output .= wp_kses_post( $args['label'] );
+						// Close the opening label tag.
+						$output .= '>';
 
-					// Close the label tag
-					$output .= '</label>';
+							// Check that a label exists...
+							if ( isset( $args['label'] ) && ! empty( $args['label'] ) )
+								$output .= wp_kses_post( $args['label'] );
 
-					// Add our description if left aligned form fields is NOT set.
-					if ( isset( $args['description'] ) && ! empty( $args['description'] ) && ! $alignment_left )
-						$output .= '<div class="ff_description">' . wp_kses_post( $args['description'] ) . '</div>';
+						// Close the label tag
+						$output .= '</label>';
+
+						// Add our description if left aligned form fields is NOT set.
+						if ( isset( $args['description'] ) && ! empty( $args['description'] ) && ! $alignment_left )
+							$output .= '<div class="ff_description">' . wp_kses_post( $args['description'] ) . '</div>';
+					}
 
 					// Return the proper form field
 					$output .= $this->get_field( $field['type'], $args, $data );
 
-					// If left aligned form fields are set, let's add the description below the form field
-					if ( isset( $args['description'] ) && ! empty( $args['description'] ) && $alignment_left )
-						$output .= '<div class="ff_description">' . wp_kses_post( $args['description'] ) . '</div>';
+					if ( $field['type'] != 'hidden' ) {
+						// If left aligned form fields are set, let's add the description below the form field
+						if ( isset( $args['description'] ) && ! empty( $args['description'] ) && $alignment_left )
+							$output .= '<div class="ff_description">' . wp_kses_post( $args['description'] ) . '</div>';
+					}
 
 				// Close the field wrapper.
 				$output .= '</li>';
@@ -536,7 +564,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function get_field( $type, $args ) {
+		private function get_field( $type, $args, $data ) {
 
 			switch ( $type ) {
 				case 'text':
@@ -606,12 +634,11 @@
 
 				$name = $this->merge_fields( $args['name'], 'name' );
 
-				var_dump($name);
 				$output = '<input type="text"';
 
 					// Set our name field, if one doesn't exist, use the label
 					if ( isset( $name ) ) {
-						$output .= ' name="' . esc_attr(  ) . '"';
+						$output .= ' name="' . esc_attr( $name ) . '"';
 					} else {
 						$output .= ' name="' . esc_attr( sanitize_title( $args['label'] ) ) . '"';
 					}
@@ -629,7 +656,7 @@
 						$output .= ' placeholder="' . esc_attr( $args['placeholder'] ) . '"';
 
 					// Add our exisiting data if it exists
-					//if ( isset ( $data[ $name ] ) && ! empty( $data[ $name ] ) )
+					if ( isset ( $data[ $name ] ) && ! empty( $data[ $name ] ) )
 						$output .= ' value="' . sanitize_text_field( $data[ $name ] ) . '"';
 
 				$output .= ' />';
@@ -675,7 +702,13 @@
 					if ( isset( $args['placeholder'] ) )
 						$output .= ' placeholder="' . esc_attr( $args['placeholder'] ) . '"';
 
-				$output .= '></textarea>';
+				$output .= '>';
+
+				// Add our exisiting data if it exists
+				if ( isset ( $data[ $args['name'] ] ) && ! empty( $data[ $args['name'] ] ) )
+					$output .= sanitize_text_field( $data[ $args['name'] ] );
+
+				$output .= '</textarea>';
 
 				return $output;
 			}
@@ -1136,7 +1169,11 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		public function display_form() { 
+		public function display_form() {
+
+			// Only load these forms when the user is logged in.
+			if ( ! is_user_logged_in() )
+				exit( 'Sorry, you must have an account and be logged in to view the application form!' );
 
 			// Get our custom form settings
 			$settings = $this->settings;
@@ -1157,7 +1194,10 @@
 						<?php endif; ?>
 
 						<ol>
-							<?php echo $this->fields( $data->post_content, $settings['label_left'] ); ?>
+							<?php if ( isset( $_GET['app_id'] ) && absint( $_GET['app_id'] ) ) : ?>
+								<li class="form-field hidden"><input type="hidden" name="author_id" value="<?php echo absint( $data->post_author ); ?>" /></li>
+							<?php endif; ?>
+							<?php echo $this->fields( ( ! empty( $data->post_content ) ? $data->post_content : null ), $settings['label_left'] ); ?>
 						</ol>
 					</fieldset>
 					<fieldset class="submit">
@@ -1204,12 +1244,12 @@
 		 */
 		public function merge_fields( $key, $type ) {
 			$values = array( 
-				'project_name'     => array( 
+				'project_name' => array( 
 					'exhibit'   => 'project_name', 
 					'performer' => 'performer_name', 
 					'presenter' => 'presentation_name'
 				),
-				'form_photo'       => array( 
+				'form_photo' => array( 
 					'exhibit'   => 'project_photo', 
 					'performer' => 'performer_photo', 
 					'presenter' => 'presentation_photo'
@@ -1219,17 +1259,17 @@
 					'performer' => 'performer_photo_thumb', 
 					'presenter' => 'presentation_photo_thumb'
 				),
-				'project_website'  => array( 
+				'project_website' => array( 
 					'exhibit'   => 'project_website', 
 					'performer' => 'performer_website', 
 					'presenter' => 'presentation_website'
 				),
-				'project_video'    => array( 
+				'project_video' => array( 
 					'exhibit'   => 'project_video', 
 					'performer' => 'performer_video', 
 					'presenter' => 'video'
 				),
-				'user_photo'       => array( 
+				'user_photo' => array( 
 					'exhibit'   => 'maker_photo', 
 					'performer' => 'performer_photo', 
 					'presenter' => 'presenter_photo' 
@@ -1239,12 +1279,12 @@
 					'performer' => 'performer_photo_thumb', 
 					'presenter' => 'presenter_photo_thumb' 
 				),
-				'user_bio'         => array( 
+				'user_bio' => array( 
 					'exhibit'   => 'maker_bio', 
 					'performer' => 'private_description',
 					'presenter' => 'presenter_bio' 
 				),
-				'user_gigya'	   => array(
+				'user_gigya' => array(
 					'exhibit'	=> 'm_maker_gigyaid',
 					'performer' => 'uid',
 					'presenter' => 'presenter_gigyaid'

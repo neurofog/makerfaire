@@ -71,6 +71,15 @@
 			),
 			array(
 				'id'   	   => 3,
+				'type' 	   => 'hidden',
+				'required' => false,
+				'args' 	   => array(
+					'id'		  => 'uid',
+					'name'	  	  => 'uid',
+				),
+			),
+			array(
+				'id'   	   => 3,
 				'type' 	   => 'text',
 				'required' => true,
 				'args' 	   => array(

@@ -6,6 +6,18 @@
 			padding:0;
 			margin:0;
 			list-style:none;
+			label {
+				display:inline-block;
+			}
+			&.radio {
+				margin-left:18px;
+			}
+			.form-field {
+				margin-bottom:20px;
+				&.hidden {
+					margin-bottom:0;
+				}
+			}
 		}
 		li.left {
 			label {
@@ -18,10 +30,15 @@
 				left:11em;
 			}
 		}
-		&.submit { border-style:none; }
+		&.submit { 
+			border-style:none;
+		}
 	}
 
-	label { display:block; }
+	label {
+		display:block;
+		font-weight:bold;
+	}
 
 	legend {
 		margin:0;
