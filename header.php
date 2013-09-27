@@ -92,8 +92,6 @@ Topbar
 <header id="header">
 
 	<div class="container">
-
-		<p class="tagline"><a href="http://disney.com"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/disney.png" alt="Disney"></a></p>
 		
 			<div class="row">
 			
