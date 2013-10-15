@@ -212,10 +212,6 @@ function makerfaire_newsletter_shortcode() {
 			<div class="control-group">
 				<label class="control-label" for="optionsCheckbox">Any chance we could interest you in...</label>
 				<div class="controls">
-					<label for="CRAFTNewsletter" class="checkbox">
-						<input type="checkbox" name="cm-ol-jjurhj" id="CRAFTNewsletter" />
-						The CRAFT Newsletter?
-					</label>
 				</div>
 				<div class="controls">
 					<label for="MAKENewsletter" class="checkbox">
