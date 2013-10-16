@@ -32,7 +32,7 @@
 				</div><!--find a faire-->
 							
 				<div class="span4">
-                    <a href="https://readerservices.makezine.com/MK/subscribe.aspx">
+                    <a href="https://www.pubservice.com/MK/subscribe.aspx?PC=MK&PK=M3AMFB">
                         <img src="http://cdn.makezine.com/make/ads/subscribe_ad_V35.png" alt="Subscribe to MAKE magazine!" />
                     </a>
                 </div><!--subad-->
