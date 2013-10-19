@@ -33,7 +33,7 @@
 							
 				<div class="span4">
                     <a href="https://www.pubservice.com/MK/subscribe.aspx?PC=MK&PK=M3AMFB">
-                        <img src="http://cdn.makezine.com/make/ads/subscribe_ad_V35.png" alt="Subscribe to MAKE magazine!" />
+                        <img src="<?php bloginfo('stylesheet_directory'); ?>/images/mf_subscribe_ad.gif" alt="Subscribe to MAKE magazine!" />
                     </a>
                 </div><!--subad-->
 		
