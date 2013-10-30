@@ -15,203 +15,203 @@ License:  GPL2
 class MAKER_FAIRE_FORM {
 
 	/* 
-	* GIGYA API KEY
+	* GIGYA API KEY - GIGYA OLD
 	* =====================================================================*/
-	const GIGYA_API_KEY    = '3_nUMOBEBpLoLnfNUbwAo9FCwTqzd6vTjpVt3Ojd807EIT5IcF94eM9hoV8vcqjoe8';
+	// const GIGYA_API_KEY    = '3_nUMOBEBpLoLnfNUbwAo9FCwTqzd6vTjpVt3Ojd807EIT5IcF94eM9hoV8vcqjoe8';
 	
 	/* 
-	* GIGYA API SECRET
+	* GIGYA API SECRET - GIGYA OLD
 	* =====================================================================*/
-	const GIGYA_SECRET_KEY = 'GlvZcbxIY6Oy7lnWJheh56DXj3wKAiG3yVqhv++VLZM=';
+	// const GIGYA_SECRET_KEY = 'GlvZcbxIY6Oy7lnWJheh56DXj3wKAiG3yVqhv++VLZM=';
 
 	/* 
 	* All Form Keys with 1/0 for Required Field
 	* =====================================================================*/
 	var $fields = array(
-			'exhibit' => array(
-				's1' => array(
-					'project_name'          => 1,
-					'private_description'   => 1,
-					'public_description'    => 1,
-					'project_photo'         => 1,
-					'project_photo_thumb'   => 0,
-					'project_website'       => 0,
-					'project_video'         => 0,
-					'food'                  => 1,
-					'food_details'          => 0,
+		'exhibit' => array(
+			's1' => array(
+				'project_name'          => 1,
+				'private_description'   => 1,
+				'public_description'    => 1,
+				'project_photo'         => 1,
+				'project_photo_thumb'   => 0,
+				'project_website'       => 0,
+				'project_video'         => 0,
+				'food'                  => 1,
+				'food_details'          => 0,
 
-					'org_type'              => 1,
-					'large_non_profit'      => 0,
+				'org_type'              => 1,
+				'large_non_profit'      => 0,
 
-					'sales'                 => 0,
-					'sales_details'         => 0,
-					'crowdsource_funding'	=> 0,
-					'cf_details'			=> 0,
-					'booth_size'            => 1,
-					'booth_size_details'    => 0,
-					'tables_chairs'         => 1,
-					'tables_chairs_details' => 0,
-					'layout'                => 0,
-					'activity'              => 0,
-					'placement'             => 0,
-					'booth_location'        => 1,
-					'booth_options'         => 0,
-					'lighting'              => 1,
-					'noise'                 => 1,
-					'power'                 => 1,
-					'what_are_you_powering' => 0,
-					'amps'                  => 0,
-					'amps_details'          => 0,
-					'internet'              => 1,
-					'radio'                 => 1,
-					'radio_frequency'       => 0,
-					'radio_details'         => 0,
-					'fire'                  => 0,
-					'hands_on'              => 0,
-					'safety_details'        => 0,
-					),
-				's2' => array(
-					'email'               => 1,
-					'name'                => 1,
-					'maker'               => 1,
+				'sales'                 => 0,
+				'sales_details'         => 0,
+				'crowdsource_funding'	=> 0,
+				'cf_details'			=> 0,
+				'booth_size'            => 1,
+				'booth_size_details'    => 0,
+				'tables_chairs'         => 1,
+				'tables_chairs_details' => 0,
+				'layout'                => 0,
+				'activity'              => 0,
+				'placement'             => 0,
+				'booth_location'        => 1,
+				'booth_options'         => 0,
+				'lighting'              => 1,
+				'noise'                 => 1,
+				'power'                 => 1,
+				'what_are_you_powering' => 0,
+				'amps'                  => 0,
+				'amps_details'          => 0,
+				'internet'              => 1,
+				'radio'                 => 1,
+				'radio_frequency'       => 0,
+				'radio_details'         => 0,
+				'fire'                  => 0,
+				'hands_on'              => 0,
+				'safety_details'        => 0,
+				),
+			's2' => array(
+				'email'               => 1,
+				'name'                => 1,
+				'maker'               => 1,
 
-					'maker_name'          => 0,
-					'maker_email'         => 0,
-					'maker_bio'           => 0,
-					'maker_twitter'		  => 0,
-					'maker_photo'         => 0,
-					'maker_photo_thumb'   => 0,
+				'maker_name'          => 0,
+				'maker_email'         => 0,
+				'maker_bio'           => 0,
+				'maker_twitter'		  => 0,
+				'maker_photo'         => 0,
+				'maker_photo_thumb'   => 0,
 
-					'm_maker_name'        => 0,
-					'm_maker_email'       => 0,
-					'm_maker_photo'       => 0,
-					'm_maker_photo_thumb' => 0,
-					'm_maker_twitter'     => 0,
-					'm_maker_bio'         => 0,
-					'm_maker_gigyaid'     => 0,
+				'm_maker_name'        => 0,
+				'm_maker_email'       => 0,
+				'm_maker_photo'       => 0,
+				'm_maker_photo_thumb' => 0,
+				'm_maker_twitter'     => 0,
+				'm_maker_bio'         => 0,
+				'm_maker_gigyaid'     => 0,
 
-					'group_name'          => 0,
-					'group_bio'           => 0,
-					'group_twitter'		  => 0,
-					'group_photo'         => 0,
-					'group_photo_thumb'   => 0,
-					'group_website'       => 0,
+				'group_name'          => 0,
+				'group_bio'           => 0,
+				'group_twitter'		  => 0,
+				'group_photo'         => 0,
+				'group_photo_thumb'   => 0,
+				'group_website'       => 0,
 
-					'phone1'              => 1,
-					'phone1_type'         => 1,
-					'phone2'              => 0,
-					'phone2_type'         => 0,
+				'phone1'              => 1,
+				'phone1_type'         => 1,
+				'phone2'              => 0,
+				'phone2_type'         => 0,
 
-					'private_address'     => 1,
-					'private_address2'    => 0,
-					'private_city'        => 1,
-					'private_state'       => 0,
-					'private_zip'         => 0,
-					'private_country'     => 1
-					),
-				's3' => array(
-					'supporting_documents' => 0,
-					'references'           => 0,
-					'referrals'            => 0,
-					'hear_about'           => 0,
-					'first_time'           => 0,
-					'anything_else'        => 0,
-				)
+				'private_address'     => 1,
+				'private_address2'    => 0,
+				'private_city'        => 1,
+				'private_state'       => 0,
+				'private_zip'         => 0,
+				'private_country'     => 1
+				),
+			's3' => array(
+				'supporting_documents' => 0,
+				'references'           => 0,
+				'referrals'            => 0,
+				'hear_about'           => 0,
+				'first_time'           => 0,
+				'anything_else'        => 0,
+			)
+		),
+		'performer' => array(
+			's1' => array(
+				'performer_name'        => 1,
+				'private_description'   => 1,
+				'length'                => 0,
+				'public_description'    => 1,
+				'performer_website'     => 0,
+				'performer_photo'       => 1,
+				'performer_photo_thumb' => 0,
+				'performer_video'       => 0,
+				'performance_time'      => 1,
+				'schedule_comments'     => 0,
+				'equipment'             => 0,
+				'performer_count'       => 1,
+				'compensation_type'     => 0,
+				'compensation'          => 0,
+				'guest_tickets'         => 1,
 			),
-			'performer' => array(
-				's1' => array(
-					'performer_name'        => 1,
-					'private_description'   => 1,
-					'length'                => 0,
-					'public_description'    => 1,
-					'performer_website'     => 0,
-					'performer_photo'       => 1,
-					'performer_photo_thumb' => 0,
-					'performer_video'       => 0,
-					'performance_time'      => 1,
-					'schedule_comments'     => 0,
-					'equipment'             => 0,
-					'performer_count'       => 1,
-					'compensation_type'     => 0,
-					'compensation'          => 0,
-					'guest_tickets'         => 1,
-				),
-				's2' => array(
-					'name'             => 1,
-					'email'            => 1,
+			's2' => array(
+				'name'             => 1,
+				'email'            => 1,
 
-					'phone1'           => 1,
-					'phone1_type'      => 1,
-					'phone2'           => 0,
-					'phone2_type'      => 0,
-					'onsite_phone'     => 0,
+				'phone1'           => 1,
+				'phone1_type'      => 1,
+				'phone2'           => 0,
+				'phone2_type'      => 0,
+				'onsite_phone'     => 0,
 
-					'private_address'  => 1,
-					'private_address2' => 0,
-					'private_city'     => 1,
-					'private_state'    => 0,
-					'private_zip'      => 0,
-					'private_country'  => 1,
-				),
-				's3' => array(
-					'first_makerfaire' => 0,
-					'exhibit'          => 0,
-					'promotion'        => 0,
-					'additional_info'  => 0,
-				)
+				'private_address'  => 1,
+				'private_address2' => 0,
+				'private_city'     => 1,
+				'private_state'    => 0,
+				'private_zip'      => 0,
+				'private_country'  => 1,
 			),
-			'presenter' => array(
-				's1' => array(
-					'presentation_type'        => 1,
-					'private_description'	   => 0,
-					'length_presentation'	   => 0,
-					'availablity'              => 0,
-					'special_requests'         => 0,
-					'presentation_name'        => 1,
-					'short_description'        => 1,
-					'long_description'		   => 1,
-					'presentation_photo'       => 1,
-					'presentation_photo_thumb' => 0,
-					'presentation_website'     => 0,
-					'video'                    => 0,
-				),
-				's2' => array(
-					'name'                  => 1,
-					'email'                 => 1,
-					'phone1'                => 1,
-					'phone1_type'           => 0,
-					'phone2'                => 0,
-					'phone2_type'           => 0,
-
-					'private_address'       => 1,
-					'private_address2'      => 0,
-					'private_city'          => 1,
-					'private_state'         => 0,
-					'private_zip'           => 0,
-					'private_country'       => 1,
-
-					'presenter_name'         => 1,
-					'presenter_email'        => 1,
-					'presenter_bio'          => 1,
-					'presenter_org'          => 0,
-					'presenter_twitter'		 => 0,
-					'presenter_previous'	 => 0,
-					'presenter_title'        => 0,
-					'presenter_onsite_phone' => 1,
-					'presenter_photo'        => 1,
-					'presenter_photo_thumb'  => 0,
-					'presenter_gigyaid'      => 0,
-				),
-				's3' => array(
-					'maker_ask'        => 0,
-					'first_makerfaire' => 0,
-					'exhibit'          => 0,
-					'promotion'        => 0,
-					'additional_info'  => 0,
-				)
+			's3' => array(
+				'first_makerfaire' => 0,
+				'exhibit'          => 0,
+				'promotion'        => 0,
+				'additional_info'  => 0,
+			)
+		),
+		'presenter' => array(
+			's1' => array(
+				'presentation_type'        => 1,
+				'private_description'	   => 0,
+				'length_presentation'	   => 0,
+				'availablity'              => 0,
+				'special_requests'         => 0,
+				'presentation_name'        => 1,
+				'short_description'        => 1,
+				'long_description'		   => 1,
+				'presentation_photo'       => 1,
+				'presentation_photo_thumb' => 0,
+				'presentation_website'     => 0,
+				'video'                    => 0,
 			),
-			'makerprofile' => array()
-		);
+			's2' => array(
+				'name'                  => 1,
+				'email'                 => 1,
+				'phone1'                => 1,
+				'phone1_type'           => 0,
+				'phone2'                => 0,
+				'phone2_type'           => 0,
+
+				'private_address'       => 1,
+				'private_address2'      => 0,
+				'private_city'          => 1,
+				'private_state'         => 0,
+				'private_zip'           => 0,
+				'private_country'       => 1,
+
+				'presenter_name'         => 1,
+				'presenter_email'        => 1,
+				'presenter_bio'          => 1,
+				'presenter_org'          => 0,
+				'presenter_twitter'		 => 0,
+				'presenter_previous'	 => 0,
+				'presenter_title'        => 0,
+				'presenter_onsite_phone' => 1,
+				'presenter_photo'        => 1,
+				'presenter_photo_thumb'  => 0,
+				'presenter_gigyaid'      => 0,
+			),
+			's3' => array(
+				'maker_ask'        => 0,
+				'first_makerfaire' => 0,
+				'exhibit'          => 0,
+				'promotion'        => 0,
+				'additional_info'  => 0,
+			)
+		),
+		'makerprofile' => array()
+	);
 	/* 
 	* Default MakerFaire - PHASE 2 - MAKE THIS A SETTINGS OPTION
 	* =====================================================================*/
@@ -233,7 +233,7 @@ class MAKER_FAIRE_FORM {
 	);
 
 	/* 
-	* GIGYA USER
+	* GIGYA USER - GIGYA OLD
 	* =====================================================================*/
 	var $user;
 
@@ -495,7 +495,8 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	public function add_menus() {
 		add_submenu_page( 'edit.php?post_type=mf_form', 'Add Maker', 'Add Maker', 'edit_others_posts', 'isc_mm_add_maker', array( &$this, 'show_add_maker_page' ) );
-		add_submenu_page( 'edit.php?post_type=mf_form', 'List Makers', 'List Makers', 'edit_others_posts', 'isc_mm_list_makers', array( &$this, 'show_list_makers_page' ) );
+		// GIGYA OLD
+		// add_submenu_page( 'edit.php?post_type=mf_form', 'List Makers', 'List Makers', 'edit_others_posts', 'isc_mm_list_makers', array( &$this, 'show_list_makers_page' ) );
 		add_submenu_page( 'edit.php?post_type=mf_form', 'Project Images', 'Project Images', 'edit_others_posts', 'mf_project_images', array( &$this, 'show_project_images' ) );
 		add_submenu_page( 'edit.php?post_type=mf_form', 'Reports', 'Reports', 'edit_others_posts', 'mf_reports', array( &$this, 'show_reports_page' ) );
 	}
@@ -515,12 +516,14 @@ class MAKER_FAIRE_FORM {
 			add_meta_box( 'mf_details',   'Details',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 			add_meta_box( 'mf_logistics', 'Edit Form', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 		} else {
-			$gigya_lookup = ' <a target="_blank" style="float:right" href="edit.php?post_type=mf_form&amp;page=isc_mm_list_makers">Lookup GIGYA ID</a>';
+			// GIGYA OLD
+			// $gigya_lookup = ' <a target="_blank" style="float:right" href="edit.php?post_type=mf_form&amp;page=isc_mm_list_makers">Lookup GIGYA ID</a>';
 			
 			add_meta_box( 'mf_form_type', 'Application Type',  array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
-			add_meta_box( 'mf_exhibit',   'Exhibit Details'.$gigya_lookup,   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'exhibit' ) );
-			add_meta_box( 'mf_performer', 'Performer Details'.$gigya_lookup, array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'performer' ) );
-			add_meta_box( 'mf_presenter', 'Presenter Details'.$gigya_lookup, array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'presenter' ) );
+			// GIGYA OLD
+			// add_meta_box( 'mf_exhibit',   'Exhibit Details'.$gigya_lookup,   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'exhibit' ) );
+			// add_meta_box( 'mf_performer', 'Performer Details'.$gigya_lookup, array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'performer' ) );
+			// add_meta_box( 'mf_presenter', 'Presenter Details'.$gigya_lookup, array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'presenter' ) );
 		}
 
 		add_meta_box( 'mf_save', 'Edit Application', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
@@ -936,11 +939,13 @@ class MAKER_FAIRE_FORM {
 				
 			$cont = array(
 				'm_maker_email', 
-				'm_maker_gigyaid', 
+				// GIGYA OLD
+				// 'm_maker_gigyaid',
 				'm_maker_photo', 
 				'm_maker_bio',
 				'presenter_email',
-				'presenter_gigyaid', 
+				// GIGYA OLD
+				// 'presenter_gigyaid', 
 				'presenter_bio',
 				'presenter_onsite_phone',
 				'presenter_org',
@@ -993,24 +998,26 @@ class MAKER_FAIRE_FORM {
 							}
 						} );
 						
-						mf_insert_add_maker_btn();
+						// GIGYA OLD
+						// mf_insert_add_maker_btn();
 						
 						if( form_type == 'exhibit' ) {							
 							$( '#maker input[value="<?php echo esc_attr( isset( $data->maker ) ? $data->maker : 'One maker' ); ?>"]' ).click();
 						}
 						
-						function mf_insert_add_maker_btn()
-						{
-							html = '<tr id="'+form_type+'-add-maker" class="mf-form-row add-maker add-maker-btn">'+
-										'<td colspan="2">'+
-											'<input type="button" value="+Add Maker" class="button button-primary button-large"> '+
-											'<div style="float:right"><a href="edit.php?post_type=mf_form&page=isc_mm_list_makers" target="_blank">Lookup GIGYA ID</a></div>'+
-										'</td>'+
-									'</tr>';
+						// GIGYA OLD
+						// function mf_insert_add_maker_btn()
+						// {
+						// 	html = '<tr id="'+form_type+'-add-maker" class="mf-form-row add-maker add-maker-btn">'+
+						// 				'<td colspan="2">'+
+						// 					'<input type="button" value="+Add Maker" class="button button-primary button-large"> '+
+						// 					'<div style="float:right"><a href="edit.php?post_type=mf_form&page=isc_mm_list_makers" target="_blank">Lookup GIGYA ID</a></div>'+
+						// 				'</td>'+
+						// 			'</tr>';
 							
-							$(html).insertAfter( $('#m_maker_bio, #presenter_previous') );
-							$('.add-maker-btn .button').unbind('click').click(mf_add_maker);
-						}
+						// 	$(html).insertAfter( $('#m_maker_bio, #presenter_previous') );
+						// 	$('.add-maker-btn .button').unbind('click').click(mf_add_maker);
+						// }
 						
 						function mf_add_maker() {
 
@@ -1018,7 +1025,8 @@ class MAKER_FAIRE_FORM {
 								exhibit : {
 									m_maker_name    : 'Add. Maker Name',
 									m_maker_email   : 'Add. Maker Email', 
-									m_maker_gigyaid : 'Add. Maker Gigyaid',
+									// GIGYA OLD
+									// m_maker_gigyaid : 'Add. Maker Gigyaid',
 									m_maker_bio     : 'Add. Maker Bio',
 									m_maker_twitter : 'Add. Maker Twitter',
 									m_maker_photo   : 'Add. Maker Photo URL'
@@ -1026,7 +1034,8 @@ class MAKER_FAIRE_FORM {
 								presenter : {
 									presenter_name     : 'Add. Presenter Name',
 									presenter_email    : 'Add. Presenter Email', 
-									presenter_gigyaid  : 'Add. Presenter Gigyaid',
+									// GIGYA OLD
+									// presenter_gigyaid  : 'Add. Presenter Gigyaid',
 									presenter_bio      : 'Add. Presenter Bio',
 									presenter_org      : 'Add. Presenter Organization',
 									presenter_title    : 'Add. Presenter Title',
@@ -1230,13 +1239,15 @@ class MAKER_FAIRE_FORM {
 			$init_fields = array(
 				'm_maker_name'   => array(
 					'm_maker_email', 
-					'm_maker_gigyaid', 
+					// GIGYA OLD
+					// 'm_maker_gigyaid', 
 					'm_maker_photo',
 					'm_maker_twitter', 
 					'm_maker_bio',
 				),
 				'presenter_name' => array(
-					'presenter_gigyaid',
+					// GIGYA OLD
+					// 'presenter_gigyaid',
 					'presenter_bio',
 					'presenter_photo',
 					'presenter_email',					 
@@ -1259,8 +1270,9 @@ class MAKER_FAIRE_FORM {
 					$data = '';
 				}
 
-				if ( ( $fn == 'm_maker_gigyaid' || $fn == 'presenter_gigyaid' ) && $data == '' && isset( $all_data['uid'] ) )
-					$data = $all_data['uid']; ?>
+				// GIGYA OLD
+				// if ( ( $fn == 'm_maker_gigyaid' || $fn == 'presenter_gigyaid' ) && $data == '' && isset( $all_data['uid'] ) )
+				// 	$data = $all_data['uid']; ?>
 
 				<tr class="mf-form-row <?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $fn ); ?>">
 					<td valign="top"><?php echo esc_html( ucwords( str_replace( '_', ' ', $fn ) ) ); ?>:</td>
@@ -1281,7 +1293,7 @@ class MAKER_FAIRE_FORM {
 					'm_maker_name'   => array(
 						'm_maker_name'    => 'Add. Maker Name',
 						'm_maker_email'   => 'Add. Maker Email', 
-						'm_maker_gigyaid' => 'Add. Maker Gigyaid',
+						// 'm_maker_gigyaid' => 'Add. Maker Gigyaid',
 						'm_maker_bio'	  => 'Add. Maker Bio',
 						'm_maker_twitter' => 'Add. Maker Twitter Handle',
 						'm_maker_photo'   => 'Add. Maker Photo URL',
@@ -2402,8 +2414,9 @@ class MAKER_FAIRE_FORM {
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'mff_js',             plugins_url( 'assets/js/mff.js', __FILE__ ) );
 		wp_enqueue_script( 'mff_jquery_form_js', plugins_url( 'assets/js/jquery.form.js', __FILE__ ) );
-		wp_enqueue_script( 'mff_gigya',          'http://cdn.gigya.com/JS/socialize.js?apikey='.self::GIGYA_API_KEY );
-		wp_enqueue_script( 'mff_gigya_login',    plugins_url( 'assets/js/gigya-login.js', __FILE__ ) );
+		// GIGYA OLD
+		// wp_enqueue_script( 'mff_gigya',          'http://cdn.gigya.com/JS/socialize.js?apikey='.self::GIGYA_API_KEY );
+		// wp_enqueue_script( 'mff_gigya_login',    plugins_url( 'assets/js/gigya-login.js', __FILE__ ) );
 
 		wp_enqueue_style( 'mff_css', plugins_url( 'assets/css/style.css', __FILE__ ) );
 	}
@@ -2431,6 +2444,7 @@ class MAKER_FAIRE_FORM {
 	* @access public
 	* @param string $query An associative array of key/value to search
 	* @return array An array users or empty array
+	* GIGYA OLD
 	* =====================================================================*/
 	public function gigya_search_users( $query = '' ) {
 		// include the gigya php sdk
@@ -2460,6 +2474,7 @@ class MAKER_FAIRE_FORM {
 	* Provides a form to create new GIGYA users
 	*
 	* @access public
+	* GIGYA OLD
 	* =====================================================================*/
 	public function show_add_maker_page() {
 
@@ -2590,6 +2605,7 @@ class MAKER_FAIRE_FORM {
 	* List all makers in a table
 	*
 	* @access public
+	* GIGYA OLD
 	* =====================================================================*/
 	public function show_list_makers_page() {
 	

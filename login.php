@@ -2,6 +2,7 @@
 /*
 * 
 * Template Name: Social Login
+* GIGYA OLD
 *
 */
 ?>
