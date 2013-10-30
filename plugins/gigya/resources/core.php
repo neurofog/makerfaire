@@ -34,13 +34,13 @@ class GigyaSO_Core {
 		
 		$header_text = (isset($params["header_text"]) ? $params["header_text"] : __("Sign in with your Social Network:"));
 		
-		if($params["width"]) {
+		if( isset( $params["width"] ) ) {
 			$width = $params["width"];		
 		} else {
 			$width = is_numeric(gigya_get_option("login_width")) ? gigya_get_option("login_width") : 345;
 		}
 		
-		if($params["height"]) {
+		if( isset( $params["height"] ) ) {
 			$height = $params["height"];		
 		} else {
 			$height = is_numeric(gigya_get_option("login_height")) ? gigya_get_option("login_height") : 145;
@@ -65,7 +65,7 @@ class GigyaSO_Core {
 			width:<?php echo $width; ?>,
 			context:'GigLogin',
 			pendingRegistration : true,
-			UIConfig:'<config><body><controls><snbuttons buttonsize=\"<?php echo $params["button_size"] ? $params["button_size"] : 42 ;?>\"></snbuttons></controls><background  background-color=\"<?php echo $bgColor?>\"></background></body></config>',
+			UIConfig:'<config><body><controls><snbuttons buttonsize=\"<?php echo (isset( $params["button_size"] ) ) ? $params["button_size"] : 42 ;?>\"></snbuttons></controls><background  background-color=\"<?php echo $bgColor?>\"></background></body></config>',
 			containerID: '<?php echo isset($params["container_id"]) ? $params["container_id"] : 'componentDiv' ;?>'
 		};
 	<?php 
