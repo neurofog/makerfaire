@@ -233,6 +233,55 @@ function makerfaire_newsletter_shortcode() {
 
 add_shortcode( 'newsletter', 'makerfaire_newsletter_shortcode' );
 
+/**
+ * Modal Window Builder
+ */
+function make_modal_builder( $atts, $content = null ) {
+	
+	extract( shortcode_atts( array(
+		'launch' 	=> 'Launch Window',
+		'title' 	=> 'Modal Title',
+		'btn_class'	=> '',
+		'embed'	=> ''
+	), $atts ) );
+
+	$number = mt_rand();
+	$args = array( 
+		'a' => array(
+			'href' => array(),
+			'title' => array()
+		),
+		'br' => array(),
+		'em' => array(),
+		'strong' => array(),
+		'iframe' => array( 
+			'src' => array(),
+			'height' => array(),
+			'border' => array(),
+			'frameborder' => array(),
+			'width' => array(),
+			'allowfullscreen' => array(),
+			)
+	);
+	$output = '<a class="btn  ' . esc_attr( $btn_class ) . '" data-toggle="modal" href="#modal-' . $number . '">' . esc_html( $launch ) . '</a>';
+	$output .= '<div id="modal-' . $number . '" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
+	$output .= '	<div class="modal-header">';
+	$output .= '		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+	$output .= '		<h3>' . esc_html( $title ) . '</h3>';
+	$output .= '	</div>';
+	$output .= '	<div class="modal-body">';
+	$output .= ( !empty( $embed ) ) ? wpcom_vip_wp_oembed_get( esc_url( $embed ), array( 'width' => 530 ) ) : '';
+	$output .= 			wp_kses( $content, $args );
+	$output .= '	</div>';
+	$output .= '	<div class="modal-footer">';
+	$output .= '		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>';
+	$output .= '	</div>';
+	$output .= '</div>';
+
+	return $output;
+}
+add_shortcode( 'modal', 'make_modal_builder' );
+
 function makerfaire_news_rss() { ?>
 	<div class="newsies">
 		<div class="news post">
