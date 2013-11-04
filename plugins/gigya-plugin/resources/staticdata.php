@@ -15,7 +15,8 @@ $GIGYA_STATIC_DATA["short_url"] = array(
   "options" => array(
     "always" => "Always",
     "whenRequired" => "When Required",
-    "never" => "Never"
+    "never" => "Never",
+    'poop'=>'poop'
   )
 );
 

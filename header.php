@@ -66,12 +66,13 @@ Topbar
 		<div class="nav-collapse">
 			<ul class="nav">
 				<li class="red"><a  class="red" href="http://makezine.com">MAKE</a></li>
-							<li class=""><a href="http://makezine.com/blog/">Blog</a></li>
-							<li class=""><a href="http://makezine.com/magazine/">Magazine</a></li>
-							<li class=""><a href="http://makerfaire.com">Maker Faire</a></li>
-							<li class=""><a href="http://makezine.com/projects/">Make: Projects</a></li>
-							<li class=""><a href="http://makershed.com">Maker Shed</a></li>
-							<li class=""><a href="http://kits.makezine.com">Kits</a></li>
+				<li><a href="http://makezine.com/blog/">Blog</a></li>
+				<li><a href="http://makezine.com/magazine/">Magazine</a></li>
+				<li><a href="http://makerfaire.com">Maker Faire</a></li>
+				<li><a href="http://makezine.com/projects/">Make: Projects</a></li>
+				<li><a href="http://makershed.com">Maker Shed</a></li>
+				<li><a href="http://kits.makezine.com">Kits</a></li>
+				<li class="user-creds"><a href="#login" data-toggle="modal">Login/Register</a></li>
 			</ul>
 			<ul class="nav pull-right">
 				<li>
@@ -90,7 +91,20 @@ Topbar
 </div>
 
 <header id="header">
-
+	
+	<div class="modal fade" id="login" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Login or Register</h4>
+      </div>
+      <div class="modal-body" id="modal-body">
+      	
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 	<div class="container">
 
 		<div class="topad">

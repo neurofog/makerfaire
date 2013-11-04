@@ -18,9 +18,14 @@ class GigyaSO_Core {
 	public function render_js(){
 		//include GIGYA_PLUGIN_PATH.
 		require_once "handlers.php";
-		gigya_enque_js(1); 	
+		gigya_enque_js(1); 	// handlers.php line 82
 	}
 	
+	/**
+	 * Sets the JavaScript custom paramerters and configurations set in the admin screen
+	 * @param  array  $params [description]
+	 * @return [type]         [description]
+	 */
 	public function conf_and_params($params = array()){
 		# return array("width"=>"","height=>"","header_text"=>"","bgColor"=>"","container_id"=>"","button_siz"=>"")
 		$params = apply_filters("login_params",$params);
@@ -79,6 +84,10 @@ class GigyaSO_Core {
 		endif;
 	}
 	
+	/**
+	 * The HTML template code used in multiple places
+	 * @return [type] [description]
+	 */
 	public function render_tmpl(){
 	?>
 		<script id="gigya-new-user-tmpl" type="text/x-jquery-tmpl">
@@ -131,12 +140,5 @@ class GigyaSO_Core {
 			</div>	
 		</div>
 		</script>
-	<?php 
-	} 	
-	
-	public function render_profile_connect(){
-	?>
-		
-	<?php 	
-	}
+	<?php } 	
 }

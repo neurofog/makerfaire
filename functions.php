@@ -7,6 +7,7 @@ $GLOBALS['current_faire'] = 'world-maker-faire-new-york-2013';
 require_once( WP_CONTENT_DIR . '/themes/vip/plugins/vip-init.php' );
 
 // Include Gigya plugin
+// require_once( __DIR__ . '/plugins/gigya-plugin/gigya.php' );
 require_once( __DIR__ . '/plugins/gigya/gigya.php' );
 
 // include maker-faire-forms plugin

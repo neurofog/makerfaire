@@ -66,7 +66,6 @@
 	</div>
 	
 </div>
-<script src="<?php echo get_template_directory_uri(); ?>/js/bootstrap.js"></script>
 <script type="text/javascript">
 
 	jQuery(document).ready(function(){
