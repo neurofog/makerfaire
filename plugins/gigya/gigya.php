@@ -73,16 +73,58 @@
 
 
 		public function ajax_login() {
-			var_dump($_POST);
-			// // Check our nonce and make sure it's correct
-			// check_ajax_referer( 'ajax-login-nonce', 'nonce' );
+			
+			// Check our nonce and make sure it's correct
+			check_ajax_referer( 'ajax-login-nonce', 'nonce' );
 
-			// // Hold onto the submission data
-			// $data = array();
+			// Move our user info to a new variable
+			$user = $_POST['user'];
 
-			// if ( isset( $_POST['request'] ) && $_POST['request'] == 'login' ) {
-			// 	var_dump($_POST);
-			// }
+			// Hold onto the submission data
+			$data = array();
+
+			if ( isset( $_POST['request'] ) && $_POST['request'] == 'login' ) {
+				$query_params = array(
+					'post_type' => 'maker',
+					'meta_key' => 'guid',
+					'meta_value' => $user['UID']
+				);
+
+				$users = new WP_Query( $query_params );
+
+				if ( $users->posts ) {
+					$results = array(
+						'loggedin' => true,
+						'message'  => 'Successfully Logged In!',
+					);
+				} else {
+
+					// Our user doesn't exist, that means we need to sync them up, create a maker account and log them in.
+					$maker = array(
+						'post_title' => $user['firstName'] . ' ' . $user['lastName'],
+						'post_content' => $user['bio'],
+						'post_status' => 'publish',
+						'post_type' => 'maker',
+					);
+					$insert_maker = wp_insert_post( $maker );
+
+					if ( is_wp_error( $insert_maker ) ) {
+						$results = array(
+							'loggedin' => false,
+							'message'  => 'A user account could not be created. Please try again.',
+						);
+					} else {
+						$results = array(
+							'loggedin' => true,
+							'message' => 'User account created!',
+						);
+					}
+				}
+
+				echo json_encode( $results );
+			}
+
+			die();
 		}
 
 	}

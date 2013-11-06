@@ -65,9 +65,10 @@ function on_login( eventObj ) {
 		dataType: 'json',
 		url: make_gigya.ajax,
 		data: {
-			request: 'login',
-			user: eventObj.user,
-			nonce: make_gigya.secure_it
+			'action'  : 'ajaxlogin', // Calls our wp_ajax_nopriv_ajaxlogin
+			'request' : 'login',
+			'user'    : eventObj.user,
+			'nonce'   : make_gigya.secure_it
 		},
 		success: function( results ) {
 			if ( results.loggedin === true ) {
@@ -84,23 +85,23 @@ function on_login( eventObj ) {
     });
 
 
-    // Check whether the user is new by searching if eventObj.UID exists in your database (link this to maker profiles)
-    var newUser = true; // Let's assume the user is new
+   //  // Check whether the user is new by searching if eventObj.UID exists in your database (link this to maker profiles)
+   //  var newUser = true; // Let's assume the user is new
     
-    if ( newUser ) {
-        var siteUID = 'uTtCGqDTEtcZMGL08w'; // The user ID that you have designated to the current user on your user management system. This site UID must be different than the Gigya ID.
-        var dateStr = Math.round( new Date().getTime() / 1000.0 ); // Current time in Unix format
-        var yourSig = encodeURIComponent( siteUID, dateStr );
-        var params = {
-            siteUID: siteUID,
-            timestamp: dateStr,
-			cid: '',
-            signature: yourSig
-        };
+   //  if ( newUser ) {
+   //      var siteUID = 'uTtCGqDTEtcZMGL08w'; // The user ID that you have designated to the current user on your user management system. This site UID must be different than the Gigya ID.
+   //      var dateStr = Math.round( new Date().getTime() / 1000.0 ); // Current time in Unix format
+   //      var yourSig = encodeURIComponent( siteUID, dateStr );
+   //      var params = {
+   //          siteUID: siteUID,
+   //          timestamp: dateStr,
+			// cid: '',
+   //          signature: yourSig
+   //      };
         
-        // http://developers.gigya.com/020_Client_API/010_Socialize/socialize.notifyRegistration  
-        gigya.socialize.notifyRegistration( params ); // Use the REST API http://developers.gigya.com/037_API_reference/010_Socialize/socialize.notifyRegistration
-    }
+   //      // http://developers.gigya.com/020_Client_API/010_Socialize/socialize.notifyRegistration  
+   //      gigya.socialize.notifyRegistration( params ); // Use the REST API http://developers.gigya.com/037_API_reference/010_Socialize/socialize.notifyRegistration
+   //  }
 	
 	// Update our links and remove any of the modal stuffffffsssss.
 	jQuery( '.user-creds' ).addClass( 'logged-in' ).find( 'a' ).attr( 'href', '#logout' ).removeAttr( 'data-toggle' ).text( 'Logout' );
