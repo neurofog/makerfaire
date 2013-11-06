@@ -246,23 +246,6 @@ function make_modal_builder( $atts, $content = null ) {
 	), $atts ) );
 
 	$number = mt_rand();
-	$args = array( 
-		'a' => array(
-			'href' => array(),
-			'title' => array()
-		),
-		'br' => array(),
-		'em' => array(),
-		'strong' => array(),
-		'iframe' => array( 
-			'src' => array(),
-			'height' => array(),
-			'border' => array(),
-			'frameborder' => array(),
-			'width' => array(),
-			'allowfullscreen' => array(),
-			)
-	);
 	$output = '<a class="btn  ' . esc_attr( $btn_class ) . '" data-toggle="modal" href="#modal-' . $number . '">' . esc_html( $launch ) . '</a>';
 	$output .= '<div id="modal-' . $number . '" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
 	$output .= '	<div class="modal-header">';
@@ -270,8 +253,12 @@ function make_modal_builder( $atts, $content = null ) {
 	$output .= '		<h3>' . esc_html( $title ) . '</h3>';
 	$output .= '	</div>';
 	$output .= '	<div class="modal-body">';
-	$output .= ( !empty( $embed ) ) ? wpcom_vip_wp_oembed_get( esc_url( $embed ), array( 'width' => 530 ) ) : '';
-	$output .= 			wp_kses( $content, $args );
+	if ( strpos( $embed, 'fora.tv' ) or strpos( $embed, 'ustream' ) ) {
+		$output .= '<iframe src="' . esc_url( $embed ) . '" width="530" height="320" frameborder="0"></iframe>';
+	} else {
+		$output .= ( !empty( $embed ) ) ? wpcom_vip_wp_oembed_get( esc_url( $embed ), array( 'width' => 530 ) ) : '';
+	}
+	$output .= 			wp_kses_post( $content );
 	$output .= '	</div>';
 	$output .= '	<div class="modal-footer">';
 	$output .= '		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>';
