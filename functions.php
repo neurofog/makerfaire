@@ -253,7 +253,6 @@ function make_modal_builder( $atts, $content = null ) {
 	$output .= '		<h3>' . esc_html( $title ) . '</h3>';
 	$output .= '	</div>';
 	$output .= '	<div class="modal-body">';
-	if ( strpos( $embed, 'fora.tv' ) or strpos( $embed, 'ustream' ) ) {
 	if ( wpcom_vip_is_valid_domain( $embed,  array('fora.tv', 'ustream.com', 'ustream.tv' ) ) ) {
 		$output .= '<iframe src="' . esc_url( $embed ) . '" width="530" height="320" frameborder="0"></iframe>';
 	} else {
