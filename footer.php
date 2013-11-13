@@ -57,7 +57,7 @@
 				</div>
 				
 				<div class="span12 center">
-					<?php if ( function_exists('vip_powered_wpcom') ) { echo vip_powered_wpcom(4); } ?>
+					<?php echo make_copyright_footer(); ?>	
 				</div>
 			
 			</div>

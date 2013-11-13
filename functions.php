@@ -538,3 +538,16 @@ function make_cpt_icons() { ?>
 		}
 	</style>
 <?php }
+
+/**
+ * Adds footer copyright information
+ */
+function make_copyright_footer() { ?>
+	<div class="row">
+		<div class="span12">
+			<p class="footer_copyright text-center">Make: and Maker Faire are registered trademarks of Maker Media, Inc.<br>
+			Copyright &copy; 2004-<?php echo date("Y") ?> Maker Media, Inc.  All rights reserved</p>
+			<?php if ( function_exists('vip_powered_wpcom') ) { echo vip_powered_wpcom(4); } ?>
+		</div>
+	</div>
+<?php } 
