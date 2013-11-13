@@ -233,6 +233,42 @@ function makerfaire_newsletter_shortcode() {
 
 add_shortcode( 'newsletter', 'makerfaire_newsletter_shortcode' );
 
+/**
+ * Modal Window Builder
+ */
+function make_modal_builder( $atts, $content = null ) {
+	
+	extract( shortcode_atts( array(
+		'launch' 	=> 'Launch Window',
+		'title' 	=> 'Modal Title',
+		'btn_class'	=> '',
+		'embed'	=> ''
+	), $atts ) );
+
+	$number = mt_rand();
+	$output = '<a class="btn  ' . esc_attr( $btn_class ) . '" data-toggle="modal" href="#modal-' . $number . '">' . esc_html( $launch ) . '</a>';
+	$output .= '<div id="modal-' . $number . '" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
+	$output .= '	<div class="modal-header">';
+	$output .= '		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+	$output .= '		<h3>' . esc_html( $title ) . '</h3>';
+	$output .= '	</div>';
+	$output .= '	<div class="modal-body">';
+	if ( wpcom_vip_is_valid_domain( $embed,  array('fora.tv', 'ustream.com', 'ustream.tv' ) ) ) {
+		$output .= '<iframe src="' . esc_url( $embed ) . '" width="530" height="320" frameborder="0"></iframe>';
+	} else {
+		$output .= ( !empty( $embed ) ) ? wpcom_vip_wp_oembed_get( esc_url( $embed ), array( 'width' => 530 ) ) : '';
+	}
+	$output .= 			wp_kses_post( $content );
+	$output .= '	</div>';
+	$output .= '	<div class="modal-footer">';
+	$output .= '		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>';
+	$output .= '	</div>';
+	$output .= '</div>';
+
+	return $output;
+}
+add_shortcode( 'modal', 'make_modal_builder' );
+
 function makerfaire_news_rss() { ?>
 	<div class="newsies">
 		<div class="news post">
