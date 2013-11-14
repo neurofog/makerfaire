@@ -11,7 +11,14 @@
 	/**
 	 * Set up some Constants
 	 */
+	// The main URL to the plugin directory
 	define( 'MAKE_GIGYA_URL', get_template_directory_uri() . '/plugins/gigya' );
+
+	// Gigya Public Key
+	define( 'MAKE_GIGYA_PUBLIC_KEY', '3_bjlVxC0gadZ6dN9q8K1ePCbDHtATT8OgJxZJcsr0ty8o5oKnvjI_G2DOZ1YasJHF' );
+
+	// Gigya Private Key
+	define( 'MAKE_GIGYA_PRIVATE_KEY', 'GlvZcbxIY6Oy7lnWJheh56DXj3wKAiG3yVqhv++VLZM=' );
 
 
 	/**
@@ -40,7 +47,8 @@
 			add_action( 'wp_enqueue_scripts', array( $this, 'load_resources' ), 30 );
 
 			// Process our ajax requests
-			 add_action( 'wp_ajax_nopriv_ajaxlogin', array( $this, 'ajax_login' ) );
+			add_action( 'wp_ajax_nopriv_ajaxlogin', array( $this, 'ajax_login' ) );
+			add_action( 'wp_ajax_ajaxlogin', array( $this, 'ajax_login' ) );
 		}
 
 		/**
@@ -51,7 +59,7 @@
 		 * @since  SPRINT_NAME
 		 */
 		public function socialize_api() { ?>
-			<script src="http://cdn.gigya.com/JS/socialize.js?apikey=3_bjlVxC0gadZ6dN9q8K1ePCbDHtATT8OgJxZJcsr0ty8o5oKnvjI_G2DOZ1YasJHF">{ enabledProviders: '*' }</script>
+			<script src="http://cdn.gigya.com/JS/socialize.js?apikey=<?php echo MAKE_GIGYA_PUBLIC_KEY; ?>">{ enabledProviders: '*' }</script>
 		<?php }
 		
 
@@ -71,7 +79,12 @@
 			) );
 		}
 
-
+		/**
+		 * Process' our login to Gigya. This method will take the info from the socialize plugin and pass it through to either login or create a new user
+		 * @return json
+		 *
+		 * @since  SPRINT_NAME
+		 */
 		public function ajax_login() {
 			
 			// Check our nonce and make sure it's correct
@@ -92,32 +105,117 @@
 
 				$users = new WP_Query( $query_params );
 
+				// Check if a user already exists, if not we'll create one.
 				if ( $users->posts ) {
-					$results = array(
-						'loggedin' => true,
-						'message'  => 'Successfully Logged In!',
-					);
-				} else {
 
-					// Our user doesn't exist, that means we need to sync them up, create a maker account and log them in.
-					$maker = array(
-						'post_title' => $user['firstName'] . ' ' . $user['lastName'],
-						'post_content' => $user['bio'],
-						'post_status' => 'publish',
-						'post_type' => 'maker',
-					);
-					$insert_maker = wp_insert_post( $maker );
+					// Notify Gigya about our returning user
+					$request = new GSRequest( MAKE_GIGYA_PUBLIC_KEY, MAKE_GIGYA_PRIVATE_KEY, 'socialize.notifyLogin' );
+					$request->setParam( 'siteUID', $users->posts[0]->ID );
 
-					if ( is_wp_error( $insert_maker ) ) {
+					// Let's send this login data to Gigya
+					$response = $request->send();
+
+					// Handle the response from Gigya
+					if ( $response->getErrorCode() == 0 ) {
+						// Everything was good!
+						$gigya_notified = true;
+					} else {
+						$gigya_notified = false;
+						$gigya_error = array( 'gigya_response' => $response->getErrorMessage() );
+					}
+
+
+					// Now let's check Gigya responded positivly. If not, we need to report back
+					if ( $gigya_notified ) {
 						$results = array(
-							'loggedin' => false,
-							'message'  => 'A user account could not be created. Please try again.',
+							'loggedin' => true,
+							'message' => 'Login Successful!',
 						);
 					} else {
 						$results = array(
-							'loggedin' => true,
-							'message' => 'User account created!',
+							'loggedin' => false,
+							'message' => $response->getErrorMessage(),
 						);
+					}
+				} else {
+
+					// Handle our user name
+					if ( ! empty( $user['firstName'] ) && ! empty( $user['lastName'] ) ) {
+						$user_name = $user['firstName'] . ' ' . $user['lastName'];
+					} elseif ( ! empty( $user['firstName'] ) && empty( $user['lastName'] ) ) {
+						$user_name = $user['firstName'];
+					} elseif ( empty( $user['firstName'] ) && empty( $user['lastName'] ) && ! empty( $user['nickname'] ) ) {
+						$user_name = $user['nickname'];
+					} else {
+						$user_name = 'Undefined Username';
+					}
+
+					// Our user doesn't exist, that means we need to sync them up, create a maker account and log them in.
+					$maker = array(
+						'post_title' => sanitize_text_field( $user_name ),
+						'post_content' => ( ! empty( $user['bio'] ) ) ? wp_filter_post_kses( $user['bio'] ) : '',
+						'post_status' => 'publish',
+						'post_type' => 'maker',
+					);
+					$maker_id = wp_insert_post( $maker );
+
+					// We'll want to add some custom fields. Let's do that.
+					// ****************************************************
+					// Add the maker email
+					$user_email = ( isset( $user['email'] ) && ! empty( $user['email'] ) ) ? sanitize_email( $user['email'] ) : '';
+					update_post_meta( $maker_id, 'email', $user_email );
+
+					// Add the maker photo
+					$user_photo = ( isset( $user['photoURL'] ) && ! empty( $user['photoURL'] ) ) ? esc_url ( $user['photoURL'] ) : '';
+					update_post_meta( $maker_id, 'photo_url', $user_photo );
+
+					// Add the maker website field
+					update_post_meta( $maker_id, 'website', '' );
+
+					// Add the maker video field
+					update_post_meta( $maker_id, 'video', '' );
+
+					// Add the Maker Gigya ID
+					update_post_meta( $maker_id, 'guid', sanitize_text_field( $user['UID'] ) );
+
+					// Report our status to pass back to the modal window
+					if ( is_wp_error( $maker_id ) ) {
+						$results = array(
+							'loggedin' => false,
+							'gigya_loggedin' => false,
+							'message'  => 'A user account could not be created. Please try again.',
+						);
+					} else {
+
+						// Let's Set things up to notify Gigya about our user login
+						$request = new GSRequest( MAKE_GIGYA_PUBLIC_KEY, MAKE_GIGYA_PRIVATE_KEY, 'socialize.notifyRegistraion' );
+						$request->setParam( 'UID', $user['UID'] );
+						$request->setParam( 'siteUID', $maker_id );
+
+						// Now send the notification to Gigya
+						$response = $request->send();
+
+						// Handle the response from Gigya
+						if ( $response->getErrorCode() == 0 ) {
+							// Everything was good!
+							$gigya_notified = true;
+						} else {
+							$gigya_notified = false;
+							$gigya_error = array( 'gigya_response' => $response->getErrorMessage() );
+						}
+
+						// Now let's check Gigya responded positivly. If not, we need to report back
+						if ( $gigya_notified ) {
+							$results = array(
+								'loggedin' => true,
+								'message' => 'User account created!',
+							);
+						} else {
+							$results = array(
+								'loggedin' => false,
+								'message' => $response->getErrorMessage(),
+							);
+						}
 					}
 				}
 
