@@ -71,6 +71,7 @@
 		 * @since  SPRINT_NAME
 		 */
 		public function load_resources() {
+			// wp_enqueue_script( 'jquery-cookies', MAKE_GIGYA_URL . '/js/jquery.cookie.js', arrya( 'jquery' ), '1.4' );
 			wp_enqueue_script( 'make_socialize', MAKE_GIGYA_URL . '/js/socialize.js', array( 'jquery' ), '0.1', true );
 			wp_localize_script( 'make_socialize', 'make_gigya', array(
 				'ajax' => admin_url( 'admin-ajax.php' ),
@@ -109,7 +110,7 @@
 				if ( $users->posts ) {
 
 					// Notify Gigya about our returning user
-					$request = new GSRequest( MAKE_GIGYA_PUBLIC_KEY, MAKE_GIGYA_PRIVATE_KEY, 'socialize.notifyLogin' );
+					$request = new GSRequest( MAKE_GIGYA_PUBLIC_KEY, MAKE_GIGYA_PRIVATE_KEY, 'accounts.notifyLogin' );
 					$request->setParam( 'siteUID', $users->posts[0]->ID );
 
 					// Let's send this login data to Gigya
@@ -188,7 +189,7 @@
 					} else {
 
 						// Let's Set things up to notify Gigya about our user login
-						$request = new GSRequest( MAKE_GIGYA_PUBLIC_KEY, MAKE_GIGYA_PRIVATE_KEY, 'socialize.notifyRegistraion' );
+						$request = new GSRequest( MAKE_GIGYA_PUBLIC_KEY, MAKE_GIGYA_PRIVATE_KEY, 'accounts.notifyLogin' );
 						$request->setParam( 'UID', $user['UID'] );
 						$request->setParam( 'siteUID', $maker_id );
 

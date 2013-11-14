@@ -7,36 +7,43 @@
 // Set debugging mode.
 var gigya_debug = true;
 
+jQuery(document).ready(function($) {
 
-/**
- * Displays the login plugin
- *
- * http://developers.gigya.com/020_Client_API/010_Socialize/Socialize.showLoginUI
- * 
- * @since SPRINT_NAME
- */
-gigya.socialize.showLoginUI({
-	height: 100,
-	width: 330,
-	showTermsLink: false,
-	hideGigyaLink: true,
-	buttonsStyle: 'fullLogo', // Change the default buttons design to "Full Logos" design
-	showWhatsThis: true, // Pop-up a hint describing the Login Plugin, when the user rolls over the Gigya link.
-	containerID: 'modal-body', // The component will embed itself inside the loginDiv Div
-	cid: ''
+	// Listen for a click event to open the login screen
+	$( '.user-creds.login' ).click( function() {
+		gigya.accounts.showScreenSet({
+			screenSet: 'login-makerfaire',
+			mobileScreenSet: 'Login-mobile'
+		});
+	});
+
+	// Listen for a click event to open the register screen
+	$( '.user-creds.register' ).click( function() {
+		gigya.accounts.showScreenSet({
+			screenSet: 'login-makerfaire',
+			mobileScreenSet: 'Login-mobile',
+			startScreen: 'gigya-register-screen'
+		});
+	});
+
+	// Listen for a click event to logout
+	$( '.user-creds.logout' ).click( function() {
+		gigya.accounts.logout({
+			callback: onLogout
+		});
+	});
 });
 
 
 /**
  * The Gigya service generates several global application events for various situations that are driven by user interactions.
  * Global application events are fired whenever the event to which they refer occurs, regardless of what was the action that triggered the event.
- * This is in contrast to plugin events, which are only fired by the specific plugin on which they were configured.
  * This method allows setting event handlers for each of the supported global events.
- * NOTE: http://developers.gigya.com/020_Client_API/010_Socialize/socialize.addEventHandlers
+ * @url http://developers.gigya.com/020_Client_API/020_Accounts/accounts.addEventHandlers
  *
  * @since  SPRINT_NAME
  */
-gigya.socialize.addEventHandlers({ // 
+gigya.accounts.addEventHandlers({ // 
 	onLogin: on_login,
 	onLogout: on_logout
 });
@@ -74,53 +81,37 @@ function on_login( eventObj ) {
 			if ( results.loggedin === true ) {
 				if ( gigya_debug )
 					console.log( 'WordPress logged in' );
+
+				// Update the login window that everything went well
+				jQuery( '.modal-body' ).prepend( '<div class="alert alert-success">Successfully Logged in!</div>' );
+
+				// Update our links and remove any of the modal stuffffffsssss.
+				jQuery( '.user-creds' ).addClass( 'logged-in' ).find( 'a' ).attr( 'href', '#logout' ).removeAttr( 'data-toggle' ).text( 'Logout' );
+
+				if ( gigya_debug )
+					console.log( 'LOGIN DONE' );
+
+				// Let's hook into the new content update and allow users to sign out
+				jQuery( '.user-creds.logged-in a[href="#logout"]' ).click( function(e) {
+					if ( gigya_debug )
+						console.log( 'CLICKED' );
+
+					e.preventDefault();
+					logout_gigya();
+				});
 			} else {
 				if ( gigya_debug )
 					console.log( 'Failed WordPress login' );
 			}
 		},
 		complete: function( jqXHR, textStatus ) {
-			console.log( 'AJAX complete' );
+			if ( gigya_debug )
+				console.log( 'AJAX complete' );
+
+			// Remove the message window
+			jQuery( '.modal-body .alert' ).delay( '5000' ).remove();
 		}
     });
-
-
-   //  // Check whether the user is new by searching if eventObj.UID exists in your database (link this to maker profiles)
-   //  var newUser = true; // Let's assume the user is new
-    
-   //  if ( newUser ) {
-   //      var siteUID = 'uTtCGqDTEtcZMGL08w'; // The user ID that you have designated to the current user on your user management system. This site UID must be different than the Gigya ID.
-   //      var dateStr = Math.round( new Date().getTime() / 1000.0 ); // Current time in Unix format
-   //      var yourSig = encodeURIComponent( siteUID, dateStr );
-   //      var params = {
-   //          siteUID: siteUID,
-   //          timestamp: dateStr,
-			// cid: '',
-   //          signature: yourSig
-   //      };
-        
-   //      // http://developers.gigya.com/020_Client_API/010_Socialize/socialize.notifyRegistration  
-   //      gigya.socialize.notifyRegistration( params ); // Use the REST API http://developers.gigya.com/037_API_reference/010_Socialize/socialize.notifyRegistration
-   //  }
-	
-	// Update our links and remove any of the modal stuffffffsssss.
-	jQuery( '.user-creds' ).addClass( 'logged-in' ).find( 'a' ).attr( 'href', '#logout' ).removeAttr( 'data-toggle' ).text( 'Logout' );
-
-	// Close the modal when we have logged in.
-	jQuery( '#login' ).modal( 'hide' );
-
-	if ( gigya_debug )
-		console.log('LOGIN DONE');
-
-	// Let's hook into the new content update and allow users to sign out
-	jQuery( '.user-creds.logged-in a[href="#logout"]' ).click( function(e) {
-		if ( gigya_debug )
-			console.log('CLICKED');
-
-		e.preventDefault();
-		logout_gigya();
-	});
-
 }
 
 /**
@@ -179,3 +170,6 @@ function on_logout( eventObj ) {
 	if ( gigya_debug )
 		console.log( 'User logged out' );
 }
+
+
+
