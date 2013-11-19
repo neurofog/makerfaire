@@ -14,6 +14,9 @@
 	// The main URL to the plugin directory
 	define( 'MAKE_GIGYA_URL', get_template_directory_uri() . '/plugins/gigya' );
 
+	// Plugin version
+	define( 'MAKE_GIGYA_VERSION', '0.1' );
+
 	// Gigya Public Key
 	define( 'MAKE_GIGYA_PUBLIC_KEY', '3_bjlVxC0gadZ6dN9q8K1ePCbDHtATT8OgJxZJcsr0ty8o5oKnvjI_G2DOZ1YasJHF' );
 
@@ -30,6 +33,15 @@
 		include_once( 'includes/GSSDK.php' );
 
 
+	/**
+	 * Load our helper functions
+	 *
+	 * @since  SPRINT_NAME
+	 */
+	if ( ! defined( 'MAKE_HELPERS_SET' ) )
+		include_once( 'helpers/helpers.php' );
+
+	
 	/**
 	 * The guts.
 	 *
@@ -49,7 +61,11 @@
 			// Process our ajax requests
 			add_action( 'wp_ajax_nopriv_ajaxlogin', array( $this, 'ajax_login' ) );
 			add_action( 'wp_ajax_ajaxlogin', array( $this, 'ajax_login' ) );
+
+			// Hook the login into the footer
+			add_action( 'wp_footer', array( $this, 'add_login_form' ) );
 		}
+
 
 		/**
 		 * Spits out the Gigya API for the socialize plugin
@@ -59,10 +75,9 @@
 		 * @since  SPRINT_NAME
 		 */
 		public function socialize_api() { ?>
-			<script src="http://cdn.gigya.com/JS/socialize.js?apikey=<?php echo MAKE_GIGYA_PUBLIC_KEY; ?>">{ enabledProviders: '*' }</script>
+			<script src="http://cdn.gigya.com/JS/socialize.js?apikey=<?php echo MAKE_GIGYA_PUBLIC_KEY; ?>">{ enabledProviders: 'facebook,twitter,googleplus' }</script>
 		<?php }
 		
-
 
 		/**
 		 * Let's add all of our resouces to make our magic happen.
@@ -71,14 +86,25 @@
 		 * @since  SPRINT_NAME
 		 */
 		public function load_resources() {
-			// wp_enqueue_script( 'jquery-cookies', MAKE_GIGYA_URL . '/js/jquery.cookie.js', arrya( 'jquery' ), '1.4' );
-			wp_enqueue_script( 'make_socialize', MAKE_GIGYA_URL . '/js/socialize.js', array( 'jquery' ), '0.1', true );
-			wp_localize_script( 'make_socialize', 'make_gigya', array(
+			wp_enqueue_style( 'make-login', MAKE_GIGYA_URL . '/css/login.css', null, MAKE_GIGYA_VERSION );
+			wp_enqueue_script( 'make-socialize', MAKE_GIGYA_URL . '/js/login.js', array( 'jquery' ), MAKE_GIGYA_VERSION, true );
+			wp_localize_script( 'make-socialize', 'make_gigya', array(
 				'ajax' => admin_url( 'admin-ajax.php' ),
 				'loading' => 'Loading',
 				'secure_it' => wp_create_nonce( 'ajax-login-nonce' ),
 			) );
 		}
+
+
+		/**
+		 * Add our login for to the footer of the page.
+		 *
+		 * @since  SPRINT_NAME
+		 */
+		public function add_login_form() {
+			include_once( MAKE_GIGYA_URL . '/includes/login.html' );
+		}
+
 
 		/**
 		 * Process' our login to Gigya. This method will take the info from the socialize plugin and pass it through to either login or create a new user
@@ -91,17 +117,17 @@
 			// Check our nonce and make sure it's correct
 			check_ajax_referer( 'ajax-login-nonce', 'nonce' );
 
-			// Move our user info to a new variable
-			$user = $_POST['user'];
-
 			// Hold onto the submission data
 			$data = array();
+
+			// Pass our User Info
+			$user = $_POST['user'];
 
 			if ( isset( $_POST['request'] ) && $_POST['request'] == 'login' ) {
 				$query_params = array(
 					'post_type' => 'maker',
 					'meta_key' => 'guid',
-					'meta_value' => $user['UID']
+					'meta_value' => $_POST['uid'],
 				);
 
 				$users = new WP_Query( $query_params );
@@ -128,9 +154,11 @@
 
 					// Now let's check Gigya responded positivly. If not, we need to report back
 					if ( $gigya_notified ) {
+						setcookie( '_mfugl', 'maker-faire-user-login', time() + 86400, '/' );
 						$results = array(
 							'loggedin' => true,
 							'message' => 'Login Successful!',
+							'user' => $users->posts,
 						);
 					} else {
 						$results = array(
@@ -177,7 +205,7 @@
 					update_post_meta( $maker_id, 'video', '' );
 
 					// Add the Maker Gigya ID
-					update_post_meta( $maker_id, 'guid', sanitize_text_field( $user['UID'] ) );
+					update_post_meta( $maker_id, 'guid', sanitize_text_field( $_POST['uid'] ) );
 
 					// Report our status to pass back to the modal window
 					if ( is_wp_error( $maker_id ) ) {
@@ -207,6 +235,7 @@
 
 						// Now let's check Gigya responded positivly. If not, we need to report back
 						if ( $gigya_notified ) {
+							setcookie( '_mfugl', 'maker-faire-user-login', time() + 86400, '/' );
 							$results = array(
 								'loggedin' => true,
 								'message' => 'User account created!',
@@ -226,6 +255,34 @@
 			die();
 		}
 
+
+		/**
+		 * Checks if a user is currently logged in.
+		 * @return boolean
+		 *
+		 * @since  SPRINT_NAME
+		 */
+		public function is_logged_in() {
+			if ( isset( $_COOKIE['_mfugl'] ) ) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 	$make_gigya = new Make_Gigya();
+
+
+	function maker_faire_user_profile_login( $content ) {
+		global $make_gigya;
+
+		if ( ! $make_gigya->is_logged_in() && has_shortcode( $content, 'mfform' ) ) {
+			$output = '<h2>Oops! You must be logged in to access this page!</h2>';
+
+			return $output;
+		} else {
+			return $content;
+		}
+	}
+	add_filter( 'the_content', 'maker_faire_user_profile_login' );
 

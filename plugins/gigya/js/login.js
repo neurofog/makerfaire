@@ -10,27 +10,25 @@ var gigya_debug = true;
 jQuery(document).ready(function($) {
 
 	// Listen for a click event to open the login screen
-	$( '.user-creds.login' ).click( function() {
+	$( '.user-creds.login' ).on( 'click', function() {
 		gigya.accounts.showScreenSet({
-			screenSet: 'login-makerfaire',
+			screenSet: 'Login-web',
 			mobileScreenSet: 'Login-mobile'
 		});
 	});
 
 	// Listen for a click event to open the register screen
-	$( '.user-creds.register' ).click( function() {
+	$( '.user-creds.register' ).on( 'click', function() {
 		gigya.accounts.showScreenSet({
-			screenSet: 'login-makerfaire',
+			screenSet: 'Login-web',
 			mobileScreenSet: 'Login-mobile',
 			startScreen: 'gigya-register-screen'
 		});
 	});
 
 	// Listen for a click event to logout
-	$( '.user-creds.logout' ).click( function() {
-		gigya.accounts.logout({
-			callback: onLogout
-		});
+	$( '.user-creds.logout' ).on( 'click', function() {
+		gigya.accounts.logout();
 	});
 });
 
@@ -59,9 +57,8 @@ gigya.accounts.addEventHandlers({ //
  * @since  SPRINT_NAME
  */
 function on_login( eventObj ) {
-	// Results: "congrats on your login to {PROVIDER}! {provider} user ID: {ProviderUID}"
 	if ( gigya_debug )
-		console.log( 'Logged in to ' + eventObj.provider + '!\nUser ID: ' +  eventObj.user.identities[ eventObj.provider ].providerUID );
+		console.log( 'Logged in to ' + eventObj.provider + '!' );
 
     // Verify the signature ...
     verify_signature( eventObj.UID, eventObj.signatureTimestamp, eventObj.UIDSignature );
@@ -74,34 +71,23 @@ function on_login( eventObj ) {
 		data: {
 			'action'  : 'ajaxlogin', // Calls our wp_ajax_nopriv_ajaxlogin
 			'request' : 'login',
-			'user'    : eventObj.user,
+			'user'    : eventObj.profile,
+			'uid'     : eventObj.UID,
 			'nonce'   : make_gigya.secure_it
 		},
 		success: function( results ) {
 			if ( results.loggedin === true ) {
 				if ( gigya_debug )
-					console.log( 'WordPress logged in' );
+					console.log( results.message );
 
 				// Update the login window that everything went well
 				jQuery( '.modal-body' ).prepend( '<div class="alert alert-success">Successfully Logged in!</div>' );
 
-				// Update our links and remove any of the modal stuffffffsssss.
-				jQuery( '.user-creds' ).addClass( 'logged-in' ).find( 'a' ).attr( 'href', '#logout' ).removeAttr( 'data-toggle' ).text( 'Logout' );
+				document.location = '/makerprofile';
 
-				if ( gigya_debug )
-					console.log( 'LOGIN DONE' );
-
-				// Let's hook into the new content update and allow users to sign out
-				jQuery( '.user-creds.logged-in a[href="#logout"]' ).click( function(e) {
-					if ( gigya_debug )
-						console.log( 'CLICKED' );
-
-					e.preventDefault();
-					logout_gigya();
-				});
 			} else {
 				if ( gigya_debug )
-					console.log( 'Failed WordPress login' );
+					console.log( results.message );
 			}
 		},
 		complete: function( jqXHR, textStatus ) {
@@ -143,15 +129,6 @@ function verify_signature( UID, timestamp, signature ) {
 		console.log( 'UID: ' + UID + '\nTimestamp: ' + timestamp + '\nSignature: ' + signature + '\nYour UID encoded: ' + encodedUID );
 }
 
-/**
- * Logout from Gigya platform. This method is activated when "Logout" button is clicked
- * NOTE: http://developers.gigya.com/020_Client_API/010_Socialize/socialize.logout
- * 
- * @since SPRINT_NAME
- */
-function logout_gigya() {
-    gigya.services.socialize.logout();
-}
 
 /**
  * onLogout Event handler
@@ -159,16 +136,15 @@ function logout_gigya() {
  * @param  {[type]} eventObj [description]
  * @since SPRINT_NAME
  */
-function on_logout( eventObj ) {
-	alert( 'You have been successfully logged out!' );
-
-	jQuery( '.user-creds.logged-in' ).removeClass( 'logged-in' ).find( 'a' ).attr({
-		'href' : '#login',
-		'data-toggle': 'modal'
-	}).text( 'Login/Register' );
-
+function on_logout() {
 	if ( gigya_debug )
 		console.log( 'User logged out' );
+
+	// Remove the cookie
+	document.cookie = '_mfugl=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+
+	// Take us home
+	document.location = '/';
 }
 
 
