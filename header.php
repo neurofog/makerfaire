@@ -5,6 +5,12 @@
 	<meta name="apple-itunes-app" content="app-id=463248665"/>
 
 	<title><?php bloginfo('name'); ?> | <?php is_front_page() ? bloginfo('description') : wp_title(''); ?></title>
+
+	<?php if ( get_post_type == 'maker' ) {
+		echo '<meta name="robots" content="noindex, follow">';
+		} 
+	?>
+
 	<meta name="description" content="<?php if ( is_single() ) {
 				echo wp_trim_words( strip_shortcodes( get_the_content('...') ), 20 );
 			} else {
