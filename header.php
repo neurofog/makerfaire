@@ -49,8 +49,14 @@
 
 	<?php wp_head(); ?>
 
-	</head>
+	<?php if ( is_404() ) : // Load this last. ?>
+		<script>
+			// Track our 404 errors and log them to GA
+			_gaq.push(['_trackEvent', '404', 'URL', document.location.pathname + document.location.search]);
+		</script>	
+	<?php endif; ?>
 
+	</head>
 
 <body id="bootstrap-js" <?php body_class('no-js'); ?>>
 
