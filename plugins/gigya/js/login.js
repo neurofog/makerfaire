@@ -10,7 +10,9 @@ var gigya_debug = true;
 jQuery(document).ready(function($) {
 
 	// Listen for a click event to open the login screen
-	$( '.user-creds.login' ).on( 'click', function() {
+	$( '.user-creds.login' ).on( 'click', function( e ) {
+		e.preventDefault();
+
 		gigya.accounts.showScreenSet({
 			screenSet: 'Login-web',
 			mobileScreenSet: 'Login-mobile'
@@ -18,7 +20,9 @@ jQuery(document).ready(function($) {
 	});
 
 	// Listen for a click event to open the register screen
-	$( '.user-creds.register' ).on( 'click', function() {
+	$( '.user-creds.register' ).on( 'click', function( e ) {
+		e.preventDefault();
+
 		gigya.accounts.showScreenSet({
 			screenSet: 'Login-web',
 			mobileScreenSet: 'Login-mobile',
@@ -27,7 +31,9 @@ jQuery(document).ready(function($) {
 	});
 
 	// Listen for a click event to logout
-	$( '.user-creds.logout' ).on( 'click', function() {
+	$( '.user-creds.logout' ).on( 'click', function( e ) {
+		e.preventDefault();
+
 		gigya.accounts.logout();
 	});
 });
@@ -60,6 +66,8 @@ function on_login( eventObj ) {
 	if ( gigya_debug )
 		console.log( 'Logged in to ' + eventObj.provider + '!' );
 
+	console.log( eventObj);
+
     // Verify the signature ...
     verify_signature( eventObj.UID, eventObj.signatureTimestamp, eventObj.UIDSignature );
 
@@ -69,33 +77,30 @@ function on_login( eventObj ) {
 		dataType: 'json',
 		url: make_gigya.ajax,
 		data: {
-			'action'  : 'ajaxlogin', // Calls our wp_ajax_nopriv_ajaxlogin
-			'request' : 'login',
-			'user'    : eventObj.profile,
-			'uid'     : eventObj.UID,
-			'nonce'   : make_gigya.secure_it
+			'action'   : 'ajax', // Calls our wp_ajax_nopriv_ajax
+			'request'  : 'login',
+			'object'   : eventObj,
+			'nonce'    : make_gigya.secure_it
 		},
 		success: function( results ) {
-			if ( results.loggedin === true ) {
-				if ( gigya_debug )
+
+			if ( gigya_debug )
 					console.log( results.message );
 
-				// Update the login window that everything went well
-				jQuery( '.modal-body' ).prepend( '<div class="alert alert-success">Successfully Logged in!</div>' );
+			// Check that everything went well
+			if ( results.loggedin === true )
+				document.location = make_gigya.root_path + 'makerprofile';
 
-				document.location = '/makerprofile';
-
-			} else {
-				if ( gigya_debug )
-					console.log( results.message );
+		},
+		error: function( jqXHR, textStatus, errorThrown ) {
+			if ( gigya_debug ) {
+				console.log( textStatus );
+				console.log( errorThrown );
 			}
 		},
 		complete: function( jqXHR, textStatus ) {
 			if ( gigya_debug )
 				console.log( 'AJAX complete' );
-
-			// Remove the message window
-			jQuery( '.modal-body .alert' ).delay( '5000' ).remove();
 		}
     });
 }
@@ -140,12 +145,37 @@ function on_logout() {
 	if ( gigya_debug )
 		console.log( 'User logged out' );
 
-	// Remove the cookie
-	document.cookie = '_mfugl=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+	// Send our logout notification and pull our cookie
+    jQuery.ajax({
+		type: 'POST',
+		dataType: 'json',
+		url: make_gigya.ajax,
+		data: {
+			'action'   : 'ajax', // Calls our wp_ajax_nopriv_ajax
+			'request'  : 'logout',
+			'nonce'    : make_gigya.secure_it
+		},
+		success: function( results ) {
 
-	// Take us home
-	document.location = '/';
+			if ( gigya_debug )
+				console.log( results.message );
+
+			// Check that everything went well
+			if ( results.loggedin === false )
+				document.location = make_gigya.root_path;
+
+		},
+		error: function( jqXHR, textStatus, errorThrown ) {
+			if ( gigya_debug ) {
+				console.log( 'AJAX ERROR' );
+				console.log( textStatus );
+				console.log( errorThrown );
+			}
+		},
+		complete: function( jqXHR, textStatus ) {
+			if ( gigya_debug )
+				console.log( 'AJAX complete' );
+		}
+    });
 }
-
-
 

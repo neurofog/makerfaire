@@ -18,10 +18,10 @@
 	define( 'MAKE_GIGYA_VERSION', '0.1' );
 
 	// Gigya Public Key
-	define( 'MAKE_GIGYA_PUBLIC_KEY', '3_bjlVxC0gadZ6dN9q8K1ePCbDHtATT8OgJxZJcsr0ty8o5oKnvjI_G2DOZ1YasJHF' );
+	define( 'MAKE_GIGYA_PUBLIC_KEY', get_option( 'make_gigya_public_key' ) );
 
 	// Gigya Private Key
-	define( 'MAKE_GIGYA_PRIVATE_KEY', 'GlvZcbxIY6Oy7lnWJheh56DXj3wKAiG3yVqhv++VLZM=' );
+	define( 'MAKE_GIGYA_PRIVATE_KEY', get_option( 'make_gigya_private_key' ) );
 
 
 	/**
@@ -41,7 +41,15 @@
 	if ( ! defined( 'MAKE_HELPERS_SET' ) )
 		include_once( 'helpers/helpers.php' );
 
-	
+
+	/**
+	 * Load our admin settings found in Settings > General
+	 *
+	 * @since  SPRINT_NAME
+	 */
+	include_once( 'includes/settings.php' );
+
+
 	/**
 	 * The guts.
 	 *
@@ -59,11 +67,12 @@
 			add_action( 'wp_enqueue_scripts', array( $this, 'load_resources' ), 30 );
 
 			// Process our ajax requests
-			add_action( 'wp_ajax_nopriv_ajaxlogin', array( $this, 'ajax_login' ) );
-			add_action( 'wp_ajax_ajaxlogin', array( $this, 'ajax_login' ) );
+			add_action( 'wp_ajax_nopriv_ajax', array( $this, 'process_ajax' ) );
+			add_action( 'wp_ajax_ajax', array( $this, 'process_ajax' ) );
 
 			// Hook the login into the footer
 			add_action( 'wp_footer', array( $this, 'add_login_form' ) );
+
 		}
 
 
@@ -89,20 +98,11 @@
 			wp_enqueue_style( 'make-login', MAKE_GIGYA_URL . '/css/login.css', null, MAKE_GIGYA_VERSION );
 			wp_enqueue_script( 'make-socialize', MAKE_GIGYA_URL . '/js/login.js', array( 'jquery' ), MAKE_GIGYA_VERSION, true );
 			wp_localize_script( 'make-socialize', 'make_gigya', array(
-				'ajax' => admin_url( 'admin-ajax.php' ),
+				'ajax' => esc_url( admin_url( 'admin-ajax.php' ) ),
 				'loading' => 'Loading',
-				'secure_it' => wp_create_nonce( 'ajax-login-nonce' ),
+				'secure_it' => wp_create_nonce( 'ajax-nonce' ),
+				'root_path' => esc_url( home_url( '/' ) ),
 			) );
-		}
-
-
-		/**
-		 * Add our login for to the footer of the page.
-		 *
-		 * @since  SPRINT_NAME
-		 */
-		public function add_login_form() {
-			include_once( MAKE_GIGYA_URL . '/includes/login.html' );
 		}
 
 
@@ -112,22 +112,25 @@
 		 *
 		 * @since  SPRINT_NAME
 		 */
-		public function ajax_login() {
+		public function process_ajax() {
 			
 			// Check our nonce and make sure it's correct
-			check_ajax_referer( 'ajax-login-nonce', 'nonce' );
+			check_ajax_referer( 'ajax-nonce', 'nonce' );
 
-			// Hold onto the submission data
-			$data = array();
+			
+			// Login das user!
+			if ( isset( $_POST['request'] ) && $_POST['request'] == 'login'  ) {
 
-			// Pass our User Info
-			$user = $_POST['user'];
+				// Hold onto the submission data
+				$data = array();
 
-			if ( isset( $_POST['request'] ) && $_POST['request'] == 'login' ) {
+				// Pass our User Info
+				$user = $_POST['object']['profile'];
+
 				$query_params = array(
 					'post_type' => 'maker',
 					'meta_key' => 'guid',
-					'meta_value' => $_POST['uid'],
+					'meta_value' => sanitize_text_field( $_POST['object']['UID'] ),
 				);
 
 				$users = new WP_Query( $query_params );
@@ -135,46 +138,23 @@
 				// Check if a user already exists, if not we'll create one.
 				if ( $users->posts ) {
 
-					// Notify Gigya about our returning user
-					$request = new GSRequest( MAKE_GIGYA_PUBLIC_KEY, MAKE_GIGYA_PRIVATE_KEY, 'accounts.notifyLogin' );
-					$request->setParam( 'siteUID', $users->posts[0]->ID );
+					$this->mmmm_cookies( '_mfugl', 'maker-faire-user-login', 43200 );
+					$results = array(
+						'loggedin' => true,
+						'message' => 'Login Successful!',
+						'user' => $users->posts,
+					);
 
-					// Let's send this login data to Gigya
-					$response = $request->send();
-
-					// Handle the response from Gigya
-					if ( $response->getErrorCode() == 0 ) {
-						// Everything was good!
-						$gigya_notified = true;
-					} else {
-						$gigya_notified = false;
-						$gigya_error = array( 'gigya_response' => $response->getErrorMessage() );
-					}
-
-
-					// Now let's check Gigya responded positivly. If not, we need to report back
-					if ( $gigya_notified ) {
-						setcookie( '_mfugl', 'maker-faire-user-login', time() + 86400, '/' );
-						$results = array(
-							'loggedin' => true,
-							'message' => 'Login Successful!',
-							'user' => $users->posts,
-						);
-					} else {
-						$results = array(
-							'loggedin' => false,
-							'message' => $response->getErrorMessage(),
-						);
-					}
+				// User didn't exist, let's make one.
 				} else {
 
 					// Handle our user name
 					if ( ! empty( $user['firstName'] ) && ! empty( $user['lastName'] ) ) {
-						$user_name = $user['firstName'] . ' ' . $user['lastName'];
+						$user_name = esc_html( $user['firstName'] ) . ' ' . esc_html( $user['lastName'] );
 					} elseif ( ! empty( $user['firstName'] ) && empty( $user['lastName'] ) ) {
-						$user_name = $user['firstName'];
+						$user_name = esc_html( $user['firstName'] );
 					} elseif ( empty( $user['firstName'] ) && empty( $user['lastName'] ) && ! empty( $user['nickname'] ) ) {
-						$user_name = $user['nickname'];
+						$user_name = esc_html( $user['nickname'] );
 					} else {
 						$user_name = 'Undefined Username';
 					}
@@ -192,67 +172,78 @@
 					// ****************************************************
 					// Add the maker email
 					$user_email = ( isset( $user['email'] ) && ! empty( $user['email'] ) ) ? sanitize_email( $user['email'] ) : '';
-					update_post_meta( $maker_id, 'email', $user_email );
+					update_post_meta( absint( $maker_id ), 'email', sanitize_email( $user_email ) );
 
 					// Add the maker photo
 					$user_photo = ( isset( $user['photoURL'] ) && ! empty( $user['photoURL'] ) ) ? esc_url ( $user['photoURL'] ) : '';
-					update_post_meta( $maker_id, 'photo_url', $user_photo );
+					update_post_meta( absint( $maker_id ), 'photo_url', esc_url( $user_photo ) );
 
 					// Add the maker website field
-					update_post_meta( $maker_id, 'website', '' );
+					update_post_meta( absint( $maker_id ), 'website', '' );
 
 					// Add the maker video field
-					update_post_meta( $maker_id, 'video', '' );
+					update_post_meta( absint( $maker_id ), 'video', '' );
 
 					// Add the Maker Gigya ID
-					update_post_meta( $maker_id, 'guid', sanitize_text_field( $_POST['uid'] ) );
+					update_post_meta( absint( $maker_id ), 'guid', sanitize_text_field( $_POST['object']['UID'] ) );
 
 					// Report our status to pass back to the modal window
 					if ( is_wp_error( $maker_id ) ) {
 						$results = array(
 							'loggedin' => false,
-							'gigya_loggedin' => false,
 							'message'  => 'A user account could not be created. Please try again.',
+							'user' => absint( $maker_id ),
 						);
 					} else {
-
-						// Let's Set things up to notify Gigya about our user login
-						$request = new GSRequest( MAKE_GIGYA_PUBLIC_KEY, MAKE_GIGYA_PRIVATE_KEY, 'accounts.notifyLogin' );
-						$request->setParam( 'UID', $user['UID'] );
-						$request->setParam( 'siteUID', $maker_id );
-
-						// Now send the notification to Gigya
-						$response = $request->send();
-
-						// Handle the response from Gigya
-						if ( $response->getErrorCode() == 0 ) {
-							// Everything was good!
-							$gigya_notified = true;
-						} else {
-							$gigya_notified = false;
-							$gigya_error = array( 'gigya_response' => $response->getErrorMessage() );
-						}
-
-						// Now let's check Gigya responded positivly. If not, we need to report back
-						if ( $gigya_notified ) {
-							setcookie( '_mfugl', 'maker-faire-user-login', time() + 86400, '/' );
-							$results = array(
-								'loggedin' => true,
-								'message' => 'User account created!',
-							);
-						} else {
-							$results = array(
-								'loggedin' => false,
-								'message' => $response->getErrorMessage(),
-							);
-						}
+						$this->mmmm_cookies( '_mfugl', 'maker-faire-user-login', 43200 );
+						$results = array(
+							'loggedin' => true,
+							'message'  => 'User account created and logged in!',
+						);
 					}
 				}
+			} elseif ( isset( $_POST['request'] ) && $_POST['request'] == 'logout'  ) {
+				$this->mmmm_cookies( '_mfugl', '', false );
 
-				echo json_encode( $results );
+				if ( $this->is_logged_in() ) {
+					$results = array(
+						'loggedin' => false,
+						'message' => 'Successfully logged out!',
+					);
+				} else {
+					$results = array(
+						'loggedin' => true,
+						'message' => 'Something went wrong. Please try logging out again.',
+					);
+				}
+			} else {
+				$results = array();
 			}
 
+			echo json_encode( $results );
+
 			die();
+		}
+
+
+		/**
+		 * Set or remove cooookies! YAY!
+		 * @param  string   $name   The name of the cookie
+		 * @param  string   $value  The value?
+		 * @param  int/bool $expire Enter either the number of seconds you want to set the cookie or set it to false to remove it
+		 * @return A COOKIE!
+		 *
+		 * @since  SPRINT_NAME
+		 */
+		private function mmmm_cookies( $name, $value, $expire ) {
+			// Test if we are adding or removing a cookie
+			if ( ! $expire ) {
+				$expire = time() - 10000;
+			} else {
+				$expire = time() + absint( $expire );
+			}
+
+			setcookie( sanitize_title_with_dashes( $name ), sanitize_title_with_dashes( $value ), $expire, '/', 'vip.dev', false, true );
 		}
 
 
@@ -285,4 +276,3 @@
 		}
 	}
 	add_filter( 'the_content', 'maker_faire_user_profile_login' );
-
