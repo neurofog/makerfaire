@@ -66,8 +66,6 @@ function on_login( eventObj ) {
 	if ( gigya_debug )
 		console.log( 'Logged in to ' + eventObj.provider + '!' );
 
-	console.log( eventObj);
-
     // Verify the signature ...
     verify_signature( eventObj.UID, eventObj.signatureTimestamp, eventObj.UIDSignature );
 
@@ -85,7 +83,15 @@ function on_login( eventObj ) {
 		success: function( results ) {
 
 			if ( gigya_debug )
-					console.log( results.message );
+				console.log( results.message );
+
+			// Set the Maker ID into a cookie.
+			var date_login = new Date();
+			var date_id = new Date();
+			date_login.setTime( date_login.getTime() + ( 1 * 24 * 60 * 60 * 1000 ) );
+			date_id.setTime( date_id.getTime() + ( 1 * 24 * 60 * 60 * 100000 ) );
+			document.cookie = '_mfuid=' + results.maker + '; expires=' + date_id.toGMTString() + '; path=/';
+			document.cookie = '_mfugl=true; expires=' + date_login.toGMTString() + '; path=/';
 
 			// Check that everything went well
 			if ( results.loggedin === true )
@@ -159,6 +165,12 @@ function on_logout() {
 
 			if ( gigya_debug )
 				console.log( results.message );
+
+			// Remove our cookie
+			var date = new Date();
+			date.setTime( date.getTime() - ( 1 * 24 * 60 * 60 * 1000 ) );
+			document.cookie = '_mfuid=' + results.maker + '; expires=' + date.toGMTString() + '; path=/';
+			document.cookie = '_mfugl=true; expires=' + date.toGMTString() + '; path=/';
 
 			// Check that everything went well
 			if ( results.loggedin === false )

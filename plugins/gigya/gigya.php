@@ -32,6 +32,13 @@
 	if ( ! class_exists( 'GSRequest' ) )
 		include_once( 'includes/GSSDK.php' );
 
+	/**
+	 * Load our admin settings found in Settings > General
+	 *
+	 * @since  SPRINT_NAME
+	 */
+	include_once( 'includes/settings.php' );
+
 
 	/**
 	 * Load our helper functions
@@ -40,14 +47,6 @@
 	 */
 	if ( ! defined( 'MAKE_HELPERS_SET' ) )
 		include_once( 'helpers/helpers.php' );
-
-
-	/**
-	 * Load our admin settings found in Settings > General
-	 *
-	 * @since  SPRINT_NAME
-	 */
-	include_once( 'includes/settings.php' );
 
 
 	/**
@@ -69,9 +68,6 @@
 			// Process our ajax requests
 			add_action( 'wp_ajax_nopriv_ajax', array( $this, 'process_ajax' ) );
 			add_action( 'wp_ajax_ajax', array( $this, 'process_ajax' ) );
-
-			// Hook the login into the footer
-			add_action( 'wp_footer', array( $this, 'add_login_form' ) );
 
 		}
 
@@ -97,6 +93,7 @@
 		public function load_resources() {
 			wp_enqueue_style( 'make-login', MAKE_GIGYA_URL . '/css/login.css', null, MAKE_GIGYA_VERSION );
 			wp_enqueue_script( 'make-socialize', MAKE_GIGYA_URL . '/js/login.js', array( 'jquery' ), MAKE_GIGYA_VERSION, true );
+			wp_enqueue_script( 'make-isc-users', MAKE_GIGYA_URL . '/js/users.js', array( 'jquery' ), MAKE_GIGYA_VERSION, true );
 			wp_localize_script( 'make-socialize', 'make_gigya', array(
 				'ajax' => esc_url( admin_url( 'admin-ajax.php' ) ),
 				'loading' => 'Loading',
@@ -137,12 +134,13 @@
 
 				// Check if a user already exists, if not we'll create one.
 				if ( $users->posts ) {
+					update_post_meta( absint( $users->posts[0]->ID ), 'logged_in', true );
+					update_post_meta( absint( $users->posts[0]->ID ), 'last_login', time() );
 
-					$this->mmmm_cookies( '_mfugl', 'maker-faire-user-login', 43200 );
 					$results = array(
 						'loggedin' => true,
 						'message' => 'Login Successful!',
-						'user' => $users->posts,
+						'maker' => $users->posts[0]->ID,
 					);
 
 				// User didn't exist, let's make one.
@@ -195,15 +193,17 @@
 							'user' => absint( $maker_id ),
 						);
 					} else {
-						$this->mmmm_cookies( '_mfugl', 'maker-faire-user-login', 43200 );
 						$results = array(
 							'loggedin' => true,
 							'message'  => 'User account created and logged in!',
+							'maker'    => absint( $maker_id ),
 						);
 					}
 				}
 			} elseif ( isset( $_POST['request'] ) && $_POST['request'] == 'logout'  ) {
-				$this->mmmm_cookies( '_mfugl', '', false );
+
+				// Set the user as logged out.
+				update_post_meta( absint( $_COOKIE['_mfuid'] ), 'logged_in', false );
 
 				if ( $this->is_logged_in() ) {
 					$results = array(
@@ -227,34 +227,13 @@
 
 
 		/**
-		 * Set or remove cooookies! YAY!
-		 * @param  string   $name   The name of the cookie
-		 * @param  string   $value  The value?
-		 * @param  int/bool $expire Enter either the number of seconds you want to set the cookie or set it to false to remove it
-		 * @return A COOKIE!
-		 *
-		 * @since  SPRINT_NAME
-		 */
-		private function mmmm_cookies( $name, $value, $expire ) {
-			// Test if we are adding or removing a cookie
-			if ( ! $expire ) {
-				$expire = time() - 10000;
-			} else {
-				$expire = time() + absint( $expire );
-			}
-
-			setcookie( sanitize_title_with_dashes( $name ), sanitize_title_with_dashes( $value ), $expire, '/', 'vip.dev', false, true );
-		}
-
-
-		/**
 		 * Checks if a user is currently logged in.
 		 * @return boolean
 		 *
 		 * @since  SPRINT_NAME
 		 */
 		public function is_logged_in() {
-			if ( isset( $_COOKIE['_mfugl'] ) ) {
+			if ( isset( $_COOKIE['_mfugl'] ) && $_COOKIE['_mfugl'] === 'true' ) {
 				return true;
 			} else {
 				return false;

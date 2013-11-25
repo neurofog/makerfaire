@@ -46,6 +46,7 @@ class MAKER_FAIRE_FORM {
 				'sales'                 => 0,
 				'sales_details'         => 0,
 				'crowdsource_funding'	=> 0,
+				'solicit'				=> 0,
 				'cf_details'			=> 0,
 				'booth_size'            => 1,
 				'booth_size_details'    => 0,
@@ -940,12 +941,12 @@ class MAKER_FAIRE_FORM {
 			$cont = array(
 				'm_maker_email', 
 				// GIGYA OLD
-				// 'm_maker_gigyaid',
+				'm_maker_gigyaid',
 				'm_maker_photo', 
 				'm_maker_bio',
 				'presenter_email',
 				// GIGYA OLD
-				// 'presenter_gigyaid', 
+				'presenter_gigyaid', 
 				'presenter_bio',
 				'presenter_onsite_phone',
 				'presenter_org',
@@ -999,25 +1000,25 @@ class MAKER_FAIRE_FORM {
 						} );
 						
 						// GIGYA OLD
-						// mf_insert_add_maker_btn();
+						mf_insert_add_maker_btn();
 						
 						if( form_type == 'exhibit' ) {							
 							$( '#maker input[value="<?php echo esc_attr( isset( $data->maker ) ? $data->maker : 'One maker' ); ?>"]' ).click();
 						}
 						
 						// GIGYA OLD
-						// function mf_insert_add_maker_btn()
-						// {
-						// 	html = '<tr id="'+form_type+'-add-maker" class="mf-form-row add-maker add-maker-btn">'+
-						// 				'<td colspan="2">'+
-						// 					'<input type="button" value="+Add Maker" class="button button-primary button-large"> '+
-						// 					'<div style="float:right"><a href="edit.php?post_type=mf_form&page=isc_mm_list_makers" target="_blank">Lookup GIGYA ID</a></div>'+
-						// 				'</td>'+
-						// 			'</tr>';
+						function mf_insert_add_maker_btn()
+						{
+							html = '<tr id="'+form_type+'-add-maker" class="mf-form-row add-maker add-maker-btn">'+
+										'<td colspan="2">'+
+											'<input type="button" value="+Add Maker" class="button button-primary button-large"> '+
+											'<div style="float:right"><a href="edit.php?post_type=mf_form&page=isc_mm_list_makers" target="_blank">Lookup GIGYA ID</a></div>'+
+										'</td>'+
+									'</tr>';
 							
-						// 	$(html).insertAfter( $('#m_maker_bio, #presenter_previous') );
-						// 	$('.add-maker-btn .button').unbind('click').click(mf_add_maker);
-						// }
+							$(html).insertAfter( $('#m_maker_bio, #presenter_previous') );
+							$('.add-maker-btn .button').unbind('click').click(mf_add_maker);
+						}
 						
 						function mf_add_maker() {
 
@@ -1026,7 +1027,7 @@ class MAKER_FAIRE_FORM {
 									m_maker_name    : 'Add. Maker Name',
 									m_maker_email   : 'Add. Maker Email', 
 									// GIGYA OLD
-									// m_maker_gigyaid : 'Add. Maker Gigyaid',
+									m_maker_gigyaid : 'Add. Maker Gigyaid',
 									m_maker_bio     : 'Add. Maker Bio',
 									m_maker_twitter : 'Add. Maker Twitter',
 									m_maker_photo   : 'Add. Maker Photo URL'
@@ -1035,7 +1036,7 @@ class MAKER_FAIRE_FORM {
 									presenter_name     : 'Add. Presenter Name',
 									presenter_email    : 'Add. Presenter Email', 
 									// GIGYA OLD
-									// presenter_gigyaid  : 'Add. Presenter Gigyaid',
+									presenter_gigyaid  : 'Add. Presenter Gigyaid',
 									presenter_bio      : 'Add. Presenter Bio',
 									presenter_org      : 'Add. Presenter Organization',
 									presenter_title    : 'Add. Presenter Title',
@@ -1240,14 +1241,14 @@ class MAKER_FAIRE_FORM {
 				'm_maker_name'   => array(
 					'm_maker_email', 
 					// GIGYA OLD
-					// 'm_maker_gigyaid', 
+					'm_maker_gigyaid', 
 					'm_maker_photo',
 					'm_maker_twitter', 
 					'm_maker_bio',
 				),
 				'presenter_name' => array(
 					// GIGYA OLD
-					// 'presenter_gigyaid',
+					'presenter_gigyaid',
 					'presenter_bio',
 					'presenter_photo',
 					'presenter_email',					 
@@ -1271,8 +1272,8 @@ class MAKER_FAIRE_FORM {
 				}
 
 				// GIGYA OLD
-				// if ( ( $fn == 'm_maker_gigyaid' || $fn == 'presenter_gigyaid' ) && $data == '' && isset( $all_data['uid'] ) )
-				// 	$data = $all_data['uid']; ?>
+				if ( ( $fn == 'm_maker_gigyaid' || $fn == 'presenter_gigyaid' ) && $data == '' && isset( $all_data['uid'] ) )
+					$data = $all_data['uid']; ?>
 
 				<tr class="mf-form-row <?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $fn ); ?>">
 					<td valign="top"><?php echo esc_html( ucwords( str_replace( '_', ' ', $fn ) ) ); ?>:</td>
@@ -1361,7 +1362,7 @@ class MAKER_FAIRE_FORM {
 		if ( get_post_type( $id ) != 'mf_form' )
 			return false;
 
-		if ( empty( $_POST ) || ( ! isset( $_POST['mf_form'], $_POST['form_type'] ) && isset( $this->fields[ $_POST['form_type'] ] ) ) || isset( $_POST['mf_updated'] ) )
+		if ( empty( $_POST ) || ( ! isset( $_POST['mf_form'] ) && isset( $_POST['form_type'] ) && isset( $this->fields[ $_POST['form_type'] ] ) ) || isset( $_POST['mf_updated'] ) )
 			return false;
 
 		// Set some variables yo.
