@@ -56,6 +56,7 @@ function makerfaire_loggedin( maker ) {
 			// Add our maker name to the page.
 			jQuery( '.maker-name' ).html( maker.profile.firstName + ' ' + maker.profile.lastName );
 
+
 			// Return the forms that belong to the current maker
 			jQuery.post( make_gigya.ajax, {
 				action: 'mfform_getforms', uid:maker.UID, e:maker.profile.email
@@ -81,6 +82,10 @@ function makerfaire_loggedin( maker ) {
 						jQuery( '#' + i + ' ul' ).append( append );
 					}
 				}
+
+				// Remove the loading notifications
+				jQuery( 'div.loading' ).remove();
+				
 			}, 'json' );
 		}
 	}

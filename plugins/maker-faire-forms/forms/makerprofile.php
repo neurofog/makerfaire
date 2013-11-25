@@ -16,16 +16,19 @@
 
     <div id="exhibit">
         <h3 style="font-size:13px"><strong>EXHIBIT APPLICATIONS</strong></h3>
+        <div class="loading"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/ajax-loader.gif" alt=""> Loading Applications...</div>
         <ul></ul>
     </div>
 	
     <div id="presenter">
         <h3 style="font-size:13px"><strong>PRESENTER APPLICATIONS</strong></h3>
+        <div class="loading"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/ajax-loader.gif" alt=""> Loading Applications...</div>
         <ul></ul>
     </div>
     
     <div id="performer">
         <h3 style="font-size:13px"><strong>PERFORMER APPLICATIONS</strong></h3>
+        <div class="loading"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/ajax-loader.gif" alt=""> Loading Applications...</div>
         <ul></ul>
     </div>
     
