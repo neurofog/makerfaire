@@ -86,7 +86,7 @@
 
 		/**
 		 * Let's add all of our resouces to make our magic happen.
-		 * Any scripts, we should include in the footer or else things will conflict due to how we have to load the socialize API file... #facepalm
+		 * Any scripts we should include in the footer or else things will conflict due to how we have to load the socialize API file... #facepalm
 		 *
 		 * @since  SPRINT_NAME
 		 */
@@ -105,6 +105,7 @@
 
 		/**
 		 * Process' our login to Gigya. This method will take the info from the socialize plugin and pass it through to either login or create a new user
+		 * These users are created and managed through the Makers CPT.
 		 * @return json
 		 *
 		 * @since  SPRINT_NAME
@@ -113,7 +114,6 @@
 			
 			// Check our nonce and make sure it's correct
 			check_ajax_referer( 'ajax-nonce', 'nonce' );
-
 			
 			// Login das user!
 			if ( isset( $_POST['request'] ) && $_POST['request'] == 'login'  ) {
@@ -121,15 +121,15 @@
 				// Hold onto the submission data
 				$data = array();
 
-				// Pass our User Info
+				// Pass our User Info sent from Gigya
 				$user = $_POST['object']['profile'];
 
+				// Query our makers list and see if a maker exists
 				$query_params = array(
 					'post_type' => 'maker',
 					'meta_key' => 'guid',
 					'meta_value' => sanitize_text_field( $_POST['object']['UID'] ),
 				);
-
 				$users = new WP_Query( $query_params );
 
 				// Check if a user already exists, if not we'll create one.
