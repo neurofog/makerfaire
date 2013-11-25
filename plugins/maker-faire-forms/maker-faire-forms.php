@@ -15,16 +15,6 @@ License:  GPL2
 class MAKER_FAIRE_FORM {
 
 	/* 
-	* GIGYA API KEY - GIGYA OLD
-	* =====================================================================*/
-	// const GIGYA_API_KEY    = '3_nUMOBEBpLoLnfNUbwAo9FCwTqzd6vTjpVt3Ojd807EIT5IcF94eM9hoV8vcqjoe8';
-	
-	/* 
-	* GIGYA API SECRET - GIGYA OLD
-	* =====================================================================*/
-	// const GIGYA_SECRET_KEY = 'GlvZcbxIY6Oy7lnWJheh56DXj3wKAiG3yVqhv++VLZM=';
-
-	/* 
 	* All Form Keys with 1/0 for Required Field
 	* =====================================================================*/
 	var $fields = array(
@@ -70,7 +60,7 @@ class MAKER_FAIRE_FORM {
 				'fire'                  => 0,
 				'hands_on'              => 0,
 				'safety_details'        => 0,
-				),
+			),
 			's2' => array(
 				'email'               => 1,
 				'name'                => 1,
@@ -109,7 +99,7 @@ class MAKER_FAIRE_FORM {
 				'private_state'       => 0,
 				'private_zip'         => 0,
 				'private_country'     => 1
-				),
+			),
 			's3' => array(
 				'supporting_documents' => 0,
 				'references'           => 0,
@@ -117,7 +107,7 @@ class MAKER_FAIRE_FORM {
 				'hear_about'           => 0,
 				'first_time'           => 0,
 				'anything_else'        => 0,
-			)
+			),
 		),
 		'performer' => array(
 			's1' => array(
@@ -159,7 +149,7 @@ class MAKER_FAIRE_FORM {
 				'exhibit'          => 0,
 				'promotion'        => 0,
 				'additional_info'  => 0,
-			)
+			),
 		),
 		'presenter' => array(
 			's1' => array(
@@ -209,7 +199,7 @@ class MAKER_FAIRE_FORM {
 				'exhibit'          => 0,
 				'promotion'        => 0,
 				'additional_info'  => 0,
-			)
+			),
 		),
 		'makerprofile' => array()
 	);
@@ -495,7 +485,6 @@ class MAKER_FAIRE_FORM {
 	* @access public
 	* =====================================================================*/
 	public function add_menus() {
-		add_submenu_page( 'edit.php?post_type=mf_form', 'Add Maker', 'Add Maker', 'edit_others_posts', 'isc_mm_add_maker', array( &$this, 'show_add_maker_page' ) );
 		// GIGYA OLD
 		// add_submenu_page( 'edit.php?post_type=mf_form', 'List Makers', 'List Makers', 'edit_others_posts', 'isc_mm_list_makers', array( &$this, 'show_list_makers_page' ) );
 		add_submenu_page( 'edit.php?post_type=mf_form', 'Project Images', 'Project Images', 'edit_others_posts', 'mf_project_images', array( &$this, 'show_project_images' ) );
@@ -2416,7 +2405,6 @@ class MAKER_FAIRE_FORM {
 		wp_enqueue_script( 'mff_js',             plugins_url( 'assets/js/mff.js', __FILE__ ) );
 		wp_enqueue_script( 'mff_jquery_form_js', plugins_url( 'assets/js/jquery.form.js', __FILE__ ) );
 		// GIGYA OLD
-		// wp_enqueue_script( 'mff_gigya',          'http://cdn.gigya.com/JS/socialize.js?apikey='.self::GIGYA_API_KEY );
 		// wp_enqueue_script( 'mff_gigya_login',    plugins_url( 'assets/js/gigya-login.js', __FILE__ ) );
 
 		wp_enqueue_style( 'mff_css', plugins_url( 'assets/css/style.css', __FILE__ ) );
@@ -2438,227 +2426,8 @@ class MAKER_FAIRE_FORM {
 
 		wp_enqueue_style( 'mff_css', plugins_url( 'assets/css/style.css', __FILE__ ) );
 	}
-
-	/* 
-	* Searches and retrieves data from Gigya's Accounts Storage using an SQL-like query.
-	*
-	* @access public
-	* @param string $query An associative array of key/value to search
-	* @return array An array users or empty array
-	* GIGYA OLD
-	* =====================================================================*/
-	public function gigya_search_users( $query = '' ) {
-		// include the gigya php sdk
-		require_once ( __DIR__ . '/inc/GSSDK.php' );
-		require_once ( __DIR__ . '/inc/GSSDK-WP.php' );
-
-		$request = new GSRequestWP( self::GIGYA_API_KEY, self::GIGYA_SECRET_KEY, 'accounts.search' );
-		$request->setParam( 'query', "{$query}" );
-		$response = $request->send();
-
-		$response_array = array();
-		$users = array();
-		$user_count = 0;
-
-		if ( $response->getErrorCode() == 0 ) {
-			$response_array = json_decode( $response->getResponseText(), true );
-			$user_count = isset( $response_array['totalCount'] ) ? $response_array['totalCount'] : 0;
-			$users = isset( $response_array['results'] ) ? $response_array['results'] : array();
-		} else {
-			//error_log( $response->getLog() );
-			return array();
-		}
-
-		return $users;
-	}
-	/* 
-	* Provides a form to create new GIGYA users
-	*
-	* @access public
-	* GIGYA OLD
-	* =====================================================================*/
-	public function show_add_maker_page() {
-
-		require_once ( __DIR__ . '/inc/GSSDK.php' );
-		require_once ( __DIR__ . '/inc/GSSDK-WP.php' );
-
-		$message = '';
-
-		if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
-
-			if ( ! isset( $_POST['isc_mm_addmaker_nonce'] ) || ! check_admin_referer( 'isc_mm_addmaker_action', 'isc_mm_addmaker_nonce' ) ) {
-				return;
-			} else {
-				$maker_user = array();
-				$defaults = array( 'firstname', 'lastname', 'email', 'bio', 'photourl', 'twitterhandle', 'websiteurl' );
-				foreach ( $defaults as $k ) {
-					if ( isset( $_POST["maker{$k}"] ) && ! empty( $_POST["maker{$k}"] ) ) {
-						$maker_user[$k] = $_POST["maker{$k}"];
-					}
-				}
-
-				// create nickname based on concatenating firstname and lastname per gigya specs
-				$maker_user['nickname'] = $maker_user['firstname'].' '.$maker_user['lastname'];
-
-
-				// if there isn't a valid email its hopelessly not gonna work
-				if ( isset( $maker_user['email'] ) && is_email( $maker_user['email'] ) ) {
-
-
-					// if there is no photourl set then use the gravatar generated image
-					if ( ! isset( $maker_user['photourl'] ) )
-						$maker_user['photourl'] = 'http://www.gravatar.com/avatar/' . md5( strtolower( $maker_user['email'] ) );
-
-
-					$profileObject = array(
-						'firstName'  => $maker_user['firstname'],
-						'lastName'   => $maker_user['lastname'],
-						'email'      => $maker_user['email'],
-						//'photoURL'   => $maker_user['photourl'],
-						//'profileURL' => $maker_user['websiteurl'],
-					);
-
-					$dataObject = array(
-						'bio'           => stripslashes( $maker_user['bio'] ),
-						//'twitterhandle' => $maker_user['twitterhandle'],
-					);
-
-					// get the regToken needed to make the actual registration request
-					$request = new GSRequestWP( self::GIGYA_API_KEY, self::GIGYA_SECRET_KEY, 'accounts.initRegistration' );
-					$response = $request->send();
-
-					$response_array = array();
-					$regToken = false;
-					if ( $response->getErrorCode() == 0 ) {
-						$response_array = json_decode( $response->getResponseText(), true );
-						$regToken = isset( $response_array['regToken'] ) ? $response_array['regToken'] : false;
-					}
-
-					// got the regToken so lets register
-					if ( $regToken !== false ) {
-						$request = new GSRequestWP( self::GIGYA_API_KEY, self::GIGYA_SECRET_KEY, 'accounts.register', null, true );
-						$request->setCAFile( __DIR__ . '/inc/cacert.pem' );
-						$request->setParam( 'email', $maker_user['email'] );
-						$request->setParam( 'finalizeRegistration', true );
-						$request->setParam( 'password', 'M@ker'.'F@ire'.'2013' );
-						$request->setParam( 'regToken', $regToken );
-						$request->setParam( 'profile', json_encode( $profileObject ) );
-						$request->setParam( 'data', json_encode( $dataObject ) );
-
-						$response       = $request->send();
-						$response_array = json_decode( $response->getResponseText(), true );
-						
-						if ( $response->getErrorCode() == 0 ) {
-							$message = '<div class="updated below-h2" id="message"><p>Maker Added</p></div>';
-						} elseif ( $response->getErrorCode() == 206002 ) {
-							$message = '<div class="updated below-h2" id="message"><p>Account Pending Verification</p></div>';
-						} else {
-							$message = '<div class="error below-h2" id="message"><p>'.esc_html( $resposne->getErrorMessage() ).'</p></div>';
-						}
-					}
-				} else {
-					$message = '<div class="error below-h2" id="message"><p>Valid Email Only.</p></div>';
-				}
-			}
-		}
-
-		?>
-		<div class="wrap" id="iscic"><?php screen_icon();?>
-			<h2>Add Maker</h2>
-			<?php echo $message; ?>
-			<div id="poststuff">
-				<div id="post-body" class="metabox-holder">
-					<div class="postbox " id="mf_addamaker" style="display: block;">
-						<h3 class="hndle"><span>Add a Maker</span></h3>
-						<div class="inside">
-							<form id="iscmmaddmaker" method="post" action="">
-								<table style="width:100%">
-									<tbody>
-										<tr>
-											<td valign="top" style="width:150px;"><label for="makerfirstname"><strong>First Name</strong></label></td>
-											<td><input style="width:100%;" name="makerfirstname" id="makerfirstname" type="text" value="<?php echo esc_attr( isset( $maker_user['firstname'] ) ? $maker_user['firstname'] : '' ); ?>" /></td>
-										</tr>
-										<tr>
-											<td valign="top" style="width:150px;"><label for="makerlastname"><strong>Last Name</strong></label></td>
-											<td><input style="width:100%;" name="makerlastname" id="makerlastname" type="text" value="<?php echo esc_attr( isset( $maker_user['lastname'] ) ? $maker_user['lastname'] : '' ); ?>" /></td>
-										</tr>
-										<tr>
-											<td valign="top" style="width:150px;"><label for="makeremail"><strong>Email</strong></label></td>
-											<td><input style="width:100%;" name="makeremail" id="makeremail" type="text" value="<?php echo esc_attr( isset( $maker_user['email'] ) ? $maker_user['email'] : '' ); ?>" /></td>
-										</tr>
-										<tr>
-											<td valign="top" style="width:150px;"><label for="makerbio"><strong>Bio</strong></label></td>
-											<td><textarea style="width:100%;"  name="makerbio" id="makerbio" cols="50" rows="3"><?php echo esc_textarea( isset( $maker_user['bio'] ) ? stripslashes( $maker_user['bio']) : '' ); ?></textarea></td>
-										</tr>
-									</tbody>
-								</table>
-								<p class="submit"><input type="submit" id="isc_mm_addmaker_now" name="isc_mm_addmaker_now" value="Create Maker Now" class="button button-primary button-large" /></p>
-								<?php wp_nonce_field( 'isc_mm_addmaker_action', 'isc_mm_addmaker_nonce' ); ?>
-							</form>
-						</div><!--inside-->
-					</div><!--postbox-->
-				</div><!--post-body-->
-			</div><!--poststuff-->
-		</div><!--wrap-->
-		<?php
-	}
-	/* 
-	* List all makers in a table
-	*
-	* @access public
-	* GIGYA OLD
-	* =====================================================================*/
-	public function show_list_makers_page() {
 	
-		$makers = $this->gigya_search_users( 'select UID, profile.firstName, profile.lastName, profile.email, created from accounts order by created limit 800' );
 
-		$makers_list = array();
-		foreach ( $makers as $maker ) {
-			$makers_list[] = $maker;
-		}
-
-		?>
-		<div class="wrap" id="iscic"><?php screen_icon();?>
-		<h2>List Makers</h2>
-		<table cellspacing="0" class="wp-list-table widefat fixed posts">
-			<thead>
-				<tr>
-					<th class="manage-column ciscfirstname desc" id="iscfirstname" scope="col">First Name</th>
-					<th class="manage-column cisclastname desc" id="isclastname" scope="col">Last Name</th>
-					<th class="manage-column ciscemail desc" id="iscemail" scope="col">Email</th>
-					<th class="manage-column ciscuid desc" id="iscuid" scope="col">UID</th>
-					<th class="manage-column cisccreated desc" id="isccreated" scope="col">Created</th>
-				</tr>
-			</thead>
-			<tfoot>
-				<tr>
-					<th class="manage-column ciscfirstname desc" scope="col">First Name</th>
-					<th class="manage-column cisclastname desc" scope="col">Last Name</th>
-					<th class="manage-column ciscemail desc" scope="col">Email</th>
-					<th class="manage-column ciscuid desc" scope="col">UID</th>
-					<th class="manage-column cisccreated desc" scope="col">Created</th>
-				</tr>
-			</tfoot>
-			<tbody id="the-list">
-				<?php
-					foreach ( $makers_list as $x => $m ) {		
-						$c = ( ( $x + 1 ) % 2) == 0 ? 'alternate' : '';
-						?>
-						<tr class="<?php echo esc_attr( $c ); ?>" id="<?php echo esc_attr( 'maker-'.$x ); ?>" valign="top">
-							<td class="iscc ciscfirstname"><?php echo esc_html( $m['profile']['firstName'] ); ?></td>
-							<td class="iscc cisclastname"><?php echo esc_html( $m['profile']['lastName'] ); ?></td>
-							<td class="iscc ciscemail"><?php echo esc_html( $m['profile']['email'] ); ?></td>
-							<td class="iscc ciscuid"><code><?php echo esc_html( $m['UID'] ); ?></code></td>
-							<td class="iscc cisccreated date"><?php echo esc_html( $m['created'] ); ?><br /></td>
-						</tr>
-						<?php
-					}
-				?>
-			</tbody>
-		</table>
-		</div><!--wrap-->
-		<?php
-	}
 	/*
 	* Output list of project images
 	*
