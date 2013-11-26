@@ -28,14 +28,6 @@ function makerfaire_loggedin( maker ) {
 		
 		// Use jQuery to add some user info stuff on the forms
 		if ( path.indexOf( 'exhibit' ) >= 0 || path.indexOf( 'presenter' ) >= 0 || path.indexOf( 'performer' ) >= 0 ) {
-
-			if ( jQuery( '.mf-form #id' ).val() !== 0 && jQuery( '.mf-form #uid' ).val() !== maker.UID ) {
-				
-				if ( gigya_debug )
-					console.log( make_gigya.root_path + jQuery( '.mf-form #form_type' ).val() + 'form' );
-
-					document.location = '/' + jQuery( '.mf-form  #form_type' ).val() + 'form';
-			}
 		
 			if ( jQuery( 'input.default-name' ).val() === '' ) {
 				jQuery( 'input.default-name' ).val( maker.profile.firstName + ' ' + maker.profile.lastName );
@@ -60,32 +52,69 @@ function makerfaire_loggedin( maker ) {
 			// Return the forms that belong to the current maker
 			jQuery.post( make_gigya.ajax, {
 				action: 'mfform_getforms', uid:maker.UID, e:maker.profile.email
-			}, function( r ) {
+			}, function( results ) {
 
 				// Check if we are on a certain date or have passed
 				var now = new Date();
-				var end_date = new Date( '2014-08-04' ); // Set the end date here - YYYY-MM-DD
+				var expire_date = new Date( '2013-10-04' ); // Set a date that applications older or equal to this will be considered previous faire.
+				var end_date = new Date( '2014-04-18' ); // Set the date that call to makers closes.
+				
+				for ( var type in results.forms ) {
+					for ( var app_id in results.forms[ type ] ) {
+						var app_date = Date.parse( results.forms[ type ][ app_id ]['post_date'] );
+						var faire = jQuery.parseJSON( results.forms[ type ][ app_id ]['post_content'] ).maker_faire;
 
-				for ( var i in r.forms ) {
-					for ( var j in r.forms[ i ] ) {
-
-						// Check if the date right now is before our end date, 'August 4th, 2013', or else close the forms
-						if ( now.getTime() < end_date.getTime() ) {
-							append = '<li><a href="/' + i + 'form/?id=' + j + '">' + j + ' - ' + r.forms[ i ][ j ]['post_title'] + ' (' + r.forms[ i ][ j ]['post_status'] + ')</a></li>';
-						} else {
-							append = '<li>' + j + ' - ' + r.forms[ i ][ j ]['post_title'] + ' (' + r.forms[ i ][ j ]['post_status'] + ')</li>';
+						if ( faire === '2013_newyork' ) {
+							faire = 'New York 2013';
+						} else if ( faire === '2013_bayarea' ) {
+							faire = 'Bay Area 2013';
 						}
 
-						if ( r.forms[ i ][ j ]['post_status'] == 'in-progress' )
-							append = '<li><a href="/' + i + 'form/?id=' + j + '">' + j + ' - ' + r.forms[ i ][ j ]['post_title'] + ' (' + r.forms[ i ][ j ]['post_status'] + ')</a></li>';
+						// Check if the date right now is after our end date, 'August 4th, 2013', or else close the forms
+						if ( app_date >= Date.parse( expire_date ) ) {
+							if ( now.getTime() < end_date.getTime() && ( results.forms[ type ][ app_id ]['post_status'] === 'in-progress' || results.forms[ type ] === 'presenter' ) ) {
+								append = '<li><a href="' + make_gigya.root_path + type + 'form/?id=' + app_id + '">' +  app_id + ' - ' + results.forms[ type ][ app_id ]['post_title'] + ' (' + results.forms[ type ][ app_id ]['post_status'] + ')</a></li>';
+							} else {
+								append = '<li>' + app_id + ' - ' + results.forms[ type ][ app_id ]['post_title'] + ' (' + results.forms[ type ][ app_id ]['post_status'] + ')</li>';
+							}
+							jQuery( '#current-faire' ).find( '#' + type + ' ul' ).append( append );
+						} else {
+							previous_append = '<li>' + app_id + ' - ' + results.forms[ type ][ app_id ]['post_title'] + ' (' + results.forms[ type ][ app_id ]['post_status'] + ') - ' + faire + ' - <a href="#">Resubmit Application</a></li>';
+							jQuery( '#previous-faire' ).find( '#' + type + ' ul' ).append( previous_append );
+						}
+						// if ( now.getTime() < end_date.getTime() ) {
+						// 	append = '<li><a href="/' + i + 'form/?id=' + j + '">' + j + ' - ' + r.forms[ i ][ j ]['post_title'] + ' (' + r.forms[ i ][ j ]['post_status'] + ')</a></li>';
+						// } else {
+						// 	append = '<li>' + j + ' - ' + r.forms[ i ][ j ]['post_title'] + ' (' + r.forms[ i ][ j ]['post_status'] + ') - <a href="#"></li>';
+						// }
 
-						jQuery( '#' + i + ' ul' ).append( append );
+						// if ( r.forms[ i ][ j ]['post_status'] == 'in-progress' )
+						// 	append = '<li><a href="/' + i + 'form/?id=' + j + '">' + j + ' - ' + r.forms[ i ][ j ]['post_title'] + ' (' + r.forms[ i ][ j ]['post_status'] + ')</a></li>';
 					}
 				}
 
+
 				// Remove the loading notifications
 				jQuery( 'div.loading' ).remove();
-				
+
+				// Show the Current Faire box if there are any present
+				var has_current = jQuery( '#current-faire' ).find( 'ul li' ).length;
+
+				if ( has_current >= 1 ) {
+					jQuery( '#current-faire' ).show();
+				}
+
+				// Show the Previous Faires box if there are any present
+				var has_previous = jQuery( '#previous-faire' ).find( 'ul li' ).length;
+
+				if ( has_previous >= 1 ) {
+					jQuery( '#previous-faire' ).show();
+				}
+
+				if ( has_current === 0 && has_previous === 0 ) {
+					jQuery( '.no-applications' ).show();
+				}
+
 			}, 'json' );
 		}
 	}
