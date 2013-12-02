@@ -124,13 +124,22 @@
 				// Pass our User Info sent from Gigya
 				$user = $_POST['object']['profile'];
 
-				// Query our makers list and see if a maker exists
-				$query_params = array(
-					'post_type' => 'maker',
-					'meta_key' => 'guid',
-					'meta_value' => sanitize_text_field( $_POST['object']['UID'] ),
-				);
-				$users = new WP_Query( $query_params );
+				// Check if our users are already cached
+				$users = wp_cache_get( 'maker_faire_users' );
+
+				// If there is no cache set, we'll run the query again and cache it.
+				if ( $users == false ) {
+					// Query our makers list and see if a maker exists
+					$query_params = array(
+						'post_type' => 'maker',
+						'meta_key' => 'guid',
+						'meta_value' => sanitize_text_field( $_POST['object']['UID'] ),
+					);
+					$users = new WP_Query( $query_params );
+
+					// Save the results to the cache
+					wp_cache_set( 'maker_faire_users', $users, '', 300 ); // Cache the object for 5 minutes.
+				}
 
 				// Check if a user already exists, if not we'll create one.
 				if ( $users->posts ) {
