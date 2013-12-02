@@ -1,11 +1,11 @@
 /**
  * This script contains all the JavaScript that controls or interfaces with the socialize features of Gigya (AKA Facebook, Twitter, etc etc logins)
  *
- * @since  SPRINT_NAME
+ * @since  HAL 9000
  */
 
 // Set debugging mode.
-var gigya_debug = true;
+var gigya_debug = false;
 
 jQuery(document).ready(function($) {
 
@@ -45,7 +45,7 @@ jQuery(document).ready(function($) {
  * This method allows setting event handlers for each of the supported global events.
  * @url http://developers.gigya.com/020_Client_API/020_Accounts/accounts.addEventHandlers
  *
- * @since  SPRINT_NAME
+ * @since  HAL 9000
  */
 gigya.accounts.addEventHandlers({ // 
 	onLogin: on_login,
@@ -60,7 +60,7 @@ gigya.accounts.addEventHandlers({ //
  * NOTE: It is important to use the REST API for logging in or registering users http://developers.gigya.com/037_API_reference/010_Socialize
  * 
  * @param  object eventObj The event object?
- * @since  SPRINT_NAME
+ * @since  HAL 9000
  */
 function on_login( eventObj ) {
 	if ( gigya_debug )
@@ -89,8 +89,6 @@ function on_login( eventObj ) {
 			var date_login = new Date();
 			var date_id = new Date();
 			date_login.setTime( date_login.getTime() + ( 1 * 24 * 60 * 60 * 1000 ) );
-			date_id.setTime( date_id.getTime() + ( 1 * 24 * 60 * 60 * 100000 ) );
-			document.cookie = '_mfuid=' + results.maker + '; expires=' + date_id.toGMTString() + '; path=/';
 			document.cookie = '_mfugl=true; expires=' + date_login.toGMTString() + '; path=/';
 
 			// Check that everything went well
@@ -111,18 +109,6 @@ function on_login( eventObj ) {
     });
 }
 
-/**
- * Creates an encoded URI to pass to notifyRegistration
- * @param  string  UID       The User ID that should be used for login verification
- * @param  integer timestamp The GMT time of the response in UNIX time format. The time stamp should be used for login verification
- * 
- * @since  SPRINT_NAME
- */
-function createSignature( UID, timestamp ) {
-	encodedUID = encodeURIComponent( UID ); // Encode the UID parameter before sending it to the server. On server side use decodeURIComponent() function to decode an encoded UID
-
-    return '';
-}
 
 /**
  * Verifies the signature of the login.
@@ -131,7 +117,7 @@ function createSignature( UID, timestamp ) {
  * @param  string  UID       The User ID that should be used for login verification
  * @param  integer timestamp The GMT time of the response in UNIX time format. The time stamp should be used for login verification
  * @param  string  signature The signature that should be used for login verification
- * @since  SPRINT_NAME
+ * @since  HAL 9000
  */
 function verify_signature( UID, timestamp, signature ) {
 	encodedUID = encodeURIComponent( UID ) ; // encode the UID parameter before sending it to the server. On server side use decodeURIComponent() function to decode an encoded UID
@@ -144,8 +130,7 @@ function verify_signature( UID, timestamp, signature ) {
 /**
  * onLogout Event handler
  * 
- * @param  {[type]} eventObj [description]
- * @since SPRINT_NAME
+ * @since HAL 9000
  */
 function on_logout() {
 	if ( gigya_debug )
@@ -190,4 +175,3 @@ function on_logout() {
 		}
     });
 }
-

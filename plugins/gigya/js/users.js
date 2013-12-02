@@ -17,7 +17,7 @@ jQuery(function($) {
  * @param  object maker The object returned by gigya.accounts.getAccountInfo()
  * @return mixed
  *
- * @since  SPRINT_NAME
+ * @since  HAL 9000
  */
 function makerfaire_loggedin( maker ) {
 
