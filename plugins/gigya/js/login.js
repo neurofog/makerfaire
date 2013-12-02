@@ -87,7 +87,6 @@ function on_login( eventObj ) {
 
 			// Set the Maker ID into a cookie.
 			var date_login = new Date();
-			var date_id = new Date();
 			date_login.setTime( date_login.getTime() + ( 1 * 24 * 60 * 60 * 1000 ) );
 			document.cookie = '_mfugl=true; expires=' + date_login.toGMTString() + '; path=/';
 
@@ -154,7 +153,6 @@ function on_logout() {
 			// Remove our cookie
 			var date = new Date();
 			date.setTime( date.getTime() - ( 1 * 24 * 60 * 60 * 1000 ) );
-			document.cookie = '_mfuid=' + results.maker + '; expires=' + date.toGMTString() + '; path=/';
 			document.cookie = '_mfugl=true; expires=' + date.toGMTString() + '; path=/';
 
 			// Check that everything went well
