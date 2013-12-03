@@ -74,7 +74,7 @@ function makerfaire_loggedin( maker ) {
 
 							// Check if the date right now is after our end date, 'August 4th, 2013', or else close the forms
 							if ( app_date >= Date.parse( expire_date ) ) {
-								if ( now.getTime() < end_date.getTime() && ( results.forms[ type ][ app_id ]['post_status'] === 'in-progress' || results.forms[ type ] === 'presenter' ) ) {
+								if ( now.getTime() < end_date.getTime() && ( results.forms[ type ][ app_id ]['post_status'] === 'in-progress' || results.forms[ type ][ app_id ]['post_status'] === 'proposed' || results.forms[ type ] === 'presenter' ) ) {
 									append = '<li><a href="' + make_gigya.root_path + type + 'form/?id=' + app_id + '">' +  app_id + ' - ' + results.forms[ type ][ app_id ]['post_title'] + ' (' + results.forms[ type ][ app_id ]['post_status'] + ')</a></li>';
 								} else {
 									append = '<li>' + app_id + ' - ' + results.forms[ type ][ app_id ]['post_title'] + ' (' + results.forms[ type ][ app_id ]['post_status'] + ')</li>';
