@@ -31,8 +31,8 @@ function make_gigya_init_settings() {
 	) );
 
 	// Now we need to register our settings
-	register_setting( 'general', 'make_gigya_public_key' );
-	register_setting( 'general', 'make_gigya_private_key' );
+	register_setting( 'general', 'make_gigya_public_key', 'make_gigya_sanitize_input' );
+	register_setting( 'general', 'make_gigya_private_key', 'make_gigya_sanitize_input' );
 }
 add_action( 'admin_init', 'make_gigya_init_settings' );
 
@@ -63,3 +63,15 @@ function make_gigya_text_field( $args ) {
 }
 
 
+/**
+ * Sanitizes user input in the gigya public and private keys
+ * @param  string $input The value passed through the form
+ * @return string
+ *
+ * @since  HAL 9000
+ */
+function make_gigya_sanitize_input( $input ) {
+	$input = sanitize_text_field( $input );
+
+	return $input;
+}
