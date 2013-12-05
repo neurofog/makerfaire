@@ -85,7 +85,7 @@ function maker_user_data_mb( $post ) {
 			// Hide the WP _edit_lock meta field
 			if ( $key != '_edit_lock' ) {
 				$output  = '<p><label for="' . esc_attr( $key ) . '" style="width:100px;display:inline-block">' . strtoupper( str_replace( '_', ' ', esc_html( $key ) ) ) . '</label>';
-				$output .= '<input type="text" name="user_data[' . esc_attr( $key ) . ']" id="' . esc_attr( $key ) . '" value="' . ( ! empty( $value[0] ) ? sanitize_text_field( $value[0] ) : '' ) . '"' . $mfei . ' style="width:100%;" /></p>';
+				$output .= '<input type="text" name="user_data[' . esc_attr( $key ) . ']" id="' . esc_attr( $key ) . '" value="' . ( ! empty( $value[0] ) ? esc_attr( $value[0] ) : '' ) . '"' . $mfei . ' style="width:100%;" /></p>';
 
 				echo $output;
 			}
