@@ -114,7 +114,7 @@ class MAKER_FAIRE_FORM {
 					'references'           => 0,
 					'referrals'            => 0,
 					'hear_about'           => 0,
-					'first_time'           => 0,
+					'first_time'           => 1,
 					'anything_else'        => 0,
 				)
 			),
