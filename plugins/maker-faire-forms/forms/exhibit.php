@@ -1,3 +1,4 @@
+<div class="wrapper hide">
 <script>
 	
 	// Count how many presenters we have listed
@@ -615,3 +616,4 @@
 <!--[if lt IE 9]>
 	</div>
 <![endif]-->
+</div>

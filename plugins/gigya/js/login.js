@@ -167,6 +167,9 @@ function make_is_logged_in( maker ) {
 
 		// Add our login/register links
 		jQuery( '.main-nav' ).append( '<li class="user-creds login"><a href="#login">Login</a></li><li class="user-creds register"><a href="#register">Register</a></li>' );
+
+		if ( path.indexOf( 'exhibit' ) >= 0 || path.indexOf( 'presenter' ) >= 0 || path.indexOf( 'performer' ) >= 0 || path.indexOf( 'makerprofile' ) >= 0 )
+			jQuery( '.content' ).html( '<h2>You must be logged in to access this area</h2>' );
 	}
 }
 

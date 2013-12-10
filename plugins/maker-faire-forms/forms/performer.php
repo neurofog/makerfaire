@@ -1,3 +1,4 @@
+<div class="wrapper hide">
 <script>
 
 	jQuery(function($) 
@@ -257,3 +258,4 @@
 <!--[if lt IE 9]>
     </div>
 <![endif]-->
+</div>

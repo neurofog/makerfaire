@@ -19,7 +19,11 @@ function makerfaire_profile( maker ) {
 	
 	// Use jQuery to add some user info stuff on the forms
 	if ( path.indexOf( 'exhibit' ) >= 0 || path.indexOf( 'presenter' ) >= 0 || path.indexOf( 'performer' ) >= 0 ) {
-	
+
+		// Display the forms page
+		jQuery( '.wrapper.hide' ).removeClass( 'hide' ).fadeIn();
+
+		// The maker name when present
 		if ( jQuery( 'input.default-name' ).val() === '' ) {
 			jQuery( 'input.default-name' ).val( maker.profile.firstName + ' ' + maker.profile.lastName );
 			jQuery( 'input.default-email' ).val( maker.profile.email );
@@ -33,6 +37,10 @@ function makerfaire_profile( maker ) {
 			return 'Are you sure you want to leave?';
 		});
 	} else if ( path.indexOf( 'makerprofile' ) >= 0 ) {
+
+		// Show the content
+		jQuery( '.mf-editforms.hide' ).removeClass( 'hide' ).fadeIn();
+
 		if ( maker.profile.thumbnailURL !== undefined && maker.profile.thumbnailURL !== 'undefined' )
 			jQuery( '.maker-image' ).attr( 'src', maker.profile.thumbnailURL );
 

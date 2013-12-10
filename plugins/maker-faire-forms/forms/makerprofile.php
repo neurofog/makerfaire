@@ -1,4 +1,4 @@
-<div class="mf-editforms">
+<div class="mf-editforms hide">
     <div style="float:left; margin-right:10px;">
 	   <img class="maker-image" src="<?php echo esc_url(get_template_directory_uri().'/plugins/maker-faire-forms/assets/i/default-profile-image.jpg'); ?>" />
 	</div>
