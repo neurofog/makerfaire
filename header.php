@@ -64,7 +64,7 @@ Topbar
 			<span class="i-bar"></span>
 		</a>
 		<div class="nav-collapse">
-			<ul class="nav">
+			<ul class="nav main-nav">
 				<li class="red"><a  class="red" href="http://makezine.com">MAKE</a></li>
 				<li><a href="http://makezine.com/blog/">Blog</a></li>
 				<li><a href="http://makezine.com/magazine/">Magazine</a></li>
@@ -72,13 +72,6 @@ Topbar
 				<li><a href="http://makezine.com/projects/">Make: Projects</a></li>
 				<li><a href="http://makershed.com">Maker Shed</a></li>
 				<li><a href="http://kits.makezine.com">Kits</a></li>
-				<?php if ( ! make_is_logged_in() ) : ?>
-					<li class="user-creds login"><a href="#login">Login</a></li>
-					<li class="user-creds register"><a href="#register">Register</a></li>
-				<?php else : ?>
-					<li class="user-creds logout"><a href="#logout">Logout</a></li>
-					<li class="user-creds account"><a href="<?php echo esc_url( home_url( '/makerprofile' ) ); ?>">Profile</a></li>
-				<?php endif; ?>
 			</ul>
 			<ul class="nav pull-right">
 				<li>

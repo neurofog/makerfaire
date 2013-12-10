@@ -1,16 +1,21 @@
 /**
  * This script contains all the JavaScript that controls or interfaces with the socialize features of Gigya (AKA Facebook, Twitter, etc etc logins)
+ * To hit our deadline for Maker Faire Bay Area, we need to rely on the JavaScript SDK from Gigya.
+ * A server-side SDK is preferred, but a new spec and time is needed to be done to do so.
  *
  * @since  HAL 9000
  */
 
 // Set debugging mode.
-var gigya_debug = false;
+var gigya_debug = true;
 
-jQuery(document).ready(function($) {
+jQuery( document ).ready(function() {
+
+	// Return our makers information. If a session is not found, Gigya will report back with an error and handled in the callback.
+	gigya.accounts.getAccountInfo({ callback: make_is_logged_in });
 
 	// Listen for a click event to open the login screen
-	$( '.user-creds.login' ).on( 'click', function( e ) {
+	jQuery( document ).on( 'click', '.user-creds.login', function( e ) {
 		e.preventDefault();
 
 		gigya.accounts.showScreenSet({
@@ -20,7 +25,7 @@ jQuery(document).ready(function($) {
 	});
 
 	// Listen for a click event to open the register screen
-	$( '.user-creds.register' ).on( 'click', function( e ) {
+	jQuery( document ).on( 'click', '.user-creds.register', function( e ) {
 		e.preventDefault();
 
 		gigya.accounts.showScreenSet({
@@ -31,11 +36,15 @@ jQuery(document).ready(function($) {
 	});
 
 	// Listen for a click event to logout
-	$( '.user-creds.logout' ).on( 'click', function( e ) {
+	jQuery( document ).on( 'click', '.user-creds.logout', function( e ) {
 		e.preventDefault();
+
+		if ( gigya_debug )
+			console.log( 'Logout Started' );
 
 		gigya.accounts.logout();
 	});
+
 });
 
 
@@ -48,8 +57,8 @@ jQuery(document).ready(function($) {
  * @since  HAL 9000
  */
 gigya.accounts.addEventHandlers({ // 
-	onLogin: on_login,
-	onLogout: on_logout
+	onLogin: make_on_login,
+	onLogout: make_on_logout
 });
 
 
@@ -62,114 +71,155 @@ gigya.accounts.addEventHandlers({ //
  * @param  object eventObj The event object?
  * @since  HAL 9000
  */
-function on_login( eventObj ) {
+function make_on_login( eventObj ) {
 	if ( gigya_debug )
-		console.log( 'Logged in to ' + eventObj.provider + '!' );
+		console.log( 'Logged in to Gigya!' );
 
     // Verify the signature ...
-    verify_signature( eventObj.UID, eventObj.signatureTimestamp, eventObj.UIDSignature );
+    make_verify_signature( eventObj.signatureTimestamp, eventObj.UID, eventObj.UIDSignature );
 
-    // Send our data via Ajax to the server to verify if the user is a returning user or a new one
-    jQuery.ajax({
-		type: 'POST',
-		dataType: 'json',
-		url: make_gigya.ajax,
-		data: {
-			'action'   : 'ajax', // Calls our wp_ajax_nopriv_ajax
-			'request'  : 'login',
-			'object'   : eventObj,
-			'nonce'    : make_gigya.secure_it
-		},
-		success: function( results ) {
+    // Test that a request to login was valid.
+    // If so, we'll pass the maker info through ajax to sync
+    // with the local database of makers or create a new one.
+    if ( make_verify_signature ) {
 
-			if ( gigya_debug )
-				console.log( results.message );
+		// Send our data via Ajax to the server to verify if the user is a returning user or a new one and create their profile.
+		jQuery.ajax({
+			type: 'POST',
+			dataType: 'json',
+			url: make_gigya.ajax,
+			data: {
+				'action'   : 'make_ajax', // Calls our wp_ajax_nopriv_ajax or wp_ajax_ajax actions
+				'request'  : 'login',
+				'object'   : eventObj,
+				'nonce'    : make_gigya.secure_it
+			},
+			success: function( results ) {
+				if ( gigya_debug )
+					console.log( results.message );
 
-			// Set the Maker ID into a cookie.
-			var date_login = new Date();
-			date_login.setTime( date_login.getTime() + ( 1 * 24 * 60 * 60 * 1000 ) );
-			document.cookie = '_mfugl=true; expires=' + date_login.toGMTString() + '; path=/';
+				// Check that everything went well
+				if ( results.loggedin === true ) {
+					document.location = make_gigya.root_path + 'makerprofile';
+				} else {
+					// We may have logged into Gigya, but something happened on our end. Let's correct Gigya.
+					// gigya.accounts.logout();
 
-			// Check that everything went well
-			if ( results.loggedin === true )
-				document.location = make_gigya.root_path + 'makerprofile';
+					// alert( 'Something went wrong and we couldn\'t log you in. Please try again.' );
+				}
 
-		},
-		error: function( jqXHR, textStatus, errorThrown ) {
-			if ( gigya_debug ) {
-				console.log( textStatus );
-				console.log( errorThrown );
+			},
+			error: function( jqXHR, textStatus, errorThrown ) {
+				if ( gigya_debug ) {
+					console.log( 'ERROR' );
+					console.log( textStatus );
+					console.log( errorThrown );
+				}
+			},
+			complete: function( jqXHR, textStatus ) {
+				if ( gigya_debug )
+					console.log( 'Login Complete.' );
 			}
-		},
-		complete: function( jqXHR, textStatus ) {
-			if ( gigya_debug )
-				console.log( 'AJAX complete' );
-		}
-    });
-}
-
-
-/**
- * Verifies the signature of the login.
- * The actual signature calculation implementation should be on server side
- * 
- * @param  string  UID       The User ID that should be used for login verification
- * @param  integer timestamp The GMT time of the response in UNIX time format. The time stamp should be used for login verification
- * @param  string  signature The signature that should be used for login verification
- * @since  HAL 9000
- */
-function verify_signature( UID, timestamp, signature ) {
-	encodedUID = encodeURIComponent( UID ) ; // encode the UID parameter before sending it to the server. On server side use decodeURIComponent() function to decode an encoded UID
-
-	if ( gigya_debug )
-		console.log( 'UID: ' + UID + '\nTimestamp: ' + timestamp + '\nSignature: ' + signature + '\nYour UID encoded: ' + encodedUID );
+		});
+	} else {
+		alert( 'An error occured! Could not login. Please refresh and try again.' );
+	}
 }
 
 
 /**
  * onLogout Event handler
+ * After we have successfully logged out, we'll redirect to the homepage.
  * 
  * @since HAL 9000
  */
-function on_logout() {
+function make_on_logout() {
 	if ( gigya_debug )
 		console.log( 'User logged out' );
 
-	// Send our logout notification and pull our cookie
-    jQuery.ajax({
+	// Redirect back to the homepage
+	document.location = make_gigya.root_path;
+}
+
+
+/**
+ * Checks if gigya returned a user account and verifies the signature for additional security
+ * @param  object maker The object returned by gigya.accounts.getAccountInfo()
+ * @return mixed
+ *
+ * @since  HAL 9000
+ */
+function make_is_logged_in( maker ) {
+	if ( gigya_debug )
+		console.log( maker );
+
+	if ( maker.errorCode != 403005 ) {
+		if ( gigya_debug )
+			console.log( 'User Logged In.' );
+
+		jQuery( '.main-nav' ).append( '<li class="user-creds logout"><a href="#logout">Logout</a></li><li class="user-creds profile"><a href="' + make_gigya.root_path + 'makerprofile">Profile</a></li>' );
+
+		// Initialize our maker profile code
+		makerfaire_profile( maker );
+	} else {
+		if ( gigya_debug )
+			console.log( 'User Not Logged In.' );
+
+		// Add our login/register links
+		jQuery( '.main-nav' ).append( '<li class="user-creds login"><a href="#login">Login</a></li><li class="user-creds register"><a href="#register">Register</a></li>' );
+	}
+}
+
+
+/**
+ * Allows us to verify that a request is valid and is data sent only from Gigya
+ * @param  int 	  timestamp The signature timestamp. This is the time the signature was created. This is in the form of a UNIX timestamp.
+ * @param  string uid       The unique ID represented by the maker.
+ * @param  string signature A cryptographic signature, to prevent fraud.
+ * @return false
+ *
+ * @since  HAL 9000
+ */
+function make_verify_signature( timestamp, uid, signature ) {
+	if ( gigya_debug )
+		console.log( 'Verifying.' );
+
+	// Before we continue, we want to make sure that the signature is valid.
+	// The most secure way to do this is to pass it through the REST API.
+	// We'll ajax that over to our PHP SDK and return the results before proceeding.
+	jQuery.ajax({
 		type: 'POST',
 		dataType: 'json',
 		url: make_gigya.ajax,
 		data: {
-			'action'   : 'ajax', // Calls our wp_ajax_nopriv_ajax
-			'request'  : 'logout',
-			'nonce'    : make_gigya.secure_it
+			'action'    : 'make_ajax', // Calls our wp_ajax_nopriv_make_ajax or wp_ajax_make_ajax
+			'request'   : 'verify',
+			'timestamp' : timestamp,
+			'uid'		: uid,
+			'signature' : signature,
+			'nonce'     : make_gigya.secure_it
 		},
 		success: function( results ) {
-
 			if ( gigya_debug )
-				console.log( results.message );
+				console.log( 'Verified: ' + results.authenticated );
 
-			// Remove our cookie
-			var date = new Date();
-			date.setTime( date.getTime() - ( 1 * 24 * 60 * 60 * 1000 ) );
-			document.cookie = '_mfugl=true; expires=' + date.toGMTString() + '; path=/';
-
-			// Check that everything went well
-			if ( results.loggedin === false )
-				document.location = make_gigya.root_path;
+			return results.authenticated;
 
 		},
 		error: function( jqXHR, textStatus, errorThrown ) {
 			if ( gigya_debug ) {
-				console.log( 'AJAX ERROR' );
+				console.log('ERROR');
 				console.log( textStatus );
 				console.log( errorThrown );
 			}
+
+			return false;
 		},
 		complete: function( jqXHR, textStatus ) {
 			if ( gigya_debug )
-				console.log( 'AJAX complete' );
+				console.log( 'Verify Signature complete' );
 		}
-    });
+	});
+
+	return false;
 }

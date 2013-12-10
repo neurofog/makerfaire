@@ -49,15 +49,6 @@
 
 
 	/**
-	 * Load our helper functions
-	 *
-	 * @since  HAL 9000
-	 */
-	if ( ! defined( 'MAKE_HELPERS_SET' ) )
-		include_once( 'helpers/helpers.php' );
-
-
-	/**
 	 * The guts.
 	 *
 	 * This little guy controls and loads all that is Gigya.
@@ -87,8 +78,8 @@
 
 			// Process our ajax requests. We need ajax processing for both logged in and logged out users.
 			// Since our login may be used by users logged into WordPress, we'll need the second option to run ajax requests.
-			add_action( 'wp_ajax_nopriv_ajax', array( $this, 'process_ajax' ) );
-			add_action( 'wp_ajax_ajax', array( $this, 'process_ajax' ) );
+			add_action( 'wp_ajax_nopriv_make_ajax', array( $this, 'process_ajax' ) );
+			add_action( 'wp_ajax_make_ajax', array( $this, 'process_ajax' ) );
 
 		}
 
@@ -96,12 +87,14 @@
 		/**
 		 * Spits out the Gigya API for the socialize features.
 		 * Sadly, we have to manually echo this to wp_head() because Gigya requires the socialize.js API key to be passed with options wrapped in the same script tag... lame sauce.
+		 *
+		 * Well nly enable Facebook, Twitter and Google+ as social media providers, we'll also tell Gigya to end the users session with their service after 24 hours
 		 * 
 		 * @return html
 		 * @since  HAL 9000
 		 */
 		public function socialize_api() { ?>
-			<script src="http://cdn.gigya.com/JS/socialize.js?apikey=<?php echo MAKE_GIGYA_PUBLIC_KEY; ?>">{ enabledProviders: 'facebook,twitter,googleplus' }</script>
+			<script src="http://cdn.gigya.com/JS/socialize.js?apikey=<?php echo MAKE_GIGYA_PUBLIC_KEY; ?>">{ enabledProviders: 'facebook,twitter,googleplus', sessionExpiration: 86400 }</script>
 		<?php }
 		
 
@@ -141,7 +134,7 @@
 			check_ajax_referer( 'ajax-nonce', 'nonce' );
 			
 			// Login das user! Other wise, we are trying to register. (FWIW, the login features of Gigya will also register users)
-			if ( isset( $_POST['request'] ) && $_POST['request'] == 'login'  ) {
+			if ( isset( $_POST['request'] ) && $_POST['request'] == 'login' ) {
 
 				// Pass our User Info sent from Gigya
 				$user = ( is_array( $_POST['object']['profile'] ) ) ? $_POST['object']['profile'] : '';
@@ -230,17 +223,17 @@
 						);
 					}
 				}
-			} elseif ( isset( $_POST['request'] ) && $_POST['request'] == 'logout'  ) {
+			} elseif ( isset( $_POST['request'] ) && $_POST['request'] == 'verify' ) { // Verify our account is valid. This is a security measure to ensure the user 
+				// Validate the signature is authentic
+				$valid = SigUtils::validateUserSignature( sanitize_text_field( $_POST['uid'] ), absint( $_POST['timestamp'] ), MAKE_GIGYA_PRIVATE_KEY, sanitize_text_field( $_POST['signature'] ) );
 
-				if ( $this->is_logged_in() ) {
+				if ( $valid ) {
 					$results = array(
-						'loggedin' => false,
-						'message' => 'Successfully logged out!',
+						'authenticated' => true,
 					);
 				} else {
 					$results = array(
-						'loggedin' => true,
-						'message' => 'Something went wrong. Please try logging out again.',
+						'authenticated' => false,
 					);
 				}
 			} else {
@@ -250,21 +243,6 @@
 			// Return our results and handle them in the Ajax callback
 			echo json_encode( $results );
 			die();
-		}
-
-
-		/**
-		 * Checks if a user is currently logged in.
-		 * @return boolean
-		 *
-		 * @since  HAL 9000
-		 */
-		public function is_logged_in() {
-			if ( isset( $_COOKIE['_mfugl'] ) && $_COOKIE['_mfugl'] === 'true' ) {
-				return true;
-			} else {
-				return false;
-			}
 		}
 	}
 	$make_gigya = new Make_Gigya();
@@ -277,15 +255,15 @@
 	 * @param  string $content The body content set in the page editor
 	 * @return [type]          [description]
 	 */
-	function maker_faire_user_profile_login( $content ) {
-		global $make_gigya;
+	// function maker_faire_user_profile_login( $content ) {
+	// 	global $make_gigya;
 
-		if ( ! $make_gigya->is_logged_in() && has_shortcode( $content, 'mfform' ) ) {
-			$output = '<h2>Oops! You must be logged in to access this page!</h2>';
+	// 	if ( ! $make_gigya->is_logged_in() && has_shortcode( $content, 'mfform' ) ) {
+	// 		$output = '<h2>Oops! You must be logged in to access this page!</h2>';
 
-			return $output;
-		} else {
-			return $content;
-		}
-	}
-	add_filter( 'the_content', 'maker_faire_user_profile_login' );
+	// 		return $output;
+	// 	} else {
+	// 		return $content;
+	// 	}
+	// }
+	// add_filter( 'the_content', 'maker_faire_user_profile_login' );
