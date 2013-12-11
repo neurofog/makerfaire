@@ -61,7 +61,7 @@ function makerfaire_profile( maker ) {
 			for ( var type in results.forms ) {
 				for ( var app_id in results.forms[ type ] ) {
 					var app_date = Date.parse( results.forms[ type ][ app_id ]['post_date'] );
-					var faire = jQuery.parseJSON( results.forms[ type ][ app_id ]['post_content'] ).maker_faire;
+					var faire = results.forms[ type ][ app_id ]['post_content'].maker_faire;
 
 					if ( faire === '2013_newyork' ) {
 						faire = 'New York 2013';
