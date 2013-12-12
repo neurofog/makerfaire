@@ -103,9 +103,9 @@ function make_on_login( eventObj ) {
 					document.location = make_gigya.root_path + 'makerprofile';
 				} else {
 					// We may have logged into Gigya, but something happened on our end. Let's correct Gigya.
-					// gigya.accounts.logout();
+					gigya.accounts.logout();
 
-					// alert( 'Something went wrong and we couldn\'t log you in. Please try again.' );
+					alert( 'Something went wrong and we couldn\'t log you in. Please try again.' );
 				}
 
 			},
@@ -152,8 +152,8 @@ function make_on_logout() {
 function make_is_logged_in( maker ) {
 	if ( gigya_debug )
 		console.log( maker );
-
-	if ( maker.errorCode != 403005 ) {
+	
+	if ( maker.errorCode === 0 ) {
 		if ( gigya_debug )
 			console.log( 'User Logged In.' );
 

@@ -55,22 +55,17 @@ function makerfaire_profile( maker ) {
 
 			// Check if we are on a certain date or have passed
 			var now = new Date();
-			var expire_date = new Date( '2013-10-04' ); // Set a date that applications older or equal to this will be considered previous faire.
-			var end_date = new Date( '2014-04-18' ); // Set the date that call to makers closes.
+			var expire_date = new Date( '2013/10/04' ); // Set a date that applications older or equal to this will be considered previous faire.
+			var end_date = new Date( '2014/04/18' ); // Set the date that call to makers closes.
 			
 			for ( var type in results.forms ) {
 				for ( var app_id in results.forms[ type ] ) {
-					var app_date = Date.parse( results.forms[ type ][ app_id ]['post_date'] );
-					var faire = results.forms[ type ][ app_id ]['post_content'].maker_faire;
-
-					if ( faire === '2013_newyork' ) {
-						faire = 'New York 2013';
-					} else if ( faire === '2013_bayarea' ) {
-						faire = 'Bay Area 2013';
-					}
+					// Get the post date and convert the dashes to slashes. Other wise, Firefox return NaN
+					var app_date = results.forms[ type ][ app_id ]['post_date'].replace( /-/g, '/' );
 
 					// Check if the date right now is after our end date, 'August 4th, 2013', or else close the forms
-					if ( app_date >= Date.parse( expire_date ) ) {
+					if ( Date.parse( app_date ) >= Date.parse( expire_date ) ) {
+						// if the current time is less than the end date, we'll handle this form with the ability to still edit.
 						if ( now.getTime() < end_date.getTime() && ( results.forms[ type ][ app_id ]['post_status'] === 'in-progress' || results.forms[ type ][ app_id ]['post_status'] === 'proposed' || results.forms[ type ] === 'presenter' ) ) {
 							append = '<li><a href="' + make_gigya.root_path + type + 'form/?id=' + app_id + '">' +  app_id + ' - ' + results.forms[ type ][ app_id ]['post_title'] + ' (' + results.forms[ type ][ app_id ]['post_status'] + ')</a></li>';
 						} else {
@@ -78,7 +73,22 @@ function makerfaire_profile( maker ) {
 						}
 						jQuery( '#current-faire' ).find( '#' + type + ' ul' ).append( append );
 					} else {
-						previous_append = '<li>' + app_id + ' - ' + results.forms[ type ][ app_id ]['post_title'] + ' (' + results.forms[ type ][ app_id ]['post_status'] + ') - ' + faire + ' - <a href="#">Resubmit Application</a></li>';
+						// Get the application content and make sure we fix all escaped characters with double back slashes for valid JSON.
+						// TODO - rework the content saving to save as valid JSON....
+						var valid = results.forms[ type ][ app_id ]['post_content'].replace( /\\/g, '\\\\' );
+
+						// Return our valid JSON content and extract the faire this application is assigned to.
+						var faire = jQuery.parseJSON( valid ).maker_faire;
+
+						// Now let's check which faire we have and output something more readable.
+						if ( faire === '2013_newyork' ) {
+							faire = 'New York 2013';
+						} else if ( faire === '2013_bayarea' ) {
+							faire = 'Bay Area 2013';
+						}
+
+						// Add our application to the Prvious Applications area.
+						previous_append = '<li>' + app_id + ' - ' + results.forms[ type ][ app_id ]['post_title'] + ' (' + results.forms[ type ][ app_id ]['post_status'] + ') - ' + faire + '</li>';
 						jQuery( '#previous-faire' ).find( '#' + type + ' ul' ).append( previous_append );
 					}
 				}
@@ -102,7 +112,7 @@ function makerfaire_profile( maker ) {
 				jQuery( '#previous-faire' ).show();
 			}
 
-			if ( has_current === 0 && has_previous === 0 ) {
+			if ( has_current === 0 ) {
 				jQuery( '.no-applications' ).show();
 			}
 
