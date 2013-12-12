@@ -3761,7 +3761,7 @@ class MAKER_FAIRE_FORM {
 	private function sync_jdb( $id = 0 ) {
 
 		// Setup a list of our local servers...
-		$local_server = array( 'localhost', 'make.com' );
+		$local_server = array( 'localhost', 'make.com', 'vip.dev', 'staging.makerfaire.com' );
 		
 		// Don't sync from any of our testing locations.
 		if ( isset( $_SERVER['HTTP_HOST'] ) && in_array( $_SERVER['HTTP_HOST'], $local_server ) )
