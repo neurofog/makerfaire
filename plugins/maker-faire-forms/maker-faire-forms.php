@@ -954,7 +954,9 @@ class MAKER_FAIRE_FORM {
 				'presenter_onsite_phone',
 				'presenter_org',
 				'presenter_title',
-				'presenter_photo'
+				'presenter_photo',
+				'presenter_twitter',
+				'presenter_previous'
 			); ?>
 
 			<table style="width:100%">
