@@ -933,12 +933,10 @@ class MAKER_FAIRE_FORM {
 				
 			$cont = array(
 				'm_maker_email', 
-				// GIGYA OLD
 				'm_maker_gigyaid',
 				'm_maker_photo', 
 				'm_maker_bio',
 				'presenter_email',
-				// GIGYA OLD
 				'presenter_gigyaid', 
 				'presenter_bio',
 				'presenter_onsite_phone',
@@ -994,14 +992,12 @@ class MAKER_FAIRE_FORM {
 							}
 						} );
 						
-						// GIGYA OLD
 						mf_insert_add_maker_btn();
 						
 						if( form_type == 'exhibit' ) {							
 							$( '#maker input[value="<?php echo esc_attr( isset( $data->maker ) ? $data->maker : 'One maker' ); ?>"]' ).click();
 						}
 						
-						// GIGYA OLD
 						function mf_insert_add_maker_btn()
 						{
 							html = '<tr id="'+form_type+'-add-maker" class="mf-form-row add-maker add-maker-btn">'+
@@ -1021,7 +1017,6 @@ class MAKER_FAIRE_FORM {
 								exhibit : {
 									m_maker_name    : 'Add. Maker Name',
 									m_maker_email   : 'Add. Maker Email', 
-									// GIGYA OLD
 									m_maker_gigyaid : 'Add. Maker Gigyaid',
 									m_maker_bio     : 'Add. Maker Bio',
 									m_maker_twitter : 'Add. Maker Twitter',
@@ -1030,7 +1025,6 @@ class MAKER_FAIRE_FORM {
 								presenter : {
 									presenter_name     : 'Add. Presenter Name',
 									presenter_email    : 'Add. Presenter Email', 
-									// GIGYA OLD
 									presenter_gigyaid  : 'Add. Presenter Gigyaid',
 									presenter_bio      : 'Add. Presenter Bio',
 									presenter_org      : 'Add. Presenter Organization',
@@ -1235,14 +1229,12 @@ class MAKER_FAIRE_FORM {
 			$init_fields = array(
 				'm_maker_name'   => array(
 					'm_maker_email', 
-					// GIGYA OLD
 					'm_maker_gigyaid', 
 					'm_maker_photo',
 					'm_maker_twitter', 
 					'm_maker_bio',
 				),
 				'presenter_name' => array(
-					// GIGYA OLD
 					'presenter_gigyaid',
 					'presenter_bio',
 					'presenter_photo',
@@ -1266,7 +1258,6 @@ class MAKER_FAIRE_FORM {
 					$data = '';
 				}
 
-				// GIGYA OLD
 				if ( ( $fn == 'm_maker_gigyaid' || $fn == 'presenter_gigyaid' ) && $data == '' && isset( $all_data['uid'] ) )
 					$data = $all_data['uid']; ?>
 
@@ -1289,7 +1280,7 @@ class MAKER_FAIRE_FORM {
 					'm_maker_name'   => array(
 						'm_maker_name'    => 'Add. Maker Name',
 						'm_maker_email'   => 'Add. Maker Email', 
-						// 'm_maker_gigyaid' => 'Add. Maker Gigyaid',
+						'm_maker_gigyaid' => 'Add. Maker Gigyaid',
 						'm_maker_bio'	  => 'Add. Maker Bio',
 						'm_maker_twitter' => 'Add. Maker Twitter Handle',
 						'm_maker_photo'   => 'Add. Maker Photo URL',
@@ -2412,8 +2403,6 @@ class MAKER_FAIRE_FORM {
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'mff_js',             plugins_url( 'assets/js/mff.js', __FILE__ ) );
 		wp_enqueue_script( 'mff_jquery_form_js', plugins_url( 'assets/js/jquery.form.js', __FILE__ ) );
-		// GIGYA OLD
-		// wp_enqueue_script( 'mff_gigya_login',    plugins_url( 'assets/js/gigya-login.js', __FILE__ ) );
 
 		wp_enqueue_style( 'mff_css', plugins_url( 'assets/css/style.css', __FILE__ ) );
 	}
