@@ -224,13 +224,18 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	var $type        = 'exhibit';
 
+	/**
+	 * Faire internal code
+	 */
+	var $maker_faire = '2014_bayarea';
+
 	/* 
 	* Default Form Values
 	* =====================================================================*/
 	var $form        = array(
 		'id'          => 0,
 		'uid'         => 0,
-		'maker_faire' => '2014_bayarea',
+		'maker_faire' => '2014_bayarea', // For whatever lame reason we cannot use the maker_faire variable here.
 		'tags'        => array(),
 		'cats'        => array()
 	);
@@ -2093,7 +2098,7 @@ class MAKER_FAIRE_FORM {
 		add_post_meta( $pid, '_mf_form_type', $t );
 		add_post_meta( $pid, 'mf_gigya_id',  $r['uid'] );
 		wp_set_object_terms( $pid, $t, 'type' );
-		wp_set_object_terms( $pid, esc_html( $this->$faire_friendly_name ), 'faire' );
+		wp_set_object_terms( $pid, esc_html( $this->faire_friendly_name ), 'faire' );
 
 		return $pid;
 	}
