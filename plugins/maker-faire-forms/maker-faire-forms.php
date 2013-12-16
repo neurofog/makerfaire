@@ -15,51 +15,125 @@ License:  GPL2
 class MAKER_FAIRE_FORM {
 
 	/* 
+	* GIGYA API KEY
+	* =====================================================================*/
+	const GIGYA_API_KEY    = '3_nUMOBEBpLoLnfNUbwAo9FCwTqzd6vTjpVt3Ojd807EIT5IcF94eM9hoV8vcqjoe8';
+	
+	/* 
+	* GIGYA API SECRET
+	* =====================================================================*/
+	const GIGYA_SECRET_KEY = 'GlvZcbxIY6Oy7lnWJheh56DXj3wKAiG3yVqhv++VLZM=';
+
+
+	/**
+	 * The name of the current faire. This should be the title, not a slug. E.G. World Maker Faire New York 2014
+	 * This variable is used in many locations that display this name. This is simply a one location to update many kind of deal.
+	 * @var string
+	 */
+	public $faire_friendly_name = 'Maker Faire Bay Area 2014';
+
+
+	/**
+	 * The deadline of the commercial maker payment
+	 * We'll store this into a variable for easier editing in the future instead of digging through this jungle of an application.
+	 * @var string
+	 */
+	public $commercial_maker_deadline = 'September 6th';
+
+
+	/* 
 	* All Form Keys with 1/0 for Required Field
 	* =====================================================================*/
 	var $fields = array(
-		'exhibit' => array(
-			's1' => array(
-				'project_name'          => 1,
-				'private_description'   => 1,
-				'public_description'    => 1,
-				'project_photo'         => 1,
-				'project_photo_thumb'   => 0,
-				'project_website'       => 0,
-				'project_video'         => 0,
-				'food'                  => 1,
-				'food_details'          => 0,
+			'exhibit' => array(
+				's1' => array(
+					'project_name'          => 1,
+					'private_description'   => 1,
+					'public_description'    => 1,
+					'project_photo'         => 1,
+					'project_photo_thumb'   => 0,
+					'project_website'       => 0,
+					'project_video'         => 0,
+					'food'                  => 1,
+					'food_details'          => 0,
 
-				'org_type'              => 1,
-				'large_non_profit'      => 0,
+					'org_type'              => 1,
+					'large_non_profit'      => 0,
 
-				'sales'                 => 0,
-				'sales_details'         => 0,
-				'crowdsource_funding'	=> 0,
-				'solicit'				=> 0,
-				'cf_details'			=> 0,
-				'booth_size'            => 1,
-				'booth_size_details'    => 0,
-				'tables_chairs'         => 1,
-				'tables_chairs_details' => 0,
-				'layout'                => 0,
-				'activity'              => 0,
-				'placement'             => 0,
-				'booth_location'        => 1,
-				'booth_options'         => 0,
-				'lighting'              => 1,
-				'noise'                 => 1,
-				'power'                 => 1,
-				'what_are_you_powering' => 0,
-				'amps'                  => 0,
-				'amps_details'          => 0,
-				'internet'              => 1,
-				'radio'                 => 1,
-				'radio_frequency'       => 0,
-				'radio_details'         => 0,
-				'fire'                  => 0,
-				'hands_on'              => 0,
-				'safety_details'        => 0,
+					'sales'                 => 0,
+					'sales_details'         => 0,
+					'crowdsource_funding'	=> 0,
+					'cf_details'			=> 0,
+					'booth_size'            => 1,
+					'booth_size_details'    => 0,
+					'tables_chairs'         => 1,
+					'tables_chairs_details' => 0,
+					'layout'                => 0,
+					'activity'              => 0,
+					'placement'             => 0,
+					'booth_location'        => 1,
+					'booth_options'         => 0,
+					'lighting'              => 1,
+					'noise'                 => 1,
+					'power'                 => 1,
+					'what_are_you_powering' => 0,
+					'amps'                  => 0,
+					'amps_details'          => 0,
+					'internet'              => 1,
+					'radio'                 => 1,
+					'radio_frequency'       => 0,
+					'radio_details'         => 0,
+					'fire'                  => 0,
+					'hands_on'              => 0,
+					'safety_details'        => 0,
+					),
+				's2' => array(
+					'email'               => 1,
+					'name'                => 1,
+					'maker'               => 1,
+
+					'maker_name'          => 0,
+					'maker_email'         => 0,
+					'maker_bio'           => 0,
+					'maker_twitter'		  => 0,
+					'maker_photo'         => 0,
+					'maker_photo_thumb'   => 0,
+
+					'm_maker_name'        => 0,
+					'm_maker_email'       => 0,
+					'm_maker_photo'       => 0,
+					'm_maker_photo_thumb' => 0,
+					'm_maker_twitter'     => 0,
+					'm_maker_bio'         => 0,
+					'm_maker_gigyaid'     => 0,
+
+					'group_name'          => 0,
+					'group_bio'           => 0,
+					'group_twitter'		  => 0,
+					'group_photo'         => 0,
+					'group_photo_thumb'   => 0,
+					'group_website'       => 0,
+
+					'phone1'              => 1,
+					'phone1_type'         => 1,
+					'phone2'              => 0,
+					'phone2_type'         => 0,
+
+					'private_address'     => 1,
+					'private_address2'    => 0,
+					'private_city'        => 1,
+					'private_state'       => 0,
+					'private_zip'         => 0,
+					'private_country'     => 1
+					),
+				's3' => array(
+					'supporting_documents' => 0,
+					'references'           => 0,
+					'referrals'            => 0,
+					'hear_about'           => 0,
+					'first_time'           => 1,
+					'anything_else'        => 0,
+				)
 			),
 			's2' => array(
 				'email'               => 1,
@@ -218,7 +292,7 @@ class MAKER_FAIRE_FORM {
 	var $form        = array(
 		'id'          => 0,
 		'uid'         => 0,
-		'maker_faire' => '2013_newyork',
+		'maker_faire' => '2014_bayarea',
 		'tags'        => array(),
 		'cats'        => array()
 	);
@@ -331,7 +405,7 @@ class MAKER_FAIRE_FORM {
 
 		// Maker Export
 		if ( isset( $_GET['maker_csv'] ) ) {
-			$options['filters']['faire'] = 'world-maker-faire-new-york-2013';
+			$options['filters']['faire'] = $GLOBALS['current_faire']; // Only export the latest faire
 			$this->build_comments_export( $options );
 		}
 	
@@ -506,8 +580,7 @@ class MAKER_FAIRE_FORM {
 			add_meta_box( 'mf_details',   'Details',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 			add_meta_box( 'mf_logistics', 'Edit Form', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 		} else {
-			// GIGYA OLD
-			// $gigya_lookup = ' <a target="_blank" style="float:right" href="edit.php?post_type=mf_form&amp;page=isc_mm_list_makers">Lookup GIGYA ID</a>';
+			$gigya_lookup = ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?post_type=maker' ) ) . '">Lookup GIGYA ID</a>';
 			
 			add_meta_box( 'mf_form_type', 'Application Type',  array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 			// GIGYA OLD
@@ -940,7 +1013,9 @@ class MAKER_FAIRE_FORM {
 				'presenter_onsite_phone',
 				'presenter_org',
 				'presenter_title',
-				'presenter_photo'
+				'presenter_photo',
+				'presenter_twitter',
+				'presenter_previous'
 			); ?>
 
 			<table style="width:100%">
@@ -1001,7 +1076,7 @@ class MAKER_FAIRE_FORM {
 							html = '<tr id="'+form_type+'-add-maker" class="mf-form-row add-maker add-maker-btn">'+
 										'<td colspan="2">'+
 											'<input type="button" value="+Add Maker" class="button button-primary button-large"> '+
-											'<div style="float:right"><a href="edit.php?post_type=mf_form&page=isc_mm_list_makers" target="_blank">Lookup GIGYA ID</a></div>'+
+											'<div style="float:right"><a href="<?php echo esc_url( admin_url( '/edit.php?post_type=maker' ) ); ?>" target="_blank">Lookup GIGYA ID</a></div>'+
 										'</td>'+
 									'</tr>';
 							
@@ -1672,7 +1747,7 @@ class MAKER_FAIRE_FORM {
 			if ( isset( $form['sales'] ) && strtolower( $form['sales'] ) == 'yes' ) {
 				$extras .= '<p>In your application, you indicated that you are selling or marketing a product. ';
 				$extras .= 'Pay your Commercial Maker Fee <a href="https://www.makerfairetickets.com/ProductDetails.asp?ProductCode=MFCMAKER">here</a>.';
-				$extras .= ' Deadline September 6th. If you are not marketing or selling a product, let us know at <a href="mailto:makers@makerfaire.com">makers@makerfaire.com</a>.</p>';
+				$extras .= ' Deadline ' . esc_html( $this->commercial_maker_deadline ) . '. If you are not marketing or selling a product, let us know at <a href="mailto:makers@makerfaire.com">makers@makerfaire.com</a>.</p>';
 			}
 
 			// if ( isset( $form['food'] ) && strtolower( $form['food'] ) == 'yes' ) {
@@ -1903,9 +1978,6 @@ class MAKER_FAIRE_FORM {
 			foreach ( $f as $k => $r ) {
 				$v = isset( $_POST['data'][$s][$k] ) ? $_POST['data'][$s][$k] : '';
 
-				// if ( $s == 's2' && ! empty( $files[$_POST['form']][$s] ) )
-				// 	echo '<pre>' . $s . ': '; print_r( $files[$_POST['form']][$s] ); echo '</pre>';
-
 				if ( is_array( $v ) )
 					$v = array_values( $v );
 
@@ -2099,7 +2171,7 @@ class MAKER_FAIRE_FORM {
 		add_post_meta( $pid, '_mf_form_type', $t );
 		add_post_meta( $pid, 'mf_gigya_id',  $r['uid'] );
 		wp_set_object_terms( $pid, $t, 'type' );
-		wp_set_object_terms( $pid, 'World Maker Faire New York 2013', 'faire' );
+		wp_set_object_terms( $pid, esc_html( $this->$faire_friendly_name ), 'faire' );
 
 		return $pid;
 	}
@@ -2195,7 +2267,7 @@ class MAKER_FAIRE_FORM {
 		// Email Body
 		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>';
 		$m.='<p>' . esc_html( ucfirst( $r['name'] ) ) . ',</p>';
-		$m.='<p>Thanks for your interest in participating in World Maker Faire New York 2013! We have received your application for: <strong>' . $app_name . '</strong> ' . $app_info . '.</p>';
+		$m.='<p>Thanks for your interest in participating in ' . esc_html( $this->faire_friendly_name ) . '! We have received your application for: <strong>' . $app_name . '</strong> ' . $app_info . '.</p>';
 		if (  $r['form_type'] == 'presenter' ) {
 			// $m .= '<p><strong>You can update your presentation application anytime until September 1st</strong>. <em>(Note that those submitting panel presentation proposals are responsible for collecting and entering all bio information from proposed panelists—so please come back and finish your application if those fields are not yet complete.)</em></p>';
 			// $m .= '<ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li>';
@@ -2210,21 +2282,26 @@ class MAKER_FAIRE_FORM {
 			$m .= '<li>Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.</li></ol>';
 			$m .= '<p>Sabrina Merlo<br />Program Director<br />Maker Faire';
 			$m .= '<p>Maker Faire (<a href="http://makerfaire.com">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
-		} else {
-			// $m .= '<p>You will be notified as to the status of your application no later than August 12th.</p>';
-			// $m .= '<p>If your application is accepted, we have agreed to the concept of your exhibit, however, we are not able to guarantee all of your requests at this time. What we can provide will be outlined in a confirmation letter before the event.</p>';
-			// $m .= '<p>Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.</p>';
-			// $m .= '<p>Lastly, the Road to Maker Faire Challenge, presented by Esurance, will award one lucky maker $2,500 to bring their project to World Maker Faire. You may apply with the same project you are submitting to Maker Faire, and applications must be completed no later than 11:59pm PT on August 5th. <a href="http://makezine.com/road-to-maker-faire-challenge">Enter Now</a>!</p>';
-			$m .= '<p>Please note that the deadline for Maker entries has passed. However, there are several ways that you can still participate!:</p>';
-			$m .= '<ol><li>We will consider your entry as a last-minute addition. If you do not receive an acceptance letter by September 1st, we were not able to find space for your exhibit. We will do our best to notify you before then.</li>';
-			$m .= '<li>If you would like to volunteer your time and make an invaluable contribution to the success of Maker Faire, please sign up for our <a href="http://makerfaire.com/new-york-2013/maker-corps-program/">Maker Corps at Maker Faire Program</a>, which is a platform to enhance your skills and learn about the Maker Movement. You will have a behind-the-scenes experience, and help make the Greatest Show (and Tell) on Earth happen! Learn more at <a href="http://makerfaire.com">makerfaire.com</a>.</li>';
-			$m .= '<li>Plan to come as an attendee, enjoy the show and support the Maker movement by <a href="http://makerfairenyc.eventbrite.com/">purchasing your tickets</a> early!</li>';
-			$m .= '<li>Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.</li></ol>';
+		} elseif ( $r['form_type'] == 'performer' ) {
+			$m .= '<p>You can update your application anytime until the Call For Makers closes:</p>';
+			$m .= '<ol><li>Log into your maker account from <a href="' . esc_url( home_url() ) . '">makerfaire.com</a>. The login link is in the blue header at the top of every page.</li>';
+			$m .= '<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
+			$m .= '<p>You will be notified as to the status of your application no later than <strong>April 2nd</strong>.</p>';
+			$m .= '<p>If your application is accepted, we have agreed to the concept of your performance. However, we are not able to guarantee all of your requests at this time. Our team will contact you before the event to finalize details.</p>';
+			$m .= '<p>Spread the word - Like us on <a href="https://www.facebook.com/makerfaire">Facebook</a> and follow us on <a href="https://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/104410464300110463062/posts">Google+</a></p>';
 			$m .= '<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
-			$m .= '<p>Maker Faire (<a href="http://makerfaire.com">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
+			$m .= '<p>Maker Faire (<a href="' . esc_url( home_url() ) . '">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
+		} else {
+			$m .= '<p>You can update your application anytime until the Call For Makers closes:</p>';
+			$m .= '<ol><li>Log into your maker account from <a href="' . esc_url( home_url() ) . '">makerfaire.com</a>. The login link is in the blue header at the top of every page.</li>';
+			$m .= '<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
+			$m .= '<p>You will be notified as to the status of your application no later than <strong>March 5th</strong>.</p>';
+			$m .= '<p>If your application is accepted, we have agreed to the concept of your exhibit. However, we are not able to guarantee all of your requests at this time. What we can provide will be outlined in a confirmation letter before the event.</p>';
+			$m .= '<p>Spread the word - Like us on <a href="https://www.facebook.com/makerfaire">Facebook</a> and follow us on <a href="https://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/104410464300110463062/posts">Google+</a></p>';
+			$m .= '<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
+			$m .= '<p>Maker Faire (<a href="' . esc_url( home_url() ) . '">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		}
 		$m.='<p>Maker Media, Inc.<br />1005 Gravenstein Hwy North<br />Sebastopol, CA 95472</p>';
-		$m.='<br /><br /><br /><p>Maker Faire ' . $app_info . ' Application Received: ' . $app_name . '</p>';
 		$m.='</body></html>';
 
 		$body = htmlspecialchars_decode( stripslashes( $m ) );
@@ -3639,7 +3716,7 @@ class MAKER_FAIRE_FORM {
 	* @param string $status The status of the application
 	* @return array Maker Faire Forms
 	* =====================================================================*/
-	public function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = 'world-maker-faire-new-york-2013' ) {
+	public function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = $GLOBALS['current_faire'] ) {
 
 		$args = array(
 			'posts_per_page' => 1999,
@@ -3891,7 +3968,7 @@ class MAKER_FAIRE_FORM {
 	 * @param array  $maker      The array of a single maker
 	 * @param string $faire_slug The default faire we want to associate this maker to.
 	 */
-	public function add_to_maker_cpt( $maker, $faire_slug = 'world-maker-faire-new-york-2013' ) {
+	public function add_to_maker_cpt( $maker, $faire_slug = $GLOBALS['current_faire'] ) {
 		// Setup a array of messages
 		$messages = array(
 			'errors'   => array(),

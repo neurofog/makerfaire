@@ -180,7 +180,7 @@
 		<div class="input">
             <label>Short Project Description *</label>
             <div class="info">We need a short, concise description. Limited to 225 characters.</div>
-             <?php $this->textarea('data[s1][public_description]', array('maxlength'=>225, 'class'=>'mf-shorter-field')); ?>
+             <?php $this->textarea('data[s1][public_description]', array('maxlength'=>225)); ?>
         </div>
         
         <div class="input">
@@ -225,7 +225,7 @@
         </div>
         
 		<!-- If company -->
-		<div class="dp-company <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'company') !== false ? '' : 'h')); ?>">Established companies and commercial entities do not qualify for free exhibit space, which is what this application form is for. We have great opportunities available at Maker Faire for companies, please contact <a href="mailto:sales@makerfaire.com">sales@makerfaire.com</a>. Do not complete the rest of this form.</div>
+		<div class="dp-company <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'company') !== false ? '' : 'h')); ?>">Established companies and commercial entities do not qualify for free exhibit space, which is what this application form is for. We have great opportunities available at Maker Faire for companies, please contact <a href="mailto:sales@makerfaire.com">sales@makerfaire.com</a>. Please do not complete the rest of this form.</div>
 		
 		<div class="input">
             <label>Will you be selling or marketing a product at Maker Faire?</label>
@@ -256,11 +256,12 @@
 			<div><input name="data[s1][booth_size]" type="radio" value="10x10" <?php checked($this->form['data[s1][booth_size]'] == '10x10'); ?> /> 10' x 10'</div>
 			<div id="size-10x20"><input name="data[s1][booth_size]" type="radio" value="10x20" <?php checked($this->form['data[s1][booth_size]'] == '10x20'); ?> /> 10' x 20'</div>
 			<div id="size-other"><input name="data[s1][booth_size]" type="radio" value="Other" <?php checked($this->form['data[s1][booth_size]'] == 'Other'); ?> /> Other - Tell us your space size request below</div>
-            <div class="info dp-sales h">Makers who are selling or marketing products are considered Commercial Makers and can only have a mobile, tabletop or 10x10 space for the standard $300 fee. 10x20 spaces or larger are available for sponsors of Maker Faire. Please contact: sales@makerfaire.comfor more information.</div>
+            <div class="info dp-sales h">Makers who are selling or marketing products are considered Commercial Makers and can only have a mobile, tabletop or 10x10 space for the standard $300 fee. 10x20 spaces or larger are available for sponsors of Maker Faire. Please contact: sales@makerfaire.com for more information.</div>
         </div>
 		
 		<div class="input dp-size <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'Other') !== false ? '' : 'h')); ?>">
-            <label>Special Space Requirements *</label>
+            <label>Space Requirements *</label>
+            <div class="info">Tell us the dimensions of your required space.</div>
             <?php $this->textarea('data[s1][booth_size_details]'); ?>
         </div>
 		
@@ -271,8 +272,8 @@
         </div>
 		
 		<div class="input">
-            <label>Additional table and chair or special setup requests</label>
-			<div class="info">Special requests are not guaranteed by acceptance. You will receive confirmation in advance of the faire.</div>
+            <label>Special setup requests and additional table and chair needs</label>
+			<div class="info">If you require additional tables or chairs, list total quantities below.</div>
             <?php $this->textarea('data[s1][tables_chairs_details]'); ?>
         </div>
 		
@@ -295,7 +296,7 @@
 		
 		<div class="input">
             <label>Location *</label>   
-            <div class="info">Important: If you request to be inside, spaces are very limited and non-uniform. Space will not exactly measure 10x10, 10x20, etc. Unless you note otherwise: if you are placed inside, we will interpret your space request above as approximate. Thank you in advance for your flexibility.</div> 
+            <div class="info">Important: We will do our best to accommodate your request, but it’s not guaranteed. Before the event, we will send a confirmation letter listing your exposure: inside, outside, under a tent, etc.</div> 
             <?php $this->radio('data[s1][booth_location]', array('Inside', 'Outside', 'Either')); ?>      
         </div>
 		
@@ -360,20 +361,22 @@
             <?php $this->textarea('data[s1][radio_details]'); ?>
         </div>
 		
-		<h2>Saftey</h3>
+		<h2>Safety</h2>
+		<div class="info"></div>
+
 		<div class="input">
             <label>Does your exhibit contain fire (any size flame), chemicals, or other dangerous materials or tools (propane, welders, etc)?</label>
             <?php $this->radio('data[s1][fire]', array('Yes', 'No')); ?>
+        </div>
+		
+		<div class="input">
+            <label>Do you have an interactive exhibit, including using tools of any kind, riding (bikes, go carts, swings, etc), climbing, etc?</label>
+            <?php $this->radio('data[s1][hands_on]', array('Yes', 'No')); ?>
         </div>
 
         <div class="input dp-safety <?php echo esc_attr(($this->form['data[s1][fire]'] == 'Yes' || $this->form['data[s1][hands_on]'] == 'Yes'  ? '' : 'h')); ?>">
             <label>Describe any fire or safety issues</label>
             <?php $this->textarea('data[s1][safety_details]'); ?>
-        </div>
-		
-		<div class="input">
-            <label>Do you have a hands-on activity or interactive exhibit, including using tools of any kind, riding (bikes, go carts, swings, etc), climbing, etc?</label>
-            <?php $this->radio('data[s1][hands_on]', array('Yes', 'No')); ?>
         </div>
 		
     </div>
@@ -417,7 +420,7 @@
                     <div class="input">
                         <label>Maker Bio *</label>
                         <div class="info">Limited to 200 characters or less.</div>
-                         <?php $this->textarea('data[s2][maker_bio]', array('maxlength'=>200, 'class'=>'mf-shorter-field default-bio')); ?>
+                         <?php $this->textarea('data[s2][maker_bio]', array('maxlength'=>200, 'class'=>'default-bio')); ?>
                     </div>	
                     <div class="input">
                         <label>Maker Twitter Handle</label>
@@ -449,8 +452,8 @@
 	                            </div> 
 	                            <div class="input">
 	                                <label>Maker Bio *</label>
-	                                <div class="info">This bio will appear on the Maker Faire website and mobile app. Limited to 200 characters. If you have listed more than one maker, we will link to the maker accounts you've listed above and display each of their personal bios.</div>
-	                                <textarea name="data[s2][m_maker_bio][<?php echo esc_attr(($i + 1)); ?>]" maxlength="200" class="mf-shorter-field default-bio"><?php echo esc_html($this->form['data[s2][m_maker_bio]'][$i]); ?></textarea>
+	                                <div class="info">This bio will appear on the Maker Faire website and mobile app. Limited to 200 characters.</div>
+	                                <textarea name="data[s2][m_maker_bio][<?php echo esc_attr(($i + 1)); ?>]" maxlength="200" class="default-bio"><?php echo esc_html($this->form['data[s2][m_maker_bio]'][$i]); ?></textarea>
 	                            </div>
 	                            <div class="input">
 			                        <label>Maker Twitter Handle</label>
@@ -484,7 +487,7 @@
                     <div class="input">
                         <label>Group Bio *</label>
                         <div class="info">Limited to 200 characters or less.</div>
-                        <?php $this->textarea('data[s2][group_bio]', array('maxlength'=>200, 'class'=>'mf-shorter-field')); ?>
+                        <?php $this->textarea('data[s2][group_bio]', array('maxlength'=>200)); ?>
                     </div>
                     
                     <div class="input">
@@ -529,7 +532,7 @@
         <hr />
 		
 		<h2>Topics</h2>
-        <div>To help people find your exhibit on our website and at Maker Faire, please please select a maximum of five topics below which apply to your project.</div>
+        <div>To help people find your exhibit on our website and at Maker Faire, please select a maximum of five topics below which apply to your project.</div>
         <?php include('tags.php'); ?>
 
         <div class="input">

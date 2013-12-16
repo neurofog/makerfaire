@@ -5,6 +5,12 @@
 	<meta name="apple-itunes-app" content="app-id=463248665"/>
 
 	<title><?php bloginfo('name'); ?> | <?php is_front_page() ? bloginfo('description') : wp_title(''); ?></title>
+
+	<?php if ( get_post_type == 'maker' ) {
+		echo '<meta name="robots" content="noindex, follow">';
+		} 
+	?>
+
 	<meta name="description" content="<?php if ( is_single() ) {
 				echo wp_trim_words( strip_shortcodes( get_the_content('...') ), 20 );
 			} else {
@@ -43,8 +49,16 @@
 
 	</script>
 
-	</head>
+	<?php wp_head(); ?>
 
+	<?php if ( is_404() ) : // Load this last. ?>
+		<script>
+			// Track our 404 errors and log them to GA
+			_gaq.push(['_trackEvent', '404', 'URL', document.location.pathname + document.location.search]);
+		</script>	
+	<?php endif; ?>
+
+	</head>
 
 <body id="bootstrap-js" <?php body_class('no-js'); ?>>
 

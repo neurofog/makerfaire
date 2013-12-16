@@ -501,6 +501,36 @@ header .blurb {
 	width:92px;
 	cursor:default !important;
 }
+.navi .menu > li#menu-item-14336 > ul,
+.navi .menu > li#menu-item-5612 > ul,
+.navi .menu > li#menu-item-10013 > ul,
+.navi .menu > li#menu-item-11> ul {
+	left: 7px;
+}
+.navi .menu > li#menu-item-14280 > ul,
+.navi .menu > li#menu-item-5037 > ul,
+.navi .menu > li#menu-item-899 > ul,
+.navi .menu > li#menu-item-12 > ul {
+	left: 1px;
+}
+.navi .menu > li#menu-item-14334 > ul,
+.navi .menu > li#menu-item-5039 > ul,
+.navi .menu > li#menu-item-900 > ul,
+.navi .menu > li#menu-item-13 > ul {
+	left: 5px;
+}
+.navi .menu > li#menu-item-14278 > ul,
+.navi .menu > li#menu-item-917 > ul,
+.navi .menu > li#menu-item-893 > ul,
+.navi .menu > li#menu-item-14 > ul {
+	left: 2px;
+}
+.navi .menu > li#menu-item-10563 > ul,
+.navi .menu > li#menu-item-922 > ul,
+.navi .menu > li#menu-item-895 > ul, 
+.navi .menu > li#menu-item-15 > ul {
+	left: 3px;
+}	
 .navi .menu > li > a div { 
 	display:none;
 }
