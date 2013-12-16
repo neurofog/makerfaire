@@ -49,8 +49,6 @@
 
 	</script>
 
-	<?php wp_head(); ?>
-
 	<?php if ( is_404() ) : // Load this last. ?>
 		<script>
 			// Track our 404 errors and log them to GA
