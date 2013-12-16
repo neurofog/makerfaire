@@ -14,17 +14,6 @@ License:  GPL2
 * =====================================================================*/
 class MAKER_FAIRE_FORM {
 
-	/* 
-	* GIGYA API KEY
-	* =====================================================================*/
-	const GIGYA_API_KEY    = '3_nUMOBEBpLoLnfNUbwAo9FCwTqzd6vTjpVt3Ojd807EIT5IcF94eM9hoV8vcqjoe8';
-	
-	/* 
-	* GIGYA API SECRET
-	* =====================================================================*/
-	const GIGYA_SECRET_KEY = 'GlvZcbxIY6Oy7lnWJheh56DXj3wKAiG3yVqhv++VLZM=';
-
-
 	/**
 	 * The name of the current faire. This should be the title, not a slug. E.G. World Maker Faire New York 2014
 	 * This variable is used in many locations that display this name. This is simply a one location to update many kind of deal.
@@ -45,96 +34,48 @@ class MAKER_FAIRE_FORM {
 	* All Form Keys with 1/0 for Required Field
 	* =====================================================================*/
 	var $fields = array(
-			'exhibit' => array(
-				's1' => array(
-					'project_name'          => 1,
-					'private_description'   => 1,
-					'public_description'    => 1,
-					'project_photo'         => 1,
-					'project_photo_thumb'   => 0,
-					'project_website'       => 0,
-					'project_video'         => 0,
-					'food'                  => 1,
-					'food_details'          => 0,
+		'exhibit' => array(
+			's1' => array(
+				'project_name'          => 1,
+				'private_description'   => 1,
+				'public_description'    => 1,
+				'project_photo'         => 1,
+				'project_photo_thumb'   => 0,
+				'project_website'       => 0,
+				'project_video'         => 0,
+				'food'                  => 1,
+				'food_details'          => 0,
 
-					'org_type'              => 1,
-					'large_non_profit'      => 0,
+				'org_type'              => 1,
+				'large_non_profit'      => 0,
 
-					'sales'                 => 0,
-					'sales_details'         => 0,
-					'crowdsource_funding'	=> 0,
-					'cf_details'			=> 0,
-					'booth_size'            => 1,
-					'booth_size_details'    => 0,
-					'tables_chairs'         => 1,
-					'tables_chairs_details' => 0,
-					'layout'                => 0,
-					'activity'              => 0,
-					'placement'             => 0,
-					'booth_location'        => 1,
-					'booth_options'         => 0,
-					'lighting'              => 1,
-					'noise'                 => 1,
-					'power'                 => 1,
-					'what_are_you_powering' => 0,
-					'amps'                  => 0,
-					'amps_details'          => 0,
-					'internet'              => 1,
-					'radio'                 => 1,
-					'radio_frequency'       => 0,
-					'radio_details'         => 0,
-					'fire'                  => 0,
-					'hands_on'              => 0,
-					'safety_details'        => 0,
-					),
-				's2' => array(
-					'email'               => 1,
-					'name'                => 1,
-					'maker'               => 1,
-
-					'maker_name'          => 0,
-					'maker_email'         => 0,
-					'maker_bio'           => 0,
-					'maker_twitter'		  => 0,
-					'maker_photo'         => 0,
-					'maker_photo_thumb'   => 0,
-
-					'm_maker_name'        => 0,
-					'm_maker_email'       => 0,
-					'm_maker_photo'       => 0,
-					'm_maker_photo_thumb' => 0,
-					'm_maker_twitter'     => 0,
-					'm_maker_bio'         => 0,
-					'm_maker_gigyaid'     => 0,
-
-					'group_name'          => 0,
-					'group_bio'           => 0,
-					'group_twitter'		  => 0,
-					'group_photo'         => 0,
-					'group_photo_thumb'   => 0,
-					'group_website'       => 0,
-
-					'phone1'              => 1,
-					'phone1_type'         => 1,
-					'phone2'              => 0,
-					'phone2_type'         => 0,
-
-					'private_address'     => 1,
-					'private_address2'    => 0,
-					'private_city'        => 1,
-					'private_state'       => 0,
-					'private_zip'         => 0,
-					'private_country'     => 1
-					),
-				's3' => array(
-					'supporting_documents' => 0,
-					'references'           => 0,
-					'referrals'            => 0,
-					'hear_about'           => 0,
-					'first_time'           => 1,
-					'anything_else'        => 0,
-				)
-			),
+				'sales'                 => 0,
+				'sales_details'         => 0,
+				'crowdsource_funding'	=> 0,
+				'cf_details'			=> 0,
+				'booth_size'            => 1,
+				'booth_size_details'    => 0,
+				'tables_chairs'         => 1,
+				'tables_chairs_details' => 0,
+				'layout'                => 0,
+				'activity'              => 0,
+				'placement'             => 0,
+				'booth_location'        => 1,
+				'booth_options'         => 0,
+				'lighting'              => 1,
+				'noise'                 => 1,
+				'power'                 => 1,
+				'what_are_you_powering' => 0,
+				'amps'                  => 0,
+				'amps_details'          => 0,
+				'internet'              => 1,
+				'radio'                 => 1,
+				'radio_frequency'       => 0,
+				'radio_details'         => 0,
+				'fire'                  => 0,
+				'hands_on'              => 0,
+				'safety_details'        => 0,
+				),
 			's2' => array(
 				'email'               => 1,
 				'name'                => 1,
@@ -173,15 +114,15 @@ class MAKER_FAIRE_FORM {
 				'private_state'       => 0,
 				'private_zip'         => 0,
 				'private_country'     => 1
-			),
+				),
 			's3' => array(
 				'supporting_documents' => 0,
 				'references'           => 0,
 				'referrals'            => 0,
 				'hear_about'           => 0,
-				'first_time'           => 0,
+				'first_time'           => 1,
 				'anything_else'        => 0,
-			),
+			)
 		),
 		'performer' => array(
 			's1' => array(
@@ -277,10 +218,7 @@ class MAKER_FAIRE_FORM {
 		),
 		'makerprofile' => array()
 	);
-	/* 
-	* Default MakerFaire - PHASE 2 - MAKE THIS A SETTINGS OPTION
-	* =====================================================================*/
-	var $maker_faire = '2013_newyork';
+
 	/* 
 	* Default Form Type
 	* =====================================================================*/
@@ -296,11 +234,6 @@ class MAKER_FAIRE_FORM {
 		'tags'        => array(),
 		'cats'        => array()
 	);
-
-	/* 
-	* GIGYA USER - GIGYA OLD
-	* =====================================================================*/
-	var $user;
 
 	/* 
 	* Post Meta save for Columns View
@@ -559,8 +492,6 @@ class MAKER_FAIRE_FORM {
 	* @access public
 	* =====================================================================*/
 	public function add_menus() {
-		// GIGYA OLD
-		// add_submenu_page( 'edit.php?post_type=mf_form', 'List Makers', 'List Makers', 'edit_others_posts', 'isc_mm_list_makers', array( &$this, 'show_list_makers_page' ) );
 		add_submenu_page( 'edit.php?post_type=mf_form', 'Project Images', 'Project Images', 'edit_others_posts', 'mf_project_images', array( &$this, 'show_project_images' ) );
 		add_submenu_page( 'edit.php?post_type=mf_form', 'Reports', 'Reports', 'edit_others_posts', 'mf_reports', array( &$this, 'show_reports_page' ) );
 	}
@@ -584,9 +515,9 @@ class MAKER_FAIRE_FORM {
 			
 			add_meta_box( 'mf_form_type', 'Application Type',  array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 			// GIGYA OLD
-			// add_meta_box( 'mf_exhibit',   'Exhibit Details'.$gigya_lookup,   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'exhibit' ) );
-			// add_meta_box( 'mf_performer', 'Performer Details'.$gigya_lookup, array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'performer' ) );
-			// add_meta_box( 'mf_presenter', 'Presenter Details'.$gigya_lookup, array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'presenter' ) );
+			add_meta_box( 'mf_exhibit',   'Exhibit Details'.$gigya_lookup,   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'exhibit' ) );
+			add_meta_box( 'mf_performer', 'Performer Details'.$gigya_lookup, array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'performer' ) );
+			add_meta_box( 'mf_presenter', 'Presenter Details'.$gigya_lookup, array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'presenter' ) );
 		}
 
 		add_meta_box( 'mf_save', 'Edit Application', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
@@ -3716,12 +3647,15 @@ class MAKER_FAIRE_FORM {
 	* @param string $status The status of the application
 	* @return array Maker Faire Forms
 	* =====================================================================*/
-	public function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = $GLOBALS['current_faire'] ) {
+	public function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = '' ) {
+
+		if ( empty( $faire) )
+			$faire = $GLOBALS['current_faire'];
 
 		$args = array(
 			'posts_per_page' => 1999,
 			'post_type'      => 'mf_form',
-			'faire'			 => ( isset( $filters['faire'] ) && $filters['faire'] != $faire ) ? sanitize_text_field( $filters['faire'] ) : sanitize_text_field( $faire ),
+			'faire'			 => ( $filters['faire'] != $faire ) ? sanitize_text_field( $filters['faire'] ) : sanitize_text_field( $faire ),
 			'post_status'	 => ( $app_status != 'all' ) ? sanitize_text_field( $app_status ) : '',
 			'sort'			 => $sort,
 			'type'			 => ( isset( $filters['type'] ) && $filters['type'] != 'all' ) ? sanitize_text_field( $filters['type'] ) : '',
@@ -3968,7 +3902,11 @@ class MAKER_FAIRE_FORM {
 	 * @param array  $maker      The array of a single maker
 	 * @param string $faire_slug The default faire we want to associate this maker to.
 	 */
-	public function add_to_maker_cpt( $maker, $faire_slug = $GLOBALS['current_faire'] ) {
+	public function add_to_maker_cpt( $maker, $faire_slug = '' ) {
+
+		if ( empty( $faire_slug ) )
+			$faire_slug = $GLOBALS['current_faire'];
+
 		// Setup a array of messages
 		$messages = array(
 			'errors'   => array(),
