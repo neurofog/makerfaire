@@ -232,7 +232,7 @@ class MAKER_FAIRE_FORM {
 	/* 
 	* Default MakerFaire - PHASE 2 - MAKE THIS A SETTINGS OPTION
 	* =====================================================================*/
-	var $maker_faire = '2013_newyork';
+	var $maker_faire = '2014_bayarea';
 	/* 
 	* Default Form Type
 	* =====================================================================*/
@@ -3874,7 +3874,10 @@ class MAKER_FAIRE_FORM {
 	* @param string $status The status of the application
 	* @return array Maker Faire Forms
 	* =====================================================================*/
-	public function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = $GLOBALS['current_faire'] ) {
+	public function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = '' ) {
+
+		if ( empty( $faire ) )
+			$faire = $GLOBALS['current_faire'];
 
 		$args = array(
 			'posts_per_page' => 1999,
@@ -4126,7 +4129,11 @@ class MAKER_FAIRE_FORM {
 	 * @param array  $maker      The array of a single maker
 	 * @param string $faire_slug The default faire we want to associate this maker to.
 	 */
-	public function add_to_maker_cpt( $maker, $faire_slug = $GLOBALS['current_faire'] ) {
+	public function add_to_maker_cpt( $maker, $faire_slug = '' ) {
+
+		if ( empty( $faire_slug ) )
+			$faire_slug = $GLOBALS['current_faire'];
+
 		// Setup a array of messages
 		$messages = array(
 			'errors'   => array(),
