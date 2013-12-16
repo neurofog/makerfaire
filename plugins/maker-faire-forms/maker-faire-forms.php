@@ -33,6 +33,14 @@ class MAKER_FAIRE_FORM {
 	public $faire_friendly_name = 'Maker Faire Bay Area 2014';
 
 
+	/**
+	 * The deadline of the commercial maker payment
+	 * We'll store this into a variable for easier editing in the future instead of digging through this jungle of an application.
+	 * @var string
+	 */
+	public $commercial_maker_deadline = 'September 6th';
+
+
 	/* 
 	* All Form Keys with 1/0 for Required Field
 	* =====================================================================*/
@@ -236,7 +244,7 @@ class MAKER_FAIRE_FORM {
 	var $form        = array(
 		'id'          => 0,
 		'uid'         => 0,
-		'maker_faire' => '2013_newyork',
+		'maker_faire' => '2014_bayarea',
 		'tags'        => array(),
 		'cats'        => array()
 	);
@@ -349,7 +357,7 @@ class MAKER_FAIRE_FORM {
 
 		// Maker Export
 		if ( isset( $_GET['maker_csv'] ) ) {
-			$options['filters']['faire'] = 'world-maker-faire-new-york-2013';
+			$options['filters']['faire'] = $GLOBALS['current_faire']; // Only export the latest faire
 			$this->build_comments_export( $options );
 		}
 	
@@ -524,7 +532,7 @@ class MAKER_FAIRE_FORM {
 			add_meta_box( 'mf_details',   'Details',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 			add_meta_box( 'mf_logistics', 'Edit Form', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 		} else {
-			$gigya_lookup = ' <a target="_blank" style="float:right" href="edit.php?post_type=mf_form&amp;page=isc_mm_list_makers">Lookup GIGYA ID</a>';
+			$gigya_lookup = ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?post_type=maker' ) ) . '">Lookup GIGYA ID</a>';
 			
 			add_meta_box( 'mf_form_type', 'Application Type',  array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 			add_meta_box( 'mf_exhibit',   'Exhibit Details'.$gigya_lookup,   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'exhibit' ) );
@@ -1015,7 +1023,7 @@ class MAKER_FAIRE_FORM {
 							html = '<tr id="'+form_type+'-add-maker" class="mf-form-row add-maker add-maker-btn">'+
 										'<td colspan="2">'+
 											'<input type="button" value="+Add Maker" class="button button-primary button-large"> '+
-											'<div style="float:right"><a href="edit.php?post_type=mf_form&page=isc_mm_list_makers" target="_blank">Lookup GIGYA ID</a></div>'+
+											'<div style="float:right"><a href="<?php echo esc_url( admin_url( '/edit.php?post_type=maker' ) ); ?>" target="_blank">Lookup GIGYA ID</a></div>'+
 										'</td>'+
 									'</tr>';
 							
@@ -1681,7 +1689,7 @@ class MAKER_FAIRE_FORM {
 			if ( isset( $form['sales'] ) && strtolower( $form['sales'] ) == 'yes' ) {
 				$extras .= '<p>In your application, you indicated that you are selling or marketing a product. ';
 				$extras .= 'Pay your Commercial Maker Fee <a href="https://www.makerfairetickets.com/ProductDetails.asp?ProductCode=MFCMAKER">here</a>.';
-				$extras .= ' Deadline September 6th. If you are not marketing or selling a product, let us know at <a href="mailto:makers@makerfaire.com">makers@makerfaire.com</a>.</p>';
+				$extras .= ' Deadline ' . esc_html( $this->commercial_maker_deadline ) . '. If you are not marketing or selling a product, let us know at <a href="mailto:makers@makerfaire.com">makers@makerfaire.com</a>.</p>';
 			}
 
 			// if ( isset( $form['food'] ) && strtolower( $form['food'] ) == 'yes' ) {
@@ -1912,9 +1920,6 @@ class MAKER_FAIRE_FORM {
 			foreach ( $f as $k => $r ) {
 				$v = isset( $_POST['data'][$s][$k] ) ? $_POST['data'][$s][$k] : '';
 
-				// if ( $s == 's2' && ! empty( $files[$_POST['form']][$s] ) )
-				// 	echo '<pre>' . $s . ': '; print_r( $files[$_POST['form']][$s] ); echo '</pre>';
-
 				if ( is_array( $v ) )
 					$v = array_values( $v );
 
@@ -2108,7 +2113,7 @@ class MAKER_FAIRE_FORM {
 		add_post_meta( $pid, '_mf_form_type', $t );
 		add_post_meta( $pid, 'mf_gigya_id',  $r['uid'] );
 		wp_set_object_terms( $pid, $t, 'type' );
-		wp_set_object_terms( $pid, 'World Maker Faire New York 2013', 'faire' );
+		wp_set_object_terms( $pid, esc_html( $this->$faire_friendly_name ), 'faire' );
 
 		return $pid;
 	}
@@ -3869,7 +3874,7 @@ class MAKER_FAIRE_FORM {
 	* @param string $status The status of the application
 	* @return array Maker Faire Forms
 	* =====================================================================*/
-	public function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = 'world-maker-faire-new-york-2013' ) {
+	public function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = $GLOBALS['current_faire'] ) {
 
 		$args = array(
 			'posts_per_page' => 1999,
@@ -4121,7 +4126,7 @@ class MAKER_FAIRE_FORM {
 	 * @param array  $maker      The array of a single maker
 	 * @param string $faire_slug The default faire we want to associate this maker to.
 	 */
-	public function add_to_maker_cpt( $maker, $faire_slug = 'world-maker-faire-new-york-2013' ) {
+	public function add_to_maker_cpt( $maker, $faire_slug = $GLOBALS['current_faire'] ) {
 		// Setup a array of messages
 		$messages = array(
 			'errors'   => array(),

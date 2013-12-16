@@ -425,7 +425,7 @@ function mf_hide_faires( $query ) {
 			array(
 				'taxonomy'	=> 'faire',
 				'field'		=> 'slug',
-				'terms'		=> 'world-maker-faire-new-york-2013',
+				'terms'		=> $GLOBALS['current_faire'],
 				'operator'	=> 'IN',
 			)
 		);
