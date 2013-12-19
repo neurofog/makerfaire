@@ -88,8 +88,11 @@ function make_on_login( eventObj ) {
 			type: 'POST',
 			dataType: 'json',
 			url: make_gigya.ajax,
+			xhrFields: {
+				withCredentials: true
+			},
 			data: {
-				'action'   : 'make_ajax', // Calls our wp_ajax_nopriv_ajax or wp_ajax_ajax actions
+				'action'   : 'make_login_user', // Calls our wp_ajax_nopriv_make_ajax_login or wp_ajax_make_ajax_login actions
 				'request'  : 'login',
 				'object'   : eventObj,
 				'nonce'    : make_gigya.secure_it
@@ -194,8 +197,11 @@ function make_verify_signature( timestamp, uid, signature ) {
 		type: 'POST',
 		dataType: 'json',
 		url: make_gigya.ajax,
+		xhrFields: {
+			withCredentials: true
+		},
 		data: {
-			'action'    : 'make_ajax', // Calls our wp_ajax_nopriv_make_ajax or wp_ajax_make_ajax
+			'action'    : 'make_verify_user', // Calls our wp_ajax_nopriv_make_verify_useror wp_ajax_make_verify_user
 			'request'   : 'verify',
 			'timestamp' : timestamp,
 			'uid'		: uid,
