@@ -80,9 +80,6 @@ class Make_Gigya {
 		// Since our login may be used by users logged into WordPress, we'll need the second option to run ajax requests.
 		add_action( 'wp_ajax_nopriv_make_login_user', array( $this, 'user_login' ) );
 		add_action( 'wp_ajax_make_login_user', array( $this, 'user_login' ) );
-		add_action( 'wp_ajax_nopriv_make_verify_user', array( $this, 'verify_user' ) );
-		add_action( 'wp_ajax_make_verify_user', array( $this, 'verify_user' ) );
-
 	}
 
 
@@ -135,95 +132,104 @@ class Make_Gigya {
 		// Check our nonce and make sure it's correct
 		check_ajax_referer( 'ajax-nonce', 'nonce' );
 		
-		// Login das user! Other wise, we are trying to register. (FWIW, the login features of Gigya will also register users)
+		// Make sure some required fields are being passed first
 		if ( isset( $_POST['request'] ) && $_POST['request'] == 'login' && wp_verify_nonce( $_POST['nonce'], 'ajax-nonce' ) ) {
 
-			// Pass our User Info sent from Gigya
-			$user = ( is_array( $_POST['object']['profile'] ) ) ? $_POST['object']['profile'] : '';
+			// First we must verify this request is even a valid request from Gigya
+			if ( $this->verify_user( $_POST['object']['UID'], $_POST['object']['signatureTimestamp'], $_POST['object']['UIDSignature'] ) ) {
 
-			// Check if our users are already cached
-			$users = wp_cache_get( 'mf_user_' . md5( sanitize_text_field( $_POST['object']['UID'] ) ) );
+				// Pass our User Info sent from Gigya
+				$user = ( is_array( $_POST['object']['profile'] ) ) ? $_POST['object']['profile'] : '';
 
-			// If there is no cache set, we'll run the query again and cache it.
-			if ( $users == false ) {
-				// Query our makers list and see if a maker exists
-				$query_params = array(
-					'post_type' => 'maker',
-					'meta_key' => 'guid',
-					'meta_value' => sanitize_text_field( $_POST['object']['UID'] ),
-				);
-				$users = new WP_Query( $query_params );
+				// Check if our users are already cached
+				$users = wp_cache_get( 'mf_user_' . md5( sanitize_text_field( $_POST['object']['UID'] ) ) );
 
-				// Save the results to the cache
-				wp_cache_set( 'mf_user_' . md5( sanitize_text_field( $_POST['object']['UID'] ) ), $users, '', 86400 ); // Since we are caching each user, might as well hold onto it for 24 hours.
-			}
+				// If there is no cache set, we'll run the query again and cache it.
+				if ( $users == false ) {
+					// Query our makers list and see if a maker exists
+					$query_params = array(
+						'post_type' => 'maker',
+						'meta_key' => 'guid',
+						'meta_value' => sanitize_text_field( $_POST['object']['UID'] ),
+					);
+					$users = new WP_Query( $query_params );
 
-			// Check if a user already exists, if not we'll create one.
-			if ( $users->posts ) {
-				update_post_meta( absint( $users->posts[0]->ID ), 'last_login', date( 'm/d/Y g:i:s a', time() ) );
-
-				$results = array(
-					'loggedin' => true,
-					'message' => 'Login Successful!',
-					'maker' => absint( $users->posts[0]->ID ),
-				);
-
-			// User didn't exist, let's make one.
-			} else {
-
-				// Handle our user name
-				if ( ! empty( $user['firstName'] ) && ! empty( $user['lastName'] ) ) {
-					$user_name = $user['firstName'] . ' ' . $user['lastName'];
-				} elseif ( ! empty( $user['firstName'] ) && empty( $user['lastName'] ) ) {
-					$user_name = $user['firstName'];
-				} elseif ( empty( $user['firstName'] ) && empty( $user['lastName'] ) && ! empty( $user['nickname'] ) ) {
-					$user_name = $user['nickname'];
-				} else {
-					$user_name = 'Undefined Username';
+					// Save the results to the cache
+					wp_cache_set( 'mf_user_' . md5( sanitize_text_field( $_POST['object']['UID'] ) ), $users, '', 86400 ); // Since we are caching each user, might as well hold onto it for 24 hours.
 				}
 
-				// Our user doesn't exist, that means we need to sync them up, create a maker account and log them in.
-				$maker = array(
-					'post_title' => sanitize_text_field( $user_name ),
-					'post_content' => ( ! empty( $user['bio'] ) ) ? wp_filter_post_kses( $user['bio'] ) : '',
-					'post_status' => 'publish',
-					'post_type' => 'maker',
-				);
-				$maker_id = wp_insert_post( $maker );
+				// Check if a user already exists, if not we'll create one.
+				if ( $users->posts ) {
+					update_post_meta( absint( $users->posts[0]->ID ), 'last_login', date( 'm/d/Y g:i:s a', time() ) );
 
-				// We'll want to add some custom fields. Let's do that.
-				// ****************************************************
-				// Add the maker email
-				$user_email = ( isset( $user['email'] ) && ! empty( $user['email'] ) ) ? $user['email'] : '';
-				update_post_meta( absint( $maker_id ), 'email', sanitize_email( $user_email ) );
-
-				// Add the maker photo
-				$user_photo = ( isset( $user['photoURL'] ) && ! empty( $user['photoURL'] ) ) ? $user['photoURL'] : '';
-				update_post_meta( absint( $maker_id ), 'photo_url', esc_url( $user_photo ) );
-
-				// Add the maker website field, even though this field will be blank on creation
-				update_post_meta( absint( $maker_id ), 'website', '' );
-
-				// Add the maker video field, even though this field will be blank on creation
-				update_post_meta( absint( $maker_id ), 'video', '' );
-
-				// Add the Maker Gigya ID
-				update_post_meta( absint( $maker_id ), 'guid', sanitize_text_field( $_POST['object']['UID'] ) );
-
-				// Report our status to pass back to the modal window
-				if ( is_wp_error( $maker_id ) ) {
-					$results = array(
-						'loggedin' => false,
-						'message'  => 'A user account could not be created. Please try again.',
-						'user' => absint( $maker_id ),
-					);
-				} else {
 					$results = array(
 						'loggedin' => true,
-						'message'  => 'User account created and logged in!',
-						'maker'    => absint( $maker_id ),
+						'message' => 'Login Successful!',
+						'maker' => absint( $users->posts[0]->ID ),
 					);
+
+				// User didn't exist, let's make one.
+				} else {
+
+					// Handle our user name
+					if ( ! empty( $user['firstName'] ) && ! empty( $user['lastName'] ) ) {
+						$user_name = $user['firstName'] . ' ' . $user['lastName'];
+					} elseif ( ! empty( $user['firstName'] ) && empty( $user['lastName'] ) ) {
+						$user_name = $user['firstName'];
+					} elseif ( empty( $user['firstName'] ) && empty( $user['lastName'] ) && ! empty( $user['nickname'] ) ) {
+						$user_name = $user['nickname'];
+					} else {
+						$user_name = 'Undefined Username';
+					}
+
+					// Our user doesn't exist, that means we need to sync them up, create a maker account and log them in.
+					$maker = array(
+						'post_title' => sanitize_text_field( $user_name ),
+						'post_content' => ( ! empty( $user['bio'] ) ) ? wp_filter_post_kses( $user['bio'] ) : '',
+						'post_status' => 'publish',
+						'post_type' => 'maker',
+					);
+					$maker_id = wp_insert_post( $maker );
+
+					// We'll want to add some custom fields. Let's do that.
+					// ****************************************************
+					// Add the maker email
+					$user_email = ( isset( $user['email'] ) && ! empty( $user['email'] ) ) ? $user['email'] : '';
+					update_post_meta( absint( $maker_id ), 'email', sanitize_email( $user_email ) );
+
+					// Add the maker photo
+					$user_photo = ( isset( $user['photoURL'] ) && ! empty( $user['photoURL'] ) ) ? $user['photoURL'] : '';
+					update_post_meta( absint( $maker_id ), 'photo_url', esc_url( $user_photo ) );
+
+					// Add the maker website field, even though this field will be blank on creation
+					update_post_meta( absint( $maker_id ), 'website', '' );
+
+					// Add the maker video field, even though this field will be blank on creation
+					update_post_meta( absint( $maker_id ), 'video', '' );
+
+					// Add the Maker Gigya ID
+					update_post_meta( absint( $maker_id ), 'guid', sanitize_text_field( $_POST['object']['UID'] ) );
+
+					// Report our status to pass back to the modal window
+					if ( is_wp_error( $maker_id ) ) {
+						$results = array(
+							'loggedin' => false,
+							'message'  => 'A user account could not be created. Please try again.',
+							'user' => absint( $maker_id ),
+						);
+					} else {
+						$results = array(
+							'loggedin' => true,
+							'message'  => 'User account created and logged in!',
+							'maker'    => absint( $maker_id ),
+						);
+					}
 				}
+			} else {
+				$results = array(
+					'loggedin' => false,
+					'message' => 'Request could not be validated. Please try again.',
+				);
 			}
 		} else {
 			$results = array(
@@ -244,32 +250,16 @@ class Make_Gigya {
 	 *
 	 * @since  HAL 9000
 	 */
-	public function verify_user() {
-		
-		// Check our nonce and make sure it's correct
-		check_ajax_referer( 'ajax-nonce', 'nonce' );
+	public function verify_user( $uid, $timestamp, $sig) {
 
-		if ( isset( $_POST['request'] ) && $_POST['request'] == 'verify' && wp_verify_nonce( $_POST['nonce'], 'ajax-nonce' ) ) { // Verify our account is valid. This is a security measure to ensure the user 
-			// Validate the signature is authentic
-			$valid = SigUtils::validateUserSignature( sanitize_text_field( $_POST['uid'] ), absint( $_POST['timestamp'] ), MAKE_GIGYA_PRIVATE_KEY, sanitize_text_field( $_POST['signature'] ) );
+		// Validate the signature is authentic
+		$valid = SigUtils::validateUserSignature( sanitize_text_field( $uid ), absint( $timestamp ), MAKE_GIGYA_PRIVATE_KEY, sanitize_text_field( $sig ) );
 
-			if ( $valid ) {
-				$results = array(
-					'authenticated' => true,
-				);
-			} else {
-				$results = array(
-					'authenticated' => false,
-				);
-			}
+		if ( $valid ) {
+			return true;
 		} else {
-			$results = array(
-				'authenticated' => false,
-			);
+			return false;
 		}
-
-		// Return our results and handle them in the Ajax callback
-		die( json_encode( $results ) );
 	}
 }
 $make_gigya = new Make_Gigya();

@@ -75,58 +75,47 @@ function make_on_login( eventObj ) {
 	if ( gigya_debug )
 		console.log( 'Logged in to Gigya!' );
 
-    // Verify the signature ...
-    make_verify_signature( eventObj.signatureTimestamp, eventObj.UID, eventObj.UIDSignature );
+	// Send our data via Ajax to the server to verify if the user is a returning user or a new one and create their profile.
+	jQuery.ajax({
+		type: 'POST',
+		dataType: 'json',
+		url: make_gigya.ajax,
+		xhrFields: {
+			withCredentials: true
+		},
+		data: {
+			'action'   : 'make_login_user', // Calls our wp_ajax_nopriv_make_ajax_login or wp_ajax_make_ajax_login actions
+			'request'  : 'login',
+			'object'   : eventObj,
+			'nonce'    : make_gigya.secure_it
+		},
+		success: function( results ) {
+			if ( gigya_debug )
+				console.log( results.message );
 
-    // Test that a request to login was valid.
-    // If so, we'll pass the maker info through ajax to sync
-    // with the local database of makers or create a new one.
-    if ( make_verify_signature ) {
+			// Check that everything went well
+			if ( results.loggedin === true ) {
+				document.location = make_gigya.root_path + 'makerprofile';
+			} else {
+				// We may have logged into Gigya, but something happened on our end. Let's correct Gigya.
+				gigya.accounts.logout();
 
-		// Send our data via Ajax to the server to verify if the user is a returning user or a new one and create their profile.
-		jQuery.ajax({
-			type: 'POST',
-			dataType: 'json',
-			url: make_gigya.ajax,
-			xhrFields: {
-				withCredentials: true
-			},
-			data: {
-				'action'   : 'make_login_user', // Calls our wp_ajax_nopriv_make_ajax_login or wp_ajax_make_ajax_login actions
-				'request'  : 'login',
-				'object'   : eventObj,
-				'nonce'    : make_gigya.secure_it
-			},
-			success: function( results ) {
-				if ( gigya_debug )
-					console.log( results.message );
-
-				// Check that everything went well
-				if ( results.loggedin === true ) {
-					document.location = make_gigya.root_path + 'makerprofile';
-				} else {
-					// We may have logged into Gigya, but something happened on our end. Let's correct Gigya.
-					gigya.accounts.logout();
-
-					alert( 'Something went wrong and we couldn\'t log you in. Please try again.' );
-				}
-
-			},
-			error: function( jqXHR, textStatus, errorThrown ) {
-				if ( gigya_debug ) {
-					console.log( 'ERROR' );
-					console.log( textStatus );
-					console.log( errorThrown );
-				}
-			},
-			complete: function( jqXHR, textStatus ) {
-				if ( gigya_debug )
-					console.log( 'Login Complete.' );
+				alert( 'Something went wrong and we couldn\'t log you in. Please try again.' );
 			}
-		});
-	} else {
-		alert( 'An error occured! Could not login. Please refresh and try again.' );
-	}
+
+		},
+		error: function( jqXHR, textStatus, errorThrown ) {
+			if ( gigya_debug ) {
+				console.log( 'ERROR' );
+				console.log( textStatus );
+				console.log( errorThrown );
+			}
+		},
+		complete: function( jqXHR, textStatus ) {
+			if ( gigya_debug )
+				console.log( 'Login Complete.' );
+		}
+	});
 }
 
 
@@ -174,61 +163,4 @@ function make_is_logged_in( maker ) {
 		if ( path.indexOf( 'exhibit' ) >= 0 || path.indexOf( 'presenter' ) >= 0 || path.indexOf( 'performer' ) >= 0 || path.indexOf( 'makerprofile' ) >= 0 )
 			jQuery( '.content' ).html( '<h2>You must be logged in to access this area</h2>' );
 	}
-}
-
-
-/**
- * Allows us to verify that a request is valid and is data sent only from Gigya
- * @param  int 	  timestamp The signature timestamp. This is the time the signature was created. This is in the form of a UNIX timestamp.
- * @param  string uid       The unique ID represented by the maker.
- * @param  string signature A cryptographic signature, to prevent fraud.
- * @return false
- *
- * @since  HAL 9000
- */
-function make_verify_signature( timestamp, uid, signature ) {
-	if ( gigya_debug )
-		console.log( 'Verifying.' );
-
-	// Before we continue, we want to make sure that the signature is valid.
-	// The most secure way to do this is to pass it through the REST API.
-	// We'll ajax that over to our PHP SDK and return the results before proceeding.
-	jQuery.ajax({
-		type: 'POST',
-		dataType: 'json',
-		url: make_gigya.ajax,
-		xhrFields: {
-			withCredentials: true
-		},
-		data: {
-			'action'    : 'make_verify_user', // Calls our wp_ajax_nopriv_make_verify_useror wp_ajax_make_verify_user
-			'request'   : 'verify',
-			'timestamp' : timestamp,
-			'uid'		: uid,
-			'signature' : signature,
-			'nonce'     : make_gigya.secure_it
-		},
-		success: function( results ) {
-			if ( gigya_debug )
-				console.log( 'Verified: ' + results.authenticated );
-
-			return results.authenticated;
-
-		},
-		error: function( jqXHR, textStatus, errorThrown ) {
-			if ( gigya_debug ) {
-				console.log('ERROR');
-				console.log( textStatus );
-				console.log( errorThrown );
-			}
-
-			return false;
-		},
-		complete: function( jqXHR, textStatus ) {
-			if ( gigya_debug )
-				console.log( 'Verify Signature complete' );
-		}
-	});
-
-	return false;
 }
