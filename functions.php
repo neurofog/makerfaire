@@ -1,13 +1,12 @@
 <?php
 
 // Set our global Faire Variable. Use the slug of the taxonomy as the value.
-$GLOBALS['current_faire'] = 'maker-faire-bay-area-2014';
+define( 'MF_CURRENT_FAIRE', 'maker-faire-bay-area-2014' );
 
 
 require_once( WP_CONTENT_DIR . '/themes/vip/plugins/vip-init.php' );
 
 // Include Gigya plugin
-// require_once( __DIR__ . '/plugins/gigya-plugin/gigya.php' );
 require_once( __DIR__ . '/plugins/gigya/gigya.php' );
 
 // include maker-faire-forms plugin
@@ -429,7 +428,7 @@ function mf_hide_faires( $query ) {
 			array(
 				'taxonomy'	=> 'faire',
 				'field'		=> 'slug',
-				'terms'		=> $GLOBALS['current_faire'],
+				'terms'		=> MF_CURRENT_FAIRE,
 				'operator'	=> 'IN',
 			)
 		);

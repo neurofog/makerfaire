@@ -302,7 +302,7 @@ if ($type == 'entity') {
 		$stop = get_post_meta(get_the_ID(), 'mfei_stop', true );
 
 		// Really? We need a better data structure here... 
-		if ( $faire == $GLOBALS['current_faire'] ) {
+		if ( $faire == MF_CURRENT_FAIRE ) {
 			if ( $day == 'Saturday' ) {
 				$date = '5/17/2013';
 			} elseif ( $day == 'Sunday' ) {

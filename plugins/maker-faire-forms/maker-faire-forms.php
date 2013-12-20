@@ -343,7 +343,7 @@ class MAKER_FAIRE_FORM {
 
 		// Maker Export
 		if ( isset( $_GET['maker_csv'] ) ) {
-			$options['filters']['faire'] = $GLOBALS['current_faire']; // Only export the latest faire
+			$options['filters']['faire'] = MF_CURRENT_FAIRE; // Only export the latest faire
 			$this->build_comments_export( $options );
 		}
 	
@@ -2441,7 +2441,7 @@ class MAKER_FAIRE_FORM {
 		?>
 		<div class="wrap" id="iscic">
 			<?php echo screen_icon(); ?>
-			<h2><?php echo wpcom_vip_get_term_by( 'slug', $GLOBALS['current_faire'], 'faire')->name; ?>
+			<h2><?php echo wpcom_vip_get_term_by( 'slug', MF_CURRENT_FAIRE, 'faire')->name; ?>
 				<div style="font-size:75%">Report: View Project Images</div>
 			</h2>
 			<h3>Total: <?php echo intval( count( $projects['exhibit'] ) + count( $projects['performer'] ) + count( $projects['presenter'] ) ); ?> Proposed, Waiting for Info and Accepted Projects</h3>
@@ -2518,7 +2518,7 @@ class MAKER_FAIRE_FORM {
 			<?php echo screen_icon(); ?>
 			<h2>Maker Faire Reports</h2>
 			<div style="width:45%; float:left">
-				<h3><?php echo wpcom_vip_get_term_by( 'slug', $GLOBALS['current_faire'], 'faire')->name; ?> Stats</h3>
+				<h3><?php echo wpcom_vip_get_term_by( 'slug', MF_CURRENT_FAIRE, 'faire')->name; ?> Stats</h3>
 				<?php echo mf_count_post_statuses( 'table' ); ?>
 			<h1 style="margin-top:20px;">Sync Status with JDB</h1>
 			Syncs 100 applications at a time.<br />To do a full sync start at 0 and increase by 100 until you're done.
@@ -3440,7 +3440,7 @@ class MAKER_FAIRE_FORM {
 		$args = array(
 			'posts_per_page' => 1999,
 			'post_type' 	 => 'mf_form',
-			'faire' 		 => $GLOBALS['current_faire'],
+			'faire' 		 => MF_CURRENT_FAIRE,
 			'type'			 => 'presenter'
 		);
 
@@ -3644,7 +3644,7 @@ class MAKER_FAIRE_FORM {
 	public function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = '' ) {
 
 		if ( empty( $faire) )
-			$faire = $GLOBALS['current_faire'];
+			$faire = MF_CURRENT_FAIRE;
 
 		$args = array(
 			'posts_per_page' => 1999,
@@ -3843,7 +3843,7 @@ class MAKER_FAIRE_FORM {
 			'posts_per_page' => intval( $length ),
 			'offset'         => intval( $offset ),
 			'post_type'      => 'mf_form',
-			'faire'			 => $GLOBALS['current_faire'],
+			'faire'			 => MF_CURRENT_FAIRE,
 		);
 
 		$ps      = new WP_Query( $args );
@@ -3899,7 +3899,7 @@ class MAKER_FAIRE_FORM {
 	public function add_to_maker_cpt( $maker, $faire_slug = '' ) {
 
 		if ( empty( $faire_slug ) )
-			$faire_slug = $GLOBALS['current_faire'];
+			$faire_slug = MF_CURRENT_FAIRE;
 
 		// Setup a array of messages
 		$messages = array(

@@ -32,7 +32,7 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
                 'post_type'     => 'event-items',
                 'orderby'       => 'meta_value', 
                 'meta_key'      => 'mfei_start',
-                'faire'         => $GLOBALS['current_faire'],
+                'faire'         => MF_CURRENT_FAIRE,
                 'order'         => 'asc',
                 'posts_per_page'=> '30',
                 'meta_query' => array(
@@ -93,7 +93,7 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
                 'post_type'     => 'event-items',
                 'orderby'       => 'meta_value', 
                 'meta_key'      => 'mfei_start',
-                'faire'         => $GLOBALS['current_faire'],
+                'faire'         => MF_CURRENT_FAIRE,
                 'order'         => 'asc',
                 'posts_per_page'=> '30',
                 'meta_query' => array(
