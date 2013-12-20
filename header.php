@@ -6,7 +6,7 @@
 
 	<title><?php bloginfo('name'); ?> | <?php is_front_page() ? bloginfo('description') : wp_title(''); ?></title>
 
-	<?php if ( get_post_type == 'maker' ) {
+	<?php if ( get_post_type() == 'maker' ) {
 		echo '<meta name="robots" content="noindex, follow">';
 		} 
 	?>
