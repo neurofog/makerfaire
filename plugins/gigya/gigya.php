@@ -138,77 +138,27 @@ class Make_Gigya {
 			// First we must verify this request is even a valid request from Gigya
 			if ( $this->verify_user( $_POST['object']['UID'], $_POST['object']['signatureTimestamp'], $_POST['object']['UIDSignature'] ) ) {
 
-				// Pass our User Info sent from Gigya
-				$user = ( is_array( $_POST['object']['profile'] ) ) ? $_POST['object']['profile'] : '';
-
-				// Check if our users are already cached
-				$users = wp_cache_get( 'mf_user_' . md5( sanitize_text_field( $_POST['object']['UID'] ) ) );
-
-				// If there is no cache set, we'll run the query again and cache it.
-				if ( $users == false ) {
-					// Query our makers list and see if a maker exists
-					$query_params = array(
-						'post_type' => 'maker',
-						'meta_key' => 'guid',
-						'meta_value' => sanitize_text_field( $_POST['object']['UID'] ),
-					);
-					$users = new WP_Query( $query_params );
-
-					// Save the results to the cache
-					wp_cache_set( 'mf_user_' . md5( sanitize_text_field( $_POST['object']['UID'] ) ), $users, '', 86400 ); // Since we are caching each user, might as well hold onto it for 24 hours.
-				}
+				// Search for a maker and return them or false
+				$users = $this->search_for_maker( $_POST['object']['UID'] );
 
 				// Check if a user already exists, if not we'll create one.
-				if ( $users->posts ) {
-					update_post_meta( absint( $users->posts[0]->ID ), 'last_login', date( 'm/d/Y g:i:s a', time() ) );
+				if ( $users ) {
+					update_post_meta( absint( $users[0]->ID ), 'last_login', date( 'm/d/Y g:i:s a', time() ) );
 
 					$results = array(
 						'loggedin' => true,
 						'message' => 'Login Successful!',
-						'maker' => absint( $users->posts[0]->ID ),
+						'maker' => absint( $users[0]->ID ),
 					);
 
 				// User didn't exist, let's make one.
 				} else {
 
-					// Handle our user name
-					if ( ! empty( $user['firstName'] ) && ! empty( $user['lastName'] ) ) {
-						$user_name = $user['firstName'] . ' ' . $user['lastName'];
-					} elseif ( ! empty( $user['firstName'] ) && empty( $user['lastName'] ) ) {
-						$user_name = $user['firstName'];
-					} elseif ( empty( $user['firstName'] ) && empty( $user['lastName'] ) && ! empty( $user['nickname'] ) ) {
-						$user_name = $user['nickname'];
-					} else {
-						$user_name = 'Undefined Username';
-					}
+					// Pass our User Info sent from Gigya
+					$user = ( is_array( $_POST['object']['profile'] ) ) ? $_POST['object']['profile'] : '';
 
-					// Our user doesn't exist, that means we need to sync them up, create a maker account and log them in.
-					$maker = array(
-						'post_title' => sanitize_text_field( $user_name ),
-						'post_content' => ( ! empty( $user['bio'] ) ) ? wp_filter_post_kses( $user['bio'] ) : '',
-						'post_status' => 'publish',
-						'post_type' => 'maker',
-					);
-					$maker_id = wp_insert_post( $maker );
-
-					// We'll want to add some custom fields. Let's do that.
-					// ****************************************************
-					// Add the maker email
-					$user_email = ( isset( $user['email'] ) && ! empty( $user['email'] ) ) ? $user['email'] : '';
-					update_post_meta( absint( $maker_id ), 'email', sanitize_email( $user_email ) );
-
-					// Add the maker photo
-					$user_photo = ( isset( $user['photoURL'] ) && ! empty( $user['photoURL'] ) ) ? $user['photoURL'] : '';
-					update_post_meta( absint( $maker_id ), 'photo_url', esc_url( $user_photo ) );
-
-					// Add the maker website field, even though this field will be blank on creation
-					update_post_meta( absint( $maker_id ), 'website', '' );
-
-					// Add the maker video field, even though this field will be blank on creation
-					update_post_meta( absint( $maker_id ), 'video', '' );
-
-					// Add the Maker Gigya ID
-					update_post_meta( absint( $maker_id ), 'guid', sanitize_text_field( $_POST['object']['UID'] ) );
+					// Create the maker and return their ID
+					$maker_id = $this->create_maker( $user );
 
 					// Report our status to pass back to the modal window
 					if ( is_wp_error( $maker_id ) ) {
@@ -240,6 +190,87 @@ class Make_Gigya {
 
 		// Return our results and handle them in the Ajax callback
 		die( json_encode( $results ) );
+	}
+
+
+	/**
+	 * Searches the Makers lists and locates a usr based on their UID
+	 * @param  string $uid The user ID from Gigya
+	 * @return object
+	 *
+	 * @since  HAL 9000
+	 */
+	private function search_for_maker( $uid ) {
+		// Stick a hashed version of our usr ID for wp cache
+		$user_hash = md5( sanitize_text_field( $uid ) );
+		
+		// Check if our users are already cached
+		$users = wp_cache_get( 'mf_user_' . $user_hash );
+
+		// If there is no cache set, we'll run the query again and cache it.
+		if ( $users == false ) {
+			// Query our makers list and see if a maker exists
+			$query_params = array(
+				'post_type' => 'maker',
+				'meta_key' => 'guid',
+				'meta_value' => sanitize_text_field( $_POST['object']['UID'] ),
+			);
+			$users = new WP_Query( $query_params );
+
+			// Save the results to the cache
+			wp_cache_set( 'mf_user_' . $user_hash, $users, '', 86400 ); // Since we are caching each user, might as well hold onto it for 24 hours.
+		}
+
+		return $users->posts;
+	}
+
+
+	/**
+	 * Creates a new maker in the makers listings and returns the makers ID
+	 * @param  array $user The data passed from Gigya for use in the maker creation
+	 * @return integer
+	 */
+	private function create_maker( $user ) {
+		// Handle our user name
+		if ( ! empty( $user['firstName'] ) && ! empty( $user['lastName'] ) ) {
+			$user_name = $user['firstName'] . ' ' . $user['lastName'];
+		} elseif ( ! empty( $user['firstName'] ) && empty( $user['lastName'] ) ) {
+			$user_name = $user['firstName'];
+		} elseif ( empty( $user['firstName'] ) && empty( $user['lastName'] ) && ! empty( $user['nickname'] ) ) {
+			$user_name = $user['nickname'];
+		} else {
+			$user_name = 'Undefined Username';
+		}
+
+		// Our user doesn't exist, that means we need to sync them up, create a maker account and log them in.
+		$maker = array(
+			'post_title' => sanitize_text_field( $user_name ),
+			'post_content' => ( ! empty( $user['bio'] ) ) ? wp_filter_post_kses( $user['bio'] ) : '',
+			'post_status' => 'publish',
+			'post_type' => 'maker',
+		);
+		$maker_id = wp_insert_post( $maker );
+
+		// We'll want to add some custom fields. Let's do that.
+		// ****************************************************
+		// Add the maker email
+		$user_email = ( isset( $user['email'] ) && ! empty( $user['email'] ) ) ? $user['email'] : '';
+		update_post_meta( absint( $maker_id ), 'email', sanitize_email( $user_email ) );
+
+		// Add the maker photo
+		$user_photo = ( isset( $user['photoURL'] ) && ! empty( $user['photoURL'] ) ) ? $user['photoURL'] : '';
+		update_post_meta( absint( $maker_id ), 'photo_url', esc_url( $user_photo ) );
+
+		// Add the maker website field, even though this field will be blank on creation
+		update_post_meta( absint( $maker_id ), 'website', '' );
+
+		// Add the maker video field, even though this field will be blank on creation
+		update_post_meta( absint( $maker_id ), 'video', '' );
+
+		// Add the Maker Gigya ID
+		update_post_meta( absint( $maker_id ), 'guid', sanitize_text_field( $_POST['object']['UID'] ) );
+
+		return $maker_id;
 	}
 
 
