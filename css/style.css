@@ -247,8 +247,9 @@ body.home .stage3 .top-content .span4 h2 a {
 }
 .footer_copyright {
   font-size: 12px  !important;
-  line-height: 20px  !important;
+  line-height: 16px  !important;
   font-weight: normal !important;
+  margin-bottom: 0px;
 }
 .sidebar-bordered {
   border: 1px solid #d7d7d7;
