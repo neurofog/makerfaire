@@ -187,7 +187,7 @@
 		public function __construct() {
 
 			// Define our current faire
-			$this->current_faire = $GLOBALS['current_faire'];
+			$this->current_faire = MF_CURRENT_FAIRE;
 
 			// Load our admin page
 			add_action( 'admin_menu', array( $this, 'add_menu_page' ) );

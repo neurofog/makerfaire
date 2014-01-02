@@ -1,4 +1,5 @@
-<script>
+<div class="wrapper hide">
+    <script>
     
     // Count how many presenters we have listed
     num = <?php echo intval(count($this->form['data[s2][presenter_name]'])); ?>;
@@ -352,3 +353,4 @@
 <!--[if lt IE 9]>
     </div>
 <![endif]-->
+</div>

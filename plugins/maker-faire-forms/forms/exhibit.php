@@ -1,3 +1,4 @@
+<div class="wrapper hide">
 <script>
 	
 	// Count how many presenters we have listed
@@ -557,7 +558,7 @@
 		</div>
 		
 		<div class="input">
-            <label>If you are accepted, will this be your first time participating in Maker Faire?</label>
+            <label>If you are accepted, will this be your first time participating in Maker Faire? *</label>
             <?php $this->radio('data[s3][first_time]', array('Yes', 'No')); ?>
         </div>
 		
@@ -618,3 +619,4 @@
 <!--[if lt IE 9]>
 	</div>
 <![endif]-->
+</div>

@@ -14,17 +14,6 @@ License:  GPL2
 * =====================================================================*/
 class MAKER_FAIRE_FORM {
 
-	/* 
-	* GIGYA API KEY
-	* =====================================================================*/
-	const GIGYA_API_KEY    = '3_nUMOBEBpLoLnfNUbwAo9FCwTqzd6vTjpVt3Ojd807EIT5IcF94eM9hoV8vcqjoe8';
-	
-	/* 
-	* GIGYA API SECRET
-	* =====================================================================*/
-	const GIGYA_SECRET_KEY = 'GlvZcbxIY6Oy7lnWJheh56DXj3wKAiG3yVqhv++VLZM=';
-
-
 	/**
 	 * The name of the current faire. This should be the title, not a slug. E.G. World Maker Faire New York 2014
 	 * This variable is used in many locations that display this name. This is simply a one location to update many kind of deal.
@@ -45,198 +34,200 @@ class MAKER_FAIRE_FORM {
 	* All Form Keys with 1/0 for Required Field
 	* =====================================================================*/
 	var $fields = array(
-			'exhibit' => array(
-				's1' => array(
-					'project_name'          => 1,
-					'private_description'   => 1,
-					'public_description'    => 1,
-					'project_photo'         => 1,
-					'project_photo_thumb'   => 0,
-					'project_website'       => 0,
-					'project_video'         => 0,
-					'food'                  => 1,
-					'food_details'          => 0,
+		'exhibit' => array(
+			's1' => array(
+				'project_name'          => 1,
+				'private_description'   => 1,
+				'public_description'    => 1,
+				'project_photo'         => 1,
+				'project_photo_thumb'   => 0,
+				'project_website'       => 0,
+				'project_video'         => 0,
+				'food'                  => 1,
+				'food_details'          => 0,
 
-					'org_type'              => 1,
-					'large_non_profit'      => 0,
+				'org_type'              => 1,
+				'large_non_profit'      => 0,
 
-					'sales'                 => 0,
-					'sales_details'         => 0,
-					'crowdsource_funding'	=> 0,
-					'cf_details'			=> 0,
-					'booth_size'            => 1,
-					'booth_size_details'    => 0,
-					'tables_chairs'         => 1,
-					'tables_chairs_details' => 0,
-					'layout'                => 0,
-					'activity'              => 0,
-					'placement'             => 0,
-					'booth_location'        => 1,
-					'booth_options'         => 0,
-					'lighting'              => 1,
-					'noise'                 => 1,
-					'power'                 => 1,
-					'what_are_you_powering' => 0,
-					'amps'                  => 0,
-					'amps_details'          => 0,
-					'internet'              => 1,
-					'radio'                 => 1,
-					'radio_frequency'       => 0,
-					'radio_details'         => 0,
-					'fire'                  => 0,
-					'hands_on'              => 0,
-					'safety_details'        => 0,
-					),
-				's2' => array(
-					'email'               => 1,
-					'name'                => 1,
-					'maker'               => 1,
+				'sales'                 => 0,
+				'sales_details'         => 0,
+				'crowdsource_funding'	=> 0,
+				'cf_details'			=> 0,
+				'booth_size'            => 1,
+				'booth_size_details'    => 0,
+				'tables_chairs'         => 1,
+				'tables_chairs_details' => 0,
+				'layout'                => 0,
+				'activity'              => 0,
+				'placement'             => 0,
+				'booth_location'        => 1,
+				'booth_options'         => 0,
+				'lighting'              => 1,
+				'noise'                 => 1,
+				'power'                 => 1,
+				'what_are_you_powering' => 0,
+				'amps'                  => 0,
+				'amps_details'          => 0,
+				'internet'              => 1,
+				'radio'                 => 1,
+				'radio_frequency'       => 0,
+				'radio_details'         => 0,
+				'fire'                  => 0,
+				'hands_on'              => 0,
+				'safety_details'        => 0,
+				),
+			's2' => array(
+				'email'               => 1,
+				'name'                => 1,
+				'maker'               => 1,
 
-					'maker_name'          => 0,
-					'maker_email'         => 0,
-					'maker_bio'           => 0,
-					'maker_twitter'		  => 0,
-					'maker_photo'         => 0,
-					'maker_photo_thumb'   => 0,
+				'maker_name'          => 0,
+				'maker_email'         => 0,
+				'maker_bio'           => 0,
+				'maker_twitter'		  => 0,
+				'maker_photo'         => 0,
+				'maker_photo_thumb'   => 0,
 
-					'm_maker_name'        => 0,
-					'm_maker_email'       => 0,
-					'm_maker_photo'       => 0,
-					'm_maker_photo_thumb' => 0,
-					'm_maker_twitter'     => 0,
-					'm_maker_bio'         => 0,
-					'm_maker_gigyaid'     => 0,
+				'm_maker_name'        => 0,
+				'm_maker_email'       => 0,
+				'm_maker_photo'       => 0,
+				'm_maker_photo_thumb' => 0,
+				'm_maker_twitter'     => 0,
+				'm_maker_bio'         => 0,
+				'm_maker_gigyaid'     => 0,
 
-					'group_name'          => 0,
-					'group_bio'           => 0,
-					'group_twitter'		  => 0,
-					'group_photo'         => 0,
-					'group_photo_thumb'   => 0,
-					'group_website'       => 0,
+				'group_name'          => 0,
+				'group_bio'           => 0,
+				'group_twitter'		  => 0,
+				'group_photo'         => 0,
+				'group_photo_thumb'   => 0,
+				'group_website'       => 0,
 
-					'phone1'              => 1,
-					'phone1_type'         => 1,
-					'phone2'              => 0,
-					'phone2_type'         => 0,
+				'phone1'              => 1,
+				'phone1_type'         => 1,
+				'phone2'              => 0,
+				'phone2_type'         => 0,
 
-					'private_address'     => 1,
-					'private_address2'    => 0,
-					'private_city'        => 1,
-					'private_state'       => 0,
-					'private_zip'         => 0,
-					'private_country'     => 1
-					),
-				's3' => array(
-					'supporting_documents' => 0,
-					'references'           => 0,
-					'referrals'            => 0,
-					'hear_about'           => 0,
-					'first_time'           => 1,
-					'anything_else'        => 0,
-				)
+				'private_address'     => 1,
+				'private_address2'    => 0,
+				'private_city'        => 1,
+				'private_state'       => 0,
+				'private_zip'         => 0,
+				'private_country'     => 1
+				),
+			's3' => array(
+				'supporting_documents' => 0,
+				'references'           => 0,
+				'referrals'            => 0,
+				'hear_about'           => 0,
+				'first_time'           => 1,
+				'anything_else'        => 0,
+			)
+		),
+		'performer' => array(
+			's1' => array(
+				'performer_name'        => 1,
+				'private_description'   => 1,
+				'length'                => 0,
+				'public_description'    => 1,
+				'performer_website'     => 0,
+				'performer_photo'       => 1,
+				'performer_photo_thumb' => 0,
+				'performer_video'       => 0,
+				'performance_time'      => 1,
+				'schedule_comments'     => 0,
+				'equipment'             => 0,
+				'performer_count'       => 1,
+				'compensation_type'     => 0,
+				'compensation'          => 0,
+				'guest_tickets'         => 1,
 			),
-			'performer' => array(
-				's1' => array(
-					'performer_name'        => 1,
-					'private_description'   => 1,
-					'length'                => 0,
-					'public_description'    => 1,
-					'performer_website'     => 0,
-					'performer_photo'       => 1,
-					'performer_photo_thumb' => 0,
-					'performer_video'       => 0,
-					'performance_time'      => 1,
-					'schedule_comments'     => 0,
-					'equipment'             => 0,
-					'performer_count'       => 1,
-					'compensation_type'     => 0,
-					'compensation'          => 0,
-					'guest_tickets'         => 1,
-				),
-				's2' => array(
-					'name'             => 1,
-					'email'            => 1,
+			's2' => array(
+				'name'             => 1,
+				'email'            => 1,
 
-					'phone1'           => 1,
-					'phone1_type'      => 1,
-					'phone2'           => 0,
-					'phone2_type'      => 0,
-					'onsite_phone'     => 0,
+				'phone1'           => 1,
+				'phone1_type'      => 1,
+				'phone2'           => 0,
+				'phone2_type'      => 0,
+				'onsite_phone'     => 0,
 
-					'private_address'  => 1,
-					'private_address2' => 0,
-					'private_city'     => 1,
-					'private_state'    => 0,
-					'private_zip'      => 0,
-					'private_country'  => 1,
-				),
-				's3' => array(
-					'first_makerfaire' => 0,
-					'exhibit'          => 0,
-					'promotion'        => 0,
-					'additional_info'  => 0,
-				)
+				'private_address'  => 1,
+				'private_address2' => 0,
+				'private_city'     => 1,
+				'private_state'    => 0,
+				'private_zip'      => 0,
+				'private_country'  => 1,
 			),
-			'presenter' => array(
-				's1' => array(
-					'presentation_type'        => 1,
-					'private_description'	   => 0,
-					'length_presentation'	   => 0,
-					'availablity'              => 0,
-					'special_requests'         => 0,
-					'presentation_name'        => 1,
-					'short_description'        => 1,
-					'long_description'		   => 1,
-					'presentation_photo'       => 1,
-					'presentation_photo_thumb' => 0,
-					'presentation_website'     => 0,
-					'video'                    => 0,
-				),
-				's2' => array(
-					'name'                  => 1,
-					'email'                 => 1,
-					'phone1'                => 1,
-					'phone1_type'           => 0,
-					'phone2'                => 0,
-					'phone2_type'           => 0,
-
-					'private_address'       => 1,
-					'private_address2'      => 0,
-					'private_city'          => 1,
-					'private_state'         => 0,
-					'private_zip'           => 0,
-					'private_country'       => 1,
-
-					'presenter_name'         => 1,
-					'presenter_email'        => 1,
-					'presenter_bio'          => 1,
-					'presenter_org'          => 0,
-					'presenter_twitter'		 => 0,
-					'presenter_previous'	 => 0,
-					'presenter_title'        => 0,
-					'presenter_onsite_phone' => 1,
-					'presenter_photo'        => 1,
-					'presenter_photo_thumb'  => 0,
-					'presenter_gigyaid'      => 0,
-				),
-				's3' => array(
-					'maker_ask'        => 0,
-					'first_makerfaire' => 0,
-					'exhibit'          => 0,
-					'promotion'        => 0,
-					'additional_info'  => 0,
-				)
+			's3' => array(
+				'first_makerfaire' => 0,
+				'exhibit'          => 0,
+				'promotion'        => 0,
+				'additional_info'  => 0,
 			),
-			'makerprofile' => array()
-		);
-	/* 
-	* Default MakerFaire - PHASE 2 - MAKE THIS A SETTINGS OPTION
-	* =====================================================================*/
-	var $maker_faire = '2014_bayarea';
+		),
+		'presenter' => array(
+			's1' => array(
+				'presentation_type'        => 1,
+				'private_description'	   => 0,
+				'length_presentation'	   => 0,
+				'availablity'              => 0,
+				'special_requests'         => 0,
+				'presentation_name'        => 1,
+				'short_description'        => 1,
+				'long_description'		   => 1,
+				'presentation_photo'       => 1,
+				'presentation_photo_thumb' => 0,
+				'presentation_website'     => 0,
+				'video'                    => 0,
+			),
+			's2' => array(
+				'name'                  => 1,
+				'email'                 => 1,
+				'phone1'                => 1,
+				'phone1_type'           => 0,
+				'phone2'                => 0,
+				'phone2_type'           => 0,
+
+				'private_address'       => 1,
+				'private_address2'      => 0,
+				'private_city'          => 1,
+				'private_state'         => 0,
+				'private_zip'           => 0,
+				'private_country'       => 1,
+
+				'presenter_name'         => 1,
+				'presenter_email'        => 1,
+				'presenter_bio'          => 1,
+				'presenter_org'          => 0,
+				'presenter_twitter'		 => 0,
+				'presenter_previous'	 => 0,
+				'presenter_title'        => 0,
+				'presenter_onsite_phone' => 1,
+				'presenter_photo'        => 1,
+				'presenter_photo_thumb'  => 0,
+				'presenter_gigyaid'      => 0,
+			),
+			's3' => array(
+				'maker_ask'        => 0,
+				'first_makerfaire' => 0,
+				'exhibit'          => 0,
+				'promotion'        => 0,
+				'additional_info'  => 0,
+			),
+		),
+		'makerprofile' => array()
+	);
+
 	/* 
 	* Default Form Type
 	* =====================================================================*/
 	var $type        = 'exhibit';
+
+	/**
+	 * Faire internal code
+	 */
+	var $maker_faire = '2014_bayarea';
 
 	/* 
 	* Default Form Values
@@ -244,15 +235,10 @@ class MAKER_FAIRE_FORM {
 	var $form        = array(
 		'id'          => 0,
 		'uid'         => 0,
-		'maker_faire' => '2014_bayarea',
+		'maker_faire' => '2014_bayarea', // For whatever lame reason we cannot use the maker_faire variable here.
 		'tags'        => array(),
 		'cats'        => array()
 	);
-
-	/* 
-	* GIGYA USER
-	* =====================================================================*/
-	var $user;
 
 	/* 
 	* Post Meta save for Columns View
@@ -357,7 +343,7 @@ class MAKER_FAIRE_FORM {
 
 		// Maker Export
 		if ( isset( $_GET['maker_csv'] ) ) {
-			$options['filters']['faire'] = $GLOBALS['current_faire']; // Only export the latest faire
+			$options['filters']['faire'] = MF_CURRENT_FAIRE; // Only export the latest faire
 			$this->build_comments_export( $options );
 		}
 	
@@ -511,8 +497,6 @@ class MAKER_FAIRE_FORM {
 	* @access public
 	* =====================================================================*/
 	public function add_menus() {
-		add_submenu_page( 'edit.php?post_type=mf_form', 'Add Maker', 'Add Maker', 'edit_others_posts', 'isc_mm_add_maker', array( &$this, 'show_add_maker_page' ) );
-		add_submenu_page( 'edit.php?post_type=mf_form', 'List Makers', 'List Makers', 'edit_others_posts', 'isc_mm_list_makers', array( &$this, 'show_list_makers_page' ) );
 		add_submenu_page( 'edit.php?post_type=mf_form', 'Project Images', 'Project Images', 'edit_others_posts', 'mf_project_images', array( &$this, 'show_project_images' ) );
 		add_submenu_page( 'edit.php?post_type=mf_form', 'Reports', 'Reports', 'edit_others_posts', 'mf_reports', array( &$this, 'show_reports_page' ) );
 	}
@@ -953,7 +937,7 @@ class MAKER_FAIRE_FORM {
 				
 			$cont = array(
 				'm_maker_email', 
-				'm_maker_gigyaid', 
+				'm_maker_gigyaid',
 				'm_maker_photo', 
 				'm_maker_bio',
 				'presenter_email',
@@ -1368,7 +1352,7 @@ class MAKER_FAIRE_FORM {
 		if ( get_post_type( $id ) != 'mf_form' )
 			return false;
 
-		if ( empty( $_POST ) || ( ! isset( $_POST['mf_form'], $_POST['form_type'] ) && isset( $this->fields[ $_POST['form_type'] ] ) ) || isset( $_POST['mf_updated'] ) )
+		if ( empty( $_POST ) || ( ! isset( $_POST['mf_form'] ) && isset( $_POST['form_type'] ) && isset( $this->fields[ $_POST['form_type'] ] ) ) || isset( $_POST['mf_updated'] ) )
 			return false;
 
 		// Set some variables yo.
@@ -2113,7 +2097,7 @@ class MAKER_FAIRE_FORM {
 		add_post_meta( $pid, '_mf_form_type', $t );
 		add_post_meta( $pid, 'mf_gigya_id',  $r['uid'] );
 		wp_set_object_terms( $pid, $t, 'type' );
-		wp_set_object_terms( $pid, esc_html( $this->$faire_friendly_name ), 'faire' );
+		wp_set_object_terms( $pid, esc_html( $this->faire_friendly_name ), 'faire' );
 
 		return $pid;
 	}
@@ -2423,8 +2407,6 @@ class MAKER_FAIRE_FORM {
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'mff_js',             plugins_url( 'assets/js/mff.js', __FILE__ ) );
 		wp_enqueue_script( 'mff_jquery_form_js', plugins_url( 'assets/js/jquery.form.js', __FILE__ ) );
-		wp_enqueue_script( 'mff_gigya',          'http://cdn.gigya.com/JS/socialize.js?apikey='.self::GIGYA_API_KEY );
-		wp_enqueue_script( 'mff_gigya_login',    plugins_url( 'assets/js/gigya-login.js', __FILE__ ) );
 
 		wp_enqueue_style( 'mff_css', plugins_url( 'assets/css/style.css', __FILE__ ) );
 	}
@@ -2445,224 +2427,8 @@ class MAKER_FAIRE_FORM {
 
 		wp_enqueue_style( 'mff_css', plugins_url( 'assets/css/style.css', __FILE__ ) );
 	}
-
-	/* 
-	* Searches and retrieves data from Gigya's Accounts Storage using an SQL-like query.
-	*
-	* @access public
-	* @param string $query An associative array of key/value to search
-	* @return array An array users or empty array
-	* =====================================================================*/
-	public function gigya_search_users( $query = '' ) {
-		// include the gigya php sdk
-		require_once ( __DIR__ . '/inc/GSSDK.php' );
-		require_once ( __DIR__ . '/inc/GSSDK-WP.php' );
-
-		$request = new GSRequestWP( self::GIGYA_API_KEY, self::GIGYA_SECRET_KEY, 'accounts.search' );
-		$request->setParam( 'query', "{$query}" );
-		$response = $request->send();
-
-		$response_array = array();
-		$users = array();
-		$user_count = 0;
-
-		if ( $response->getErrorCode() == 0 ) {
-			$response_array = json_decode( $response->getResponseText(), true );
-			$user_count = isset( $response_array['totalCount'] ) ? $response_array['totalCount'] : 0;
-			$users = isset( $response_array['results'] ) ? $response_array['results'] : array();
-		} else {
-			//error_log( $response->getLog() );
-			return array();
-		}
-
-		return $users;
-	}
-	/* 
-	* Provides a form to create new GIGYA users
-	*
-	* @access public
-	* =====================================================================*/
-	public function show_add_maker_page() {
-
-		require_once ( __DIR__ . '/inc/GSSDK.php' );
-		require_once ( __DIR__ . '/inc/GSSDK-WP.php' );
-
-		$message = '';
-
-		if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
-
-			if ( ! isset( $_POST['isc_mm_addmaker_nonce'] ) || ! check_admin_referer( 'isc_mm_addmaker_action', 'isc_mm_addmaker_nonce' ) ) {
-				return;
-			} else {
-				$maker_user = array();
-				$defaults = array( 'firstname', 'lastname', 'email', 'bio', 'photourl', 'twitterhandle', 'websiteurl' );
-				foreach ( $defaults as $k ) {
-					if ( isset( $_POST["maker{$k}"] ) && ! empty( $_POST["maker{$k}"] ) ) {
-						$maker_user[$k] = $_POST["maker{$k}"];
-					}
-				}
-
-				// create nickname based on concatenating firstname and lastname per gigya specs
-				$maker_user['nickname'] = $maker_user['firstname'].' '.$maker_user['lastname'];
-
-
-				// if there isn't a valid email its hopelessly not gonna work
-				if ( isset( $maker_user['email'] ) && is_email( $maker_user['email'] ) ) {
-
-
-					// if there is no photourl set then use the gravatar generated image
-					if ( ! isset( $maker_user['photourl'] ) )
-						$maker_user['photourl'] = 'http://www.gravatar.com/avatar/' . md5( strtolower( $maker_user['email'] ) );
-
-
-					$profileObject = array(
-						'firstName'  => $maker_user['firstname'],
-						'lastName'   => $maker_user['lastname'],
-						'email'      => $maker_user['email'],
-						//'photoURL'   => $maker_user['photourl'],
-						//'profileURL' => $maker_user['websiteurl'],
-					);
-
-					$dataObject = array(
-						'bio'           => stripslashes( $maker_user['bio'] ),
-						//'twitterhandle' => $maker_user['twitterhandle'],
-					);
-
-					// get the regToken needed to make the actual registration request
-					$request = new GSRequestWP( self::GIGYA_API_KEY, self::GIGYA_SECRET_KEY, 'accounts.initRegistration' );
-					$response = $request->send();
-
-					$response_array = array();
-					$regToken = false;
-					if ( $response->getErrorCode() == 0 ) {
-						$response_array = json_decode( $response->getResponseText(), true );
-						$regToken = isset( $response_array['regToken'] ) ? $response_array['regToken'] : false;
-					}
-
-					// got the regToken so lets register
-					if ( $regToken !== false ) {
-						$request = new GSRequestWP( self::GIGYA_API_KEY, self::GIGYA_SECRET_KEY, 'accounts.register', null, true );
-						$request->setCAFile( __DIR__ . '/inc/cacert.pem' );
-						$request->setParam( 'email', $maker_user['email'] );
-						$request->setParam( 'finalizeRegistration', true );
-						$request->setParam( 'password', 'M@ker'.'F@ire'.'2013' );
-						$request->setParam( 'regToken', $regToken );
-						$request->setParam( 'profile', json_encode( $profileObject ) );
-						$request->setParam( 'data', json_encode( $dataObject ) );
-
-						$response       = $request->send();
-						$response_array = json_decode( $response->getResponseText(), true );
-						
-						if ( $response->getErrorCode() == 0 ) {
-							$message = '<div class="updated below-h2" id="message"><p>Maker Added</p></div>';
-						} elseif ( $response->getErrorCode() == 206002 ) {
-							$message = '<div class="updated below-h2" id="message"><p>Account Pending Verification</p></div>';
-						} else {
-							$message = '<div class="error below-h2" id="message"><p>'.esc_html( $resposne->getErrorMessage() ).'</p></div>';
-						}
-					}
-				} else {
-					$message = '<div class="error below-h2" id="message"><p>Valid Email Only.</p></div>';
-				}
-			}
-		}
-
-		?>
-		<div class="wrap" id="iscic"><?php screen_icon();?>
-			<h2>Add Maker</h2>
-			<?php echo $message; ?>
-			<div id="poststuff">
-				<div id="post-body" class="metabox-holder">
-					<div class="postbox " id="mf_addamaker" style="display: block;">
-						<h3 class="hndle"><span>Add a Maker</span></h3>
-						<div class="inside">
-							<form id="iscmmaddmaker" method="post" action="">
-								<table style="width:100%">
-									<tbody>
-										<tr>
-											<td valign="top" style="width:150px;"><label for="makerfirstname"><strong>First Name</strong></label></td>
-											<td><input style="width:100%;" name="makerfirstname" id="makerfirstname" type="text" value="<?php echo esc_attr( isset( $maker_user['firstname'] ) ? $maker_user['firstname'] : '' ); ?>" /></td>
-										</tr>
-										<tr>
-											<td valign="top" style="width:150px;"><label for="makerlastname"><strong>Last Name</strong></label></td>
-											<td><input style="width:100%;" name="makerlastname" id="makerlastname" type="text" value="<?php echo esc_attr( isset( $maker_user['lastname'] ) ? $maker_user['lastname'] : '' ); ?>" /></td>
-										</tr>
-										<tr>
-											<td valign="top" style="width:150px;"><label for="makeremail"><strong>Email</strong></label></td>
-											<td><input style="width:100%;" name="makeremail" id="makeremail" type="text" value="<?php echo esc_attr( isset( $maker_user['email'] ) ? $maker_user['email'] : '' ); ?>" /></td>
-										</tr>
-										<tr>
-											<td valign="top" style="width:150px;"><label for="makerbio"><strong>Bio</strong></label></td>
-											<td><textarea style="width:100%;"  name="makerbio" id="makerbio" cols="50" rows="3"><?php echo esc_textarea( isset( $maker_user['bio'] ) ? stripslashes( $maker_user['bio']) : '' ); ?></textarea></td>
-										</tr>
-									</tbody>
-								</table>
-								<p class="submit"><input type="submit" id="isc_mm_addmaker_now" name="isc_mm_addmaker_now" value="Create Maker Now" class="button button-primary button-large" /></p>
-								<?php wp_nonce_field( 'isc_mm_addmaker_action', 'isc_mm_addmaker_nonce' ); ?>
-							</form>
-						</div><!--inside-->
-					</div><!--postbox-->
-				</div><!--post-body-->
-			</div><!--poststuff-->
-		</div><!--wrap-->
-		<?php
-	}
-	/* 
-	* List all makers in a table
-	*
-	* @access public
-	* =====================================================================*/
-	public function show_list_makers_page() {
 	
-		$makers = $this->gigya_search_users( 'select UID, profile.firstName, profile.lastName, profile.email, created from accounts order by created limit 800' );
 
-		$makers_list = array();
-		foreach ( $makers as $maker ) {
-			$makers_list[] = $maker;
-		}
-
-		?>
-		<div class="wrap" id="iscic"><?php screen_icon();?>
-		<h2>List Makers</h2>
-		<table cellspacing="0" class="wp-list-table widefat fixed posts">
-			<thead>
-				<tr>
-					<th class="manage-column ciscfirstname desc" id="iscfirstname" scope="col">First Name</th>
-					<th class="manage-column cisclastname desc" id="isclastname" scope="col">Last Name</th>
-					<th class="manage-column ciscemail desc" id="iscemail" scope="col">Email</th>
-					<th class="manage-column ciscuid desc" id="iscuid" scope="col">UID</th>
-					<th class="manage-column cisccreated desc" id="isccreated" scope="col">Created</th>
-				</tr>
-			</thead>
-			<tfoot>
-				<tr>
-					<th class="manage-column ciscfirstname desc" scope="col">First Name</th>
-					<th class="manage-column cisclastname desc" scope="col">Last Name</th>
-					<th class="manage-column ciscemail desc" scope="col">Email</th>
-					<th class="manage-column ciscuid desc" scope="col">UID</th>
-					<th class="manage-column cisccreated desc" scope="col">Created</th>
-				</tr>
-			</tfoot>
-			<tbody id="the-list">
-				<?php
-					foreach ( $makers_list as $x => $m ) {		
-						$c = ( ( $x + 1 ) % 2) == 0 ? 'alternate' : '';
-						?>
-						<tr class="<?php echo esc_attr( $c ); ?>" id="<?php echo esc_attr( 'maker-'.$x ); ?>" valign="top">
-							<td class="iscc ciscfirstname"><?php echo esc_html( $m['profile']['firstName'] ); ?></td>
-							<td class="iscc cisclastname"><?php echo esc_html( $m['profile']['lastName'] ); ?></td>
-							<td class="iscc ciscemail"><?php echo esc_html( $m['profile']['email'] ); ?></td>
-							<td class="iscc ciscuid"><code><?php echo esc_html( $m['UID'] ); ?></code></td>
-							<td class="iscc cisccreated date"><?php echo esc_html( $m['created'] ); ?><br /></td>
-						</tr>
-						<?php
-					}
-				?>
-			</tbody>
-		</table>
-		</div><!--wrap-->
-		<?php
-	}
 	/*
 	* Output list of project images
 	*
@@ -2674,7 +2440,7 @@ class MAKER_FAIRE_FORM {
 		?>
 		<div class="wrap" id="iscic">
 			<?php echo screen_icon(); ?>
-			<h2><?php echo wpcom_vip_get_term_by( 'slug', $GLOBALS['current_faire'], 'faire')->name; ?>
+			<h2><?php echo wpcom_vip_get_term_by( 'slug', MF_CURRENT_FAIRE, 'faire')->name; ?>
 				<div style="font-size:75%">Report: View Project Images</div>
 			</h2>
 			<h3>Total: <?php echo intval( count( $projects['exhibit'] ) + count( $projects['performer'] ) + count( $projects['presenter'] ) ); ?> Proposed, Waiting for Info and Accepted Projects</h3>
@@ -2751,7 +2517,7 @@ class MAKER_FAIRE_FORM {
 			<?php echo screen_icon(); ?>
 			<h2>Maker Faire Reports</h2>
 			<div style="width:45%; float:left">
-				<h3><?php echo wpcom_vip_get_term_by( 'slug', $GLOBALS['current_faire'], 'faire')->name; ?> Stats</h3>
+				<h3><?php echo wpcom_vip_get_term_by( 'slug', MF_CURRENT_FAIRE, 'faire')->name; ?> Stats</h3>
 				<?php echo mf_count_post_statuses( 'table' ); ?>
 			<h1 style="margin-top:20px;">Sync Status with JDB</h1>
 			Syncs 100 applications at a time.<br />To do a full sync start at 0 and increase by 100 until you're done.
@@ -3673,7 +3439,7 @@ class MAKER_FAIRE_FORM {
 		$args = array(
 			'posts_per_page' => 1999,
 			'post_type' 	 => 'mf_form',
-			'faire' 		 => $GLOBALS['current_faire'],
+			'faire' 		 => MF_CURRENT_FAIRE,
 			'type'			 => 'presenter'
 		);
 
@@ -3876,13 +3642,13 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	public function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = '' ) {
 
-		if ( empty( $faire ) )
-			$faire = $GLOBALS['current_faire'];
+		if ( empty( $faire) )
+			$faire = MF_CURRENT_FAIRE;
 
 		$args = array(
 			'posts_per_page' => 1999,
 			'post_type'      => 'mf_form',
-			'faire'			 => ( isset( $filters['faire'] ) && $filters['faire'] != $faire ) ? sanitize_text_field( $filters['faire'] ) : sanitize_text_field( $faire ),
+			'faire'			 => ( $filters['faire'] != $faire ) ? sanitize_text_field( $filters['faire'] ) : sanitize_text_field( $faire ),
 			'post_status'	 => ( $app_status != 'all' ) ? sanitize_text_field( $app_status ) : '',
 			'sort'			 => $sort,
 			'type'			 => ( isset( $filters['type'] ) && $filters['type'] != 'all' ) ? sanitize_text_field( $filters['type'] ) : '',
@@ -3999,7 +3765,7 @@ class MAKER_FAIRE_FORM {
 	private function sync_jdb( $id = 0 ) {
 
 		// Setup a list of our local servers...
-		$local_server = array( 'localhost', 'make.com' );
+		$local_server = array( 'localhost', 'make.com', 'vip.dev', 'staging.makerfaire.com' );
 		
 		// Don't sync from any of our testing locations.
 		if ( isset( $_SERVER['HTTP_HOST'] ) && in_array( $_SERVER['HTTP_HOST'], $local_server ) )
@@ -4076,7 +3842,7 @@ class MAKER_FAIRE_FORM {
 			'posts_per_page' => intval( $length ),
 			'offset'         => intval( $offset ),
 			'post_type'      => 'mf_form',
-			'faire'			 => $GLOBALS['current_faire'],
+			'faire'			 => MF_CURRENT_FAIRE,
 		);
 
 		$ps      = new WP_Query( $args );
@@ -4132,7 +3898,7 @@ class MAKER_FAIRE_FORM {
 	public function add_to_maker_cpt( $maker, $faire_slug = '' ) {
 
 		if ( empty( $faire_slug ) )
-			$faire_slug = $GLOBALS['current_faire'];
+			$faire_slug = MF_CURRENT_FAIRE;
 
 		// Setup a array of messages
 		$messages = array(

@@ -55,3 +55,61 @@ function maker_updated_messages( $messages ) {
 	return $messages;
 }
 add_filter( 'post_updated_messages', 'maker_updated_messages' );
+
+
+/**
+ * Add a custom meta box to display and handle custom user data
+ * @return void
+ *
+ * @since  SPRINT NAME
+ */
+function maker_user_data() {
+	add_meta_box( 'maker-user-data', __( 'User Data', 'makerfaire' ), 'maker_user_data_mb', 'maker' );
+}
+add_action( 'add_meta_boxes', 'maker_user_data' );
+
+
+/**
+ * Ourput our post meta
+ * @param  [type] $post [description]
+ * @return [type]       [description]
+ */
+function maker_user_data_mb( $post ) {
+	wp_nonce_field( basename( __FILE__ ), 'maker_user_data' );
+	$user_data = get_post_custom( $post->ID );
+
+	if ( ! empty( $user_data ) ) {
+		foreach ( $user_data as $key => $value ) {
+			$mfei = ( $key == 'mfei_record' ) ? ' disabled="disabled"' : '';
+
+			// Hide the WP _edit_lock meta field
+			if ( $key != '_edit_lock' ) {
+				$output  = '<p><label for="' . esc_attr( $key ) . '" style="width:100px;display:inline-block">' . strtoupper( str_replace( '_', ' ', esc_html( $key ) ) ) . '</label>';
+				$output .= '<input type="text" name="user_data[' . esc_attr( $key ) . ']" id="' . esc_attr( $key ) . '" value="' . ( ! empty( $value[0] ) ? esc_attr( $value[0] ) : '' ) . '"' . $mfei . ' style="width:100%;" /></p>';
+
+				echo $output;
+			}
+		}
+	} else {
+		echo '<p>No Data Set!</p>';
+	}
+}
+
+
+function maker_save_user_data( $post_id ) {
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+		return;
+
+	if ( ! isset( $_POST['maker_user_data'] ) || ! wp_verify_nonce( $_POST['maker_user_data'], basename( __FILE__ ) ) )
+		return;
+
+	if ( ! current_user_can( 'edit_post', $post_id ) )
+		return;
+
+	if ( get_post_type() == 'maker' && isset( $_POST['user_data'] ) && ! empty( $_POST['user_data'] ) ) {
+		foreach ( $_POST['user_data'] as $key => $value ) {
+			update_post_meta( $post_id, sanitize_text_field( $key ), sanitize_text_field( $value ) );
+		}
+	}
+}
+add_action( 'save_post', 'maker_save_user_data' );
