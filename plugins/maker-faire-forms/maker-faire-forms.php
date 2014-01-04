@@ -2195,19 +2195,13 @@ class MAKER_FAIRE_FORM {
 		$m.='<p>' . esc_html( ucfirst( $r['name'] ) ) . ',</p>';
 		$m.='<p>Thanks for your interest in participating in ' . esc_html( $this->faire_friendly_name ) . '! We have received your application for: <strong>' . $app_name . '</strong> ' . $app_info . '.</p>';
 		if (  $r['form_type'] == 'presenter' ) {
-			// $m .= '<p><strong>You can update your presentation application anytime until September 1st</strong>. <em>(Note that those submitting panel presentation proposals are responsible for collecting and entering all bio information from proposed panelists—so please come back and finish your application if those fields are not yet complete.)</em></p>';
-			// $m .= '<ol><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li>';
-			// $m .= '<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
-			// $m .= '<p>(Note that those submitting panel presentation proposals are responsible for collecting and entering all bio information from proposed panelists—so please come back and finish your application if those fields are not yet complete.)</p>';
-			// $m .= '<p>You will be notified as to the status of your application no later than August 16th.</p>';
-			// $m .= '<p>If your presentation is accepted, we will do our best to accomodate your requests.  Please understand that your requests are not guaranteed. What we can provide will be confirmed in a follow-up letter after acceptance.';
-			$m .= '<p>Please note that the deadline for Maker entries has passed. However, there are several ways that you can still participate!:</p>';
-			$m .= '<ol><li>We will consider your entry as a last-minute addition. If you do not receive an acceptance letter by September 1st, we were not able to find space for your exhibit. We will do our best to notify you before then.</li>';
-			$m .= '<li>If you would like to volunteer your time and make an invaluable contribution to the success of Maker Faire, please sign up for our <a href="http://makerfaire.com/new-york-2013/maker-corps-program/">Maker Corps at Maker Faire Program</a>, which is a platform to enhance your skills and learn about the Maker Movement. You will have a behind-the-scenes experience, and help make the Greatest Show (and Tell) on Earth happen! Learn more at <a href="http://makerfaire.com">makerfaire.com</a>.</li>';
-			$m .= '<li>Plan to come as an attendee, enjoy the show and support the Maker movement by <a href="http://makerfairenyc.eventbrite.com/">purchasing your tickets</a> early!</li>';
-			$m .= '<li>Spread the word - Like us on <a href="https://www.facebook.com/worldmakerfaire">Facebook</a> and follow us on <a href="http://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts">G+</a>.</li></ol>';
-			$m .= '<p>Sabrina Merlo<br />Program Director<br />Maker Faire';
-			$m .= '<p>Maker Faire (<a href="http://makerfaire.com">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
+			$m .= '<p>You will be notified as to the status of your application no later than <strong>April 2nd</strong>.</p>';
+			$m .= '<p>If there are changes to your application (e.g. a new picture or a new panelist), you can update your presentation application as you receive new information. (Note that those submitting panel presentation proposals are responsible for collecting and entering all bio information from proposed panelists—so please come back and finish your application if those fields are not yet complete.)</p>';
+			$m .= '<ul><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li><li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ul>';
+			$m .= '<p>If your presentation is accepted, we will do our best to accommodate your requests. Please understand that your requests are not guaranteed. What we can provide will be confirmed in a follow-up letter after acceptance.</p>';
+			$m .= '<p>In the meantime, please stay in touch and spread the word: like us on <a href="https://www.facebook.com/makerfaire">Facebook</a> and follow us on <a href="https://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/104410464300110463062/posts">Google+</a></p>';
+			$m .= '<p>Sabrina Merlo<br />Program Director<br />Maker Media, Inc.</p>';
+			$m .= '<p>Maker Faire (<a href="' . esc_url( home_url() ) . '">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		} elseif ( $r['form_type'] == 'performer' ) {
 			$m .= '<p>You can update your application anytime until the Call For Makers closes:</p>';
 			$m .= '<ol><li>Log into your maker account from <a href="' . esc_url( home_url() ) . '">makerfaire.com</a>. The login link is in the blue header at the top of every page.</li>';
@@ -2257,10 +2251,10 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	private function send_maker_invite_email( $id, $emails, $r, $n ) {
 		$m = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>';
-		$m .= '<p>Thanks for your interest in participating in World Maker Faire New York 2013!</p><br />';
+		$m .= '<p>Thanks for your interest in participating in ' . esc_html( $this->faire_friendly_name ) . '!</p><br />';
 		$m .= '<p>'.esc_html( ucwords( $r['name'] ) ).' has submitted an application and indicated you were part of their exhibit or presentation. We need you to create a maker account at ';
-		$m .= '<a href="'.home_url().'/?register=1" alt="Maker Faire">makerfaire.com</a> and provide some additional details that we can include about you.</p>';
-		$m .= '<p>Create an account by selecting “Register” in the header.</p>';
+		$m .= '<a href="' . esc_url( home_url() ) . '" alt="Maker Faire">makerfaire.com</a> and provide some additional details that we can include about you.</p>';
+		$m .= '<p>Create an account by selecting "Register" in the header.</p>';
 		$m .= '<br /><p>Spread the word - Like us on <a href="http://facebook.com/makerfaire" alt="Like Maker Faire Facebook">Facebook</a> and follow us on ';
 		$m .= '<a href="https://twitter.com/#%21/makerfaire" alt="Follow Maker Faire Twitter">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts" alt="Maker Faire Google+">G+</a></p>';
 

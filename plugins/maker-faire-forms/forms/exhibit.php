@@ -220,7 +220,7 @@
         <!-- If non-profit or cause/mission -->
 		<div class="input dp-nfp <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'profit') !== false || strpos($this->form['data[s1][booth_size]'], 'mission') !== false ? '' : 'h')); ?>">
             <label>If your organization is a large non-profit or cause or mission-based organization, please tell us more about why you want to come to Maker Faire.</label>
-            <div class="info">Large non-profits and cause/mission based organizations can qualify for special reduced rates to participate in Maker Faire. Complete the rest of this form and someone from the Maker Faire team will contact you with details. This statement does not apply to makerspaces or hackerspaces, which receive free exhibit space at Maker Faire.</div>
+            <div class="info">Large non-profits and cause/mission based organizations qualify for reduced exhibit rates based on their organization’s annual budget. Please list your annual budget below, complete the rest of this form, and the Maker Faire team will contact you with details. This statement does not apply to makerspaces or hackerspaces, which receive free exhibit space at Maker Faire.</div>
             <?php $this->textarea('data[s1][large_non_profit]'); ?>
         </div>
         
@@ -231,16 +231,18 @@
             <label>Will you be selling or marketing a product at Maker Faire?</label>
             <?php $this->radio('data[s1][sales]', array('Yes', 'No')); ?>
         </div>
-            
         <div class="input dp-sales <?php echo esc_attr((strpos($this->form['data[s1][sales]'], 'Yes') !== false ? '' : 'h')); ?>">
-        	<div class="info">If you would like to sell or market your own creations at Maker Faire, you are a "Commercial Maker" and must pay a fee of $300, due September 6. All Commercial Maker spaces are tabletop or 10'x10' spaces and include 1 table and 2 chairs. Additional tables, chairs, and power can be purchased after acceptance during the payment process. Please continue to fill out this form.<br /><br />Established companies and commercial entities do not qualify as Commercial Makers. We have great opportunities available at Maker Faire for companies. Do not fill out this form, please contact <a href="mailto:sales@makerfaire.com">sales@makerfaire.com</a>.</div>
+        	<div class="info">If you would like to sell or market your own creations at Maker Faire, you are a “Commercial Maker”. Due to high demand, we have a limited amount of Commercial Maker space available. If accepted, a Commercial Maker Fee of $475 is due on May 1.<br />
+        	All Commercial Maker spaces are tabletop or 10x10 spaces and include 1 table and 2 chairs. Additional tables, chairs and power can be purchased after acceptance during the payment process. Please continue to fill out this form.<br /><br />
+        	Established companies and commercial entities do not qualify as Commercial Makers. We have great opportunities available at Maker Faire for companies. Do not fill out this form, please contact <a href="mailto:sales@makerfaire.com">sales@makerfaire.com</a>.</div>
             <label>What product will you be selling or marketing?</label>
             <div class="info">Describe and list the price range of your product(s).</div>
             <?php $this->textarea('data[s1][sales_details]'); ?>
         </div>
 
         <div class="input">
-        	<label>At Maker Faire, will you soliciting any crowdsource funding (Kickstarter, Indiegogo, PiggyBackr, etc?)</label>
+        	<label>At Maker Faire, will you solicit any crowdfunding (Kickstarter, Indiegogo, etc?)</label>
+        	<div class="info">Exhibits promoting crowdfunding campaigns are allowed a short presentation on our crowdfunding stage, and are not given a space. If you plan to showcase what you make in an interactive exhibit environment, space may be available. After selecting yes, please be as descriptive as possible in the additional text box provided, so our team knows your plans.</div>
         	<?php $this->radio( 'data[s1][crowdsource_funding]', array( 'Yes', 'No' ) ); ?>
         </div>
 
@@ -256,7 +258,7 @@
 			<div><input name="data[s1][booth_size]" type="radio" value="10x10" <?php checked($this->form['data[s1][booth_size]'] == '10x10'); ?> /> 10' x 10'</div>
 			<div id="size-10x20"><input name="data[s1][booth_size]" type="radio" value="10x20" <?php checked($this->form['data[s1][booth_size]'] == '10x20'); ?> /> 10' x 20'</div>
 			<div id="size-other"><input name="data[s1][booth_size]" type="radio" value="Other" <?php checked($this->form['data[s1][booth_size]'] == 'Other'); ?> /> Other - Tell us your space size request below</div>
-            <div class="info dp-sales h">Makers who are selling or marketing products are considered Commercial Makers and can only have a mobile, tabletop or 10x10 space for the standard $300 fee. 10x20 spaces or larger are available for sponsors of Maker Faire. Please contact: sales@makerfaire.com for more information.</div>
+            <div class="info dp-sales h">Makers who are selling or marketing products are considered Commercial Makers and can only have a mobile, tabletop or 10x10 space for the standard $475 fee. 10x20 spaces or larger are available for sponsors of Maker Faire. Please contact: sales@makerfaire.com for more information.</div>
         </div>
 		
 		<div class="input dp-size <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'Other') !== false ? '' : 'h')); ?>">
@@ -574,9 +576,11 @@
     <div class="step" id="step4">
         <h1>Step 4 of 4: Review and Submit</h1>
         <hr />
-        <p style="font-weight:bold">Please review your application for accuracy and click the numbered red steps above to make any changes. Your application is not complete until you click the "Submit Application" button below.</p>
-        <p style="font-weight:bold">Click on the section numbers above to return to your application and edit.</p>
-        <p>You can update your application anytime until the application deadline. You'll hear from us shortly afterwards. If we accept your exhibit, we'll do our best to accommodate all your requests but can't guarantee it. Exhibit details will be confirmed in a follow-up letter after acceptance.</p><p>Acceptance indicates we have accepted the concept of your exhibit; however, it does not guarantee that we can accommodate all your requests.</p> 
+        <p style="font-weight:bold">Review your application below.</p>
+        <p style="font-weight:bold">To return to your application and edit click on the section numbers above. DO NOT hit the back button on your browser.</p>
+        <p style="font-weight:bold">Your application is not complete until you click the “Submit Application” button below.</p>
+        <p>After submitting your application, you can update it anytime until the application deadline.</p>
+        <p>Entries are reviewed after the application deadline. If we accept your exhibit, we have accepted your concept. Acceptance does not guarantee that we can accommodate all of your requests. What we can provide will be confirmed in a follow-up letter before the event.</p>
 	</div>
     <!--STEP 4 END-->
     
