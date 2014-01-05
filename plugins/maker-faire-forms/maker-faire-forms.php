@@ -2152,7 +2152,7 @@ class MAKER_FAIRE_FORM {
 			$this->send_maker_email( $r, $n, $id );
 
 			//SEND EMAILS TO ADDITIONAL USERS
-			if ( $t == 'exhibit' || $t == 'presenter' ) {
+			if ( $t == 'exhibit' ) {
 				if ( ! empty( $emails ) ) {
 					foreach ( $emails as $e ) {
 						add_post_meta( $id, 'mf_additional_user', $e );
