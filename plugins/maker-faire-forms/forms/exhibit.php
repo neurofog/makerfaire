@@ -534,7 +534,7 @@
         <hr />
 		
 		<h2>Topics</h2>
-        <div>To help people find your exhibit on our website and at Maker Faire, please select a maximum of five topics below which apply to your project.</div>
+        <h3>To help people find your exhibit on our website and at Maker Faire, please select a maximum of 5 topics below which apply to your project.</h3>
         <?php include('tags.php'); ?>
 
         <div class="input">
