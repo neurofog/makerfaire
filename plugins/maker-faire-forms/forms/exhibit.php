@@ -460,7 +460,7 @@
 	                            <div class="input">
 			                        <label>Maker Twitter Handle</label>
 			                        <div class="info">Enter your twitter username (e.g. @makerfaire).</div>
-			                        <?php $this->text( 'data[s2][m_maker_twitter]' ); ?>
+			                        <input type="text" name="data[s2][m_maker_twitter][<?php echo esc_attr(($i + 1)); ?>]" value="<?php echo esc_attr($this->form['data[s2][m_maker_twitter]'][$i]); ?>" />
 			                    </div>	
 	                            <?php if($i == 0) : ?>			
 		                            <div class="input maker-photo">
