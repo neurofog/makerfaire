@@ -387,7 +387,8 @@ class MAKER_FAIRE_FORM {
 		);
 
 		$ncs = array(
-			'status'                                => 'Status',			
+			'status'                                => 'Status',
+			'faire'									=> 'Faire',		
 			'type'                                  => 'Application Type',
 			'id'                                    => 'Project ID',
 			'title'                                 => 'Project Name',
@@ -479,14 +480,16 @@ class MAKER_FAIRE_FORM {
 				echo isset( $this->post_meta[$pid]['_ef_editorial_meta_text_temporary-location'] ) ? esc_html( $this->post_meta[$pid]['_ef_editorial_meta_text_temporary-location'][0] ) : '';
 				break;
 			case 'id':
-				echo '<strong>'.intval( $pid ).'</strong>';
+				echo '<strong>' . absint( $pid ) . '</strong>';
 				break;
 			case 'type':
-				echo ( !empty( $data->form_type ) ) ? '<strong>' . esc_html( $data->form_type ) . '</strong>' : '';
+				echo ( !empty( $data->form_type ) ) ? '<strong>' . esc_html( $data->form_type ) . '</strong>' : 'Not Set';
 				break;
 			case 'maker':
 				echo ( !empty( $data->name ) ) ? esc_html( $data->name ) : '';
 				break;
+			case 'faire':
+				echo ( ! empty( $data->maker_faire ) ) ? esc_html( $data->maker_faire ) : 'undefined';
 		}
 	}
 
