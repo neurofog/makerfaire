@@ -149,7 +149,7 @@ function make_is_logged_in( maker ) {
 		if ( gigya_debug )
 			console.log( 'User Logged In.' );
 
-		jQuery( '.main-nav' ).append( '<li class="user-creds logout"><a href="#logout">Logout</a></li><li class="user-creds profile"><a href="' + make_gigya.root_path + 'makerprofile">Profile</a></li>' );
+		jQuery( '.main-nav' ).append( '<li class="user-creds logout"><a href="#logout">Logout</a></li><li class="user-creds profile"><a href="' + make_gigya.root_path + 'makerprofile">Your Account</a></li>' );
 
 		// Initialize our maker profile code
 		makerfaire_profile( maker );
