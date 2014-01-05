@@ -16,7 +16,7 @@
     
 
     <div class="no-applications" style="display:none;">
-        <h3>You currently have no new applications! <a href="<?php echo esc_url( home_url( '/newyork-2013-call-for-makers/' ) ); ?>">Apply today!</a></h3>
+        <h3>You currently have no new applications! <a href="<?php echo esc_url( home_url( '/bay-area-2014/call-for-makers/' ) ); ?>">Apply today!</a></h3>
     </div>
 
 
