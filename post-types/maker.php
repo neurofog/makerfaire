@@ -113,3 +113,55 @@ function maker_save_user_data( $post_id ) {
 	}
 }
 add_action( 'save_post', 'maker_save_user_data' );
+
+
+/**
+ * Adds the custom column titles to the maker custom post type
+ * @param  array $defaults The default column headers
+ * @return array
+ */
+function maker_faire_columns_head_maker( $defaults ) {
+	// Remove date so we can move it another location
+	unset( $defaults['date'] );
+
+	// Set up our columns
+	$defaults = array(
+		'title' => 'Maker Name',
+		'mid' 	=> 'Maker ID',
+		'gid' 	=> 'Gigya ID',
+		'email' => 'Email',
+		'date' 	=> 'Created',
+	);
+
+	return $defaults;
+}
+add_filter( 'manage_maker_posts_columns', 'maker_faire_columns_head_maker', 10 );
+
+
+/**
+ * Handles the content for each maker column
+ * @param  string  $column_name The name of the column being rendered
+ * @param  integer $maker_id    The maker id
+ * @return string
+ */
+function maker_faire_columns_content_maker( $column_name, $maker_id ) {
+
+	// Return the data for the maker ID
+	switch ( $column_name ) :
+		case 'mid' :
+			echo absint( $maker_id );
+			break;
+
+		case 'gid' :
+			$guid = get_post_meta( absint( $maker_id ), 'guid', true );
+			echo ( ! empty( $guid) ) ? esc_html( $guid ) : '';
+			break;
+
+		case 'email' :
+			$email = get_post_meta( absint( $maker_id ), 'email', true );
+			echo ( ! empty( $email ) ) ? esc_html( $email ) : '';
+			break;
+
+	endswitch;
+}
+add_filter( 'manage_maker_posts_custom_column', 'maker_faire_columns_content_maker', 10, 2 );
