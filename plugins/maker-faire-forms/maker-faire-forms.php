@@ -530,8 +530,10 @@ class MAKER_FAIRE_FORM {
 		add_meta_box( 'mf_save', 'Edit Application', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
 		add_meta_box( 'mf_logs', 'Status Changes &amp; Notifications Sent', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 
-		if ( isset( $post->post_status ) && ( $post->post_status != 'auto-draft' ) )
-			add_meta_box( 'mf_maker', 'Maker Info', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
+		if ( isset( $post->post_status ) && ( $post->post_status != 'auto-draft' ) ) {
+			add_meta_box( 'mf_maker_contact', 'Contact Info', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
+			add_meta_box( 'mf_maker_info', 'Makers', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
+		}
 	}
 
 
@@ -866,7 +868,7 @@ class MAKER_FAIRE_FORM {
 			
 			echo stripslashes( wp_filter_post_kses( $this->convert_newlines( $details_description ) ) );
 			
-		} elseif ( $args['id'] == 'mf_maker' ) { // The Maker Info Metabox
+		} elseif ( $args['id'] == 'mf_maker_contact' ) { // Display "Contact Info" for the contact of the application.
 			
 			$photo_thumb_key = $this->merge_fields( 'user_photo_thumb', $data->form_type );
 			$photo_key       = $this->merge_fields( 'user_photo', $data->form_type );
@@ -895,8 +897,24 @@ class MAKER_FAIRE_FORM {
 			<?php echo esc_html( $data->private_city.', '.$data->private_state.' '.$data->private_zip.' '.$data->private_country ); ?><br /><br />
 			<strong>Bio</strong><br />
 			<?php echo wp_kses_post( mf_convert_newlines( $bio ) ); ?>
+		
+		<?php } elseif ( $args['id'] == 'mf_maker_info' ) { 
 
-		<?php } elseif ( $args['id'] == 'mf_form_type' ) { ?>
+			$maker_type = $data->maker;
+
+			if ( $maker_type == 'One maker' ) {
+				$result = $data->maker_name;
+			} elseif ( $maker_type == 'A list of makers' ) {
+				$result = implode( '<br />', $data->m_maker_name );
+			} elseif ( $maker_type == 'A group or association' ) {
+				$result = $data->group_name;
+			} else {
+				$result = 'No maker type set! Cannot return Makers.';
+			}
+
+			echo '<strong>' . esc_html( $result ) . '</strong>';
+
+		} elseif ( $args['id'] == 'mf_form_type' ) { ?>
 			
 			<input class="mf_form_type" name="form_type" type="radio" value="exhibit" /> &nbsp; Exhibit Application &nbsp;
 			<input class="mf_form_type" name="form_type" type="radio" value="performer" /> &nbsp; Performer Application &nbsp;
