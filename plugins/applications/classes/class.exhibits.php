@@ -29,9 +29,9 @@
 			'submission' => 'refresh', // Two options. 'ajax' or 'refresh'
 			'method' => 'post', // The method to use when submitting, POST or GET.
 			'security' => array(
-				'input_id' => 'ff-submitted', // The value to set when submitting our form.
+				'input_id' => 'app-submitted', // The value to set when submitting our form.
 				'nonce_action' => 'save_form', // Action name. Should give the context to what is taking place.
-				'nonce_name' => 'formflow_nonce', // Nonce name. This is the name of the nonce hidden form field to be created.
+				'nonce_name' => 'app_nonce', // Nonce name. This is the name of the nonce hidden form field to be created.
 			),
 			'create-post' => array(  // We can setup our form to create a new post on save. YAY!
 				'form_title' => 'project_name', // The NAME FIELD of the form field we want to set as our post title

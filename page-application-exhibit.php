@@ -19,7 +19,7 @@
 
 						<?php the_content(); ?>
 
-						<?php mf_applications_display_form( $mf_application_exhibits->settings, $mf_application_exhibits->form ); ?>
+						<?php mm_applications_display_form( $mf_application_exhibits->settings, $mf_application_exhibits->form ); ?>
 
 						<div class="clear"></div>
 

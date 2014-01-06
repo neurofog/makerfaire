@@ -9,7 +9,7 @@
 	 * @version 0.1
 	 * @since   0.1
 	 */
-	class MF_Applications {
+	class MM_Application {
 
 		/**
 		 * Allow us to set the demo settings and forms. This will also enable debugging for the form outputs
@@ -18,7 +18,7 @@
 		 * @version  0.1
 		 * @since    0.1
 		 */
-		private $form_debug = false;
+		private $form_debug = true;
 
 
 		/**
@@ -28,7 +28,7 @@
 		 * @version  0.1
 		 * @since    0.1
 		 */
-		private $demo_5settings = array(
+		private $demo_settings = array(
 			'title' => 'Form Title',
 			'description' => 'This is my form description, if I want one...',
 			'label_left' => false,				// Define where if you want labels to left or stacked
@@ -39,16 +39,16 @@
 			'submission' => 'refresh', // Two options. 'ajax' or 'refresh'
 			'method' => 'post', // The method to use when submitting, POST or GET.
 			'security' => array(
-				'input_id' => 'ff-submitted', // The value to set when submitting our form.
+				'input_id' => 'app-submitted', // The value to set when submitting our form.
 				'nonce_action' => 'save_form', // Action name. Should give the context to what is taking place.
-				'nonce_name' => 'formflow_nonce', // Nonce name. This is the name of the nonce hidden form field to be created.
+				'nonce_name' => 'app_nonce', // Nonce name. This is the name of the nonce hidden form field to be created.
 			),
 			'create-post' => array(  // We can setup our form to create a new post on save. YAY!
 				'form_title' => 'first-text', // The NAME FIELD of the form field we want to set as our post title
 				'post_type' => 'page', // Pass the post type name
 				'post_status' => 'draft', // Pass the post status. If empty or not set, 'publish' is default
 				'tax_query' => array( // You can also set taxonomies when saving post. TODO: Finish this.
-					'faire' => 'world-maker-faire-new-york-2013' // Taxonomy ID or slug
+					'faire' => 'world-maker-faire-bay-area-2014' // Taxonomy ID or slug
 				),
 			),
 		);
@@ -282,7 +282,7 @@
 		 * @since   0.1
 		 */
 		public function no_items() {
-			$output = '<h3>These are not the forms you are looking for...</h3>';
+			$output  = '<h3>These are not the forms you are looking for...</h3>';
 			$output .= '<p>Whooooops! Looks like there are no forms to process..</p>';
 			$output .= '<p>Make sure you provide an array of form fields to output.</p>';
 
@@ -308,7 +308,7 @@
 				return;
 
 			// Lastly, we'll make sure something was submitted the form and check we passed the correct nonce
-			if ( ! isset( $_POST['ff-submitted'] ) && ! $_POST['ff-submitted'] && ! isset( $_POST['formflow_nonce'] ) && ! wp_verify_nonce( $_POST['formflow_nonce'], 'save_form' ) )
+			if ( ! isset( $this->settings['security']['input_id'] ) && ! $this->settings['security']['input_id'] && ! isset( $this->settings['security']['app_nonce'] ) && ! wp_verify_nonce( $this->settings['security']['app_nonce'], 'save_form' ) )
 				return;
 
 			// Check if we want our form to create a post on save.
@@ -341,7 +341,7 @@
 				return;
 
 			// Make sure we submitted our form one more time...
-			if ( ! isset( $data['ff-submitted'] ) && ! $data['ff-submitted'] && ! isset( $data['formflow_nonce'] ) && ! wp_verify_nonce( $data['formflow_nonce'], 'save_form' ) )
+			if ( ! isset( $this->settings['security']['input_id'] ) && ! $this->settings['security']['input_id'] && ! isset( $this->settings['security']['app_nonce'] ) && ! wp_verify_nonce( $this->settings['security']['app_nonce'], 'save_form' ) )
 				return;
 
 			// If we are loading an existing application for updating, we'll want to make sure the current logged in user
@@ -365,8 +365,8 @@
 			$post = array(
 				'post_title'   => ( isset( $post_info['form_title'] ) && ! empty( $post_info['form_title'] ) ) ? sanitize_text_field( $data[ $post_info['form_title'] ] ) : '',
 				'post_content' => json_encode( $data ),
-				'post_status'  => ( isset( $post_info['post_status'] ) && ! empty( $post_info['post_status'] ) ) ? esc_attr( $post_info['post_status'] ) : 'publish',
-				'post_type'	   => ( isset( $post_info['post_type'] ) && ! empty( $post_info['post_type'] ) ) ? esc_attr( $post_info['post_type'] ) : 'post',
+				'post_status'  => ( isset( $post_info['post_status'] ) && ! empty( $post_info['post_status'] ) ) ? sanitize_text_field( $post_info['post_status'] ) : 'publish',
+				'post_type'	   => ( isset( $post_info['post_type'] ) && ! empty( $post_info['post_type'] ) ) ? sanitize_text_field( $post_info['post_type'] ) : 'post',
 			);
 
 			if ( ! $this->form_debug ) {
@@ -405,7 +405,7 @@
 				foreach ( $data as $key => $value ) {
 
 					// Check that the data being passed is what we want. Rmove the rest.
-					if ( $this->in_array_r( $key, $form_fields, true ) ) {
+					if ( mm_in_array_r( $key, $form_fields, true ) ) {
 
 						// Sanitize the $key
 						$key = sanitize_title_with_dashes( $key );
@@ -1209,28 +1209,6 @@
 			<?php else : ?>
 				<?php echo $this->no_items(); ?>
 			<?php endif;
-		}
-
-
-		/**
-		 * Random little function that helps us iterate through a multidimensional array.
-		 * Works just like in_array() by searching haystack for needle using loose comparison unless strict is set but with multidimensional arrays.
-		 * @param  string|array  $needle   If needle is a string, the comparison is done in a case-sensitive manner.
-		 * @param  array         $haystack The array
-		 * @param  boolean       $strict   If the third parameter strict is set to TRUE then the in_array() function will also check the types of the needle in the haystack.
-		 * @return boolean
-		 *
-		 * @version  0.1
-		 * @since    0.1
-		 */
-		private function in_array_r( $needle, $haystack, $strict = false ) {
-		    foreach ( $haystack as $item ) {
-		        if ( ( $strict ? $item === $needle : $item == $needle ) || ( is_array( $item ) && $this->in_array_r( $needle, $item, $strict ) ) ) {
-		            return true;
-		        }
-		    }
-
-		    return false;
 		}
 
 
