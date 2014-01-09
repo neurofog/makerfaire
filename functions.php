@@ -66,12 +66,14 @@ if ( function_exists( 'wpcom_vip_sharing_twitter_via' ) ) {
 }
 
 function make_enqueue_jquery() {
+	// Styles
+	wp_enqueue_style( 'make-bootstrap', get_stylesheet_directory_uri() . '/css/bootstrap.css' );
+	wp_enqueue_style( 'make-styles', get_stylesheet_directory_uri() . '/css/style.css' );
+
+	// Scripts
 	wp_enqueue_script( 'jquery' );
 	wp_enqueue_script( 'make-bootstrap', get_stylesheet_directory_uri() . '/js/bootstrap.js', array( 'jquery' ) );
 	wp_enqueue_script( 'make-countdown', get_stylesheet_directory_uri() . '/js/jquery.countdown.js', array( 'jquery' ) );
-	wp_enqueue_style( 'make-bootstrap', get_stylesheet_directory_uri() . '/css/bootstrap.css' );
-	wp_enqueue_style( 'make-styles', get_stylesheet_directory_uri() . '/css/style.css' );
-	wp_enqueue_style( 'make', get_stylesheet_directory_uri() . '/style.css' );
 }
 add_action( 'wp_enqueue_scripts', 'make_enqueue_jquery' );
 
