@@ -251,7 +251,7 @@ class Make_Gigya {
 			'post_content' => ( ! empty( $user['bio'] ) ) ? wp_filter_post_kses( $user['bio'] ) : '',
 			'post_status' => 'publish',
 			'post_type' => 'maker',
-			'tax_input' => array( 'faire' => $current_faire->term_id ),
+			'tax_input' => array( 'faire' => absint( $current_faire->term_id ) ),
 		);
 		$maker_id = wp_insert_post( $maker );
 
