@@ -158,7 +158,7 @@ class Make_Gigya {
 					$user = ( is_array( $_POST['object']['profile'] ) ) ? $_POST['object']['profile'] : '';
 
 					// Create the maker and return their ID
-					$maker_id = $this->create_maker( $user );
+					$maker_id = $this->create_maker( $user, $_POST['object']['UID'] );
 
 					// Report our status to pass back to the modal window
 					if ( is_wp_error( $maker_id ) ) {
@@ -213,7 +213,7 @@ class Make_Gigya {
 			$query_params = array(
 				'post_type' => 'maker',
 				'meta_key' => 'guid',
-				'meta_value' => sanitize_text_field( $_POST['object']['UID'] ),
+				'meta_value' => sanitize_text_field( $uid ),
 			);
 			$users = new WP_Query( $query_params );
 
@@ -230,7 +230,7 @@ class Make_Gigya {
 	 * @param  array $user The data passed from Gigya for use in the maker creation
 	 * @return integer
 	 */
-	private function create_maker( $user ) {
+	private function create_maker( $user, $uid ) {
 		// Handle our user name
 		if ( ! empty( $user['firstName'] ) && ! empty( $user['lastName'] ) ) {
 			$user_name = $user['firstName'] . ' ' . $user['lastName'];
@@ -242,14 +242,22 @@ class Make_Gigya {
 			$user_name = 'Undefined Username';
 		}
 
+		// We need the term ID of the current faire taxonomy
+		$current_faire = wpcom_vip_get_term_by( 'slug', MF_CURRENT_FAIRE, 'faire' );
+
 		// Our user doesn't exist, that means we need to sync them up, create a maker account and log them in.
 		$maker = array(
 			'post_title' => sanitize_text_field( $user_name ),
 			'post_content' => ( ! empty( $user['bio'] ) ) ? wp_filter_post_kses( $user['bio'] ) : '',
 			'post_status' => 'publish',
 			'post_type' => 'maker',
+			'tax_input' => array( 'faire' => $current_faire->term_id ),
 		);
 		$maker_id = wp_insert_post( $maker );
+
+		// If an error happens, we want to report that back before running any post meta updates.
+		if ( is_wp_error( $maker_id ) )
+			return 0;
 
 		// We'll want to add some custom fields. Let's do that.
 		// ****************************************************
@@ -268,7 +276,7 @@ class Make_Gigya {
 		update_post_meta( absint( $maker_id ), 'video', '' );
 
 		// Add the Maker Gigya ID
-		update_post_meta( absint( $maker_id ), 'guid', sanitize_text_field( $_POST['object']['UID'] ) );
+		update_post_meta( absint( $maker_id ), 'guid', sanitize_text_field( $uid ) );
 
 		return $maker_id;
 	}
