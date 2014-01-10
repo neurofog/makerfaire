@@ -77,7 +77,7 @@ Topbar
 		</a>
 		<div class="nav-collapse">
 			<ul class="nav main-nav">
-				<li class="red"><a  class="red" href="http://makezine.com">MAKE</a></li>
+				<li><a class="red" href="http://makezine.com">MAKE</a></li>
 				<li><a href="http://makezine.com/blog/">Blog</a></li>
 				<li><a href="http://makezine.com/magazine/">Magazine</a></li>
 				<li><a href="http://makerfaire.com">Maker Faire</a></li>
