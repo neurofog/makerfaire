@@ -519,12 +519,10 @@ class MAKER_FAIRE_FORM {
 			add_meta_box( 'mf_details',   'Details',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 			add_meta_box( 'mf_logistics', 'Edit Form', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 		} else {
-			$gigya_lookup = ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?post_type=maker' ) ) . '">Lookup GIGYA ID</a>';
-			
 			add_meta_box( 'mf_form_type', 'Application Type',  array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
-			add_meta_box( 'mf_exhibit',   'Exhibit Details'.$gigya_lookup,   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'exhibit' ) );
-			add_meta_box( 'mf_performer', 'Performer Details'.$gigya_lookup, array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'performer' ) );
-			add_meta_box( 'mf_presenter', 'Presenter Details'.$gigya_lookup, array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'presenter' ) );
+			add_meta_box( 'mf_exhibit',   'Exhibit Details',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'exhibit' ) );
+			add_meta_box( 'mf_performer', 'Performer Details', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'performer' ) );
+			add_meta_box( 'mf_presenter', 'Presenter Details', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'presenter' ) );
 		}
 
 		add_meta_box( 'mf_save', 'Edit Application', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
@@ -903,16 +901,16 @@ class MAKER_FAIRE_FORM {
 			$maker_type = $data->maker;
 
 			if ( $maker_type == 'One maker' ) {
-				$result = $data->maker_name;
+				$result = esc_html( $data->maker_name ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $data->maker_name ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a>';
 			} elseif ( $maker_type == 'A list of makers' ) {
-				$result = implode( '<br />', $data->m_maker_name );
+				$result = implode( '<br />', esc_html( $data->m_maker_name ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $data->m_maker_name ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a>' );
 			} elseif ( $maker_type == 'A group or association' ) {
-				$result = $data->group_name;
+				$result = esc_html( $data->group_name ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $data->group_name ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a>';
 			} else {
 				$result = 'No maker type set! Cannot return Makers.';
 			}
 
-			echo '<strong>' . esc_html( $result ) . '</strong>';
+			echo '<strong>' . $result . '</strong>';
 
 		} elseif ( $args['id'] == 'mf_form_type' ) { ?>
 			
