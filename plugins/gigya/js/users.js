@@ -78,7 +78,7 @@ function makerfaire_profile( maker ) {
 						var valid = results.forms[ type ][ app_id ]['post_content'].replace( /\\/g, '\\\\' );
 
 						// Return our valid JSON content and extract the faire this application is assigned to.
-						// var faire = jQuery.parseJSON( valid );
+						// var faire = jQuery.parseJSON( valid ).maker_faire;
 
 						// Now let's check which faire we have and output something more readable.
 						// if ( faire === '2013_newyork' ) {
