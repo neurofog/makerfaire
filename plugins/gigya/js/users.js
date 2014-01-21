@@ -78,17 +78,17 @@ function makerfaire_profile( maker ) {
 						var valid = results.forms[ type ][ app_id ]['post_content'].replace( /\\/g, '\\\\' );
 
 						// Return our valid JSON content and extract the faire this application is assigned to.
-						var faire = jQuery.parseJSON( valid ).maker_faire;
+						// var faire = jQuery.parseJSON( valid );
 
 						// Now let's check which faire we have and output something more readable.
-						if ( faire === '2013_newyork' ) {
-							faire = 'New York 2013';
-						} else if ( faire === '2013_bayarea' ) {
-							faire = 'Bay Area 2013';
-						}
+						// if ( faire === '2013_newyork' ) {
+						// 	faire = 'New York 2013';
+						// } else if ( faire === '2013_bayarea' ) {
+						// 	faire = 'Bay Area 2013';
+						// }
 
 						// Add our application to the Prvious Applications area.
-						previous_append = '<li>' + app_id + ' - ' + results.forms[ type ][ app_id ]['post_title'] + ' (' + results.forms[ type ][ app_id ]['post_status'] + ') - ' + faire + '</li>';
+						previous_append = '<li>' + app_id + ' - ' + results.forms[ type ][ app_id ]['post_title'] + ' (' + results.forms[ type ][ app_id ]['post_status'] + ')</li>';
 						jQuery( '#previous-faire' ).find( '#' + type + ' ul' ).append( previous_append );
 					}
 				}
