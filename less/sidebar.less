@@ -16,8 +16,8 @@
 		padding-left:5px;
 	}
 	h5 {
-		text-align: center;
 		font-size:14px;
+		text-align: center;
 	}
 	.center {
 		text-align: center;
@@ -39,9 +39,6 @@
 			margin-top: -1px;
 		}
 	}
-	.bm ul li {
-		margin-right: 5px;
-	}
 	&.sponsored {
 		padding-top: 20px;
 		h3 {
@@ -58,11 +55,6 @@
 	.thumb {
 		.center;
 	}
-	.hidden {
-		h5 {
-			margin: 10px 0;
-		}
-	}
 	.count-down-sub {
 		font-size:21px;
 		font-family:"Helvetica Neue", sans-serif;
@@ -77,6 +69,90 @@
 		font-weight:400;
 		margin-bottom:10px;
 	}
+}
+
+.sidebar-bordered-nl {
+	border: 1px solid #d7d7d7;
+	border-radius: 3px;
+	margin-bottom: 20px;
+	.news-signup {
+		margin-left: 13px;
+	}
+	.control-group {
+		padding: 0 15px;
+	}
+	.hidden {
+		h5 {
+			margin: 7px 0;
+			font-size:14px;
+			text-align: left;
+		}
+	}
+	.makey {
+		margin-top: -25px;
+		margin-left: 10px;
+		margin-right: -3px;
+	}
+	h3 {
+		color: #464646;
+		margin: 10px 20px;
+		font-size: 26px;
+		text-align: right;
+		line-height: 1em;
+		font-family:"Proxima Nova", sans-serif;
+	}
+	input[type="checkbox"] {
+		margin: 0 0 3px 20px!important;
+	}
+}
+
+// SOCIAL MEDIA SPRITES
+.soc_icons {
+	margin: 0 0 0 14px;
+	display:table;
+	a {
+		margin: 0 8px 15px 0;
+	    display: block;
+		float: left;
+	}
+}
+.footer-sprite {
+	background-image:url('../images/mf_sprites.png');
+	&.ico-facebook { 
+		background-position: 0 0; 
+		width: 32px; 
+		height: 32px; 
+	} 
+	&.ico-twitter { 
+		background-position: 0 -170px; 
+		width: 32px; 
+		height: 32px; 
+	} 
+	&.ico-google-plus { 
+		background-position: 0 -68px; 
+		width: 32px; 
+		height: 32px; 
+	} 
+	&.ico-flickr { 
+		background-position: 0 -34px; 
+		width: 32px; 
+		height: 32px; 
+	} 
+	&.ico-instagram { 
+		background-position: 0 -102px; 
+		width: 32px; 
+		height: 32px; 
+	} 
+	&.ico-youtube { 
+		background-position: 0 -204px; 
+		width: 32px; 
+		height: 32px; 
+	}
+	&.ico-rss { 
+		background-position: 0 -136px; 
+		width: 32px; 
+		height: 32px; 
+	} 
 }
 
 .twitter, .adblock {
@@ -166,14 +242,4 @@ tr.time {
 }
 .separator {
 	color:#000 !important;
-}
-
-// Social Media Icons
-.bm ul {
-	margin-left:10px;
-	li {
-		display:inline;
-		margin-right:6px;
-		margin-left:0px;
-	}
 }

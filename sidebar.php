@@ -1,6 +1,6 @@
 <div class="span4">
 
-	<div class="sidebar-bordered">
+	<!-- <div class="sidebar-bordered">
 
                 <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/mr-makey.png" alt="Mr. Makey" class="makey pull-left">
                 <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/countdown.png" alt="Mr. Makey" class="counter pull-left">
@@ -27,13 +27,14 @@
                 <p class="buy-tickets"><a href="http://makerfairenyc.eventbrite.com/"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/buy-tickets.png" alt="Buy tickets for Maker Faire" class=""></a></p>
 
                 <h5 class="count-down-sub">September 21 &amp; 22<br />
-                        New York Hall of Science</h4>
+                        New York Hall of Science</h5>
                 <h5 class="count-down-sub-sub">Sat. 10 AM - 7 PM | Sun. 10 AM - 6 PM</h5>
 
-        </div>
+        </div> -->
 
-        <div class="sidebar-bordered">
+        <div class="sidebar-bordered-nl">
 
+                <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/mr-makey.png" alt="Mr. Makey" class="makey pull-left">
                 <h3>Get news and updates on all faires and calls for makers.</h3>
 
                 <form class="form-inline" action="http://makermedia.createsend.com/t/r/s/jjuruj/" method="post" id="subForm"> 
@@ -41,10 +42,10 @@
                         <input type="image" src="<?php echo get_stylesheet_directory_uri(); ?>/images/go.png" value="Go!" class="btn">
                         <div class="control-group hide hidden">
                                 <h5>Call For Makers</h5>
-                                <label for="fielddduult-0"><input id="fielddduult-0" name="cm-fo-dduult" value="621683" type="checkbox" /> Inform me About the Call for Makers</label><br>
+                                <label for="fielddduult-0"><input id="fielddduult-0" name="cm-fo-dduult" value="621683" type="checkbox" checked/> Inform me About the Call for Makers</label><br>
                                 <h5>Preferred Faire?</h5>
-                                <label for="fieldjdlthk-0"><input id="fieldjdlthk-0" name="cm-fo-jdlthk" value="188882" type="checkbox" /> Bay Area</label><br>
-                                <label for="fieldjdlthk-2"><input id="fieldjdlthk-2" name="cm-fo-jdlthk" value="188884" type="checkbox" /> New York</label><br>
+                                <label for="fieldjdlthk-0"><input id="fieldjdlthk-0" name="cm-fo-jdlthk" value="188882" type="checkbox" checked/> Bay Area</label><br>
+                                <label for="fieldjdlthk-2"><input id="fieldjdlthk-2" name="cm-fo-jdlthk" value="188884" type="checkbox" checked/> New York</label><br>
                                 <h5>Join Another Newsletter</h5>
                                 <label for="listjrsydu"><input id="listjrsydu" name="cm-ol-jrsydu" type="checkbox" /> Maker Pro Newsletter</label><br />
                                 <label for="listttihir"><input id="listttihir" name="cm-ol-ttihir" type="checkbox" /> Maker Shed</label>
@@ -60,18 +61,17 @@
                 });
 
                 </script>
-
-                <div class="bm">
-                        <ul>
-                                <li><a href="http://twitter.com/makerfaire"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/twitter1.png" alt="Maker Faire on twitter" /></a></li>
-                                <li><a href="http://youtube.com/makerfaire"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/youtube.png" alt="Maker Faire on YouTube" /></a></li>
-                                <li><a href="http://www.flickr.com/photos/tags/makerfaire/"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/flickr.png" alt="Maker Faire on Flickr" /></a></li>
-                                <li><a href="http://facebook.com/makerfaire"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/facebook.png" alt="Maker Faire on facebook" /></a></li>
-                                <li><a href="http://instagram.com/makerfaire"><img src="http://cdn.makezine.com/make/social-icons/instagram-icon-32.png" alt="MAKE on Instagram" height="32" width="32"></a></li>
-                                <li><a href="https://google.com/+MAKE/"><img src="http://cdn.makezine.com/make/google-plus-icon.jpg" alt="MAKE on Google+" height="32" width="32"></a></li>
-                                <li><a href="http://blog.makezine.com/category/events-3/maker-faire-events/feed/"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/rss.png" alt="Maker Faire News Feed" /></a></li>
-                        </ul>
-                </div>
+                <hr>
+                <div class="soc_icons">
+                        <a class="footer-sprite ico-facebook" href="http://facebook.com/makerfaire" title="Facebook" target="_blank"></a>
+                        <a class="footer-sprite ico-twitter"  href="http://twitter.com/makerfaire" title="Twitter" target="_blank"></a>
+                        <a class="footer-sprite ico-google-plus" href="https://google.com/+MAKE/" title="Google+" target="_blank"></a>
+                        <a class="footer-sprite ico-flickr" href="http://www.flickr.com/photos/tags/makerfaire/" title="Flickr" target="_blank"></a>             
+                        <a class="footer-sprite ico-instagram" href="http://instagram.com/makerfaire" title="Instagram" target="_blank"></a>  
+                        <a class="footer-sprite ico-youtube" href="http://youtube.com/makerfaire" title="Youtube" target="_blank"></a>
+                        <a class="footer-sprite ico-rss" href="http://blog.makezine.com/category/events-3/maker-faire-events/feed/" title="RSS Feed" target="_blank"></a>
+                <!-- END socialArea -->
+                </div> 
 
         </div>
 	
