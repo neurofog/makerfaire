@@ -165,7 +165,11 @@ add_shortcode( 'arrows', 'makerfaire_carousel_shortcode' );
 
 function makerfaire_data_toggle() {
 	return '<ul class="nav nav-tabs">
-		<li class="active"><a data-toggle="tab" href="#ny2012">New York 2012</a></li>
+		<li class="active"><a data-toggle="tab" href="#ny2013">New York 2013</a></li>
+		<li><a data-toggle="tab" href="#ba2013">Bay Area 2013</a></li>
+		<li><a data-toggle="tab" href="#d2013">Detroit 2013</a></li>
+		<li><a data-toggle="tab" href="#r2013">Rome 2013</a></li>
+		<li><a data-toggle="tab" href="#ny2012">New York 2012</a></li>
 		<li><a data-toggle="tab" href="#d2012">Detroit 2012</a></li>
 		<li><a data-toggle="tab" href="#ba2012">Bay Area 2012</a></li>
 		<li><a data-toggle="tab" href="#ny2011">New York 2011</a></li>
