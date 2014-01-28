@@ -30,6 +30,9 @@ include_once dirname( __FILE__ ) . '/plugins/admin-pages/current-faire/current-f
 // Sponsor Carousel
 include_once dirname( __FILE__ ) . '/plugins/public-pages/sponsor.php';
 
+// Post Locker
+include_once dirname( __FILE__ ) . '/plugins/hide-post-locker/hide-post-locker.php';
+
 
 require_once( 'taxonomies/type.php' );
 require_once( 'taxonomies/location.php' );
@@ -76,12 +79,6 @@ function make_enqueue_jquery() {
 	wp_enqueue_script( 'make-countdown', get_stylesheet_directory_uri() . '/js/jquery.countdown.js', array( 'jquery' ) );
 }
 add_action( 'wp_enqueue_scripts', 'make_enqueue_jquery' );
-
-function make_enqueue_admin_scripts() {
-	if ( get_post_type() == 'mf_form' && is_admin() )
-		wp_enqueue_script( 'make-custom-post-lock', get_stylesheet_directory_uri() . '/js/expand-post-edit.js', array( 'jquery' ) );
-}
-add_action( 'admin_enqueue_scripts', 'make_enqueue_admin_scripts' );
 
 
 function makerfaire_get_news() {
