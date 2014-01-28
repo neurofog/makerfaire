@@ -63,16 +63,17 @@ add_filter( 'post_updated_messages', 'maker_updated_messages' );
  *
  * @since  SPRINT NAME
  */
-function maker_user_data() {
+function maker_add_meta_boxes() {
 	add_meta_box( 'maker-user-data', __( 'User Data', 'makerfaire' ), 'maker_user_data_mb', 'maker' );
+	add_meta_box( 'maker-past-faires', 'Past Faires', 'maker_past_faires', 'maker', 'normal', 'default' );
 }
-add_action( 'add_meta_boxes', 'maker_user_data' );
+add_action( 'add_meta_boxes', 'maker_add_meta_boxes' );
 
 
 /**
- * Ourput our post meta
- * @param  [type] $post [description]
- * @return [type]       [description]
+ * Output our post meta
+ * @param  Object $post the post object
+ * @return string
  */
 function maker_user_data_mb( $post ) {
 	wp_nonce_field( basename( __FILE__ ), 'maker_user_data' );
@@ -96,6 +97,42 @@ function maker_user_data_mb( $post ) {
 }
 
 
+function maker_past_faires( $post ) {
+	$maker_id = get_post_meta( absint( $post->ID ), 'guid', true );
+	$apps = maker_get_apps_by_id( $maker_id );
+	$faire_names = array(
+		'2014_bayarea' => 'Maker Faire Bay Area 2014',
+		'2013_newyork' => 'World Maker Faire New York 2013',
+		'2013_bayarea' => 'Maker Faire Bay Area 2013',
+	);
+	$output = '';
+
+	if ( $apps !== false ) {
+		foreach ( $apps as $type => $application ) {
+			$output .= '<h2 class="application-type" style="border-bottom:1px solid #ccc;">' . esc_html( ucfirst( $type ) ) . '</h2>';
+			$output .= '<table class="widefat fixed"><thead style="text-align:left;background:#ddd;color:#000;"><th>Title</th><th>Status</th><th>App ID</th><th>Faire</th></thead><tbody>';
+			$i = 0;
+			// Now let's spit out the applications for this type
+			foreach ( $application as $app ) {
+				$class = ( $i++ % 2 == 1 ) ? ' class="alternate"' : '';
+				$output .= '<tr' . $class . '>';
+				$output .= '<td><a href="' . esc_url( get_permalink( absint( $app->ID ) ) ) . '">' . esc_html( $app->post_title ) . '</a></td>';
+				$output .= '<td>' . esc_html( str_replace( '-', ' ', ucfirst( $app->post_status ) ) ) . '</td>';
+				$output .= '<td>' . absint( $app->ID ) . '</td>';
+				$output .= '<td>' . esc_html( $faire_names[ $app->data->maker_faire ] ) . '</td>';
+				$output .= '</tr>';
+			}
+
+			$output .= '</tbody></table>';
+		}
+	} else {
+		$output = 'No applications found!';
+	}
+
+	echo $output;
+}
+
+
 function maker_save_user_data( $post_id ) {
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
 		return;
@@ -113,6 +150,54 @@ function maker_save_user_data( $post_id ) {
 	}
 }
 add_action( 'save_post', 'maker_save_user_data' );
+
+
+/**
+ * Featches applications based on maker ID
+ * @param  String $maker_id The Gigya ID saved to an application
+ * @return Array
+ *
+ * @since Mechani-Kong
+ */
+function maker_get_apps_by_id( $maker_id ) {
+	$applications = array(
+		'exhibit' => array(),
+		'presenter' => array(),
+		'performer' => array(),
+	);
+
+	// Find applications for the current maker
+	$args = array(
+		'post_type' => 'mf_form',
+		'post_status' => 'any',
+		'meta_query' => array(
+			'relation' => 'OR',
+			array(
+				'key' => 'mf_gigya_id',
+				'value' => sanitize_text_field( $maker_id ),
+			),
+			array(
+				'key' => 'mf_additional_user',
+				'value' => sanitize_text_field( $maker_id ),
+			),
+		),
+	);
+	$apps = new WP_Query( $args );
+
+	if ( $apps->found_posts !== 0 ) {
+		// Loop through all the applications
+		foreach ( $apps->posts as $app ) {
+			$data = json_decode( str_replace( "\'", "'", $app->post_content ) );
+			$app->data = $data;
+			$applications[ $data->form_type ][ $app->ID ] = $app;
+		}
+	} else {
+		$applications = false;
+	}
+
+	return $applications;
+
+}
 
 
 /**
