@@ -549,8 +549,8 @@ class MAKER_FAIRE_FORM {
 			$post = get_post( absint( $id ) );
 		}
 
-		$bad  = array( '&#039;', "\'", '&#8217;', '&#38;', '&#038;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;', 'u2018', 'u2019', 'u2014', 'u2022' );
-		$good = array( "'",      "'",  "'",       "&",     "&",      '"',     '"',      '–',       '>',    '...',     "'",     "'",     "—",     '•' );
+		$bad  = array( '&#039;', "\'", '&#8217;', '&#38;', '&#038;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;', 'u2018', 'u2019', 'u2014', 'u2022', 'u2026', '<br />rn' );
+		$good = array( "'",      "'",  "'",       "&",     "&",      '"',     '"',      '–',       '>',    '...',     "'",     "'",     "—",     '•',     '...',   '<br />' );
 		$data = json_decode( str_replace( $bad, $good, $post->post_content ) );
 
 		if( $args['id'] == 'mf_save' ) { 
@@ -677,7 +677,7 @@ class MAKER_FAIRE_FORM {
 			<input name="form_type" type="hidden" value="<?php echo esc_attr( $data->form_type ); ?>" />
 			<table style="width:100%">
 				<tr>
-					<td style="width:210px;" valign="top"><img src="<?php echo esc_url( wpcom_vip_get_resized_remote_image_url( $photo, 200, 200 ) ); ?>"  /></td>
+					<td style="width:210px;" valign="top"><img src="<?php echo esc_url( wpcom_vip_get_resized_remote_image_url( $photo, 200, 200 ) ); ?>" width="200" height="200" /></td>
 					<td valign="top">
 						<p><?php echo Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $main_description, "\n" ) ) ) ); ?></p>
 						<table style="width:100%">
@@ -785,64 +785,17 @@ class MAKER_FAIRE_FORM {
 								$vkey = $this->merge_fields( 'project_video', $data->form_type );
 							?>
 							<tr>
-								<td style="width:80px;" valign="middle"><strong>Event Video:</strong></td>
+								<td style="width:80px;" valign="middle"><strong>MF Video:</strong></td>
 								<td valign="top">
 									<input type="text" id="video-coverage" name="video-coverage" style="width:25%;" value="<?php echo !empty( $event_record['mfei_coverage'][0] ) ? esc_url( $event_record['mfei_coverage'][0] ) : ''; ?>" />
 									<input type="hidden" name="event-id" value="<?php echo get_the_ID(); ?>" />
 								</td>
 							</tr>
-							<tr>
-								<td style="width:80px;" valign="top"><strong>Website:</strong></td>
-								<td valign="top"><a href="<?php echo esc_url( $data->{$wkey} ); ?>" target="_blank"><?php echo esc_url( $data->{$wkey} ); ?></a></td>
-							</tr>
-							<tr>
-								<td valign="top"><strong>Video:</strong></td>
-								<?php 
-									echo ( isset( $data->project_video ) ) ? '<td valign="top"><a href="' . esc_url( $data->project_video ) . '" target="_blank">' . esc_url( $data->project_video ) . '</a></td>' : null ;
-									echo ( isset( $data->performer_video ) ) ? '<td valign="top"><a href="' . esc_url( $data->performer_video ) . '" target="_blank">' . esc_url( $data->performer_video ) . '</a></td>' : null ;
-									echo ( isset( $data->video ) ) ? '<td valign="top"><a href="' . esc_url( $data->video ) . '" target="_blank">' . esc_url( $data->video ) . '</a></td>' : '<td></td>' ;
-								?>
-							
-							</tr>
-							<tr>
-								<td style="width:80px;" valign="top"><strong>Categories:</strong></td>
-								<td valign="top">
-									<?php 
-										$cats = get_the_category();
-										$count = count($cats);
-										$i = 1;
-										if ( !empty( $cats ) ) {
-											foreach ( $cats as $cat ) {
-												echo $cat->name;
-												echo $i != $count ?  ', ': ' ';
-												$i++;
-											}
-										}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td style="width:80px;" valign="top"><strong>Tags:</strong></td>
-								<td valign="top">
-									<?php 
-										$tags = get_the_tags();
-										$count = count($tags);
-										$i = 1;
-										if ( !empty( $tags ) ) {
-											foreach ( $tags as $tag ) {
-												echo $tag->name;
-												echo $i != $count ?  ', ': ' ';
-												$i++;
-											}	
-										}
-									?>
-								</td>
-							</tr>
 							<?php if( $data->form_type == 'exhibit' ) : ?>
-							<tr>
-								<td valign="top"><strong>Commercial Maker:</strong></td>
-								<td valign="top"><?php echo esc_attr( $data->sales == '' ? 'N/A' : $data->sales ); ?></td>
-							</tr>
+								<tr>
+									<td valign="top"><strong>Commercial Maker:</strong></td>
+									<td valign="top"><?php echo esc_attr( $data->sales == '' ? 'N/A' : $data->sales ); ?></td>
+								</tr>
 							<?php endif; ?>
 							<tr>
 								<td valign="top"><strong>JDB Sync:</strong></td>
@@ -855,16 +808,8 @@ class MAKER_FAIRE_FORM {
 				<?php
 		} elseif ( $args['id'] == 'mf_details' ) { // Details Metabox
 
-			// Check if we are loading the private description or a long description
-			if ( isset( $data->private_description ) ) {
-				$details_description = $data->private_description;
-			} else if ( isset( $data->long_description ) ) {
-				$details_description = $data->long_description;
-			} else {
-				$details_description = '';
-			}
-			
-			echo stripslashes( wp_filter_post_kses( $this->convert_newlines( $details_description ) ) );
+			// Why do we have so much crap in this method? Let's break this up... because I'm losing my mind here :P
+			$this->app_details( $post, $args, $data );
 			
 		} elseif ( $args['id'] == 'mf_maker_contact' ) { // Display "Contact Info" for the contact of the application.
 			
@@ -1090,6 +1035,97 @@ class MAKER_FAIRE_FORM {
 			<?php endif;
 
 		}
+	}
+
+
+	/**
+	 * A quick solution to making the application review process easier for our team.
+	 * Originally we had all the forms displaying every where which lead to difficulties in fast reviewing
+	 * and also instances data was removed by accident. Let' pull that same data but in a static format with some interactions...
+	 * @param  Object $post The post object. Probably don't need it, but for now we'll pass it in
+	 * @param  Array  $args An array arguments for meta information of the application
+	 * @param  Array  $data All the json data saved for application
+	 * @return HTML
+	 *
+	 * @since Mechani-Kong
+	 */
+	private function app_details( $post, $args, $data ) { 
+		// Our current infrastructure forces us to use an array of fields we don't want
+		// to display. I wish I could handle the titles of the fields better and reorganize them,
+		// but due to how this system was built, that ain't happening easily :P
+		$hidden_fields = array(
+			'form_type',
+			'uid',
+			'project_name',
+			'public_description',
+			'performer_photo',
+			'performer_photo_thumb',
+			'project_photo',
+			'project_photo_thumb',
+			'maker_photo_thumb',
+			'm_maker_photo_thumb',
+			'group_photo_thumb',
+		); ?>
+		<h3 style="background:#ddd;color:#000;margin:0;position:relative;top:2px;">Application Information</h3>
+		<table class="app-details widefat fixed" style="">
+			<tbody>
+				<?php $i = 0; foreach ( $data as $key => $value ) : 
+					if ( ! in_array( $key, $hidden_fields ) ) :
+						// Pass a Pretty way to display the faire this app belongs to
+						if ( $key == 'maker_faire' )
+							$value = $args['callback'][0]->faire_friendly_name; 
+
+						if ( $key != 'email' ) : ?>
+							<tr class="<?php echo ( $i++ % 2 == 1 ) ? '' : 'alternate'; ?>">
+								<td class="field-name" valign="top" style="width:15%;font-weight:bold;"><?php echo esc_html( str_replace( '_', ' ', strtoupper( $key ) ) ); ?></td>
+								<td class="field-value" style="width:85%;"><?php echo wp_kses_post( $this->convert_content( $key, $value ) ); ?></td>
+							</tr>
+						<?php else : // We want to close our table and start a new when we hit the maker field ?>
+								</tbody>
+							</table>
+							
+							<h3 style="background:#ddd;color:#000;margin:30px 0 0;position:relative;top:2px;">Maker Information</h3>
+							<table class="app-details maker-info widefat fixed">
+								<tbody>
+									<tr class="<?php echo ( $i++ % 2 == 1 ) ? '' : 'alternate'; ?>">
+										<td class="field-name" valign="top" style="width:15%;font-weight:bold;"><?php echo esc_html( str_replace( '_', ' ', strtoupper( $key ) ) ); ?></td>
+										<td class="field-value" style="width:85%;"><?php echo wp_kses_post( $this->convert_content( $key, $value ) ); ?></td>
+									</tr>
+						<?php endif;
+					endif;
+				endforeach; ?>
+			</tbody>
+		</table>
+	<?php }
+
+
+	/**
+	 * A helper function primarily for app_details in adding some nice formatting for our returned data
+	 * Returns the value only, not the key!
+	 * @param  String $key   The array key
+	 * @param  String $value The array value
+	 * @return String
+	 *
+	 * @since Mechani-Kong
+	 */
+	private function convert_content( $key, $value ) {
+		if ( $key == 'project_website' || $key == 'project_video' || $key == 'layout' || $key == 'group_website' ) {
+			$output = '<a href="' . esc_url( $value ) . '" target="_blank">' . esc_url( $value ) . '</a>';
+		} elseif ( is_array( $value ) ) {
+			if ( empty( $value ) ) {
+				$output = '';
+			} else {
+				$output = $value[0];
+			}
+		} elseif ( ( $key == 'maker_photo' || $key == 'm_maker_photo' || $key == 'group_photo' ) && ! empty( $value ) ) {
+			$output = '<a href="' . esc_url( $value ) . '"><img src="' . wpcom_vip_get_resized_remote_image_url( esc_url( $value ), 130, 130, true ) . '" width="130" height="130" target="_blank"></a>';
+		} elseif ( $key == 'maker_twitter' || $key == 'm_maker_twitter' || $key == 'group_twitter' ) {
+			$output = '<a href="http://twitter.com/' . sanitize_title_with_dashes( $value ) . '">' . $value . '</a>';
+		} else {
+			$output = $value;
+		}
+
+		return $output;
 	}
 
 
