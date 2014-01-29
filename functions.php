@@ -592,4 +592,26 @@ function make_copyright_footer() { ?>
 			<?php if ( function_exists('vip_powered_wpcom') ) { echo vip_powered_wpcom(4); } ?>
 		</div>
 	</div>
-<?php } 
+<?php }
+
+
+/**
+ * Redirects to the "Current Faire" page after an application is trashed
+ * @return void
+ *
+ * @since Mechani-Kong
+ */
+function maker_faire_trashed_application_redirect() {
+    $screen = get_current_screen();
+
+    if ( 'edit-mf_form' == $screen->id && isset( $_GET['trashed'] ) && intval( $_GET['trashed'] ) > 0 ) {
+        $redirect = add_query_arg( array(
+        	'post_type' => 'mf_form',
+        	'page' => 'current_faire'
+        ) );
+
+        wp_redirect( $redirect );
+        exit();
+    }
+}
+add_action( 'load-edit.php','maker_faire_trashed_application_redirect' );
