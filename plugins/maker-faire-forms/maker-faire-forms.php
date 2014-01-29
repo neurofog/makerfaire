@@ -842,7 +842,7 @@ class MAKER_FAIRE_FORM {
 		
 		<?php } elseif ( $args['id'] == 'mf_maker_info' ) { 
 
-			$maker_type = $data->maker;
+			$maker_type = ( ! empty( $data->maker ) ) ? $data->maker : $data->form_type;
 
 			if ( $maker_type == 'One maker' ) {
 				$result = esc_html( $data->maker_name ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $data->maker_name ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a>';
@@ -850,6 +850,8 @@ class MAKER_FAIRE_FORM {
 				$result = implode( '<br />', esc_html( $data->m_maker_name ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $data->m_maker_name ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a>' );
 			} elseif ( $maker_type == 'A group or association' ) {
 				$result = esc_html( $data->group_name ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $data->group_name ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a>';
+			} elseif ( $maker_type == 'performer' || $maker_type == 'presenter' ) {
+				$result = esc_html( $data->name ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $data->name ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a>';
 			} else {
 				$result = 'No maker type set! Cannot return Makers.';
 			}
