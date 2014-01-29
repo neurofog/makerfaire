@@ -3842,7 +3842,7 @@ class MAKER_FAIRE_FORM {
 			$form = (array) json_decode( str_replace( "\'", "'", $post->post_content ) );
 			$res  = wp_remote_post( 'http://db.makerfaire.com/updateExhibitInfo', array( 'body' => array_merge( array( 'eid' => $post->ID, 'mid' => $form['uid'] ), (array) $form ) ) );
 	
-			if ( 200 == $res['response']['code'] ) {
+			if ( 200 == wp_remote_retrieve_response_code( $res ) ) {
 				$body = json_decode( $res['body'] );
 				if ( $body->exhibit_id == '' && $body->exhibit_id == 0 ) {
 					update_post_meta( $post->ID, 'mf_jdb_sync_fail', time() );
