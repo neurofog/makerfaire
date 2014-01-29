@@ -631,7 +631,7 @@ class MAKER_FAIRE_FORM {
 								});
 
 								setTimeout(function(){$('#post_status').change();}, 10);
-							})
+							});
 						})(jQuery.noConflict());
 					</script>
 				</div>
