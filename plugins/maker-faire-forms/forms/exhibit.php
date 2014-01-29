@@ -225,7 +225,7 @@
         </div>
         
 		<!-- If company -->
-		<div class="dp-company <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'company') !== false ? '' : 'h')); ?>">Established companies and commercial entities do not qualify for free exhibit space, which is what this application form is for. We have great opportunities available at Maker Faire for companies, please contact <a href="mailto:sales@makerfaire.com">sales@makerfaire.com</a>. Please do not complete the rest of this form.</div>
+		<div class="dp-company <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'company') !== false ? '' : 'h')); ?>">Established companies and commercial entities do not qualify for free exhibit space, which is what this application form is for. We have great opportunities available at Maker Faire for companies, please visit <a href="http://makerfaire.com/sponsors/">our sponsors page</a>. Please do not complete the rest of this form.</div>
 		
 		<div class="input">
             <label>Will you be selling or marketing a product at Maker Faire?</label>
@@ -234,7 +234,7 @@
         <div class="input dp-sales <?php echo esc_attr((strpos($this->form['data[s1][sales]'], 'Yes') !== false ? '' : 'h')); ?>">
         	<div class="info">If you would like to sell or market your own creations at Maker Faire, you are a “Commercial Maker”. Due to high demand, we have a limited amount of Commercial Maker space available. If accepted, a Commercial Maker Fee of $475 is due on May 1.<br />
         	All Commercial Maker spaces are tabletop or 10x10 spaces and include 1 table and 2 chairs. Additional tables, chairs and power can be purchased after acceptance during the payment process. Please continue to fill out this form.<br /><br />
-        	Established companies and commercial entities do not qualify as Commercial Makers. We have great opportunities available at Maker Faire for companies. Do not fill out this form, please contact <a href="mailto:sales@makerfaire.com">sales@makerfaire.com</a>.</div>
+        	Established companies and commercial entities do not qualify as Commercial Makers. We have great opportunities available at Maker Faire for companies. Do not fill out this form, please visit <a href="http://makerfaire.com/sponsors/">our sponsors page</a>.</div>
             <label>What product will you be selling or marketing?</label>
             <div class="info">Describe and list the price range of your product(s).</div>
             <?php $this->textarea('data[s1][sales_details]'); ?>
@@ -258,7 +258,7 @@
 			<div><input name="data[s1][booth_size]" type="radio" value="10x10" <?php checked($this->form['data[s1][booth_size]'] == '10x10'); ?> /> 10' x 10'</div>
 			<div id="size-10x20"><input name="data[s1][booth_size]" type="radio" value="10x20" <?php checked($this->form['data[s1][booth_size]'] == '10x20'); ?> /> 10' x 20'</div>
 			<div id="size-other"><input name="data[s1][booth_size]" type="radio" value="Other" <?php checked($this->form['data[s1][booth_size]'] == 'Other'); ?> /> Other - Tell us your space size request below</div>
-            <div class="info dp-sales h">Makers who are selling or marketing products are considered Commercial Makers and can only have a mobile, tabletop or 10x10 space for the standard $475 fee. 10x20 spaces or larger are available for sponsors of Maker Faire. Please contact: sales@makerfaire.com for more information.</div>
+            <div class="info dp-sales h">Makers who are selling or marketing products are considered Commercial Makers and can only have a mobile, tabletop or 10x10 space for the standard $475 fee. 10x20 spaces or larger are available for sponsors of Maker Faire. Please visit <a href="http://makerfaire.com/sponsors/">our sponsors page</a> for more information.</div>
         </div>
 		
 		<div class="input dp-size <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'Other') !== false ? '' : 'h')); ?>">
