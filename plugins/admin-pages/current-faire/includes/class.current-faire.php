@@ -768,7 +768,7 @@
 										setup_postdata( $post );
 
 										// Set just a couple of variables.... :/
-										$json        = json_decode( html_entity_decode( mf_convert_newlines( str_replace( array("\'", "u03a9"), array("'", '&#8486;'), $post->post_content ), "\n"), ENT_COMPAT, 'utf-8' ) );
+										$json        = json_decode( $post->post_content );
 										$post_id     = absint( $post->ID );
 										$app_image   = mf_get_the_maker_image( $json );
 										$post_status = $wp_post_statuses[ get_post_status() ]->label;
