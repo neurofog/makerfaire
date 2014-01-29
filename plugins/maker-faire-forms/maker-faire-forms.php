@@ -688,6 +688,38 @@ class MAKER_FAIRE_FORM {
 								<td style="width:80px;" valign="top"><strong>Status:</strong></td>
 								<td valign="top"><?php echo esc_attr( $post->post_status ); ?></td>
 							</tr>
+							<?php if( $data->form_type == 'exhibit' ) : ?>
+								<tr>
+									<td valign="top"><strong>Commercial Maker:</strong></td>
+									<td valign="top"><?php echo esc_attr( $data->sales == '' ? 'N/A' : $data->sales ); ?></td>
+								</tr>
+							<?php endif; ?>
+							<?php
+								$wkey = $this->merge_fields( 'project_website', $data->form_type );
+								$vkey = $this->merge_fields( 'project_video', $data->form_type );
+							?>
+							<tr>
+								<td style="width:80px;" valign="top"><strong>Website:</strong></td>
+								<td valign="top"><a href="<?php echo esc_url( $data->{ $wkey } ); ?>" target="_blank"><?php echo esc_url( $data->{ $wkey } ); ?></a></td>
+							</tr>
+							<tr>
+							<td valign="top"><strong>Video:</strong></td>
+								<?php 
+								  echo ( isset( $data->project_video ) ) ? '<td valign="top"><a href="' . esc_url( $data->project_video ) . '" target="_blank">' . esc_url( $data->project_video ) . '</a></td>' : null ;
+								  echo ( isset( $data->performer_video ) ) ? '<td valign="top"><a href="' . esc_url( $data->performer_video ) . '" target="_blank">' . esc_url( $data->performer_video ) . '</a></td>' : null ;
+								  echo ( isset( $data->video ) ) ? '<td valign="top"><a href="' . esc_url( $data->video ) . '" target="_blank">' . esc_url( $data->video ) . '</a></td>' : '<td></td>' ;
+								?>
+							</tr>
+							<?php if( $data->form_type == 'exhibit' ) : ?>
+								<tr>
+									<td style="width:80px;" valign="top"><strong>Supporting Documents:</strong></td>
+									<td valign="top"><a href="<?php echo esc_url( $data->supporting_documents ); ?>" target="_blank"><?php echo esc_url( $data->supporting_documents ); ?></a></td>
+								</tr>
+								<tr>
+									<td style="width:80px;" valign="top"><strong>Layout:</strong></td>
+									<td valign="top"><a href="<?php echo esc_url( $data->layout ); ?>" target="_blank"><?php echo esc_url( $data->layout ); ?></a></td>
+								</tr>
+							<?php endif; ?>
 							<?php
 
 								// Store the current application ID so we can return it within the loop
@@ -778,10 +810,7 @@ class MAKER_FAIRE_FORM {
 										<td style="width:80px;" valign="top"><strong>Scheduled:</strong></a></td>
 										<td valign="top"><a href="<?php echo admin_url(); ?>post-new.php?post_type=event-items&amp;refer_id=<?php echo get_the_ID(); ?>">Schedule This Event</a></td>
 									</tr>
-								<?php }
-
-								$wkey = $this->merge_fields( 'project_website', $data->form_type );
-								$vkey = $this->merge_fields( 'project_video', $data->form_type );
+								<?php }								
 							?>
 							<tr>
 								<td style="width:80px;" valign="middle"><strong>MF Video:</strong></td>
@@ -790,12 +819,6 @@ class MAKER_FAIRE_FORM {
 									<input type="hidden" name="event-id" value="<?php echo get_the_ID(); ?>" />
 								</td>
 							</tr>
-							<?php if( $data->form_type == 'exhibit' ) : ?>
-								<tr>
-									<td valign="top"><strong>Commercial Maker:</strong></td>
-									<td valign="top"><?php echo esc_attr( $data->sales == '' ? 'N/A' : $data->sales ); ?></td>
-								</tr>
-							<?php endif; ?>
 							<tr>
 								<td valign="top"><strong>JDB Sync:</strong></td>
 								<td valign="top"><?php echo esc_html( $jdb ); ?></td>
@@ -1063,6 +1086,10 @@ class MAKER_FAIRE_FORM {
 			'performer_photo_thumb',
 			'project_photo',
 			'project_photo_thumb',
+			'presenter_photo_thumb',
+			'presenter_gigyaid',
+			'presentation_photo',
+			'presentation_photo_thumb',
 			'maker_photo_thumb',
 			'm_maker_photo_thumb',
 			'group_photo_thumb',
@@ -1110,7 +1137,7 @@ class MAKER_FAIRE_FORM {
 	 * @since Mechani-Kong
 	 */
 	private function convert_content( $key, $value ) {
-		if ( $key == 'project_website' || $key == 'project_video' || $key == 'layout' || $key == 'group_website' ) {
+		if ( $key == 'project_website' || $key == 'project_video' || $key == 'layout' || $key == 'group_website' || $key == 'presentation_website' || $key == 'video' ) {
 			$output = '<a href="' . esc_url( $value ) . '" target="_blank">' . esc_url( $value ) . '</a>';
 		} elseif ( is_array( $value ) ) {
 			if ( empty( $value ) ) {
@@ -1118,9 +1145,9 @@ class MAKER_FAIRE_FORM {
 			} else {
 				$output = $value[0];
 			}
-		} elseif ( ( $key == 'maker_photo' || $key == 'm_maker_photo' || $key == 'group_photo' ) && ! empty( $value ) ) {
+		} elseif ( ( $key == 'maker_photo' || $key == 'm_maker_photo' || $key == 'group_photo' || $key == 'presenter_photo' ) && ! empty( $value ) ) {
 			$output = '<a href="' . esc_url( $value ) . '"><img src="' . wpcom_vip_get_resized_remote_image_url( esc_url( $value ), 130, 130, true ) . '" width="130" height="130" target="_blank"></a>';
-		} elseif ( $key == 'maker_twitter' || $key == 'm_maker_twitter' || $key == 'group_twitter' ) {
+		} elseif ( $key == 'maker_twitter' || $key == 'm_maker_twitter' || $key == 'group_twitter' || $key == 'presenter_twitter' ) {
 			$output = '<a href="http://twitter.com/' . sanitize_title_with_dashes( $value ) . '">' . $value . '</a>';
 		} else {
 			$output = $value;
