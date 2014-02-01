@@ -1,16 +1,16 @@
 <div class="span4">
 
-	<!-- <div class="sidebar-bordered">
+	<div class="sidebar-bordered">
 
                 <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/mr-makey.png" alt="Mr. Makey" class="makey pull-left">
-                <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/countdown.png" alt="Mr. Makey" class="counter pull-left">
+                <h3 class="counter-title">Maker Faire Bay Area<br />May 17 &amp; 18, 2014</h3>
 
                 <div class="countdown">
 
                         <script type="text/javascript">
 
                                 jQuery(document).ready(function() {
-                                        mfba = new Date(2013, 9-1, 21, 9, 00);
+                                        mfba = new Date(2014, 5-1, 17, 10, 00);
                                         jQuery('.countdown').countdown({
                                                 until: mfba,
                                                 timezone: -5,
@@ -24,17 +24,15 @@
 
                 </div>
 
-                <p class="buy-tickets"><a href="http://makerfairenyc.eventbrite.com/"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/buy-tickets.png" alt="Buy tickets for Maker Faire" class=""></a></p>
+                <p class="buy-tickets"><a href="http://www.eventbrite.com/e/maker-faire-bay-area-2014-tickets-9098302267?aff=MFwbBuytix" target="_blank"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/buy-tickets.png" alt="Buy tickets for Maker Faire San Mateo"></a></p>
 
-                <h5 class="count-down-sub">September 21 &amp; 22<br />
-                        New York Hall of Science</h5>
-                <h5 class="count-down-sub-sub">Sat. 10 AM - 7 PM | Sun. 10 AM - 6 PM</h5>
+                <h5 class="count-down-sub">May 17 &amp; 18<br />San Mateo Event Center</h5>
+                <h5 class="count-down-sub-sub">Sat. 10 AM - 8 PM | Sun. 10 AM - 6 PM</h5>
 
-        </div> -->
+        </div>
 
         <div class="sidebar-bordered-nl">
 
-                <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/mr-makey.png" alt="Mr. Makey" class="makey pull-left">
                 <h3>Get news and updates on all faires and calls for makers.</h3>
 
                 <form class="form-inline" action="http://makermedia.createsend.com/t/r/s/jjuruj/" method="post" id="subForm"> 
