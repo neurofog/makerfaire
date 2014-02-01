@@ -691,7 +691,7 @@ class MAKER_FAIRE_FORM {
 							<?php if( $data->form_type == 'exhibit' ) : ?>
 								<tr>
 									<td valign="top"><strong>Commercial Maker:</strong></td>
-									<td valign="top"><?php echo esc_attr( $data->sales == '' ? 'N/A' : $data->sales ); ?></td>
+									<td valign="top"><?php echo esc_html( $data->sales == '' ? 'N/A' : $data->sales ); ?></td>
 								</tr>
 							<?php endif; ?>
 							<?php
