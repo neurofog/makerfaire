@@ -2,6 +2,7 @@
 /*
 * 
 * Template Name: Registration
+* GIGYA OLD
 *
 */
 ?>

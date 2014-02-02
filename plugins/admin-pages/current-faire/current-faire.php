@@ -42,7 +42,7 @@
 				'post_type'			=> 'mf_form',
 				'post_status'		=> 'any',
 				'posts_per_page' 	=> 1,
-				'faire'				=> $GLOBALS['current_faire'],
+				'faire'				=> MF_CURRENT_FAIRE,
 				'post_status'		=> $type,
 				'return_fields'		=> 'ids',
 				);

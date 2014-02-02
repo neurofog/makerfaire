@@ -187,7 +187,7 @@
 		public function __construct() {
 
 			// Define our current faire
-			$this->current_faire = $GLOBALS['current_faire'];
+			$this->current_faire = MF_CURRENT_FAIRE;
 
 			// Load our admin page
 			add_action( 'admin_menu', array( $this, 'add_menu_page' ) );
@@ -785,7 +785,7 @@
 										echo '<tr id="post-' . absint( $post->ID ) . '" valign="top">';
 										echo '<td class="post_photo column-post_photo"' . $this->check_screen_options( 'post_photo', false, true ) . '>';
 											if ( ! empty( $app_image ) )
-												echo '<img src="' . wpcom_vip_get_resized_remote_image_url( esc_url( $app_image ), 130, 130, true ) . '" >';
+												echo '<img src="' . wpcom_vip_get_resized_remote_image_url( esc_url( $app_image ), 130, 130, true ) . '" width="130" height="130">';
 										echo '</td>';
 										echo '<td class="post_id column-post_id"' . $this->check_screen_options( 'post_id', false, true ) . '>' . $post_id . '</td>';
 										echo '<td class="post_status column-post_status"' . $this->check_screen_options( 'post_status', false, true ) . '>' . $post_status . '</td>';

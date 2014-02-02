@@ -1,3 +1,4 @@
+<div class="wrapper hide">
 <script>
 	
 	// Count how many presenters we have listed
@@ -179,7 +180,7 @@
 		<div class="input">
             <label>Short Project Description *</label>
             <div class="info">We need a short, concise description. Limited to 225 characters.</div>
-             <?php $this->textarea('data[s1][public_description]', array('maxlength'=>225, 'class'=>'mf-shorter-field')); ?>
+             <?php $this->textarea('data[s1][public_description]', array('maxlength'=>225)); ?>
         </div>
         
         <div class="input">
@@ -219,27 +220,29 @@
         <!-- If non-profit or cause/mission -->
 		<div class="input dp-nfp <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'profit') !== false || strpos($this->form['data[s1][booth_size]'], 'mission') !== false ? '' : 'h')); ?>">
             <label>If your organization is a large non-profit or cause or mission-based organization, please tell us more about why you want to come to Maker Faire.</label>
-            <div class="info">Large non-profits and cause/mission based organizations can qualify for special reduced rates to participate in Maker Faire. Complete the rest of this form and someone from the Maker Faire team will contact you with details. This statement does not apply to makerspaces or hackerspaces, which receive free exhibit space at Maker Faire.</div>
+            <div class="info">Large non-profits and cause/mission based organizations qualify for reduced exhibit rates based on their organization’s annual budget. Please list your annual budget below, complete the rest of this form, and the Maker Faire team will contact you with details. This statement does not apply to makerspaces or hackerspaces, which receive free exhibit space at Maker Faire.</div>
             <?php $this->textarea('data[s1][large_non_profit]'); ?>
         </div>
         
 		<!-- If company -->
-		<div class="dp-company <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'company') !== false ? '' : 'h')); ?>">Established companies and commercial entities do not qualify for free exhibit space, which is what this application form is for. We have great opportunities available at Maker Faire for companies, please contact <a href="mailto:sales@makerfaire.com">sales@makerfaire.com</a>. Do not complete the rest of this form.</div>
+		<div class="dp-company <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'company') !== false ? '' : 'h')); ?>">Established companies and commercial entities do not qualify for free exhibit space, which is what this application form is for. We have great opportunities available at Maker Faire for companies, please visit <a href="http://makerfaire.com/sponsors/">our sponsors page</a>. Please do not complete the rest of this form.</div>
 		
 		<div class="input">
             <label>Will you be selling or marketing a product at Maker Faire?</label>
             <?php $this->radio('data[s1][sales]', array('Yes', 'No')); ?>
         </div>
-            
         <div class="input dp-sales <?php echo esc_attr((strpos($this->form['data[s1][sales]'], 'Yes') !== false ? '' : 'h')); ?>">
-        	<div class="info">If you would like to sell or market your own creations at Maker Faire, you are a "Commercial Maker" and must pay a fee of $300, due September 6. All Commercial Maker spaces are tabletop or 10'x10' spaces and include 1 table and 2 chairs. Additional tables, chairs, and power can be purchased after acceptance during the payment process. Please continue to fill out this form.<br /><br />Established companies and commercial entities do not qualify as Commercial Makers. We have great opportunities available at Maker Faire for companies. Do not fill out this form, please contact <a href="mailto:sales@makerfaire.com">sales@makerfaire.com</a>.</div>
+        	<div class="info">If you would like to sell or market your own creations at Maker Faire, you are a “Commercial Maker”. Due to high demand, we have a limited amount of Commercial Maker space available. If accepted, a Commercial Maker Fee of $475 is due on May 1.<br />
+        	All Commercial Maker spaces are tabletop or 10x10 spaces and include 1 table and 2 chairs. Additional tables, chairs and power can be purchased after acceptance during the payment process. Please continue to fill out this form.<br /><br />
+        	Established companies and commercial entities do not qualify as Commercial Makers. We have great opportunities available at Maker Faire for companies. Do not fill out this form, please visit <a href="http://makerfaire.com/sponsors/">our sponsors page</a>.</div>
             <label>What product will you be selling or marketing?</label>
             <div class="info">Describe and list the price range of your product(s).</div>
             <?php $this->textarea('data[s1][sales_details]'); ?>
         </div>
 
         <div class="input">
-        	<label>At Maker Faire, will you soliciting any crowdsource funding (Kickstarter, Indiegogo, PiggyBackr, etc?)</label>
+        	<label>At Maker Faire, will you solicit any crowdfunding (Kickstarter, Indiegogo, etc?)</label>
+        	<div class="info">Exhibits promoting crowdfunding campaigns are allowed a short presentation on our crowdfunding stage, and are not given a space. If you plan to showcase what you make in an interactive exhibit environment, space may be available. After selecting yes, please be as descriptive as possible in the additional text box provided, so our team knows your plans.</div>
         	<?php $this->radio( 'data[s1][crowdsource_funding]', array( 'Yes', 'No' ) ); ?>
         </div>
 
@@ -255,11 +258,12 @@
 			<div><input name="data[s1][booth_size]" type="radio" value="10x10" <?php checked($this->form['data[s1][booth_size]'] == '10x10'); ?> /> 10' x 10'</div>
 			<div id="size-10x20"><input name="data[s1][booth_size]" type="radio" value="10x20" <?php checked($this->form['data[s1][booth_size]'] == '10x20'); ?> /> 10' x 20'</div>
 			<div id="size-other"><input name="data[s1][booth_size]" type="radio" value="Other" <?php checked($this->form['data[s1][booth_size]'] == 'Other'); ?> /> Other - Tell us your space size request below</div>
-            <div class="info dp-sales h">Makers who are selling or marketing products are considered Commercial Makers and can only have a mobile, tabletop or 10x10 space for the standard $300 fee. 10x20 spaces or larger are available for sponsors of Maker Faire. Please contact: sales@makerfaire.comfor more information.</div>
+            <div class="info dp-sales h">Makers who are selling or marketing products are considered Commercial Makers and can only have a mobile, tabletop or 10x10 space for the standard $475 fee. 10x20 spaces or larger are available for sponsors of Maker Faire. Please visit <a href="http://makerfaire.com/sponsors/">our sponsors page</a> for more information.</div>
         </div>
 		
 		<div class="input dp-size <?php echo esc_attr((strpos($this->form['data[s1][booth_size]'], 'Other') !== false ? '' : 'h')); ?>">
-            <label>Special Space Requirements *</label>
+            <label>Space Requirements *</label>
+            <div class="info">Tell us the dimensions of your required space.</div>
             <?php $this->textarea('data[s1][booth_size_details]'); ?>
         </div>
 		
@@ -270,8 +274,8 @@
         </div>
 		
 		<div class="input">
-            <label>Additional table and chair or special setup requests</label>
-			<div class="info">Special requests are not guaranteed by acceptance. You will receive confirmation in advance of the faire.</div>
+            <label>Special setup requests and additional table and chair needs</label>
+			<div class="info">If you require additional tables or chairs, list total quantities below.</div>
             <?php $this->textarea('data[s1][tables_chairs_details]'); ?>
         </div>
 		
@@ -294,7 +298,7 @@
 		
 		<div class="input">
             <label>Location *</label>   
-            <div class="info">Important: If you request to be inside, spaces are very limited and non-uniform. Space will not exactly measure 10x10, 10x20, etc. Unless you note otherwise: if you are placed inside, we will interpret your space request above as approximate. Thank you in advance for your flexibility.</div> 
+            <div class="info">Important: We will do our best to accommodate your request, but it’s not guaranteed. Before the event, we will send a confirmation letter listing your exposure: inside, outside, under a tent, etc.</div> 
             <?php $this->radio('data[s1][booth_location]', array('Inside', 'Outside', 'Either')); ?>      
         </div>
 		
@@ -359,20 +363,22 @@
             <?php $this->textarea('data[s1][radio_details]'); ?>
         </div>
 		
-		<h2>Saftey</h3>
+		<h2>Safety</h2>
+		<div class="info"></div>
+
 		<div class="input">
             <label>Does your exhibit contain fire (any size flame), chemicals, or other dangerous materials or tools (propane, welders, etc)?</label>
             <?php $this->radio('data[s1][fire]', array('Yes', 'No')); ?>
+        </div>
+		
+		<div class="input">
+            <label>Do you have an interactive exhibit, including using tools of any kind, riding (bikes, go carts, swings, etc), climbing, etc?</label>
+            <?php $this->radio('data[s1][hands_on]', array('Yes', 'No')); ?>
         </div>
 
         <div class="input dp-safety <?php echo esc_attr(($this->form['data[s1][fire]'] == 'Yes' || $this->form['data[s1][hands_on]'] == 'Yes'  ? '' : 'h')); ?>">
             <label>Describe any fire or safety issues</label>
             <?php $this->textarea('data[s1][safety_details]'); ?>
-        </div>
-		
-		<div class="input">
-            <label>Do you have a hands-on activity or interactive exhibit, including using tools of any kind, riding (bikes, go carts, swings, etc), climbing, etc?</label>
-            <?php $this->radio('data[s1][hands_on]', array('Yes', 'No')); ?>
         </div>
 		
     </div>
@@ -416,7 +422,7 @@
                     <div class="input">
                         <label>Maker Bio *</label>
                         <div class="info">Limited to 200 characters or less.</div>
-                         <?php $this->textarea('data[s2][maker_bio]', array('maxlength'=>200, 'class'=>'mf-shorter-field default-bio')); ?>
+                         <?php $this->textarea('data[s2][maker_bio]', array('maxlength'=>200, 'class'=>'default-bio')); ?>
                     </div>	
                     <div class="input">
                         <label>Maker Twitter Handle</label>
@@ -448,13 +454,13 @@
 	                            </div> 
 	                            <div class="input">
 	                                <label>Maker Bio *</label>
-	                                <div class="info">This bio will appear on the Maker Faire website and mobile app. Limited to 200 characters. If you have listed more than one maker, we will link to the maker accounts you've listed above and display each of their personal bios.</div>
-	                                <textarea name="data[s2][m_maker_bio][<?php echo esc_attr(($i + 1)); ?>]" maxlength="200" class="mf-shorter-field default-bio"><?php echo esc_html($this->form['data[s2][m_maker_bio]'][$i]); ?></textarea>
+	                                <div class="info">This bio will appear on the Maker Faire website and mobile app. Limited to 200 characters.</div>
+	                                <textarea name="data[s2][m_maker_bio][<?php echo esc_attr(($i + 1)); ?>]" maxlength="200" class="default-bio"><?php echo esc_html($this->form['data[s2][m_maker_bio]'][$i]); ?></textarea>
 	                            </div>
 	                            <div class="input">
 			                        <label>Maker Twitter Handle</label>
 			                        <div class="info">Enter your twitter username (e.g. @makerfaire).</div>
-			                        <?php $this->text( 'data[s2][m_maker_twitter]' ); ?>
+			                        <input type="text" name="data[s2][m_maker_twitter][<?php echo esc_attr(($i + 1)); ?>]" value="<?php echo esc_attr($this->form['data[s2][m_maker_twitter]'][$i]); ?>" />
 			                    </div>	
 	                            <?php if($i == 0) : ?>			
 		                            <div class="input maker-photo">
@@ -483,7 +489,7 @@
                     <div class="input">
                         <label>Group Bio *</label>
                         <div class="info">Limited to 200 characters or less.</div>
-                        <?php $this->textarea('data[s2][group_bio]', array('maxlength'=>200, 'class'=>'mf-shorter-field')); ?>
+                        <?php $this->textarea('data[s2][group_bio]', array('maxlength'=>200)); ?>
                     </div>
                     
                     <div class="input">
@@ -528,7 +534,7 @@
         <hr />
 		
 		<h2>Topics</h2>
-        <div>To help people find your exhibit on our website and at Maker Faire, please please select a maximum of five topics below which apply to your project.</div>
+        <h3>To help people find your exhibit on our website and at Maker Faire, please select a maximum of 5 topics below which apply to your project.</h3>
         <?php include('tags.php'); ?>
 
         <div class="input">
@@ -554,7 +560,7 @@
 		</div>
 		
 		<div class="input">
-            <label>If you are accepted, will this be your first time participating in Maker Faire?</label>
+            <label>If you are accepted, will this be your first time participating in Maker Faire? *</label>
             <?php $this->radio('data[s3][first_time]', array('Yes', 'No')); ?>
         </div>
 		
@@ -570,9 +576,11 @@
     <div class="step" id="step4">
         <h1>Step 4 of 4: Review and Submit</h1>
         <hr />
-        <p style="font-weight:bold">Please review your application for accuracy and click the numbered red steps above to make any changes. Your application is not complete until you click the "Submit Application" button below.</p>
-        <p style="font-weight:bold">Click on the section numbers above to return to your application and edit.</p>
-        <p>You can update your application anytime until the application deadline. You'll hear from us shortly afterwards. If we accept your exhibit, we'll do our best to accommodate all your requests but can't guarantee it. Exhibit details will be confirmed in a follow-up letter after acceptance.</p><p>Acceptance indicates we have accepted the concept of your exhibit; however, it does not guarantee that we can accommodate all your requests.</p> 
+        <p style="font-weight:bold">Review your application below.</p>
+        <p style="font-weight:bold">To return to your application and edit click on the section numbers above. DO NOT hit the back button on your browser.</p>
+        <p style="font-weight:bold">Your application is not complete until you click the “Submit Application” button below.</p>
+        <p>After submitting your application, you can update it anytime until the application deadline.</p>
+        <p>Entries are reviewed after the application deadline. If we accept your exhibit, we have accepted your concept. Acceptance does not guarantee that we can accommodate all of your requests. What we can provide will be confirmed in a follow-up letter before the event.</p>
 	</div>
     <!--STEP 4 END-->
     
@@ -615,3 +623,4 @@
 <!--[if lt IE 9]>
 	</div>
 <![endif]-->
+</div>

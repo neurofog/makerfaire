@@ -302,13 +302,19 @@ if ($type == 'entity') {
 		$stop = get_post_meta(get_the_ID(), 'mfei_stop', true );
 
 		// Really? We need a better data structure here... 
-		if ( $faire == 'world-maker-faire-new-york-2013' ) {
+		if ( $faire == MF_CURRENT_FAIRE ) {
+			if ( $day == 'Saturday' ) {
+				$date = '5/17/2013';
+			} elseif ( $day == 'Sunday' ) {
+				$date = '5/18/2013';
+			}
+		} elseif ( $faire == 'world-maker-faire-new-york-2013' ) {
 			if ( $day == 'Saturday' ) {
 				$date = '9/21/2013';
 			} elseif ( $day = 'Sunday') {
 				$date = '9/22/2013';
 			}
-		} else {
+		} elseif ( $faire == 'maker-faire-bay-area-2013') {
 			if ( $day == 'Saturday' ) {
 				$date = '5/18/2013';
 			} elseif ( $day = 'Sunday') {
@@ -325,7 +331,7 @@ if ($type == 'entity') {
 		$jsonpost["thumb_img_url"] = ($url) ? add_query_arg( $size, $url ) : null;
 		$jsonpost["name"] = str_replace( array( '&#8217;', '&#038;'), array( '\'', '&'), htmlspecialchars_decode( get_the_title( $id ) ) );
 		$jsonpost["original_id"] = $id;
-		if ( $faire == 'world-maker-faire-new-york-2013' ) {
+		if ( strpos( $faire, 'new-york' ) !== false ) { // Check if the faire variable contains the 'new-york' in it. If it does, spit out the dates with a EST instead of PST
 			$jsonpost["time_start"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $start . ' EST' ) ) );
 			$jsonpost["time_stop"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $stop . ' EST') ) );	
 		} else {

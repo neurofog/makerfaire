@@ -16,7 +16,7 @@ class MAKE_CLI extends WP_CLI_Command {
 			'posts_per_page'			=> 2000,
 			'post_type'					=> 'mf_form',
 			'post_status'				=> 'any',
-			'faire'						=> $GLOBALS['current_faire'],
+			'faire'						=> MF_CURRENT_FAIRE,
 
 			// Prevent new posts from affecting the order
 			'orderby' 					=> 'ID',

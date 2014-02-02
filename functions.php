@@ -1,10 +1,13 @@
 <?php
 
 // Set our global Faire Variable. Use the slug of the taxonomy as the value.
-$GLOBALS['current_faire'] = 'world-maker-faire-new-york-2013';
+define( 'MF_CURRENT_FAIRE', 'maker-faire-bay-area-2014' );
 
 
 require_once( WP_CONTENT_DIR . '/themes/vip/plugins/vip-init.php' );
+
+// Include Gigya plugin
+require_once( __DIR__ . '/plugins/gigya/gigya.php' );
 
 // include maker-faire-forms plugin
 require_once( __DIR__ . '/plugins/maker-faire-forms/maker-faire-forms.php' );
@@ -29,6 +32,9 @@ include_once dirname( __FILE__ ) . '/plugins/admin-pages/current-faire/current-f
 
 // Sponsor Carousel
 include_once dirname( __FILE__ ) . '/plugins/public-pages/sponsor.php';
+
+// Post Locker
+include_once dirname( __FILE__ ) . '/plugins/hide-post-locker/hide-post-locker.php';
 
 
 require_once( 'taxonomies/type.php' );
@@ -66,20 +72,16 @@ if ( function_exists( 'wpcom_vip_sharing_twitter_via' ) ) {
 }
 
 function make_enqueue_jquery() {
+	// Styles
+	wp_enqueue_style( 'make-bootstrap', get_stylesheet_directory_uri() . '/css/bootstrap.css' );
+	wp_enqueue_style( 'make-styles', get_stylesheet_directory_uri() . '/css/style.css' );
+
+	// Scripts
 	wp_enqueue_script( 'jquery' );
 	wp_enqueue_script( 'make-bootstrap', get_stylesheet_directory_uri() . '/js/bootstrap.js', array( 'jquery' ) );
 	wp_enqueue_script( 'make-countdown', get_stylesheet_directory_uri() . '/js/jquery.countdown.js', array( 'jquery' ) );
-	wp_enqueue_style( 'make-bootstrap', get_stylesheet_directory_uri() . '/css/bootstrap.css' );
-	wp_enqueue_style( 'make-styles', get_stylesheet_directory_uri() . '/css/style.css' );
-	wp_enqueue_style( 'make', get_stylesheet_directory_uri() . '/style.css' );
 }
 add_action( 'wp_enqueue_scripts', 'make_enqueue_jquery' );
-
-function make_enqueue_admin_scripts() {
-	if ( get_post_type() == 'mf_form' && is_admin() )
-		wp_enqueue_script( 'make-custom-post-lock', get_stylesheet_directory_uri() . '/js/expand-post-edit.js', array( 'jquery' ) );
-}
-add_action( 'admin_enqueue_scripts', 'make_enqueue_admin_scripts' );
 
 
 function makerfaire_get_news() {
@@ -163,7 +165,11 @@ add_shortcode( 'arrows', 'makerfaire_carousel_shortcode' );
 
 function makerfaire_data_toggle() {
 	return '<ul class="nav nav-tabs">
-		<li class="active"><a data-toggle="tab" href="#ny2012">New York 2012</a></li>
+		<li class="active"><a data-toggle="tab" href="#ny2013">New York 2013</a></li>
+		<li><a data-toggle="tab" href="#ba2013">Bay Area 2013</a></li>
+		<li><a data-toggle="tab" href="#d2013">Detroit 2013</a></li>
+		<li><a data-toggle="tab" href="#r2013">Rome 2013</a></li>
+		<li><a data-toggle="tab" href="#ny2012">New York 2012</a></li>
 		<li><a data-toggle="tab" href="#d2012">Detroit 2012</a></li>
 		<li><a data-toggle="tab" href="#ba2012">Bay Area 2012</a></li>
 		<li><a data-toggle="tab" href="#ny2011">New York 2011</a></li>
@@ -215,10 +221,6 @@ function makerfaire_newsletter_shortcode() {
 			<div class="control-group">
 				<label class="control-label" for="optionsCheckbox">Any chance we could interest you in...</label>
 				<div class="controls">
-					<label for="CRAFTNewsletter" class="checkbox">
-						<input type="checkbox" name="cm-ol-jjurhj" id="CRAFTNewsletter" />
-						The CRAFT Newsletter?
-					</label>
 				</div>
 				<div class="controls">
 					<label for="MAKENewsletter" class="checkbox">
@@ -239,6 +241,42 @@ function makerfaire_newsletter_shortcode() {
 }
 
 add_shortcode( 'newsletter', 'makerfaire_newsletter_shortcode' );
+
+/**
+ * Modal Window Builder
+ */
+function make_modal_builder( $atts, $content = null ) {
+	
+	extract( shortcode_atts( array(
+		'launch' 	=> 'Launch Window',
+		'title' 	=> 'Modal Title',
+		'btn_class'	=> '',
+		'embed'	=> ''
+	), $atts ) );
+
+	$number = mt_rand();
+	$output = '<a class="btn  ' . esc_attr( $btn_class ) . '" data-toggle="modal" href="#modal-' . $number . '">' . esc_html( $launch ) . '</a>';
+	$output .= '<div id="modal-' . $number . '" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
+	$output .= '	<div class="modal-header">';
+	$output .= '		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+	$output .= '		<h3>' . esc_html( $title ) . '</h3>';
+	$output .= '	</div>';
+	$output .= '	<div class="modal-body">';
+	if ( wpcom_vip_is_valid_domain( $embed,  array('fora.tv', 'ustream.com', 'ustream.tv' ) ) ) {
+		$output .= '<iframe src="' . esc_url( $embed ) . '" width="530" height="320" frameborder="0"></iframe>';
+	} else {
+		$output .= ( !empty( $embed ) ) ? wpcom_vip_wp_oembed_get( esc_url( $embed ), array( 'width' => 530 ) ) : '';
+	}
+	$output .= 			wp_kses_post( $content );
+	$output .= '	</div>';
+	$output .= '	<div class="modal-footer">';
+	$output .= '		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>';
+	$output .= '	</div>';
+	$output .= '</div>';
+
+	return $output;
+}
+add_shortcode( 'modal', 'make_modal_builder' );
 
 function makerfaire_news_rss() { ?>
 	<div class="newsies">
@@ -396,7 +434,7 @@ function mf_hide_faires( $query ) {
 			array(
 				'taxonomy'	=> 'faire',
 				'field'		=> 'slug',
-				'terms'		=> 'world-maker-faire-new-york-2013',
+				'terms'		=> MF_CURRENT_FAIRE,
 				'operator'	=> 'IN',
 			)
 		);
@@ -545,3 +583,38 @@ function make_cpt_icons() { ?>
 		}
 	</style>
 <?php }
+
+/**
+ * Adds footer copyright information
+ */
+function make_copyright_footer() { ?>
+	<div class="row">
+		<div class="span12">
+			<p class="footer_copyright text-center"><a href="http://makezine.com/">Make:</a> and <a href="http://makerfaire.com/">Maker Faire</a> are registered trademarks of <a href="http://makermedia.com/">Maker Media, Inc.</a><br>
+			Copyright &copy; 2004-<?php echo date("Y") ?> Maker Media, Inc.  All rights reserved</p>
+			<?php if ( function_exists('vip_powered_wpcom') ) { echo vip_powered_wpcom(4); } ?>
+		</div>
+	</div>
+<?php }
+
+
+/**
+ * Redirects to the "Current Faire" page after an application is trashed
+ * @return void
+ *
+ * @since Mechani-Kong
+ */
+function maker_faire_trashed_application_redirect() {
+    $screen = get_current_screen();
+
+    if ( 'edit-mf_form' == $screen->id && isset( $_GET['trashed'] ) && intval( $_GET['trashed'] ) > 0 ) {
+        $redirect = add_query_arg( array(
+        	'post_type' => 'mf_form',
+        	'page' => 'current_faire'
+        ) );
+
+        wp_redirect( $redirect );
+        exit();
+    }
+}
+add_action( 'load-edit.php','maker_faire_trashed_application_redirect' );

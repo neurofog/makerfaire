@@ -32,8 +32,8 @@
 				</div><!--find a faire-->
 							
 				<div class="span4">
-                    <a href="https://readerservices.makezine.com/MK/subscribe.aspx">
-                        <img src="http://cdn.makezine.com/make/ads/subscribe_ad_V35.png" alt="Subscribe to MAKE magazine!" />
+                    <a href="https://www.pubservice.com/MK/subscribe.aspx?PC=MK&PK=M3AMFB">
+                    	<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/mf_subscribe_ad.jpg" alt="Subscribe to MAKE magazine!" width="300" height="393" />
                     </a>
                 </div><!--subad-->
 		
@@ -57,7 +57,7 @@
 				</div>
 				
 				<div class="span12 center">
-					<?php if ( function_exists('vip_powered_wpcom') ) { echo vip_powered_wpcom(4); } ?>
+					<?php echo make_copyright_footer(); ?>	
 				</div>
 			
 			</div>
@@ -66,7 +66,6 @@
 	</div>
 	
 </div>
-<script src="<?php echo get_template_directory_uri(); ?>/js/bootstrap.js"></script>
 <script type="text/javascript">
 
 	jQuery(document).ready(function(){

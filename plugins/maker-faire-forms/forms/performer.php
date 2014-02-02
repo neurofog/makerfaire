@@ -1,3 +1,4 @@
+<div class="wrapper hide">
 <script>
 
 	jQuery(function($) 
@@ -86,8 +87,8 @@
 		<h2>Performance Schedule Preference</h2>
 		<div>At Maker Faire, we have music and stage performances all weekend! We will do our best to create a balanced schedule, so that there are great acts all day long. Thanks for being flexible about your performance time. 
 		<br /><br /><em><strong>Maker Faire Hours</strong> 
-		<br />Saturday, September 21: 10am - 7pm 
-		<br />Sunday, September 22: 10am - 6pm</em><br /><br /></div>
+		<br />Saturday, May 17: 10am - 8pm 
+		<br />Sunday, May 18: 10am - 6pm</em><br /><br /></div>
 		
 		<div class="input">
             <label>Which day(s) can you perform? Please pick the option that fits you best. *</label>
@@ -103,8 +104,8 @@
 		<div class="info">We have experienced crew, basic audio support and power at each of our Maker Faire stages. Please include your input list, additional equipment details and any special requests in the box below. If possible, we appreciate you bringing everything you need.</div>
 
 		<div class="input">
-            <label>Input List</label>
-			<div class="info">Please list the gear you will be bringing and the inputs you need to be able to perform.</div>
+            <label>Equipment and Input List</label>
+			<div class="info">Please list the equipment you will be bringing and the inputs you need to be able to perform.</div>
             <?php $this->textarea('data[s1][equipment]'); ?>      
         </div>
 	
@@ -178,9 +179,8 @@
         <hr />
         
 		<h2>Topics</h2>
-		<h3>To help people find your presentation on our website and at Maker Faire, please select a maximum of 5 topics below which apply to your project.</h3>
+		<h3>To help people find your performance on our website and at Maker Faire, please select a maximum of 5 topics below which apply to your project.</h3>
 
-        <p style="font-weight:bold;">Select up to 5 that are most applicable:</p>
         <?php include('tags.php'); ?>		
 		
 		<div class="input">
@@ -257,3 +257,4 @@
 <!--[if lt IE 9]>
     </div>
 <![endif]-->
+</div>

@@ -1,5 +1,4 @@
 .svn
-includes/gigya/
 .DS_Store*
 .svn*
-plugins/admin-pages/admin-pages.php
+node_modules

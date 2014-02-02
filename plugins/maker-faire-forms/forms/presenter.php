@@ -1,4 +1,5 @@
-<script>
+<div class="wrapper hide">
+    <script>
     
     // Count how many presenters we have listed
     num = <?php echo intval(count($this->form['data[s2][presenter_name]'])); ?>;
@@ -291,7 +292,7 @@
         </div>
         
         <h2>Topics</h2>
-        <h3>To help people find your presentation on our website and at Maker Faire, please select a maximum of five topics below which apply to your project.* </h3>
+        <h3>To help people find your presentation on our website and at Maker Faire, please select a maximum of 5 topics below which apply to your project.</h3>
         <?php include('tags.php'); ?>
         
         <div class="input">
@@ -352,3 +353,4 @@
 <!--[if lt IE 9]>
     </div>
 <![endif]-->
+</div>
