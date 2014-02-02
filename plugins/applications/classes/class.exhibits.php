@@ -37,6 +37,9 @@
 				'form_title' => 'project_name', // The NAME FIELD of the form field we want to set as our post title
 				'post_type' => 'mf_form', // Pass the post type name
 				'post_status' => 'proposed', // Pass the post status. If empty or not set, 'publish' is default
+				'tax_input' => array( // You can also set taxonomies when saving post. TODO: Finish this.
+					'faire' => 'maker-faire-bay-area-2014' // Taxonomy ID or slug
+				),
 			),
 		);
 
@@ -66,7 +69,7 @@
 				'args' 	   => array(
 					'id'		  => 'faire',
 					'name'	  	  => 'maker_faire',
-					'value'		  => '2013_newyork',
+					'value'		  => '2014_bayarea',
 				),
 			),
 			array(

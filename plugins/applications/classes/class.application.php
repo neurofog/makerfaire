@@ -47,8 +47,8 @@
 				'form_title' => 'first-text', // The NAME FIELD of the form field we want to set as our post title
 				'post_type' => 'page', // Pass the post type name
 				'post_status' => 'draft', // Pass the post status. If empty or not set, 'publish' is default
-				'tax_query' => array( // You can also set taxonomies when saving post. TODO: Finish this.
-					'faire' => 'world-maker-faire-bay-area-2014' // Taxonomy ID or slug
+				'tax_input' => array( // You can also set taxonomies when saving post. TODO: Finish this.
+					'faire' => 'maker-faire-bay-area-2014' // Taxonomy ID or slug
 				),
 			),
 		);
@@ -249,7 +249,7 @@
 			$this->settings = ( empty( $settings ) && $this->form_debug ) ? $this->demo_settings : $settings;
 
 			// Pass our custom Form or else get the default (only for development)
-			$this->form     = ( empty( $form ) && $this->form_debug ) ? $this->demo_form : $form;
+			$this->form = ( empty( $form ) && $this->form_debug ) ? $this->demo_form : $form;
 
 			// If we want to save the form on refresh, let's do that
 			if ( $this->settings['submission'] == 'refresh' )
@@ -283,8 +283,8 @@
 		 */
 		public function no_items() {
 			$output  = '<h3>These are not the forms you are looking for...</h3>';
-			$output .= '<p>Whooooops! Looks like there are no forms to process..</p>';
-			$output .= '<p>Make sure you provide an array of form fields to output.</p>';
+			$output .= '<p>Whooooops! Looks like there are no forms to display..</p>';
+			$output .= '<p>Make sure you have configured your settings properlly.</p>';
 
 			echo $output;
 		}
@@ -346,6 +346,7 @@
 
 			// If we are loading an existing application for updating, we'll want to make sure the current logged in user
 			// is the author or submitter of that application. Or else, we'll abort and return an error message.
+			// TODO: This needs to be update to be handled by Gigya instead of WordPress
 			if ( isset( $data['author_id'] ) && absint( $data['author_id'] ) ) {
 				global $current_user;
 				get_currentuserinfo();
@@ -378,9 +379,30 @@
 				} else {
 					$new_post = wp_insert_post( $post );
 
+					// Check if we are setting any taxonomies
+					if ( isset( $post_info['tax_input'] ) && ! empty( $post_info['tax_input'] ) && is_array( $post_info['tax_input'] ) ) {
+						foreach ( $post_info['tax_input'] as $tax => $term ) {
+							wp_set_object_terms( absint( $new_post ), sanitize_text_field( $term ), sanitize_text_field( $tax ), true );
+						}
+					}
+
+					// Upload any files/images passed
+					$this->upload_files( $data );
+
 					return $new_post;
 				}
 			} else {
+
+				// Check if we are setting any taxonomies
+				if ( isset( $post_info['tax_input'] ) && ! empty( $post_info['tax_input'] ) && is_array( $post_info['tax_input'] ) ) {
+					foreach ( $post_info['tax_input'] as $tax => $term ) {
+						$post['tax'] = array( $tax => $term );
+					}
+				}
+
+				// Upload any files/images passed
+				$this->upload_files( $data );
+
 				return $post;
 			}
 
@@ -421,6 +443,7 @@
 								break;
 							case 'image':
 							case 'url':
+							case 'file':
 								$clean_data[ $key ] = esc_url( $value );
 								break;
 							case 'text':
@@ -438,6 +461,19 @@
 			}
 
 			return $clean_data;
+		}
+
+
+		private function upload_files( $data ) {
+			
+			// Loop through our data and extract out the images/files
+			foreach ( $this->form as $key => $field ) {
+				if ( $field['type'] == 'image' || $field['type'] == '' ) {
+					$media[ $field['args']['name'] ] = $data[ $field['args']['name'] ];
+				}
+			}
+
+			var_dump($media);
 		}
 
 
@@ -1156,7 +1192,7 @@
 				return false;
 
 			// Return the post object
-			$data = get_post( $_GET['app_id'] );
+			$data = get_post( absint( $_GET['app_id'] ) );
 			
 			return $data;
 		}
@@ -1182,7 +1218,7 @@
 			$data = $this->get_application_data();
 
 			if ( $this->has_form_fields() ) : ?>
-				<form method="<?php echo $settings['method']; ?>" class="formflow-form">
+				<form method="<?php echo $settings['method']; ?>" class="formflow-form" enctype="multipart/form-data">
 					<fieldset>
 						
 						<?php if ( isset( $settings['title'] ) && ! empty( $settings['title'] ) ) : ?>
