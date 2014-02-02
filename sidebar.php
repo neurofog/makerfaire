@@ -2,7 +2,7 @@
 
 	<div class="sidebar-bordered">
 
-                <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/mr-makey.png" alt="Mr. Makey" class="makey pull-left">
+                <img src="<?php echo esc_url( get_stylesheet_directory_uri() ); ?>/images/mr-makey.png" alt="Mr. Makey" class="makey pull-left">
                 <h3 class="counter-title">Maker Faire Bay Area<br />May 17 &amp; 18, 2014</h3>
 
                 <div class="countdown">
@@ -24,7 +24,7 @@
 
                 </div>
 
-                <p class="buy-tickets"><a href="http://www.eventbrite.com/e/maker-faire-bay-area-2014-tickets-9098302267?aff=MFwbBuytix" target="_blank"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/buy-tickets.png" alt="Buy tickets for Maker Faire San Mateo"></a></p>
+                <p class="buy-tickets"><a href="http://www.eventbrite.com/e/maker-faire-bay-area-2014-tickets-9098302267?aff=MFwbBuytix" target="_blank"><img src="<?php echo esc_url( get_stylesheet_directory_uri() ); ?>/images/buy-tickets.png" alt="Buy tickets for Maker Faire San Mateo"></a></p>
 
                 <h5 class="count-down-sub">May 17 &amp; 18<br />San Mateo Event Center</h5>
                 <h5 class="count-down-sub-sub">Sat. 10 AM - 8 PM | Sun. 10 AM - 6 PM</h5>
@@ -37,7 +37,7 @@
 
                 <form class="form-inline" action="http://makermedia.createsend.com/t/r/s/jjuruj/" method="post" id="subForm"> 
                         <input type="text" placeholder="Enter your email" class="news-signup" name="cm-jjuruj-jjuruj" id="jjuruj-jjuruj">
-                        <input type="image" src="<?php echo get_stylesheet_directory_uri(); ?>/images/go.png" value="Go!" class="btn">
+                        <input type="image" src="<?php echo esc_url( get_stylesheet_directory_uri() ); ?>/images/go.png" value="Go!" class="btn">
                         <div class="control-group hide hidden">
                                 <h5>Call For Makers</h5>
                                 <label for="fielddduult-0"><input id="fielddduult-0" name="cm-fo-dduult" value="621683" type="checkbox" checked/> Inform me About the Call for Makers</label><br>
