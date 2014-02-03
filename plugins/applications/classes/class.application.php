@@ -387,7 +387,7 @@
 					}
 
 					// Upload any files/images passed
-					$this->upload_files( $data );
+					$this->upload_files( $new_post, $data );
 
 					return $new_post;
 				}
@@ -399,9 +399,6 @@
 						$post['tax'] = array( $tax => $term );
 					}
 				}
-
-				// Upload any files/images passed
-				$this->upload_files( $data );
 
 				return $post;
 			}
@@ -464,16 +461,28 @@
 		}
 
 
-		private function upload_files( $data ) {
+		private function upload_files( $post_id, $data ) {
 			
 			// Loop through our data and extract out the images/files
 			foreach ( $this->form as $key => $field ) {
-				if ( $field['type'] == 'image' || $field['type'] == '' ) {
+				if ( $field['type'] == 'image' || $field['type'] == 'file' ) {
 					$media[ $field['args']['name'] ] = $data[ $field['args']['name'] ];
 				}
 			}
 
-			var_dump($media);
+			if ( $_FILES ) {
+				foreach ( $_FILES as $file => $array ) {
+					if ( $_FILES[ $file ]['error'] !== UPLOAD_ERR_OK )
+						return "Upload Error : " . $_FILES[ $file ]['error'];
+
+					$attach_id = media_handle_upload( $file, $post_id );
+				}
+			}
+
+			if ( isset( $attached_id ) && $attached_id > 0 )
+				update_post_meta( $post_id, '_thumbnail_id', $attach_id )
+			
+			
 		}
 
 
