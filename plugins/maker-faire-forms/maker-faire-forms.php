@@ -2648,7 +2648,7 @@ class MAKER_FAIRE_FORM {
 								<label for="faire">Faire Applications</label>
 								<select name="faire" id="faire">
 									<?php foreach ( $faires as $faire ) : ?>
-										<option value="<?php echo esc_attr( $faire->slug ); ?>"><?php echo esc_html( $faire->name ); ?></option>
+										<option value="<?php echo esc_attr( $faire->slug ); ?>"<?php selected( $faire->slug, MF_CURRENT_FAIRE ); ?>><?php echo esc_html( $faire->name ); ?></option>
 									<?php endforeach; ?>
 								</select>
 							</li>
