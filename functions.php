@@ -36,6 +36,8 @@ include_once dirname( __FILE__ ) . '/plugins/hide-post-locker/hide-post-locker.p
 
 require_once( 'taxonomies/type.php' );
 require_once( 'taxonomies/location.php' );
+require_once( 'taxonomies/bay-area-locations.php' );
+require_once( 'taxonomies/new-york-locations.php' );
 require_once( 'taxonomies/faire.php' );
 require_once( 'taxonomies/location_category.php' );
 require_once( 'taxonomies/group.php' );
