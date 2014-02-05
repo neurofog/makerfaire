@@ -24,14 +24,6 @@ if (!in_array($key, $keys)) {
 	return;
 }
 
-function mf_clean_content( $content ) {
-	$bad = array( '&#039;', "\'", '&#8217;', '&#38;', '&#038;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;' );
-	$good = array( "'", "'", "'", "&", "&", '"', '"', '–', '>', '...' );
-
-	$cleaned = str_replace( $bad, $good, htmlspecialchars_decode( mf_convert_newlines( $content ) ) );
-
-	return $cleaned;
-}
 
 // Set the JSON header
 header('Content-type: application/json');

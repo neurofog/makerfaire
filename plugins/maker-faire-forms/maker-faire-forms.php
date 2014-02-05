@@ -2904,7 +2904,12 @@ class MAKER_FAIRE_FORM {
 		// Process our rows.
 		foreach ( $applications as $app ) {
 			// Get the current applications content (which is json data)
-			$form = (array) json_decode( str_replace( "\'", "'", $app->post_content ) );
+			$form = (array) json_decode( str_replace( '\\', '\\\\', $app->post_content ) );
+
+			// Let's clean up the content of any special characters and other ugly things
+			foreach ( $form as $key => $value ) {
+				$form[ sanitize_text_field( $key ) ] = mf_clean_content( $value, true );
+			}
 
 			// Let's make sure we're actually getting what we expect..
 			if ( $options['filters']['type'] != 'all' && $options['filters']['type'] != $form['form_type'] )

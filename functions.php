@@ -83,6 +83,34 @@ function make_enqueue_jquery() {
 add_action( 'wp_enqueue_scripts', 'make_enqueue_jquery' );
 
 
+/**
+ * Allows us to clean the nasty garbled code that gets saved to the database for applications
+ * Over time this function will phase out as we rebuild the form system
+ * @param  String  $content The application content we want to clean. This should be looped through an array
+ * @param  Boolean $report  Setting to true will remove any HTML formating we are correcting as we don't want that output to our reports
+ * @return String
+ *
+ * @since L-Ron
+ */
+function mf_clean_content( $content, $report = false ) {
+	$bad = array( '&#039;', "\'", '\"', '&#8217;', 'u2019', '&#38;', '&#038;', '&#34;', '&#034;', '&#8211;', '&lt;', '&#8230;' );
+	$good = array( "'",     "'",  '"',  "'",       "'",     '&',     '&',      '"',     '"',      '–',       '>',    '...' );
+
+	// If we are are correct HTML, let's add that here as reports we don't want HTML shown in here
+	if ( $report ) {
+		array_push( $bad,  '<br />\rn', '<br />rn', '<br />nn', 'rnrn', '<br />', '\rn', '.rn' );
+		array_push( $good, ' ',		    ' ',		' ',	    ' ',    ' ',      ' ',   ' ' );
+	} else {
+		array_push( $bad,  '<br />\rn',    '<br />rn',     '<br />nn',     'rnrn',         '.rn' );
+		array_push( $good, '<br /><br />', '<br /><br />', '<br /><br />', '<br /><br />', '.<br /><br />' );
+	}
+
+	$cleaned = str_replace( $bad, $good, htmlspecialchars_decode( mf_convert_newlines( $content ) ) );
+
+	return $cleaned;
+}
+
+
 function makerfaire_get_news() {
 	$url = 'http://makezine.com/maker-faire-news/';
 	$output = wpcom_vip_file_get_contents( $url, 3, 60,  array( 'obey_cache_control_header' => false ) );
