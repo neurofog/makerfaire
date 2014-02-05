@@ -768,13 +768,13 @@
 										setup_postdata( $post );
 
 										// Set just a couple of variables.... :/
-										$json        = json_decode( html_entity_decode( mf_convert_newlines( str_replace( array("\'", "u03a9"), array("'", '&#8486;'), $post->post_content ), "\n"), ENT_COMPAT, 'utf-8' ) );
+										$json        = json_decode( str_replace( '\\', '\\\\', $post->post_content ) );
 										$post_id     = absint( $post->ID );
 										$app_image   = mf_get_the_maker_image( $json );
 										$post_status = $wp_post_statuses[ get_post_status() ]->label;
 										$maker_name  = ( ! empty( $json->name ) ) ? $json->name : '';
 										$app_type 	 = get_the_term_list( $post_id, 'type', '', ', ', '' );
-										$description = ( ! empty( $json->public_description) ) ? $json->public_description : '';
+										$description = ( ! empty( $json->public_description) ) ? mf_clean_content( $json->public_description ) : '';
 										$cats        = get_the_category_list( ', ', '', $post_id );
 										$tags 		 = get_the_term_list( $post_id, 'post_tag', null, ', ' );
 										$location 	 = get_the_term_list( $post_id, 'location', '', ', ', '' );
