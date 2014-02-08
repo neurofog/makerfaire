@@ -351,6 +351,10 @@ class MAKER_FAIRE_FORM {
 		if ( isset( $_GET['exhibit_signage_csv'] ) )
 			$this->build_exhibit_signage_export( esc_url( $_GET['exhibit_signage_csv'] ) );
 
+		// Clear Reprint Signs
+		if ( isset( $_GET['exhibit_signage_clear_reprint'] ) )
+			$this->reset_signage_reprints( esc_attr( $_GET['exhibit_signage_clear_reprint'] ) );
+
 		// Presentation Export
 		if ( isset( $_GET['presentation_csv'] ) )
 			$this->build_presentation_exports( esc_attr( $_GET['presentation_csv'] ) );
@@ -2172,7 +2176,7 @@ class MAKER_FAIRE_FORM {
 			'post_status'  => 'in-progress',
 			'post_type'    => 'mf_form'
 		);
-
+		
 		// if uid is 0, empty, or not set then just return and do not insert the post or update the post_meta
 		if ( ! isset( $r['uid'] ) || $r['uid'] == '0' || $r['uid'] == '' )
 			return;
@@ -2718,6 +2722,8 @@ class MAKER_FAIRE_FORM {
 
 				<h2 style="margin-top:40px;">Exhibit Reports</h2>
 				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&exhibit_signage_csv', 'mf_export_check' ); ?>">Export Exhibit Signage</a></h3>
+				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&exhibit_signage_csv&reprint', 'mf_export_check' ); ?>">Export Reprints</a></h3>
+				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&exhibit_signage_clear_reprint', 'mf_export_check' ); ?>">Clear Reprints</a></h3>
 					
 				<h2 style="margin-top:40px;">Presentation Reports</h2>
 				<h3><a href="<?php echo wp_nonce_url( 'edit.php?post_type=mf_form&page=mf_reports&presentation_csv=manager', 'mf_export_check' ); ?>">Stage Manager Report</a></h3>
@@ -3426,15 +3432,26 @@ class MAKER_FAIRE_FORM {
 
 		$header_titles .= "\r\n";
 
+		// As we get closer to the faire we need to reprint signs for some applications. Let's customize the application retrival to do just that.
+		if ( isset( $_GET['reprint'] ) ) {
+			$options['filters']['meta_query'] = array(
+				'key' => '_ef_editorial_meta_checkbox_reprint-sign',
+				'value' => '1'
+			);
+		}
+
 		// Get our applications
-		$exhibits = $this->get_all_forms( null, $options['filters']['post_status'], $options['filters'] );
+		$exhibits = $this->get_all_forms( null, $options['filters']['post_status'], $options['filters'], MF_CURRENT_FAIRE );
 		$results  = array();
 		$body     = '';
-
+		
 		foreach ( $exhibits as $exhibit ) {
-			$bad  = array( "\'", '&amp;', 'u00a0', 'u2013', 'u201c', 'u201d', '00ae', 'rnrn', 'u016f', 'u0161');
-			$good = array( "'",  '&',     ' ',     '-',     '"',     '"',     '®',    ' ',    'ů',     'š');
-			$form = (array) json_decode( str_replace( $bad, $good, $exhibit->post_content ) );
+			$form = (array) json_decode( str_replace( '\\', '\\\\', $exhibit->post_content ) );
+
+			// Loop through all the content and clean it up
+			foreach ( $form as $key => $value ) {
+				$form[ sanitize_key( $key ) ] = mf_clean_content( $value, true );
+			}
 
 			// Process our name field. We'll want to handle exhibit maker types differently.
 			if ( $form['form_type'] == 'exhibit' ) {
@@ -3470,6 +3487,7 @@ class MAKER_FAIRE_FORM {
 				$maker_name = ( ! empty( $form['name'] ) ? $form['name'] : '' ) . "\t";
 				$maker_bio  = ( ! is_array( $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] ) ? $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ] : $form[ $this->merge_fields( 'user_bio', $form['form_type'] ) ][0] ) . "\t";
 			}
+
 			$photo = $form[ $this->merge_fields( 'form_photo', $form['form_type'] ) ];
 
 			$row  = $exhibit->ID . "\t";
@@ -3482,7 +3500,6 @@ class MAKER_FAIRE_FORM {
 
 			// Contain our entire row into the $body variable
 			$body .= $row . "\r\n";
-
 		}
 
 		// Get the time this export was ran. This is used in the file name of the CSV
@@ -3490,6 +3507,44 @@ class MAKER_FAIRE_FORM {
 
 		// Process the list makers CSV
 		$this->output_csv( 'EXHIBIT_SIGNAGE_' . date( 'M-d-Y', $time_offset ), $header_titles . $body );
+	}
+
+
+	/**
+	 * THis little doo-dad will reset the "Reprint" option set in the Edit Flow Editorial Metadad
+	 * @return void
+	 *
+	 * @L-Ron
+	 */
+	private function reset_signage_reprints() {
+
+		// Check our nonce
+		if ( isset( $_GET['export_nonce'] ) && ! wp_verify_nonce( $_GET['export_nonce'], 'mf_export_check' ) )
+			return false;
+			
+		// Make sure the user requesting this has the privileges...
+		if ( ! current_user_can( 'edit_others_posts' ) ) 
+			return false;
+
+		$options = array(
+			'filters' => array(
+				'type' => 'exhibit',
+				'post_status' => 'all',
+				'meta_query' => array(
+					'key' => '_ef_editorial_meta_checkbox_reprint-sign',
+					'value' => '1'
+				),
+			),
+		);
+		$apps = $this->get_all_forms( null, 'all', $options['filters'], MF_CURRENT_FAIRE );
+
+		if ( empty( $apps ) || ! is_array( $apps ) )
+			return false;
+
+		// Loops through applications returned with the reprint option enabled and reset them
+		foreach ( $apps as $app ) {
+			update_post_meta( absint( $app->ID ), '_ef_editorial_meta_checkbox_reprint-sign', 0 );
+		}
 	}
 
 
@@ -3728,13 +3783,13 @@ class MAKER_FAIRE_FORM {
 	* =====================================================================*/
 	public function get_all_forms( $sort = NULL, $app_status = 'all', $filters = array(), $faire = '' ) {
 
-		if ( empty( $faire) )
+		if ( empty( $faire ) )
 			$faire = MF_CURRENT_FAIRE;
 
 		$args = array(
 			'posts_per_page' => 1999,
 			'post_type'      => 'mf_form',
-			'faire'			 => ( $filters['faire'] != $faire ) ? sanitize_text_field( $filters['faire'] ) : sanitize_text_field( $faire ),
+			'faire'			 => ( ! empty( $filters['faire'] ) ) ? sanitize_title_with_dashes( $filters['faire'] ) : sanitize_title_with_dashes( $faire ),
 			'post_status'	 => ( $app_status != 'all' ) ? sanitize_text_field( $app_status ) : '',
 			'sort'			 => $sort,
 			'type'			 => ( isset( $filters['type'] ) && $filters['type'] != 'all' ) ? sanitize_text_field( $filters['type'] ) : '',
@@ -3742,6 +3797,26 @@ class MAKER_FAIRE_FORM {
 			'tag'			 => ( isset( $filters['tag'] ) && $filters['tag'] != 'all' ) ? sanitize_text_field( $filters['tag'] ) : '',
 			'location'		 => ( isset( $filters['location'] ) && $filters['location'] != 'all' ) ? sanitize_text_field( $filters['location'] ) : '',
 		);
+
+		//Sometimes we'll need to pull application based on meta data, this little area will do just that
+		if ( isset( $filters['meta_query'] ) && ! empty( $filters['meta_query'] ) ) {
+
+			$count = 0;
+			$last = end( $filters['meta_query'] );
+
+			// Let's sanitize our options in the meta_query field
+			foreach ( $filters['meta_query'] as $key => $value ) {
+
+				// Ensure we are passing acceptable paramenters to WP_Query
+				if ( $key == ( 'key' || 'value' || 'compare' || 'type' ) ) {
+					$args['meta_query'][ intval( $count ) ][ sanitize_key( $key ) ] = sanitize_text_field( $value );
+				}
+
+				// Only increment when we have reached the end of the array
+				if ( $value === $last )
+					$count++;
+			}
+		}
 
 		$ps    = new WP_Query( $args );
 		$posts = $ps->get_posts();
