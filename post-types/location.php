@@ -89,10 +89,6 @@ function mf_inner_location_box( $post ) {
 
 	$faire_location = get_post_meta( $post->ID, 'faire_location', true );
 
-	// $faire_location = array( 101, 102 );
-
-	var_dump( $faire_location );
-
 	$faires = get_the_terms( $post, 'faire' );
 
 	$faire = array();
@@ -137,8 +133,6 @@ function mf_inner_location_box( $post ) {
  * @param int $post_id The ID of the post being saved.
  */
 function mf_save_postdata( $post_id ) {
-
-  // var_dump( $_POST );
 
   /*
    * We need to verify this came from the our screen and with proper authorization,
