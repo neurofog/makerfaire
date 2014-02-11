@@ -179,7 +179,7 @@ function mf_save_postdata( $post_id ) {
 	if ( isset( $_POST['location'] ) ) {
   		$locations = array();
 		foreach ( $_POST['location'] as $location ) {
-			$locations[] = $location;
+			$locations[] = absint( $location );
 		}
 		update_post_meta( $post_id, 'faire_location', $locations );
 	} else {
