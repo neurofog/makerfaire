@@ -36,12 +36,11 @@ include_once dirname( __FILE__ ) . '/plugins/hide-post-locker/hide-post-locker.p
 
 require_once( 'taxonomies/type.php' );
 require_once( 'taxonomies/location.php' );
-require_once( 'taxonomies/bay-area-locations.php' );
-require_once( 'taxonomies/new-york-locations.php' );
 require_once( 'taxonomies/faire.php' );
 require_once( 'taxonomies/location_category.php' );
 require_once( 'taxonomies/group.php' );
 require_once( 'plugins/post-types/event-items.php' );
+require_once( 'post-types/location.php' );
 if ( defined( 'WP_CLI' ) && WP_CLI )
 	require_once( 'plugins/wp-cli/wp-cli.php' );
 
