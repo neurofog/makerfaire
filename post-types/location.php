@@ -3,7 +3,7 @@
 function location_post_type_init() {
 	register_post_type( 'location', array(
 		'hierarchical'      => true,
-		'public'            => true,
+		'public'	   => true,
 		'show_in_nav_menus' => true,
 		'show_ui'           => true,
 		'supports'          => array( 'title', 'editor', 'page-attributes', 'revisions', 'excerpt' ),
@@ -93,37 +93,44 @@ function mf_inner_location_box( $post ) {
 
 	$faire = array();
 
-	foreach ($faires as $da_faire ) {
-		$faire[] = $da_faire->slug;
-	}
+	if ( $faires ) {
 
-  	// WP_Query arguments
-	$args = array (
-		'post_type'	=> 'location',
-		'tax_query' => array(
-			array(
-				'taxonomy' 	=> 'faire',
-				'field' 	=> 'slug',
-				'terms' 	=> $faire,
-			)
-		)
-	);
-
-	// The Query
-	$query = new WP_Query( $args );
-	echo '<ul>';
-	foreach ( $query->posts as $location ) {
-		echo '<li><label class="checkbox">';
-		if ( in_array( $location->ID, $faire_location ) ) {
-			echo '<input type="checkbox" name="location[]" value="' . esc_attr( $location->ID ) .'" checked>';	
-		} else {
-			echo '<input type="checkbox" name="location[]" value="' . esc_attr( $location->ID ) .'">';
+		foreach ($faires as $da_faire ) {
+			$faire[] = $da_faire->slug;
 		}
-		echo wp_kses_post( $location->post_title );
-		echo '</label"></li>';
+
+		// WP_Query arguments
+		$args = array (
+			'post_type'	=> 'location',
+			'tax_query' => array(
+				array(
+					'taxonomy' 	=> 'faire',
+					'field' 	=> 'slug',
+					'terms' 	=> $faire,
+				)
+			)
+		);
+
+		// The Query
+		$query = new WP_Query( $args );
+
+		echo '<ul>';
+		foreach ( $query->posts as $location ) {
+			echo '<li><label class="checkbox">';
+			if ( in_array( $location->ID, $faire_location ) ) {
+				echo '<input type="checkbox" name="location[]" value="' . esc_attr( $location->ID ) .'" checked>';	
+			} else {
+				echo '<input type="checkbox" name="location[]" value="' . esc_attr( $location->ID ) .'">';
+			}
+			echo wp_kses_post( $location->post_title );
+			echo '</label"></li>';
+
+		}
+		echo '</ul>';
+
 
 	}
-	echo '</ul>';
+	echo '<p><a class="button" target="_blank" href="' . admin_url( 'post-new.php?post_type=location' ) . '">Add a New Location</a><p>';
 
 }
 
@@ -134,46 +141,50 @@ function mf_inner_location_box( $post ) {
  */
 function mf_save_postdata( $post_id ) {
 
-  /*
-   * We need to verify this came from the our screen and with proper authorization,
-   * because save_post can be triggered at other times.
-   */
+	/*
+	* We need to verify this came from the our screen and with proper authorization,
+	* because save_post can be triggered at other times.
+	*/
 
-  // Check if our nonce is set.
-  if ( ! isset( $_POST['mf_inner_location_box_nonce'] ) )
-    return $post_id;
+	// Check if our nonce is set.
+	if ( ! isset( $_POST['mf_inner_location_box_nonce'] ) )
+		return $post_id;
 
-  $nonce = $_POST['mf_inner_location_box_nonce'];
+	$nonce = $_POST['mf_inner_location_box_nonce'];
 
-  // Verify that the nonce is valid.
-  if ( ! wp_verify_nonce( $nonce, 'mf_inner_location_box' ) )
-      return $post_id;
+	// Verify that the nonce is valid.
+	if ( ! wp_verify_nonce( $nonce, 'mf_inner_location_box' ) )
+		return $post_id;
 
-  // If this is an autosave, our form has not been submitted, so we don't want to do anything.
-  if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
-      return $post_id;
+	// If this is an autosave, our form has not been submitted, so we don't want to do anything.
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
+		return $post_id;
 
-  // Check the user's permissions.
-  if ( 'page' == $_POST['post_type'] ) {
+	// Check the user's permissions.
+  	if ( 'page' == $_POST['post_type'] ) {
 
-    if ( ! current_user_can( 'edit_page', $post_id ) )
-        return $post_id;
+    	if ( ! current_user_can( 'edit_page', $post_id ) )
+			return $post_id;
   
-  } else {
+  	} else {
 
-    if ( ! current_user_can( 'edit_post', $post_id ) )
-        return $post_id;
-  }
+    	if ( ! current_user_can( 'edit_post', $post_id ) )
+		return $post_id;
+	}
 
-  /* OK, its safe for us to save the data now. */
+	/* OK, its safe for us to save the data now. */
 
-  // Sanitize user input, and save to post meta.
+	// Sanitize user input, and save to post meta.
 
-  $locations = array();
-  foreach ( $_POST['location'] as $location ) {
-  	$locations[] = $location;
-  }
-  update_post_meta( $post_id, 'faire_location', $locations );
+	if ( isset( $_POST['location'] ) ) {
+  		$locations = array();
+		foreach ( $_POST['location'] as $location ) {
+			$locations[] = $location;
+		}
+		update_post_meta( $post_id, 'faire_location', $locations );
+	} else {
+		delete_post_meta( $post_id, 'faire_location' );
+	}
 
 }
 add_action( 'save_post', 'mf_save_postdata' );
