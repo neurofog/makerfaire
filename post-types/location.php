@@ -87,7 +87,9 @@ function mf_inner_location_box( $post ) {
 	// Add an nonce field so we can check for it later.
 	wp_nonce_field( 'mf_inner_location_box', 'mf_inner_location_box_nonce' );
 
-	$faire_location = get_post_meta( $post->ID, 'faire_location', true );
+	$faire_location_meta = get_post_meta( $post->ID, 'faire_location', true );
+
+	$faire_location = ( is_array( $faire_location_meta ) ) ? $faire_location_meta : array() ;
 
 	$faires = get_the_terms( $post, 'faire' );
 
