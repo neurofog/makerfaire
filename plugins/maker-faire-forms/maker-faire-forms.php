@@ -2347,7 +2347,7 @@ class MAKER_FAIRE_FORM {
 		$m .= '<a href="' . esc_url( home_url() ) . '" alt="Maker Faire">makerfaire.com</a> and provide some additional details that we can include about you.</p>';
 		$m .= '<p>Create an account by selecting "Register" in the header.</p>';
 		$m .= '<br /><p>Spread the word - Like us on <a href="http://facebook.com/makerfaire" alt="Like Maker Faire Facebook">Facebook</a> and follow us on ';
-		$m .= '<a href="https://twitter.com/#%21/makerfaire" alt="Follow Maker Faire Twitter">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts" alt="Maker Faire Google+">G+</a></p>';
+		$m .= '<a href="https://twitter.com/makerfaire" alt="Follow Maker Faire Twitter">Twitter</a> and <a href="https://plus.google.com/+MAKE/posts" alt="Maker Faire Google+">G+</a></p>';
 
 		$app_name = str_replace( '&amp;', '&', esc_html( $n ) );
 
