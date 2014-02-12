@@ -35,6 +35,9 @@
 			// Hook our custom button and text to the locker window
 			add_action( 'post_locked_dialog', array( $this, 'hide_locker_message' ) );
 
+			// Hook our custom button and text to the locker "taken over" window
+			add_action( 'post_lock_lost_dialog', array( $this, 'hide_locker_message' ) );
+
 			// Add in a custom box that displays at the top so we know we are view previewing the editor
 			add_action( 'admin_footer', array( $this, 'add_preview_message' ) );
 		}
@@ -72,8 +75,8 @@
 
 			// For easy customizations, allow users to over ride these messages.
 			$content = array(
-				'text' 		=> __( 'Want to preview the application?', 'geissinger-hpl' ),
-				'btn-text' 	=> __( 'Hide this window', 'geissinger-hpl' ),
+				'text' 		=> __( 'Want to view the application?', 'geissinger-hpl' ),
+				'btn-text' 	=> __( 'Review', 'geissinger-hpl' ),
 				'btn-class' => '',
 			);
 			$content = apply_filters( 'geissinger-hpl-locker-messages', $content );
