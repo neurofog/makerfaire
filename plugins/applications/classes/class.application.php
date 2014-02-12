@@ -400,6 +400,7 @@
 					}
 				}
 
+				$post['media'] = $this->upload_files( $new_post, $data );
 				return $post;
 			}
 
@@ -462,6 +463,8 @@
 
 
 		private function upload_files( $post_id, $data ) {
+			if ( ! function_exists( 'wp_handle_upload' ) )
+				require_once( ABSPATH . 'wp-admin/includes/file.php' );
 			
 			// Loop through our data and extract out the images/files
 			foreach ( $this->form as $key => $field ) {
@@ -470,20 +473,54 @@
 				}
 			}
 
-			if ( $_FILES ) {
-				foreach ( $_FILES as $file => $array ) {
-					if ( $_FILES[ $file ]['error'] !== UPLOAD_ERR_OK )
-						return "Upload Error : " . $_FILES[ $file ]['error'];
-
-					$attach_id = media_handle_upload( $file, $post_id );
-				}
-			}
-
-			if ( isset( $attached_id ) && $attached_id > 0 )
-				update_post_meta( $post_id, '_thumbnail_id', $attach_id )
-			
-			
+			var_dump($media);
+			die();
 		}
+
+	// 	private function upload( $ufile, $require_size ) {
+	// 	if ( ! function_exists( 'wp_handle_upload' ) )
+	// 		require_once( ABSPATH . 'wp-admin/includes/file.php' );
+
+	// 	// Check our uploaded file types.
+	// 	$info = pathinfo( $ufile['name'] );
+	// 	if ( ! in_array( strtolower( $info["extension"] ), array( 'jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'ppt', 'pptx', 'pps', 'ppsx', 'odt', 'xls', 'xlsx' ) ) )
+	// 		return false;
+
+	// 	if ( $require_size ) {
+	// 		list( $w, $h ) = getimagesize( $ufile['tmp_name'] );
+	// 	}
+
+	// 	$overrides = array( 'test_form' => false );
+	// 	$file      = wp_handle_upload( $ufile, $overrides );
+
+	// 	if ( ! $file )
+	// 		return false;
+
+	// 	$wp_upload_dir = wp_upload_dir();
+
+	// 	$attachment = array(
+	// 		'guid'           => $file['url'],
+	// 		'post_mime_type' => $file['type'],
+	// 		'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $ufile['name'] ) ),
+	// 		'post_content'   => '',
+	// 		'post_status'    => 'inherit'
+	// 	);
+
+	// 	//CREATE THUMBNAIL
+	// 	$thumb = image_make_intermediate_size( $file['file'], 500, 500 );
+
+	// 	$attach_id = wp_insert_attachment( $attachment, $file['file'] );
+
+
+	// 	if ( ! function_exists( 'wp_crop_image' ) )
+	// 		require_once( ABSPATH . 'wp-admin/includes/image.php' );
+
+	// 	$attach_data = wp_generate_attachment_metadata( $attach_id, $ufile['name'] );
+
+	// 	wp_update_attachment_metadata( $attach_id, $attach_data );
+
+	// 	return array( 'id' => $attach_id, 'url' => $file['url'], 'thumb'=>( $thumb ? $wp_upload_dir['url'].'/'.$thumb['file'] : $file['url'] ) );
+	// }
 
 
 		/**
