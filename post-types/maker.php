@@ -116,7 +116,7 @@ function maker_past_faires( $post ) {
 			foreach ( $application as $app ) {
 				$class = ( $i++ % 2 == 1 ) ? ' class="alternate"' : '';
 				$output .= '<tr' . $class . '>';
-				$output .= '<td><a href="' . esc_url( get_permalink( absint( $app->ID ) ) ) . '">' . esc_html( $app->post_title ) . '</a></td>';
+				$output .= '<td><a href="' . esc_url( admin_url( '/post.php?post=' . absint( $app->ID ) . '&action=edit' ) ) . '">' . esc_html( $app->post_title ) . '</a></td>';
 				$output .= '<td>' . esc_html( str_replace( '-', ' ', ucfirst( $app->post_status ) ) ) . '</td>';
 				$output .= '<td>' . absint( $app->ID ) . '</td>';
 				$output .= '<td>' . esc_html( $faire_names[ $app->data->maker_faire ] ) . '</td>';
