@@ -105,6 +105,8 @@ function mf_inner_location_box( $post ) {
 		$args = array (
 			'post_type'	=> 'location',
 			'posts_per_page' => 200,
+			'order' => 'ASC',
+			'orderby' => 'title',
 			'tax_query' => array(
 				array(
 					'taxonomy' 	=> 'faire',
@@ -117,18 +119,46 @@ function mf_inner_location_box( $post ) {
 		// The Query
 		$query = new WP_Query( $args );
 
-		echo '<ul>';
+		echo '<ul style="-moz-column-count:3;-moz-column-gap:20px;-webkit-column-count:3;-webkit-column-gap:20px;">';
+		
 		foreach ( $query->posts as $location ) {
-			echo '<li><label class="checkbox">';
-			if ( in_array( $location->ID, $faire_location ) ) {
-				echo '<input type="checkbox" name="location[]" value="' . esc_attr( $location->ID ) .'" checked>';	
-			} else {
-				echo '<input type="checkbox" name="location[]" value="' . esc_attr( $location->ID ) .'">';
-			}
-			echo wp_kses_post( $location->post_title );
-			echo '</label"></li>';
 
+			// Display only the parent elements first.
+			// If the parent has children, we'll handle that below
+			if ( $location->post_parent == 0 ) {
+				echo '<li><label class="checkbox">';
+				if ( in_array( $location->ID, $faire_location ) ) {
+					echo '<input type="checkbox" name="location[]" value="' . absint( $location->ID ) .'" checked>';	
+				} else {
+					echo '<input type="checkbox" name="location[]" value="' . absint( $location->ID ) .'">';
+				}
+				echo wp_kses_post( $location->post_title );
+				echo '</label">';
+
+				// Extract the children if they exist
+				$children = get_page_children( absint( $location->ID ), $query->posts );
+
+				if ( ! empty( $children ) ) {
+					echo '<ul>';
+
+					foreach ( $children as $child_loc ) {
+						echo '<li> <strong>—</strong> &nbsp; <label class="checkbox">';
+						if ( in_array( $child_loc->ID, $faire_location ) ) {
+							echo '<input type="checkbox" name="location[]" value="' . absint( $child_loc->ID ) .'" checked>';	
+						} else {
+							echo '<input type="checkbox" name="location[]" value="' . absint( $child_loc->ID ) .'">';
+						}
+						echo wp_kses_post( $child_loc->post_title );
+						echo '</label></li>';
+					}
+
+					echo '</ul></li>';
+				} else {
+					echo '</li>';
+				}
+			}
 		}
+
 		echo '</ul>';
 
 
@@ -191,3 +221,51 @@ function mf_save_postdata( $post_id ) {
 
 }
 add_action( 'save_post', 'mf_save_postdata' );
+
+
+/**
+ * Customize the columns for the locations
+ * @param  Array $columns The array of column titles
+ * @return Array
+ */
+function mf_location_columns( $columns ) {
+	$columns = array(
+		'cb' => '<input type="checkbox" />',
+		'title' => __( 'Name' ),
+		'faire' => __( 'Faire' ),
+		'date' => __( 'Date' )
+	);
+
+	return $columns;
+}
+add_filter( 'manage_edit-location_columns', 'mf_location_columns' );
+
+
+/**
+ * Add the content for our custom columns
+ * @param  Array $column  The list of columns
+ * @return HTML
+ */
+function mf_location_column_content( $column ) {
+	global $post;
+
+	switch ( $column ) {
+		case 'faire' :
+			$faires = get_the_terms( absint( $post->ID ), 'faire' );
+
+			$i = 0;
+			foreach ( $faires as $faire ) {
+				if ( $i > 0 )
+					echo ', ';
+
+				echo esc_html( $faire->name );
+
+				$i++;
+			}
+
+			break;
+		default:
+			break;
+	}
+}
+add_action( 'manage_location_posts_custom_column', 'mf_location_column_content' );
