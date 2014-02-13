@@ -98,12 +98,13 @@ function mf_inner_location_box( $post ) {
 	if ( $faires ) {
 
 		foreach ($faires as $da_faire ) {
-			$faire[] = $da_faire->slug;
+			$faire[] = sanitize_title( $da_faire->slug );
 		}
 
 		// WP_Query arguments
 		$args = array (
 			'post_type'	=> 'location',
+			'posts_per_page' => 200,
 			'tax_query' => array(
 				array(
 					'taxonomy' 	=> 'faire',
@@ -132,7 +133,7 @@ function mf_inner_location_box( $post ) {
 
 
 	}
-	echo '<p><a class="button" target="_blank" href="' . admin_url( 'post-new.php?post_type=location' ) . '">Add a New Location</a><p>';
+	echo '<p><a class="button" target="_blank" href="' . esc_url( admin_url( 'post-new.php?post_type=location' ) ) . '">Add a New Location</a><p>';
 
 }
 
