@@ -15,8 +15,11 @@ require_once( __DIR__ . '/plugins/maker-faire-forms/maker-faire-forms.php' );
 // include maker-faire-forms plugin
 require_once( __DIR__ . '/plugins/public-pages/makers.php' );
 
-// include maker-faire-forms plugin
+// include functions for the maker post type
 require_once( __DIR__ . '/post-types/maker.php' );
+
+// include functions for the mf_form post type
+require_once( __DIR__ . '/post-types/application.php' );
 
 // Markdown
 include_once dirname(__file__) . '/plugins/markdown/markdown.php';
@@ -69,7 +72,7 @@ if ( function_exists( 'wpcom_vip_sharing_twitter_via' ) ) {
 	wpcom_vip_sharing_twitter_via( 'make' );
 }
 
-function make_enqueue_jquery() {
+function make_add_resources() {
 	// Styles
 	wp_enqueue_style( 'make-bootstrap', get_stylesheet_directory_uri() . '/css/bootstrap.css' );
 	wp_enqueue_style( 'make-styles', get_stylesheet_directory_uri() . '/css/style.css' );
@@ -79,7 +82,19 @@ function make_enqueue_jquery() {
 	wp_enqueue_script( 'make-bootstrap', get_stylesheet_directory_uri() . '/js/bootstrap.js', array( 'jquery' ) );
 	wp_enqueue_script( 'make-countdown', get_stylesheet_directory_uri() . '/js/jquery.countdown.js', array( 'jquery' ) );
 }
-add_action( 'wp_enqueue_scripts', 'make_enqueue_jquery' );
+add_action( 'wp_enqueue_scripts', 'make_add_resources' );
+
+
+function make_add_admin_resources() {
+	$screen = get_current_screen();
+	
+	// Rating Star system CSS. Load only when on edit screen for applications
+	if ( $screen->id == 'mf_form' && current_user_can( 'delete_others_pages' ) ) {
+		wp_enqueue_style( 'make-ratings', get_stylesheet_directory_uri() . '/css/ratings.css' );
+		wp_enqueue_script( 'make-ratings', get_stylesheet_directory_uri() . '/js/ratings.js' );
+	}
+}
+add_action( 'admin_enqueue_scripts', 'make_add_admin_resources' );
 
 
 /**

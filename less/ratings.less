@@ -1,0 +1,67 @@
+.ratings {
+    display:inline-block;
+    .author-name {
+        margin:5px 0;
+    }
+    .author-avatar {
+        float:left;
+    }
+    .ratings-wrapper {
+        float:left;
+        &:after {
+            content:'';
+            display:table;
+            clear:both;
+        }
+    }
+    &:not(:checked) {
+        .star {
+            display:none;
+        }
+        .label {
+            float:right;
+            width:1em;
+            padding:0 .1em;
+            overflow:hidden;
+            white-space:nowrap;
+            cursor:auto;
+            font-size:200%;
+            line-height:1.2;
+            color:#ddd;
+            text-shadow:1px 1px #bbb, 2px 2px #666, .1em .1em .2em rgba(0,0,0,.5);
+            &:before {
+                content: '★ ';
+            }
+        }
+    }
+    .star:checked, .star.selected {
+        ~ .label, + .label:before {
+            color: #f70;
+            text-shadow:1px 1px #c60, 2px 2px #940, .1em .1em .2em rgba(0,0,0,.5);
+        }
+    }
+    .label:active {
+        position:relative;
+        top:2px;
+        left:2px;
+    }
+    .label {
+        position:relative;
+        top:4px;
+    }
+    &.my-rating {
+        &:not(:checked) {
+            .label {
+                cursor:pointer;
+                &:hover, &:hover ~ .label {
+                    color: gold;
+                    text-shadow:1px 1px goldenrod, 2px 2px #B57340, .1em .1em .2em rgba(0,0,0,.5);
+                }
+            }
+        }
+        .star:checked + .label:hover, .star:checked + .label:hover ~ .label, .star:checked ~ .label:hover, .star:checked ~ .label:hover ~ .label, .label:hover ~ .star:checked ~ .label {
+            color: #ea0;
+            text-shadow:1px 1px goldenrod, 2px 2px #B57340, .1em .1em .2em rgba(0,0,0,.5);
+        }
+    }
+}

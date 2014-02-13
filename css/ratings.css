@@ -1,0 +1,67 @@
+.ratings {
+  display: inline-block;
+}
+.ratings .author-name {
+  margin: 5px 0;
+}
+.ratings .author-avatar {
+  float: left;
+}
+.ratings .ratings-wrapper {
+  float: left;
+}
+.ratings .ratings-wrapper:after {
+  content: '';
+  display: table;
+  clear: both;
+}
+.ratings:not(:checked) .star {
+  display: none;
+}
+.ratings:not(:checked) .label {
+  float: right;
+  width: 1em;
+  padding: 0 .1em;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: auto;
+  font-size: 200%;
+  line-height: 1.2;
+  color: #ddd;
+  text-shadow: 1px 1px #bbbbbb, 2px 2px #666666, 0.1em 0.1em 0.2em rgba(0, 0, 0, 0.5);
+}
+.ratings:not(:checked) .label:before {
+  content: '★ ';
+}
+.ratings .star:checked ~ .label,
+.ratings .star.selected ~ .label,
+.ratings .star:checked + .label:before,
+.ratings .star.selected + .label:before {
+  color: #f70;
+  text-shadow: 1px 1px #cc6600, 2px 2px #994400, 0.1em 0.1em 0.2em rgba(0, 0, 0, 0.5);
+}
+.ratings .label:active {
+  position: relative;
+  top: 2px;
+  left: 2px;
+}
+.ratings .label {
+  position: relative;
+  top: 4px;
+}
+.ratings.my-rating:not(:checked) .label {
+  cursor: pointer;
+}
+.ratings.my-rating:not(:checked) .label:hover,
+.ratings.my-rating:not(:checked) .label:hover ~ .label {
+  color: gold;
+  text-shadow: 1px 1px #daa520, 2px 2px #b57340, 0.1em 0.1em 0.2em rgba(0, 0, 0, 0.5);
+}
+.ratings.my-rating .star:checked + .label:hover,
+.ratings.my-rating .star:checked + .label:hover ~ .label,
+.ratings.my-rating .star:checked ~ .label:hover,
+.ratings.my-rating .star:checked ~ .label:hover ~ .label,
+.ratings.my-rating .label:hover ~ .star:checked ~ .label {
+  color: #ea0;
+  text-shadow: 1px 1px #daa520, 2px 2px #b57340, 0.1em 0.1em 0.2em rgba(0, 0, 0, 0.5);
+}
