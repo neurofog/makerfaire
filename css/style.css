@@ -496,7 +496,7 @@ footer .pills a {
 .countdown-numbers th {
   color: #fc040c;
   text-align: center;
-  font-weight: 300;
+  font-weight: bold;
   font-size: 40px;
 }
 .countdown-numbers td {
