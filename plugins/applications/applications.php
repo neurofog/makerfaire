@@ -22,7 +22,6 @@
 	// Load our Exhibit form options and settings
 	require_once( 'classes/class.exhibits.php' );
 
-
 	/**
 	 * Load some styles outside of the class. This is to be completly separate to allow devs to add their own styles
 	 * @return void

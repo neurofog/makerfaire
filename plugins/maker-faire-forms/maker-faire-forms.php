@@ -251,7 +251,7 @@ class MAKER_FAIRE_FORM {
 	* @access public
 	* =====================================================================*/
 	public function __construct() {
-		add_action( 'init',                           array( &$this, 'init' ) );
+		// add_action( 'init',                           array( &$this, 'init' ) );
 		add_action( 'admin_init', 		 			  array( &$this, 'admin_init' ) );
 		add_action( 'admin_menu',					  array( &$this, 'add_menus' ) );
 		add_action( 'add_meta_boxes', 	              array( &$this, 'add_meta_boxes' ) );
@@ -509,27 +509,32 @@ class MAKER_FAIRE_FORM {
 	* Inits all included meta boxes for the MakerFaire Custom Post Type
 	*
 	* @access public
+	* @deprecated
 	* =====================================================================*/
 	public function add_meta_boxes() {
 		global $post;
 
-		if ( isset( $post->post_status ) && ( $post->post_status != 'auto-draft' ) ) {
-			add_meta_box( 'mf_summary',   'Summary',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
-			add_meta_box( 'mf_details',   'Details',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
-			add_meta_box( 'mf_logistics', 'Edit Form', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
-		} else {
-			add_meta_box( 'mf_form_type', 'Application Type',  array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
-			add_meta_box( 'mf_exhibit',   'Exhibit Details',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'exhibit' ) );
-			add_meta_box( 'mf_performer', 'Performer Details', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'performer' ) );
-			add_meta_box( 'mf_presenter', 'Presenter Details', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'presenter' ) );
-		}
+		// Check is the application being viewed is an old application.
+		// New applications will be processed through /plugins/post-types/mf-form.php
+		if ( ! empty( $post->content ) ) {
+			if ( isset( $post->post_status ) && ( $post->post_status != 'auto-draft' ) ) {
+				add_meta_box( 'mf_summary',   'Summary',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
+				add_meta_box( 'mf_details',   'Details',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
+				add_meta_box( 'mf_logistics', 'Edit Form', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
+			} else {
+				add_meta_box( 'mf_form_type', 'Application Type',  array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
+				add_meta_box( 'mf_exhibit',   'Exhibit Details',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'exhibit' ) );
+				add_meta_box( 'mf_performer', 'Performer Details', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'performer' ) );
+				add_meta_box( 'mf_presenter', 'Presenter Details', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'presenter' ) );
+			}
 
-		add_meta_box( 'mf_save', 'Edit Application', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
-		add_meta_box( 'mf_logs', 'Status Changes &amp; Notifications Sent', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
+			add_meta_box( 'mf_save', 'Edit Application', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
+			add_meta_box( 'mf_logs', 'Status Changes &amp; Notifications Sent', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 
-		if ( isset( $post->post_status ) && ( $post->post_status != 'auto-draft' ) ) {
-			add_meta_box( 'mf_maker_contact', 'Contact Info', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
-			add_meta_box( 'mf_maker_info', 'Makers', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
+			if ( isset( $post->post_status ) && ( $post->post_status != 'auto-draft' ) ) {
+				add_meta_box( 'mf_maker_contact', 'Contact Info', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
+				add_meta_box( 'mf_maker_info', 'Makers', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
+			}
 		}
 	}
 

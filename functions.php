@@ -15,6 +15,9 @@ require_once( __DIR__ . '/plugins/maker-faire-forms/maker-faire-forms.php' );
 // Include our new Maker Faire Application Forms plugin
 require_once( __DIR__ . '/plugins/applications/applications.php' );
 
+// Include the mf_form post type and functionality
+require_once( __DIR__ . '/plugins/post-types/mf-form.php' );
+
 // include maker-faire-forms plugin
 require_once( __DIR__ . '/plugins/public-pages/makers.php' );
 

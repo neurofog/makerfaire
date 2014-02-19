@@ -18,7 +18,7 @@
 		 * @version  0.1
 		 * @since    0.1
 		 */
-		private $form_debug = true;
+		private $form_debug = false;
 
 
 		/**
@@ -363,41 +363,53 @@
 
 			$post = array(
 				'post_title'   => ( isset( $post_info['form_title'] ) && ! empty( $post_info['form_title'] ) ) ? sanitize_text_field( $data[ $post_info['form_title'] ] ) : '',
-				'post_content' => '',
 				'post_status'  => ( isset( $post_info['post_status'] ) && ! empty( $post_info['post_status'] ) ) ? sanitize_text_field( $post_info['post_status'] ) : 'publish',
 				'post_type'	   => ( isset( $post_info['post_type'] ) && ! empty( $post_info['post_type'] ) ) ? sanitize_text_field( $post_info['post_type'] ) : 'post',
 			);
 
 			if ( ! $this->form_debug ) {
+
+				// Check if we are updating a post or creating a new one
 				if ( isset( $_GET['app_id'] ) && absint( $_GET['app_id'] ) ) {
 					$post['ID'] = absint( $_GET['app_id'] );
-					$updated_post = wp_update_post( $post );
-
-					// Save the form data to the post meta
-					update_post_meta( absint( $updated_post ), 'app_data', serialize( $data ) );
-
-					return $updated_post;
+					$post = wp_update_post( $post );
 				} else {
-					$new_post = wp_insert_post( $post );
-
-					// Check if we are setting any taxonomies
-					if ( isset( $post_info['tax_input'] ) && ! empty( $post_info['tax_input'] ) && is_array( $post_info['tax_input'] ) ) {
-						foreach ( $post_info['tax_input'] as $tax => $term ) {
-							wp_set_object_terms( absint( $new_post ), sanitize_text_field( $term ), sanitize_text_field( $tax ), true );
-						}
-					}
-
-					// Upload any files/images passed
-					$this->upload_files( $new_post, $data );
-
-					return $new_post;
+					$post = wp_insert_post( $post );
 				}
-			} else {
+
+				// Save the form data to the post meta
+				update_post_meta( absint( $updated_post ), 'app_data', serialize( $data ) );
 
 				// Check if we are setting any taxonomies
 				if ( isset( $post_info['tax_input'] ) && ! empty( $post_info['tax_input'] ) && is_array( $post_info['tax_input'] ) ) {
 					foreach ( $post_info['tax_input'] as $tax => $term ) {
-						$post['tax'] = array( $tax => $term );
+						wp_set_object_terms( absint( $new_post ), sanitize_text_field( $term ), sanitize_text_field( $tax ), true );
+					}
+				}
+
+				// Upload any files/images passed
+				$this->upload_files( $new_post, $_FILES );
+
+				return $updated_post;
+
+			} else {
+				
+				// Return our form data
+				foreach ( $data as $key => $value ) {
+					$post['data'][ $key ] = $value;
+				}
+
+				// Add our taxonomies we'll be setting
+				if ( isset( $post_info['tax_input'] ) && ! empty( $post_info['tax_input'] ) && is_array( $post_info['tax_input'] ) ) {
+					foreach ( $post_info['tax_input'] as $tax => $term ) {
+						$post['tax'][ $tax ] = $term;
+					}
+				}
+
+				// Add our files to the post array
+				if ( isset( $_FILES ) && ! empty( $_FILES ) ) {
+					foreach ( $_FILES as $field => $values ) {
+						$post['media'][ $field ] = $values;
 					}
 				}
 				
@@ -462,6 +474,52 @@
 		}
 
 
+		private function upload_files( $post, $files ) {
+			if ( ! function_exists( 'wp_handle_upload' ) )
+				require_once( ABSPATH . 'wp-admin/includes/file.php' );
+
+			var_dump($files);
+			// Check our uploaded file types.
+			// $info = pathinfo( $ufile['name'] );
+			// if ( ! in_array( strtolower( $info["extension"] ), array( 'jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'ppt', 'pptx', 'pps', 'ppsx', 'odt', 'xls', 'xlsx' ) ) )
+			// 	return false;
+
+			// if ( $require_size ) {
+			// 	list( $w, $h ) = getimagesize( $ufile['tmp_name'] );
+			// }
+
+			// $overrides = array( 'test_form' => false );
+			// $file      = wp_handle_upload( $ufile, $overrides );
+
+			// if ( ! $file )
+			// 	return false;
+
+			// $wp_upload_dir = wp_upload_dir();
+
+			// $attachment = array(
+			// 	'guid'           => $file['url'],
+			// 	'post_mime_type' => $file['type'],
+			// 	'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $ufile['name'] ) ),
+			// 	'post_content'   => '',
+			// 	'post_status'    => 'inherit'
+			// );
+
+			// //CREATE THUMBNAIL
+			// $thumb = image_make_intermediate_size( $file['file'], 500, 500 );
+
+			// $attach_id = wp_insert_attachment( $attachment, $file['file'] );
+
+
+			// if ( ! function_exists( 'wp_crop_image' ) )
+			// 	require_once( ABSPATH . 'wp-admin/includes/image.php' );
+
+			// $attach_data = wp_generate_attachment_metadata( $attach_id, $ufile['name'] );
+
+			// wp_update_attachment_metadata( $attach_id, $attach_data );
+
+			// return array( 'id' => $attach_id, 'url' => $file['url'], 'thumb'=>( $thumb ? $wp_upload_dir['url'].'/'.$thumb['file'] : $file['url'] ) );
+		}
+
 		/**
 		 * Processes all of our form fields
 		 * @param  boolean
@@ -475,9 +533,6 @@
 			// Get the form data
 			$fields = $this->form;
 			$output = '';
-
-			// Take our exisiting form content and process it and turn it into an array
-			$data = (array) json_decode( $data );
 
 			foreach ( $fields as $field ) {
 				$args         = ( isset( $field['args'] ) ) ? $field['args'] : '';
@@ -506,7 +561,7 @@
 
 					// Check if the field is required
 					if ( $field['required'] )
-						$output .= ' data-formflow-required="true"';
+						$output .= ' data-mf-required="true"';
 
 					// Check if a conditional is set
 					if ( isset( $conditionals ) && is_array( $conditionals ) )
@@ -546,7 +601,7 @@
 					}
 
 					// Return the proper form field
-					$output .= $this->get_field( $field['type'], $args, $data );
+					$output .= $this->get_field( $field['type'], $args, $data['data'] );
 
 					if ( $field['type'] != 'hidden' ) {
 						// If left aligned form fields are set, let's add the description below the form field
@@ -772,7 +827,7 @@
 				$output .= '>';
 
 					foreach ( $args['options'] as $value => $label ) {
-						$output .= '<option value="' . esc_attr( $value ) . '">' . esc_html( $label ) . '</option>';
+						$output .= '<option value="' . esc_attr( $value ) . '"' . selected( esc_attr( $value ), esc_attr( $data[ $value ] ) ); '>' . esc_html( $label ) . '</option>';
 					}
 
 				$output .= '</select>';
@@ -1186,7 +1241,8 @@
 				return false;
 
 			// Return the post object
-			$data = get_post( absint( $_GET['app_id'] ) );
+			$data['post'] = get_post( absint( $_GET['app_id'] ) );
+			$data['data'] = unserialize( get_post_meta( absint( $_GET['app_id'] ), 'app_data', true ) );
 			
 			return $data;
 		}
@@ -1225,9 +1281,9 @@
 
 						<ol>
 							<?php if ( isset( $_GET['app_id'] ) && absint( $_GET['app_id'] ) ) : ?>
-								<li class="form-field hidden"><input type="hidden" name="author_id" value="<?php echo absint( $data->post_author ); ?>" /></li>
+								<li class="form-field hidden"><input type="hidden" name="author_id" value="<?php echo absint( $data['post']->post_author ); ?>" /></li>
 							<?php endif; ?>
-							<?php echo $this->fields( ( ! empty( $data->post_content ) ? $data->post_content : null ), $settings['label_left'] ); ?>
+							<?php echo $this->fields( ( ! empty( $data ) ? $data : null ), $settings['label_left'] ); ?>
 						</ol>
 					</fieldset>
 					<fieldset class="submit">

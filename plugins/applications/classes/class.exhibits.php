@@ -38,7 +38,6 @@
 				'post_type' => 'mf_form', // Pass the post type name
 				'post_status' => 'proposed', // Pass the post status. If empty or not set, 'publish' is default
 				'tax_input' => array( // You can also set taxonomies when saving post. TODO: Finish this.
-					'type' => 'form-type',
 					'faire' => 'maker-faire-bay-area-2014' // Taxonomy ID or slug
 				),
 			),
@@ -65,16 +64,6 @@
 			),
 			array(
 				'id'   	   => 2,
-				'type' 	   => 'hidden',
-				'required' => false,
-				'args' 	   => array(
-					'id'		  => 'faire',
-					'name'	  	  => 'maker_faire',
-					'value'		  => '2014_bayarea',
-				),
-			),
-			array(
-				'id'   	   => 3,
 				'type' 	   => 'hidden',
 				'required' => false,
 				'args' 	   => array(
