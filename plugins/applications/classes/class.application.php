@@ -36,7 +36,6 @@
 				'class' => 'form-class',
 				'id' => ''
 			),
-			'submission' => 'refresh', // Two options. 'ajax' or 'refresh'
 			'method' => 'post', // The method to use when submitting, POST or GET.
 			'security' => array(
 				'input_id' => 'app-submitted', // The value to set when submitting our form.
@@ -251,9 +250,8 @@
 			// Pass our custom Form or else get the default (only for development)
 			$this->form = ( empty( $form ) && $this->form_debug ) ? $this->demo_form : $form;
 
-			// If we want to save the form on refresh, let's do that
-			if ( $this->settings['submission'] == 'refresh' )
-				$this->form_action_refresh();
+			// If we want to save the form
+			$this->save_form();
 
 		}
 
@@ -297,7 +295,7 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function form_action_refresh() {
+		private function save_form() {
 
 			// Check if the user is even logged in
 			if ( ! is_user_logged_in() )
@@ -307,15 +305,15 @@
 			if ( empty( $_POST ) )
 				return;
 
-			// Lastly, we'll make sure something was submitted the form and check we passed the correct nonce
+			// Lastly, we'll make sure something was submitted from the form and check we passed the correct nonce
 			if ( ! isset( $this->settings['security']['input_id'] ) && ! $this->settings['security']['input_id'] && ! isset( $this->settings['security']['app_nonce'] ) && ! wp_verify_nonce( $this->settings['security']['app_nonce'], 'save_form' ) )
 				return;
 
 			// Check if we want our form to create a post on save.
 			if ( isset( $this->settings['create-post'] ) ) {
-				
+
 				// Call our save post method
-				$results = $this->form_save_post( $_POST );
+				$results = $this->form_save_post( $_POST, $_FILES );
 
 				if ( ! $this->form_debug ) {
 					return $results;
@@ -334,13 +332,13 @@
 		 * @version 0.1
 		 * @since   0.1
 		 */
-		private function form_save_post( $data ) {
+		private function form_save_post( $data, $files ) {
 
 			// Don't run unless the user is logged in.
 			if ( ! is_user_logged_in() )
 				return;
 
-			// Make sure we submitted our form one more time...
+			// Make sure we are calling this appropriately
 			if ( ! isset( $this->settings['security']['input_id'] ) && ! $this->settings['security']['input_id'] && ! isset( $this->settings['security']['app_nonce'] ) && ! wp_verify_nonce( $this->settings['security']['app_nonce'], 'save_form' ) )
 				return;
 
@@ -350,8 +348,8 @@
 			if ( isset( $data['author_id'] ) && absint( $data['author_id'] ) ) {
 				global $current_user;
 				get_currentuserinfo();
-				$author_id = absint( $data['author_id'] );
-				$author_meta = get_the_author_meta( 'display_name', $author_id );
+				$author_id = $data['author_id'];
+				$author_meta = get_the_author_meta( 'display_name', absint( $author_id ) );
 
 				if ( $current_user->ID != $data['author_id'] )
 					exit( 'You do not have the proper privileges to edit this application! Only \'<em>' . esc_html( $author_meta ) . '</em>\' is allowed to edit.' );
@@ -365,7 +363,7 @@
 
 			$post = array(
 				'post_title'   => ( isset( $post_info['form_title'] ) && ! empty( $post_info['form_title'] ) ) ? sanitize_text_field( $data[ $post_info['form_title'] ] ) : '',
-				'post_content' => json_encode( $data ),
+				'post_content' => '',
 				'post_status'  => ( isset( $post_info['post_status'] ) && ! empty( $post_info['post_status'] ) ) ? sanitize_text_field( $post_info['post_status'] ) : 'publish',
 				'post_type'	   => ( isset( $post_info['post_type'] ) && ! empty( $post_info['post_type'] ) ) ? sanitize_text_field( $post_info['post_type'] ) : 'post',
 			);
@@ -374,6 +372,9 @@
 				if ( isset( $_GET['app_id'] ) && absint( $_GET['app_id'] ) ) {
 					$post['ID'] = absint( $_GET['app_id'] );
 					$updated_post = wp_update_post( $post );
+
+					// Save the form data to the post meta
+					update_post_meta( absint( $updated_post ), 'app_data', serialize( $data ) );
 
 					return $updated_post;
 				} else {
@@ -399,8 +400,7 @@
 						$post['tax'] = array( $tax => $term );
 					}
 				}
-
-				$post['media'] = $this->upload_files( $new_post, $data );
+				
 				return $post;
 			}
 
@@ -462,67 +462,6 @@
 		}
 
 
-		private function upload_files( $post_id, $data ) {
-			if ( ! function_exists( 'wp_handle_upload' ) )
-				require_once( ABSPATH . 'wp-admin/includes/file.php' );
-			
-			// Loop through our data and extract out the images/files
-			foreach ( $this->form as $key => $field ) {
-				if ( $field['type'] == 'image' || $field['type'] == 'file' ) {
-					$media[ $field['args']['name'] ] = $data[ $field['args']['name'] ];
-				}
-			}
-
-			var_dump($media);
-			die();
-		}
-
-	// 	private function upload( $ufile, $require_size ) {
-	// 	if ( ! function_exists( 'wp_handle_upload' ) )
-	// 		require_once( ABSPATH . 'wp-admin/includes/file.php' );
-
-	// 	// Check our uploaded file types.
-	// 	$info = pathinfo( $ufile['name'] );
-	// 	if ( ! in_array( strtolower( $info["extension"] ), array( 'jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'ppt', 'pptx', 'pps', 'ppsx', 'odt', 'xls', 'xlsx' ) ) )
-	// 		return false;
-
-	// 	if ( $require_size ) {
-	// 		list( $w, $h ) = getimagesize( $ufile['tmp_name'] );
-	// 	}
-
-	// 	$overrides = array( 'test_form' => false );
-	// 	$file      = wp_handle_upload( $ufile, $overrides );
-
-	// 	if ( ! $file )
-	// 		return false;
-
-	// 	$wp_upload_dir = wp_upload_dir();
-
-	// 	$attachment = array(
-	// 		'guid'           => $file['url'],
-	// 		'post_mime_type' => $file['type'],
-	// 		'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $ufile['name'] ) ),
-	// 		'post_content'   => '',
-	// 		'post_status'    => 'inherit'
-	// 	);
-
-	// 	//CREATE THUMBNAIL
-	// 	$thumb = image_make_intermediate_size( $file['file'], 500, 500 );
-
-	// 	$attach_id = wp_insert_attachment( $attachment, $file['file'] );
-
-
-	// 	if ( ! function_exists( 'wp_crop_image' ) )
-	// 		require_once( ABSPATH . 'wp-admin/includes/image.php' );
-
-	// 	$attach_data = wp_generate_attachment_metadata( $attach_id, $ufile['name'] );
-
-	// 	wp_update_attachment_metadata( $attach_id, $attach_data );
-
-	// 	return array( 'id' => $attach_id, 'url' => $file['url'], 'thumb'=>( $thumb ? $wp_upload_dir['url'].'/'.$thumb['file'] : $file['url'] ) );
-	// }
-
-
 		/**
 		 * Processes all of our form fields
 		 * @param  boolean
@@ -561,9 +500,9 @@
 						$output .= ' id="' . esc_attr( $args['w_id'] ) . '"';
 
 					// Set custom classes if set.
-					$custom_class = ( isset( $args['w_class'] ) && ! empty( $args['w_class'] ) ) ? ' ' . esc_attr( $args['w_class'] ) : '';
+					$custom_class = ( isset( $args['w_class'] ) && ! empty( $args['w_class'] ) ) ? ' ' . $args['w_class'] : '';
 					$wrapper_class = ( $field['type'] != 'hidden' ) ? 'form-field' : 'form-field hidden';
-					$output .= ' class="' . $wrapper_class . $custom_class . '"';
+					$output .= ' class="' . esc_attr( $wrapper_class ) . esc_attr( $custom_class ) . '"';
 
 					// Check if the field is required
 					if ( $field['required'] )
@@ -592,6 +531,11 @@
 							// Check that a label exists...
 							if ( isset( $args['label'] ) && ! empty( $args['label'] ) )
 								$output .= wp_kses_post( $args['label'] );
+
+
+							// Check if the field is required, if so, add our little astrisk
+							if ( $field['required'] )
+								$output .= ' *';
 
 						// Close the label tag
 						$output .= '</label>';
@@ -739,7 +683,7 @@
 
 					// Add our exisiting data if it exists
 					if ( isset ( $data[ $name ] ) && ! empty( $data[ $name ] ) )
-						$output .= ' value="' . sanitize_text_field( $data[ $name ] ) . '"';
+						$output .= ' value="' . esc_attr( $data[ $name ] ) . '"';
 
 				$output .= ' />';
 
@@ -788,7 +732,7 @@
 
 				// Add our exisiting data if it exists
 				if ( isset ( $data[ $args['name'] ] ) && ! empty( $data[ $args['name'] ] ) )
-					$output .= sanitize_text_field( $data[ $args['name'] ] );
+					$output .= wp_kses_post( $data[ $args['name'] ] );
 
 				$output .= '</textarea>';
 
@@ -1013,15 +957,19 @@
 
 								// Check for an ID
 								if ( isset( $args['id'] ) )
-									$output .= ' id="' . esc_attr( $id ) . '"';
+									$output .= ' id="' . esc_attr( $args['name'] ) . '-' . esc_attr( strtolower( $name ) ) . '"';
 
 								// Check for a class
 								if ( isset( $args['class'] ) )
 									$output .= ' class="' . esc_attr( $args['class'] ) . '"';
 
+								// Add the value
+								if ( isset( $args['id'] ) )
+									$output .= ' value="' . esc_attr( strtolower( $name ) ) . '"';
+
 							$output .= ' /> ';
 
-							$output .= '<label for="' . esc_attr( $id ) . '">' . esc_html( $name ) . '</label>';
+							$output .= '<label for="' . esc_attr( $args['name'] ) . '-' . esc_attr( strtolower( $name ) ) . '">' . esc_html( $name ) . '</label>';
 
 						$output .= '</li>';
 
@@ -1366,4 +1314,3 @@
 		}
 
 	}
-	

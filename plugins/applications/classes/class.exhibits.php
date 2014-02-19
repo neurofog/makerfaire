@@ -38,6 +38,7 @@
 				'post_type' => 'mf_form', // Pass the post type name
 				'post_status' => 'proposed', // Pass the post status. If empty or not set, 'publish' is default
 				'tax_input' => array( // You can also set taxonomies when saving post. TODO: Finish this.
+					'type' => 'form-type',
 					'faire' => 'maker-faire-bay-area-2014' // Taxonomy ID or slug
 				),
 			),
@@ -201,7 +202,7 @@
 				'args' 	   => array(
 					'id'		  => 'crowdsource_funding',
 					'label' 	  => 'At Maker Faire, will you soliciting any crowdsource funding (Kickstarter, Indiegogo, PiggyBackr, etc?)',
-					'name'	  	  => 'sales',
+					'name'	  	  => 'crowdsource',
 					'options'	  => array(
 						'Yes',
 						'No',
