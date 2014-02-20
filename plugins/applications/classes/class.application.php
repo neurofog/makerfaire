@@ -372,25 +372,25 @@
 				// Check if we are updating a post or creating a new one
 				if ( isset( $_GET['app_id'] ) && absint( $_GET['app_id'] ) ) {
 					$post['ID'] = absint( $_GET['app_id'] );
-					$post = wp_update_post( $post );
+					$post_id = wp_update_post( $post );
 				} else {
-					$post = wp_insert_post( $post );
+					$post_id = wp_insert_post( $post );
 				}
 
 				// Save the form data to the post meta
-				update_post_meta( absint( $updated_post ), 'app_data', serialize( $data ) );
+				update_post_meta( absint( $post_id ), 'app_data', serialize( $data ) );
 
 				// Check if we are setting any taxonomies
 				if ( isset( $post_info['tax_input'] ) && ! empty( $post_info['tax_input'] ) && is_array( $post_info['tax_input'] ) ) {
 					foreach ( $post_info['tax_input'] as $tax => $term ) {
-						wp_set_object_terms( absint( $new_post ), sanitize_text_field( $term ), sanitize_text_field( $tax ), true );
+						wp_set_object_terms( absint( $post_id ), sanitize_text_field( $term ), sanitize_text_field( $tax ), true );
 					}
 				}
 
 				// Upload any files/images passed
-				$this->upload_files( $new_post, $_FILES );
+				$image_upload = $this->upload_files( $post_id, $_FILES );
 
-				return $updated_post;
+				return $post_id;
 
 			} else {
 				
@@ -474,51 +474,88 @@
 		}
 
 
-		private function upload_files( $post, $files ) {
+		/**
+		 * Uploads images and documents.
+		 * @param  Integer $post_id The post ID we are adding the image to
+		 * @param  Array   $files   An array of files being uploaded (captured via $_FILES)
+		 * @return Array
+		 */
+		private function upload_files( $post_id, $files ) {
 			if ( ! function_exists( 'wp_handle_upload' ) )
 				require_once( ABSPATH . 'wp-admin/includes/file.php' );
 
-			var_dump($files);
-			// Check our uploaded file types.
-			// $info = pathinfo( $ufile['name'] );
-			// if ( ! in_array( strtolower( $info["extension"] ), array( 'jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'ppt', 'pptx', 'pps', 'ppsx', 'odt', 'xls', 'xlsx' ) ) )
-			// 	return false;
+			if ( ! function_exists( 'wp_crop_image' ) )
+					require_once( ABSPATH . 'wp-admin/includes/image.php' );
 
-			// if ( $require_size ) {
-			// 	list( $w, $h ) = getimagesize( $ufile['tmp_name'] );
-			// }
+			// And array of allowed file types to be uploaded
+			$allowed_file_types = array(
+				'photo' => array(
+					'jpg',
+					'jpeg',
+					'png',
+					'gif',
+				),
+				'files' => array(
+					'pdf',
+					'doc',
+					'docx',
+					'ppt',
+					'pptx',
+					'pps',
+					'ppsx',
+					'xls',
+					'xlsx'
+				),
+			);
 
-			// $overrides = array( 'test_form' => false );
-			// $file      = wp_handle_upload( $ufile, $overrides );
+			// Loop through all of our uploaded files
+			foreach ( $files as $name => $values ) {
+				$file_type = wp_check_filetype( $values['name'] );
+				$type = substr( $name, -5 );
 
-			// if ( ! $file )
-			// 	return false;
+				// Ensure the file type being passed matches the field type (ie. photo uploads should only allow photos and documents as documents)
+				if ( ! in_array( $file_type['ext'], $allowed_file_types[ sanitize_key( $type ) ] ) )
+					return;
 
-			// $wp_upload_dir = wp_upload_dir();
+				$overrides = array( 'test_form' => false );
+				$file = wp_handle_upload( $values, $overrides );
 
-			// $attachment = array(
-			// 	'guid'           => $file['url'],
-			// 	'post_mime_type' => $file['type'],
-			// 	'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $ufile['name'] ) ),
-			// 	'post_content'   => '',
-			// 	'post_status'    => 'inherit'
-			// );
+				// Check if there were any errors
+				if ( isset( $file['error'] ) ) {
+					// TODO: update this to trigger a wp_error instead...
+					return $results['error'] = $file['error'];
+					exit();
+				}
 
-			// //CREATE THUMBNAIL
-			// $thumb = image_make_intermediate_size( $file['file'], 500, 500 );
+				$attachment = array(
+					'guid' => $file['url'],
+					'post_mime_type' => $file['type'],
+					'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $values['name'] ) ),
+					'post_content' => '',
+					'post_status' => 'inherit'
+				);
+				$attachment_id = wp_insert_attachment( $attachment, $file['file'], $post_id );
 
-			// $attach_id = wp_insert_attachment( $attachment, $file['file'] );
+				$attachment_data = wp_generate_attachment_metadata( $attachment_id, $values['name'] );
 
+				wp_update_attachment_metadata( $attachment_id, $attachment_data );
 
-			// if ( ! function_exists( 'wp_crop_image' ) )
-			// 	require_once( ABSPATH . 'wp-admin/includes/image.php' );
+				// Attach as a featured image if we are uploading the project photo
+				if ( $name === 'project_photo' )
+					update_post_meta( $post_id, '_thumbnail_id', $attachment_id );
 
-			// $attach_data = wp_generate_attachment_metadata( $attach_id, $ufile['name'] );
+				// Get the upload directory
+				$wp_upload_dir = wp_upload_dir();
+				$thumb = image_make_intermediate_size( $file['file'], 500, 500 );
 
-			// wp_update_attachment_metadata( $attach_id, $attach_data );
-
-			// return array( 'id' => $attach_id, 'url' => $file['url'], 'thumb'=>( $thumb ? $wp_upload_dir['url'].'/'.$thumb['file'] : $file['url'] ) );
+				return array(
+					'id' => $attachment_id,
+					'url' => $file['url'],
+					'thumb'=> ( $thumb ? $wp_upload_dir['url'] . '/' . $thumb['file'] : $file['url'] )
+				);
+			}
 		}
+
 
 		/**
 		 * Processes all of our form fields
