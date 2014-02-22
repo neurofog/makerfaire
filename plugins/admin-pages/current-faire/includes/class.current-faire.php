@@ -82,7 +82,8 @@
 			'Proposed' 	  	   => 'proposed',
 			'Rejected'         => 'rejected',
 			'Cancelled'		   => 'cancelled',
-			'Waiting for Info' => 'waiting-for-info',
+			'More Info'        => 'more-info',
+			'Wait List'		   => 'wait-list',
 			'Draft' 	  	   => 'draft',
 		);
 

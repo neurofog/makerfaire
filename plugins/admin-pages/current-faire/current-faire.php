@@ -34,7 +34,8 @@
 			'In Progress'		=> 'in-progress', 
 			'Proposed'			=> 'proposed', 
 			'Rejected'			=> 'rejected',
-			'Waiting for Info'	=> 'waiting-for-info'
+			'More Info'	 		=> 'more-info',
+			'wait-list'			=> 'wait-list',
 			);
 		$output = ( $display == 'table' ) ? '  <table width="300" border="0" cellspacing="0" cellpadding="3" style="border:1px solid #DFDFDF;">' : '';
 		foreach ($types as $k => $type) {

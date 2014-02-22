@@ -27,7 +27,7 @@ class MAKER_FAIRE_FORM {
 	 * We'll store this into a variable for easier editing in the future instead of digging through this jungle of an application.
 	 * @var string
 	 */
-	public $commercial_maker_deadline = 'September 6th';
+	public $commercial_maker_deadline = 'May 1st';
 
 
 	/* 
@@ -561,7 +561,7 @@ class MAKER_FAIRE_FORM {
 			$wf = $wf == '' ? 'Waiting on?' : $wf; ?>
 				<div class="submitbox" id="submitpost">
 					<?php wp_nonce_field( 'mf_nonce', 'mf_submit_nonce' ); ?>
-					<?php $post_status_types    = array( 'in-progress', 'proposed', 'waiting-for-info', 'accepted', 'rejected', 'cancelled' ); ?>
+					<?php $post_status_types    = array( 'in-progress', 'proposed', 'more-info', 'wait-list', 'accepted', 'rejected', 'cancelled' ); ?>
 					<input name="mf_form" type="hidden" value="1" />
 					<input id="id" name="id" type="hidden" value="<?php echo $post->post_status != 'auto-draft' ? intval( $post->ID ) : 0; ?>" />
 					<div id="misc-publishing-actions">
@@ -626,7 +626,7 @@ class MAKER_FAIRE_FORM {
 
 									postStatusDisplay.html(postStatusSelectedTitle);
 
-									if ( newStatus == 'waiting-for-info' ) {
+									if ( newStatus == 'more-info' ) {
 										$('#mfquestionwait').html('<textarea name="mf_waitingquestion" id="mf_waitingquestion" style="width:99%"><?php echo html_entity_decode( esc_textarea( $wf ) ); ?></textarea>');
 									} else {
 										$('#mfquestionwait').html('');
@@ -1558,9 +1558,9 @@ class MAKER_FAIRE_FORM {
 		$post = get_post( $post_id );
 		$wf   = get_post_meta( $post_id, '_mf_waiting_for', true );
 
-		//SANITIZE POST STATUS | post status ( proposed, waiting-for-info, accepted, rejected, cancelled )
+		//SANITIZE POST STATUS | post status ( proposed, more-info, accepted, rejected, cancelled, wait-list )
 		$post_status = sanitize_key( $_POST['post_status'] );
-		if( !in_array( $post_status, array( 'waiting-for-info', 'accepted', 'rejected', 'cancelled' ) ) )
+		if( !in_array( $post_status, array( 'more-info', 'wait-list', 'accepted', 'rejected', 'cancelled' ) ) )
 			return;
 
 		// decode the content into data
@@ -1580,7 +1580,7 @@ class MAKER_FAIRE_FORM {
 			$this->sync_status_jdb( $post_id, $post_status );
 
 		// if new status write the log
-		if ( $_POST['original_post_status'] != $post_status || ( $post_status == 'waiting-for-info' && isset( $_POST['mf_waitingquestion'] ) && $wf != $_POST['mf_waitingquestion'] ) ) {
+		if ( $_POST['original_post_status'] != $post_status || ( $post_status == 'more-info' && isset( $_POST['mf_waitingquestion'] ) && $wf != $_POST['mf_waitingquestion'] ) ) {
 			
 			$current_user = wp_get_current_user();
 			$user_name    = $current_user->user_login;
@@ -1588,7 +1588,7 @@ class MAKER_FAIRE_FORM {
 			$date = date('m/d/y h:i a', time() - ( 3600 * 7 ) );
 
 			$extra = '';
-			if ( $post_status == 'waiting-for-info' ) {
+			if ( $post_status == 'more-info' ) {
 				$extra = esc_textarea( $_POST['mf_waitingquestion'] );
 				update_post_meta( $post_id, '_mf_waiting_for', $extra );	
 			}
@@ -1596,14 +1596,16 @@ class MAKER_FAIRE_FORM {
 			$post_status_pretty = '';
 			if ( $post_status == 'accepted' ) {
 				$post_status_pretty = ' Accepted';
-			} elseif ( $post_status == 'waiting-for-info' ) {
-				$post_status_pretty = ' Request for more info: '.$extra;
+			} elseif ( $post_status == 'more-info' ) {
+				$post_status_pretty = ' Needs More Info: ' . $extra;
 			} elseif ( $post_status == 'cancelled' ) {
 				$post_status_pretty = ' Cancelled';
 			} elseif ( $post_status == 'rejected' ) {
 				$post_status_pretty = ' Rejected';
 			} elseif ( $post_status == 'in-progress' ) {
 				$post_status_pretty = ' In-Progress';
+			} elseif ( $post_status == 'wait-list' ) {
+				$post_status_pretty = ' Wait List';
 			}
 
 
@@ -1687,18 +1689,21 @@ class MAKER_FAIRE_FORM {
 		}
 
 		$tos = array_merge( array( $maker_email ), $toss );
+		// default bcc
+		$bcc = 'makers@makerfaire.com';
+
+		$local_server = array( 'localhost', 'make.com', 'vip.dev', 'staging.makerfaire.com' );
 		
-		
-		if( isset( $_SERVER['SERVER_ADDR_NAME'] ) && $_SERVER['SERVER_ADDR_NAME'] == 'iscrackweb1' ) {
-			$tos = array( 'matt@insourcecode.com' );	
+		// Send all emails in testing environments to one account.
+		if ( isset( $_SERVER['HTTP_HOST'] ) && in_array( $_SERVER['HTTP_HOST'], $local_server ) ) {
+			$tos = array( 'cgeissinger@makermedia.com' );
+			$bcc = '';
 		}
 
 		// if contacts first name length is less than 2 chars or if tos array contains any emails set the name to User
 		if ( strlen( trim( $contact_first_name ) ) <= 2 || sizeof( $tos ) > 1 )
 			$contact_first_name = 'Maker';
 
-		// default bcc
-		$bcc = 'makers@makerfaire.com';
 
 		// default from
 		$from = 'Maker Faire <makers@makerfaire.com>';
@@ -1710,17 +1715,18 @@ class MAKER_FAIRE_FORM {
 
 		// get the subject_text based on post_status
 		switch ( $post_status ) {
-			case 'waiting-for-info':
-				$subject_text = '– Need More Info';
+			case 'more-info':
+				$subject_text = '– Information Needed for Maker Faire';
 				break;
 			case 'accepted':
 				$subject_text = '- Acceptance for Maker Faire';
 				break;
 			case 'rejected':
+			case 'wait-list':
 				$subject_text = '- Application for Maker Faire';
 				break;
 			case 'cancelled':
-				$subject_text = '- Cancellation of Application for Maker Faire';
+				$subject_text = '- Cancelled for Maker Faire';
 				break;
 			case 'proposed':
 				$subject_text = '';
@@ -1736,7 +1742,7 @@ class MAKER_FAIRE_FORM {
 		$email_path = __DIR__ . '/emails/' .sanitize_file_name( $post_status . '-' . $form_type . '.html' );
 
 		// if post_status is one of these, use post_status.html as the email template
-		if ( in_array( $post_status, array( 'cancelled', 'rejected', 'waiting-for-info' ) ) )
+		if ( in_array( $post_status, array( 'cancelled', 'rejected', 'more-info', 'wait-list' ) ) )
 			$email_path = __DIR__ . '/emails/' .sanitize_file_name( $post_status . '.html' );
 		
 		//Prevent Path Traversal
@@ -1756,22 +1762,26 @@ class MAKER_FAIRE_FORM {
 		$extras = '';
 
 		// if editor is waiting on something.. add to the email
-		if ( $post_status == 'waiting-for-info' && isset( $_POST['mf_waitingquestion'] ) && $_POST['mf_waitingquestion'] != 'Waiting on?' )
+		if ( $post_status == 'more-info' && isset( $_POST['mf_waitingquestion'] ) && $_POST['mf_waitingquestion'] != 'Waiting on?' )
 			$extras .= esc_textarea( force_balance_tags( stripslashes( $_POST['mf_waitingquestion'] ) ) );
 
 
 		if ( $form_type == 'exhibit' ) {
 			if ( isset( $form['sales'] ) && strtolower( $form['sales'] ) == 'yes' ) {
 				$extras .= '<p>In your application, you indicated that you are selling or marketing a product. ';
-				$extras .= 'Pay your Commercial Maker Fee <a href="https://www.makerfairetickets.com/ProductDetails.asp?ProductCode=MFCMAKER">here</a>.';
+				$extras .= 'Pay your Commercial Maker Fee <a href="https://www.sp.makerfaire.com/SearchResults.asp?Cat=29">here</a>.';
 				$extras .= ' Deadline ' . esc_html( $this->commercial_maker_deadline ) . '. If you are not marketing or selling a product, let us know at <a href="mailto:makers@makerfaire.com">makers@makerfaire.com</a>.</p>';
 			}
 
-			// if ( isset( $form['food'] ) && strtolower( $form['food'] ) == 'yes' ) {
-			//	$extras .= '<p>You indicated that food would be included in your exhibit. Fill out the <a href="http://makerfaire.files.wordpress.com/2013/02/mfba13-health-food-permit-form.pdf">';
-			//	$extras .= 'Health Permit Form</a> and pay the Health Permit Fee <a href="https://www.makerfairetickets.com/ProductDetails.asp?ProductCode=MFHPF">here</a>.';
-			//	$extras .= ' Deadline April 5th. If you decided not to include food in your exhibit, email <a href="mailto:makers@makerfaire.com">makers@makerfaire.com</a>.</p>';
-			//}
+			if ( isset( $form['food'] ) && strtolower( $form['food'] ) == 'yes' ) {
+				$extras .= '<p>You indicated that food would be included in your exhibit. Fill out the <a href="http://makerfaire.files.wordpress.com/2014/02/mf14_tff_vendor_application.pdf">';
+				$extras .= 'Health Permit Form</a> and pay the Health Permit Fee <a href="http://makerfaire.files.wordpress.com/2014/02/mf14_tff_vendor_application.pdf">here</a>.';
+				$extras .= ' Deadline April 4th. If you decided not to include food in your exhibit, email <a href="mailto:makers@makerfaire.com">makers@makerfaire.com</a>.</p>';
+			}
+
+			if ( isset( $form['lighting'] ) && strtolower( $form['lighting'] == 'dark' ) ) {
+				$extras .= '<p>You indicated that you would like to be placed in a dark space. Please be advised that the dark area at Maker Faire also tends to be loud. Tesla coils will be played at scheduled times throughout the weekend.<p>';
+			}
 		}
 
 
@@ -2752,10 +2762,11 @@ class MAKER_FAIRE_FORM {
 		$res    = array(
 			'in-progress'      => $types,
 			'proposed'         => $types,
-			'waiting-for-info' => $types,
+			'more-info'		   => $types,
 			'accepted'         => $types,
 			'rejected'         => $types,
-			'cancelled'        => $types
+			'cancelled'        => $types,
+			'wait-list'		   => $types,
 		);		
 		
 		foreach( $posts as $post ) {
