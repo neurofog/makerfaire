@@ -874,7 +874,10 @@ class MAKER_FAIRE_FORM {
 			if ( $maker_type == 'One maker' ) {
 				$result = esc_html( $data->maker_name ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $data->maker_name ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a>';
 			} elseif ( $maker_type == 'A list of makers' ) {
-				$result = implode( '<br />', esc_html( $data->m_maker_name ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $data->m_maker_name ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a>' );
+				$result = '';
+				foreach ( $data->m_maker_name as $maker_name ) {
+					$result .= esc_html( $maker_name ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $maker_name ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a><br />';
+				}
 			} elseif ( $maker_type == 'A group or association' ) {
 				$result = esc_html( $data->group_name ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $data->group_name ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a>';
 			} elseif ( $maker_type == 'performer' || $maker_type == 'presenter' ) {
@@ -1735,7 +1738,6 @@ class MAKER_FAIRE_FORM {
 
 		// set the subject
 		$subject = "[{$form_type_pretty}] #{$post_id} - {$project_name} {$subject_text}";
-
 
 
 		// set the email template by formtype and poststatus, default to default.html
