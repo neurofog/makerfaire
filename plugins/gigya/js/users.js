@@ -56,7 +56,7 @@ function makerfaire_profile( maker ) {
 			// Check if we are on a certain date or have passed
 			var now = new Date();
 			var expire_date = new Date( '2013/10/04' ); // Set a date that applications older or equal to this will be considered previous faire.
-			var end_date = new Date( '2014/02/23' ); // Set the date that call to makers closes.
+			var end_date = new Date( '2014/02/24' ); // Set the date that call to makers closes.
 			
 			for ( var type in results.forms ) {
 				for ( var app_id in results.forms[ type ] ) {
@@ -66,7 +66,7 @@ function makerfaire_profile( maker ) {
 					// Check if the date right now is after our end date, 'August 4th, 2013', or else close the forms
 					if ( Date.parse( app_date ) >= Date.parse( expire_date ) ) {
 						// if the current time is less than the end date, we'll handle this form with the ability to still edit.
-						if ( now.getTime() < end_date.getTime() && ( results.forms[ type ][ app_id ]['post_status'] === 'in-progress' || results.forms[ type ][ app_id ]['post_status'] === 'proposed' || results.forms[ type ] === 'presenter' ) ) {
+						if ( type === 'presenter' || ( now.getTime() < end_date.getTime() && ( results.forms[ type ][ app_id ]['post_status'] === 'in-progress' || results.forms[ type ][ app_id ]['post_status'] === 'proposed' ) ) ) {
 							append = '<li><a href="' + make_gigya.root_path + type + 'form/?id=' + app_id + '">' +  app_id + ' - ' + results.forms[ type ][ app_id ]['post_title'] + ' (' + results.forms[ type ][ app_id ]['post_status'] + ')</a></li>';
 						} else {
 							append = '<li>' + app_id + ' - ' + results.forms[ type ][ app_id ]['post_title'] + ' (' + results.forms[ type ][ app_id ]['post_status'] + ')</li>';
