@@ -7,7 +7,7 @@
  */
 
 // Set debugging mode.
-var gigya_debug = false;
+var gigya_debug = true;
 
 jQuery( document ).ready(function() {
 
@@ -153,6 +153,8 @@ function make_is_logged_in( maker ) {
 
 		// Initialize our maker profile code
 		makerfaire_profile( maker );
+
+		make_check_account( maker, true );
 	} else {
 		if ( gigya_debug )
 			console.log( 'User Not Logged In.' );
@@ -162,5 +164,41 @@ function make_is_logged_in( maker ) {
 
 		if ( path.indexOf( 'exhibit' ) >= 0 || path.indexOf( 'presenter' ) >= 0 || path.indexOf( 'performer' ) >= 0 || path.indexOf( 'makerprofile' ) >= 0 )
 			jQuery( '.content' ).html( '<h2>You must be logged in to access this area.<br />Please <a href="#login" class="user-creds login">Login</a> or <a href="#register" class="user-creds register">Register</a>.</h2>' );
+	}
+}
+
+
+/**
+ * We want to be able to check user authentication constantly
+ * This will prevent users that have started filling out forms and then decide to leave the window open for multiple days.
+ * @param  object maker          The gigya user object
+ * @param  bool   start_interval Allows us to trigger the setInterval once, other wise, it goes nuts creating more intervals....
+ * @return void
+ *
+ * @since Number Six
+ */
+function make_check_account( maker, start_interval ) {
+	
+	if ( maker.errorCode === 0 ) {
+		if ( gigya_debug )
+			console.log( 'User Authenticated' );
+
+		// Check if the users loggin credientials have expired every 15 seconds
+		if ( start_interval ) {
+			setInterval( function() {
+				gigya.accounts.getAccountInfo({ callback: make_check_account });
+			}, 15000 );
+		}
+	} else {
+		if ( gigya_debug )
+			console.log( 'User Not Authenticated' );
+
+		// Stop the interval. Sadly clearInterval won't work so we have to get creative
+		setInterval( function() {}, 9999999 );
+
+		confirm( 'Your account has timed out! Please log back in.' );
+
+		// Refresh the page
+		location.reload();
 	}
 }

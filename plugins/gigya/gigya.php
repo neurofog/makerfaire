@@ -109,8 +109,9 @@ class Make_Gigya {
 		wp_enqueue_style( 'make-login', MAKE_GIGYA_URL . '/css/login.css', null, MAKE_GIGYA_VERSION );
 
 		// JavaScript
-		wp_enqueue_script( 'make-login', MAKE_GIGYA_URL . '/js/login.js', array( 'jquery' ), MAKE_GIGYA_VERSION, true );
-		wp_enqueue_script( 'make-isc-users', MAKE_GIGYA_URL . '/js/users.js', array( 'jquery' ), MAKE_GIGYA_VERSION, true );
+		wp_enqueue_script( 'heartbeat' );
+		wp_enqueue_script( 'make-login', MAKE_GIGYA_URL . '/js/login.js', array( 'jquery', 'heartbeat' ), MAKE_GIGYA_VERSION, true );
+		wp_enqueue_script( 'make-user-profile', MAKE_GIGYA_URL . '/js/users.js', array( 'jquery' ), MAKE_GIGYA_VERSION, true );
 		wp_localize_script( 'make-login', 'make_gigya', array(
 			'ajax' => esc_url( admin_url( 'admin-ajax.php' ) ),
 			'loading' => 'Loading',
