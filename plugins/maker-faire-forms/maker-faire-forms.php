@@ -2306,7 +2306,7 @@ class MAKER_FAIRE_FORM {
 			$m .= '<p>Sabrina Merlo<br />Program Director<br />Maker Media, Inc.</p>';
 			$m .= '<p>Maker Faire (<a href="' . esc_url( home_url() ) . '">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		} elseif ( $r['form_type'] == 'performer' ) {
-			$m .= '<p>You can update your application anytime until the Call For Makers closes:</p>';
+			// $m .= '<p>You can update your application anytime until the Call For Makers closes:</p>';
 			$m .= '<ol><li>Log into your maker account from <a href="' . esc_url( home_url() ) . '">makerfaire.com</a>. The login link is in the blue header at the top of every page.</li>';
 			$m .= '<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
 			$m .= '<p>You will be notified as to the status of your application no later than <strong>April 2nd</strong>.</p>';
@@ -2315,10 +2315,10 @@ class MAKER_FAIRE_FORM {
 			$m .= '<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
 			$m .= '<p>Maker Faire (<a href="' . esc_url( home_url() ) . '">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		} else {
-			$m .= '<p>You can update your application anytime until the Call For Makers closes:</p>';
+			// $m .= '<p>You can update your application anytime until the Call For Makers closes:</p>';
 			$m .= '<ol><li>Log into your maker account from <a href="' . esc_url( home_url() ) . '">makerfaire.com</a>. The login link is in the blue header at the top of every page.</li>';
 			$m .= '<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
-			$m .= '<p>You will be notified as to the status of your application no later than <strong>March 5th</strong>.</p>';
+			$m .= '<p>You will be notified as to the status of your application no later than <strong>March 19th</strong>.</p>';
 			$m .= '<p>If your application is accepted, we have agreed to the concept of your exhibit. However, we are not able to guarantee all of your requests at this time. What we can provide will be outlined in a confirmation letter before the event.</p>';
 			$m .= '<p>Spread the word - Like us on <a href="https://www.facebook.com/makerfaire">Facebook</a> and follow us on <a href="https://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/104410464300110463062/posts">Google+</a></p>';
 			$m .= '<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
