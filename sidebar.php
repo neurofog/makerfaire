@@ -67,7 +67,7 @@
                         <a class="footer-sprite ico-flickr" href="http://www.flickr.com/photos/tags/makerfaire/" title="Flickr" target="_blank"></a>             
                         <a class="footer-sprite ico-instagram" href="http://instagram.com/makerfaire" title="Instagram" target="_blank"></a>  
                         <a class="footer-sprite ico-youtube" href="http://youtube.com/makerfaire" title="Youtube" target="_blank"></a>
-                        <a class="footer-sprite ico-rss" href="http://blog.makezine.com/category/events-3/maker-faire-events/feed/" title="RSS Feed" target="_blank"></a>
+                        <a class="footer-sprite ico-rss" href="http://makezine.com/tag/maker-faire/feed/" title="RSS Feed" target="_blank"></a>
                 <!-- END socialArea -->
                 </div> 
 
