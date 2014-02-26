@@ -1638,7 +1638,7 @@ class MAKER_FAIRE_FORM {
 
 
 		// set maker name
-		$maker_name = $contact_first_name = 'Maker';
+		$maker_name = $contact_first_name = 'Dear Maker';
 		if ( isset( $form['name'] ) ) {
 			$maker_name = $form['name'];
 
@@ -1744,7 +1744,7 @@ class MAKER_FAIRE_FORM {
 		$email_path = __DIR__ . '/emails/' .sanitize_file_name( $post_status . '-' . $form_type . '.html' );
 
 		// if post_status is one of these, use post_status.html as the email template
-		if ( in_array( $post_status, array( 'cancelled', 'rejected', 'more-info', 'wait-list' ) ) )
+		if ( in_array( $post_status, array( 'cancelled', 'rejected', 'more-info' ) ) )
 			$email_path = __DIR__ . '/emails/' .sanitize_file_name( $post_status . '.html' );
 		
 		//Prevent Path Traversal
@@ -1771,17 +1771,17 @@ class MAKER_FAIRE_FORM {
 		if ( $form_type == 'exhibit' ) {
 			if ( isset( $form['sales'] ) && strtolower( $form['sales'] ) == 'yes' ) {
 				$extras .= '<p>In your application, you indicated that you are selling or marketing a product. ';
-				$extras .= 'Pay your Commercial Maker Fee <a href="https://www.sp.makerfaire.com/SearchResults.asp?Cat=29">here</a>.';
+				$extras .= 'Pay your Commercial Maker Fee <a href="https://www.sp.makerfaire.com/ProductDetails.asp?ProductCode=MFCMAKER">here</a>.';
 				$extras .= ' Deadline ' . esc_html( $this->commercial_maker_deadline ) . '. If you are not marketing or selling a product, let us know at <a href="mailto:makers@makerfaire.com">makers@makerfaire.com</a>.</p>';
 			}
 
 			if ( isset( $form['food'] ) && strtolower( $form['food'] ) == 'yes' ) {
 				$extras .= '<p>You indicated that food would be included in your exhibit. Fill out the <a href="http://makerfaire.files.wordpress.com/2014/02/mf14_tff_vendor_application.pdf">';
-				$extras .= 'Health Permit Form</a> and pay the Health Permit Fee <a href="http://makerfaire.files.wordpress.com/2014/02/mf14_tff_vendor_application.pdf">here</a>.';
+				$extras .= 'Health Permit Form</a> and pay the Health Permit Fee <a href="https://www.sp.makerfaire.com/ProductDetails.asp?ProductCode=MFHPF">here</a>.';
 				$extras .= ' Deadline April 4th. If you decided not to include food in your exhibit, email <a href="mailto:makers@makerfaire.com">makers@makerfaire.com</a>.</p>';
 			}
 
-			if ( isset( $form['lighting'] ) && strtolower( $form['lighting'] == 'dark' ) ) {
+			if ( isset( $form['lighting'] ) && strtolower( $form['lighting'] ) == 'dark' ) {
 				$extras .= '<p>You indicated that you would like to be placed in a dark space. Please be advised that the dark area at Maker Faire also tends to be loud. Tesla coils will be played at scheduled times throughout the weekend.<p>';
 			}
 		}
@@ -1794,11 +1794,11 @@ class MAKER_FAIRE_FORM {
 			'$form_type' => $form_type,
 			'$post_id' => $post_id,
 			'$project_name' => $project_name,
-			'$contact_first_name' => $contact_first_name,
+			'$contact_first_name' => ucfirst( $contact_first_name ),
 			'$extras' => $extras,
 		);
 
-		$message = force_balance_tags( wpautop( str_replace( array_keys( $sar ), array_values( $sar ), $body ) ) );
+		$message = force_balance_tags( str_replace( array_keys( $sar ), array_values( $sar ), $body ) );
 
 		$r = wp_mail( $tos, $subject, $message, array( 'Content-Type: text/html', "From: {$from}", "Bcc: {$bcc}" ) );
 	}

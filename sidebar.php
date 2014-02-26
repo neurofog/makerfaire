@@ -13,7 +13,7 @@
                                         mfba = new Date(2014, 5-1, 17, 10, 00);
                                         jQuery('.countdown').countdown({
                                                 until: mfba,
-                                                timezone: -5,
+                                                timezone: -8,
                                                 format: 'DHMS',
                                                 layout:'<div class="countdown-numbers"><table><tr><th>{dnn}</th><th>{sep}</td><th>{hnn}</th><th>{sep}</td><th>{mnn}</th><th>{sep}</td><th>{snn}</th></tr><tr class="time"><td>Days</td><td></td><td>Hours</td><td></td><td>Minutes</td><td></td><td>Seconds</td></tr></table></div>',
                                                 timeSeparator:'<span class="separator">:</span>',
