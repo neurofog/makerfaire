@@ -100,44 +100,33 @@ if ( $type == 'entity' ) {
 		
 		$app['description'] = $app_data->{$app_description_field};
 
-	
-		// if ( !empty($exhibit->public_description) ) {
-		// 	$booth = get_post_meta( get_the_ID(), 'booth', true );
-		// 	$jsonpost["description"] = ( !empty( $booth ) ) ? '<strong>Location: ' . $booth . '</strong><br />' . $exhibit->public_description : $exhibit->public_description ;
-		// } elseif ( !empty( $exhibit->short_description)) {
-		// 	$booth = get_post_meta( get_the_ID(), 'booth', true );
-		// 	$jsonpost["description"] = ( !empty( $booth ) ) ? '<strong>Location: ' . $booth . '</strong><br />' . $exhibit->short_description : $exhibit->short_description;
-		// } else {
-		// 	$jsonpost["description"] = null;
-		// }
-		// if (isset($exhibit->project_video)) {
-		// 	$jsonpost["youtube_url"] = ( $exhibit->project_video ) ? $exhibit->project_video : '';
-		// }
-		// if (isset($exhibit->project_website)) {
-		// 	$jsonpost["website_url"] = $exhibit->project_website;
-		// } elseif ( isset( $exhibit->group_website ) ) {
-		// 	$jsonpost["website_url"] = $exhibit->group_website;
-		// } elseif ( isset( $exhibit->presentation_website ) ) {
-		// 	$jsonpost["website_url"] = $exhibit->presentation_website;
-		// }
-		// // if ( !empty( $exhibit->email ) ) {
-		// // 	$jsonpost["email"] = $exhibit->email;
-		// // } else {
-		// 	$jsonpost["email"] = null;
-		// // }
-		// $taggers = get_the_tags();
-		// $tags = null;
-		// if ( !empty( $taggers ) ) {
-		// 	foreach ( $taggers as $tag ) {
-		// 		$tags .= ', ' . $tag->name;
-		// 	}
-		// 	$jsonpost["tags"] = substr($tags, 2);
-		// } else {
-		// 	$jsonpost["tags"] = null;
-		// }
-		// $jsonpost["featured"] = '';
-		
-		// $jsonpost["url"] = get_permalink( get_the_ID() );
+		// Application YouTube URL
+		$video_field = $mfform->merge_fields( 'project_video', $app_data->form_type );
+		$app['youtube_url'] = ( ! empty( $app_data->{$video_field} ) ) ? esc_url( $app_data->{$video_field} ) : null;
+
+		// Application Website URL
+		$website_field = $mfform->merge_fields( 'project_website', $app_data->form_type );
+		$app['website_url'] = ( ! empty( $app_data->{$website_field} ) ) ? esc_url( $app_data->{$website_field} ) : null;
+
+		// Application Email
+		$app['email'] = ( ! empty( $app_data->email ) ) ? sanitize_email( $app_data->email ) : null;
+
+		// Application Tags
+		$tags_list = get_the_tags();
+		$tags = '';
+
+		if ( ! empty( $tags_list ) && is_array( $tags_list ) ) {
+			$last_tag = end( $tags_list );
+			foreach ( $tags_list as $tag ) {
+				$tags .= esc_html( $tag->name );
+
+				// Don't append the comma if it's the last item in the array
+				if ( $tag !== $last_tag )
+					$tags .= ',';
+			}
+		}
+
+		$app['tags'] = $tags;
 
 		// Put the application into our list of apps
 		array_push( $apps, $app );
@@ -145,9 +134,9 @@ if ( $type == 'entity' ) {
 
 	// Merge the header and the entities
 	$merged = array_merge( $header, array( 'entity' => $app ) );
-var_dump($merged);
+
 	// Output the JSON
-	// echo json_encode( $merged );
+	echo json_encode( $merged );
 
 	// Reset the Query
 	wp_reset_postdata();
