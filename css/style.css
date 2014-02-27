@@ -705,6 +705,9 @@ tr.time {
 .navbar {
   margin-bottom: 0;
 }
+.navbar .container {
+  width: 940px;
+}
 .navbar .navbar-inner .container .nav > li > a {
   color: #fff !important;
   font-weight: bold;
