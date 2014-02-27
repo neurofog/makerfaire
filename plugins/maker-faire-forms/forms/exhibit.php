@@ -242,7 +242,7 @@
 
         <div class="input">
         	<label>At Maker Faire, will you solicit any crowdfunding (Kickstarter, Indiegogo, etc?)</label>
-        	<div class="info">Exhibits promoting crowdfunding campaigns are allowed a short presentation on our crowdfunding stage, and are not given a space. If you plan to showcase what you make in an interactive exhibit environment, space may be available. After selecting yes, please be as descriptive as possible in the additional text box provided, so our team knows your plans.</div>
+        	<div class="info">Exhibits promoting crowdfunding campaigns may be allowed a short presentation on our crowdfunding stage, and are not given a space. If you plan to showcase what you make in an interactive exhibit environment, space may be available. After selecting yes, please be as descriptive as possible in the additional text box provided, so our team knows your plans.</div>
         	<?php $this->radio( 'data[s1][crowdsource_funding]', array( 'Yes', 'No' ) ); ?>
         </div>
 
