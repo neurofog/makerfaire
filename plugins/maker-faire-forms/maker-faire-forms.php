@@ -1637,15 +1637,12 @@ class MAKER_FAIRE_FORM {
 		$project_name = htmlspecialchars_decode( sanitize_text_field( $form[$this->merge_fields( 'project_name', $form_type )] ) );
 
 
-		// set maker name
-		$maker_name = $contact_first_name = 'Dear Maker';
-		if ( isset( $form['name'] ) ) {
-			$maker_name = $form['name'];
+		// Set default maker name
+		$maker_name = 'Dear Maker';
 
-			// get contact_first_name but only if a space exists in the maker_name
-			if ( strpos( $maker_name, ' ' ) !== false )
-				$contact_first_name = substr( $maker_name, 0, strpos( $maker_name, ' ' ) );
-		}
+		// If a name exists in the form (which it should), we'll output that name
+		if ( isset( $form['name'] ) )
+			$maker_name = esc_html( $form['name'] );
 
 		// set maker_email
 		$maker_email = '';
@@ -1702,11 +1699,6 @@ class MAKER_FAIRE_FORM {
 			$tos = array( 'cgeissinger@makermedia.com' );
 			$bcc = '';
 		}
-
-		// if contacts first name length is less than 2 chars or if tos array contains any emails set the name to User
-		if ( strlen( trim( $contact_first_name ) ) <= 2 || sizeof( $tos ) > 1 )
-			$contact_first_name = 'Maker';
-
 
 		// default from
 		$from = 'Maker Faire <makers@makerfaire.com>';
@@ -1794,7 +1786,7 @@ class MAKER_FAIRE_FORM {
 			'$form_type' => $form_type,
 			'$post_id' => $post_id,
 			'$project_name' => $project_name,
-			'$contact_first_name' => ucfirst( $contact_first_name ),
+			'$contact_first_name' => ucfirst( $maker_name ),
 			'$extras' => $extras,
 		);
 
