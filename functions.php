@@ -33,6 +33,9 @@ include_once dirname( __FILE__ ) . '/plugins/public-pages/sponsor.php';
 // Post Locker
 include_once dirname( __FILE__ ) . '/plugins/hide-post-locker/hide-post-locker.php';
 
+// Load the settings field for the Applications API
+include_once dirname( __FILE__ ) . '/api/admin-settings.php';
+
 
 require_once( 'taxonomies/type.php' );
 require_once( 'taxonomies/location.php' );

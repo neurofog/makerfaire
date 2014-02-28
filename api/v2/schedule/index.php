@@ -10,51 +10,50 @@
  * @version 2.0
  */
 
-if ($type == 'schedule') {
-/**
- * Schedule Feed
- */
+// Stop any direct calls to this file
+defined( 'ABSPATH' ) or die( 'This file cannot be called directly!' );
+
+// Double check again we have requested this file
+if ( $type == 'schedule' ) {
 
 	// Set the query args.
 	$args = array(
-		'no_found_rows'		=> true,
-		'post_type' 		=> 'event-items',
-		'post_status' 		=> 'publish',
-		'posts_per_page' 	=> 1000,
-		'faire'				=> $faire
+		'no_found_rows'	 => true,
+		'post_type' 	 => 'event-items',
+		'post_status' 	 => 'publish',
+		'posts_per_page' => absint( MF_POSTS_PER_PAGE ),
+		'faire'			 => sanitize_title( $faire )
+	);
+	$query = new WP_Query( $args );
 
+
+	// Define the API header (specific for Eventbase)
+	$header = array(
+		'header' => array(
+			'version' => esc_html( MF_EVENTBASE_API_VERSION ), 
+			'results' => intval( $query->post_count ),
+		),
 	);
 
-
-	// Run the query
-	$query = new WP_Query( $args );
-	$posts = $query->posts;
-
-
-	// Start of the XOMO header
-	$header = array( 'header' =>
-		array(
-			'version' 			=> '2.0', 
-			'results'			=> $query->post_count
-		) );
-
-	// Init the entities header
-	$entities = array();
+	// Initalize the schedule container
+	$schedules = array();
 
 	// Loop through the posts
-	foreach ($posts as $post) {
+	foreach ( $query->posts as $post ) {
+		var_dump($post);
+		die();
+		// Return some post meta
+		$app_id = get_post_meta( absint( $post->ID ), 'mfei_record', true );
+		$day = get_post_meta( absint( $post->ID ), 'mfei_day', true );
+		$start = get_post_meta( absint( $post->ID ), 'mfei_start', true );
+		$stop = get_post_meta( absint( $post->ID ), 'mfei_stop', true );
 
-		$id = get_post_meta(get_the_ID(), 'mfei_record', true );
-		$day = get_post_meta(get_the_ID(), 'mfei_day', true );
-		$start = get_post_meta(get_the_ID(), 'mfei_start', true );
-		$stop = get_post_meta(get_the_ID(), 'mfei_stop', true );
-
-		// Really? We need a better data structure here... 
-		if ( $faire == MF_CURRENT_FAIRE ) {
+		// Not happy with this... must figure out a better way to handle the dates for the different faires.
+		if ( $faire == 'maker-faire-bay-area-2014' ) {
 			if ( $day == 'Saturday' ) {
-				$date = '5/17/2013';
+				$date = '5/17/2014';
 			} elseif ( $day == 'Sunday' ) {
-				$date = '5/18/2013';
+				$date = '5/18/2014';
 			}
 		} elseif ( $faire == 'world-maker-faire-new-york-2013' ) {
 			if ( $day == 'Saturday' ) {
@@ -70,7 +69,13 @@ if ($type == 'schedule') {
 			}
 		}
 
-		$jsonpost["id"] = get_the_ID();
+		// REQUIRED: Schedule ID
+		$schedule['id'] = absint( $post->ID );
+
+		// REQUIED: Application title paired to scheduled item
+		$schedule['name'] = html_entity_decode( get_the_title( absint( $app_id ) ), ENT_COMPAT, 'utf-8' );
+
+
 		$jsonpost["entity_id_refs"] = array( $id ); // Make this an array
 		$json = json_decode( mf_clean_content( get_page( $id )->post_content ) );
 		$url = mf_get_the_maker_image( $json );

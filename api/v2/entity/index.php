@@ -39,7 +39,7 @@ if ( $type == 'entity' ) {
 	);
 
 
-	// Init the entities header
+	// Initalize the app container
 	$apps = array();
 
 	// Loop through the posts

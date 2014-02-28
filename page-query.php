@@ -19,7 +19,7 @@ define( 'MF_API_VERSION', 'v2' );
 define( 'MF_POSTS_PER_PAGE', 2000 );
 
 // Set the API keys to run this API. 
-define( 'MF_API_KEY', sanitize_text_field( get_option( 'make_gigya_public_key' ) ) );
+define( 'MF_API_KEY', sanitize_text_field( get_option( 'make_app_api_key' ) ) );
 
 // Set the Eventbase API version
 define( 'MF_EVENTBASE_API_VERSION', '2.06' );
@@ -29,11 +29,6 @@ define( 'MF_EVENTBASE_API_VERSION', '2.06' );
  * SECURITY CHECKS
  */
 
-// Set up some API keys required to return our data.
-$allowed_keys = array(
-	'd184iC3I5cw4eeC',
-	'fdqfMrN11Q6KFYT',
-);
 $allowed_types = array(
 	'category',
 	'entity',
@@ -53,7 +48,7 @@ $faire = ( ! empty( $_REQUEST['faire'] ) ? sanitize_text_field( $_REQUEST['faire
 if ( empty( $key ) ) {
 	header( 'HTTP/1.0 403 Forbidden' );
 	return;
-} elseif ( ! in_array( $key, $allowed_keys ) ) {
+} elseif ( $key !== MF_API_KEY ) {
 	header( 'HTTP/1.0 403 Forbidden' );
 
 	echo '<h2>Invalid: Parameter Not Valid - "' . esc_html( $_REQUEST['key'] ) . '"</h2>';
@@ -77,7 +72,8 @@ if ( empty( $key ) ) {
 
 
 /**
- * PROCESS AND FETCH THE API FILE
+ * RUN THE CONTROLLER
+ * Process the passed query string and fetch the appropriate API section
  */
 
 // Get the appropriate API file. 
@@ -92,7 +88,7 @@ if ( ! file_exists( $api_path ) )
 	return;
 
 // Set the JSON header
-header( 'Content-type: application/json' );
+// header( 'Content-type: application/json' );
 
 // Load the file and process everything
 include_once( $api_path );
