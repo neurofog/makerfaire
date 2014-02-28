@@ -250,7 +250,7 @@
     </div>
     <input type="button" class="mf-edit-app" value="Edit Application" /><input type="submit" value="Continue" /><br />
     <div class="info">
-        If you experience problems with this form, email <a href="mailto:webmaster@makezine.com">webmaster@makezine.com</a>.
+        If you experience problems with this form, email <a href="mailto:webmaster@makerfaire.com">webmaster@makerfaire.com</a>.
     </div>
 </form>
 
