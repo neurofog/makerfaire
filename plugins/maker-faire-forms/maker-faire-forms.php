@@ -1768,7 +1768,7 @@ class MAKER_FAIRE_FORM {
 			$extras .= esc_textarea( force_balance_tags( stripslashes( $_POST['mf_waitingquestion'] ) ) );
 
 
-		if ( $form_type == 'exhibit' ) {
+		if ( $form_type == 'exhibit' && $post_status !== 'more-info' ) {
 			if ( isset( $form['sales'] ) && strtolower( $form['sales'] ) == 'yes' ) {
 				$extras .= '<p>In your application, you indicated that you are selling or marketing a product. ';
 				$extras .= 'Pay your Commercial Maker Fee <a href="https://www.sp.makerfaire.com/ProductDetails.asp?ProductCode=MFCMAKER">here</a>.';
