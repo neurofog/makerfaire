@@ -511,6 +511,43 @@
 
 
 		/**
+		 * Return the list of locations based on the application ID
+		 * @return string
+		 */
+		function get_locations( $post_id ) {
+			$location_id = get_post_meta( absint( $post_id ), 'faire_location', true );
+
+			if ( ! empty( $location_id ) ) {
+				$loc_titles = wp_cache_get( 'location-' . absint( $location_id[0] ), 'locations' );
+				if ( $loc_titles === false ) {
+					$loc_args = array(
+						'post_type'	=> 'location',
+						'post_per_page' => 10,
+						'order' => 'ASC',
+						'orderby' => 'title',
+						'post__in' => $location_id,
+					);
+					$locations = new WP_Query( $loc_args );
+
+					$loc_end = end( $locations->posts );
+					$loc_titles = '';
+					foreach( $locations->posts as $location ) {
+						$loc_titles .= esc_html( $location->post_title );
+
+
+						if ( $location != $loc_end )
+							$loc_titles .= ', ';
+					}
+
+					wp_cache_set( 'location-' . absint( $location_id[0] ), esc_html( $loc_titles ), 'locations', 86400 );
+				}
+
+				return $loc_titles;
+			}
+		}
+
+
+		/**
 		 * Initialize our screen options
 		 */
 		function init_screen_options() {
@@ -666,12 +703,12 @@
 
 			if ( ! empty( $post_date ) ) {
 				$post_date = strtotime( $post_date );
-				$output    .= '<p><strong>Submitted</strong>: ' . date( 'F j, Y @ g:i a', $post_date ) . '</p>';
+				$output .= '<p><strong>Submitted</strong>: ' . date( 'F j, Y @ g:i a', $post_date ) . '</p>';
 			}
 
 			if ( ! empty( $post_modified ) ) {
 				$post_modified = strtotime( $post_modified );
-				$output 	   .= '<p><strong><em>Modified</strong>: ' . date( 'F j, Y @ g:i a', $post_modified ) . '</em></p>';
+				$output .= '<p><strong><em>Modified</strong>: ' . date( 'F j, Y @ g:i a', $post_modified ) . '</em></p>';
 			}
 
 			return $output;
@@ -778,7 +815,7 @@
 										$description = ( ! empty( $json->public_description) ) ? mf_clean_content( $json->public_description ) : '';
 										$cats        = get_the_category_list( ', ', '', $post_id );
 										$tags 		 = get_the_term_list( $post_id, 'post_tag', null, ', ' );
-										$location 	 = get_the_term_list( $post_id, 'location', '', ', ', '' );
+										$location    = $this->get_locations( $post_id );
 										$featured 	 = get_post_meta( $post_id, '_ef_editorial_meta_checkbox_featured', true );
 										$commercial  = ( ! empty( $json->sales ) ) ? sanitize_text_field( $this->convert_boolean( $json->sales ) ) : '';
 										$edu_day 	 = get_post_meta( $post_id, '_ef_editorial_meta_checkbox_education-day', true );
@@ -801,7 +838,7 @@
 										echo '<td class="post_description column-post_description"' . $this->check_screen_options( 'post_description', false, true ) . '>' . wp_trim_words( Markdown( wp_kses_post( $description ) ), 15 ) . '</td>';
 										echo '<td class="cats column-cats"' . $this->check_screen_options( 'cats', false, true ) . '>' . $cats. '</td>';
 										echo '<td class="tags column-tags"' . $this->check_screen_options( 'tags', false, true ) . '>' . $tags . '</td>';
-										echo '<td class="location column-location"' . $this->check_screen_options( 'location', false, true ) . '>' . $location . '</td>';
+										echo '<td class="location column-location"' . $this->check_screen_options( 'location', false, true ) . '>' . esc_html( $location ) . '</td>';
 										echo '<td class="featured_maker column-featured_maker"' . $this->check_screen_options( 'featured_maker', false, true ) . '>' . $this->convert_boolean( $featured ) . '</td>';
 										echo '<td class="post_date column-post_date"' . $this->check_screen_options( 'post_date', false, true ) . '>' . $this->process_dates( $post->post_date, $post->post_modified ) . '</td>';
 										echo '<td class="commercial column-commercial"' . $this->check_screen_options( 'commercial', false, true ) . '>' . $commercial . '</td>';
