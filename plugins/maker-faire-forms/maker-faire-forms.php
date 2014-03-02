@@ -3072,20 +3072,11 @@ class MAKER_FAIRE_FORM {
 			}
 
 			// Get application locations and add to the CSV
-			$locations = wp_get_object_terms( $app->ID, 'location' );
-			if ( empty( $locations ) ) {
-				$results[ $app->ID ]['locations'] = '';
-				$row .= "\t";
-			} else {
-				$ls = '';
-				// Locations are returned as an object, grab the name.
-				foreach ( $locations as $l ) {
-					$ls .= ', ' . htmlspecialchars_decode( $l->name );
-				}
+			$locations = mf_get_locations( $app->ID );
 
-				$results[ $app->ID ]['locations'] = substr( $ls, 1 );
-				$row .= "\t" . substr( $ls, 1 );
-			}
+			$results[ $app->ID ]['locations'] = ( ! empty( $locations ) ? esc_html( $locations ) : '' );
+			$row .= "\t" . ( ! empty( $locations ) ? esc_html( $locations ) : '' );
+
 
 			// Set List of Makers
 			$makers = $form['m_maker_name'];
