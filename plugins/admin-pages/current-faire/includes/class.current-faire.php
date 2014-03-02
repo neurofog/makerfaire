@@ -511,43 +511,6 @@
 
 
 		/**
-		 * Return the list of locations based on the application ID
-		 * @return string
-		 */
-		function get_locations( $post_id ) {
-			$location_id = get_post_meta( absint( $post_id ), 'faire_location', true );
-
-			if ( ! empty( $location_id ) ) {
-				$loc_titles = wp_cache_get( 'location-' . absint( $location_id[0] ), 'locations' );
-				if ( $loc_titles === false ) {
-					$loc_args = array(
-						'post_type'	=> 'location',
-						'post_per_page' => 10,
-						'order' => 'ASC',
-						'orderby' => 'title',
-						'post__in' => $location_id,
-					);
-					$locations = new WP_Query( $loc_args );
-
-					$loc_end = end( $locations->posts );
-					$loc_titles = '';
-					foreach( $locations->posts as $location ) {
-						$loc_titles .= esc_html( $location->post_title );
-
-
-						if ( $location != $loc_end )
-							$loc_titles .= ', ';
-					}
-
-					wp_cache_set( 'location-' . absint( $location_id[0] ), esc_html( $loc_titles ), 'locations', 86400 );
-				}
-
-				return $loc_titles;
-			}
-		}
-
-
-		/**
 		 * Initialize our screen options
 		 */
 		function init_screen_options() {
@@ -815,7 +778,7 @@
 										$description = ( ! empty( $json->public_description) ) ? mf_clean_content( $json->public_description ) : '';
 										$cats        = get_the_category_list( ', ', '', $post_id );
 										$tags 		 = get_the_term_list( $post_id, 'post_tag', null, ', ' );
-										$location    = $this->get_locations( $post_id );
+										$location    = mf_get_locations( $post_id );
 										$featured 	 = get_post_meta( $post_id, '_ef_editorial_meta_checkbox_featured', true );
 										$commercial  = ( ! empty( $json->sales ) ) ? sanitize_text_field( $this->convert_boolean( $json->sales ) ) : '';
 										$edu_day 	 = get_post_meta( $post_id, '_ef_editorial_meta_checkbox_education-day', true );
