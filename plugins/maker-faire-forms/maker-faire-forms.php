@@ -2597,9 +2597,7 @@ class MAKER_FAIRE_FORM {
 			'private',
 			'auto-draft',
 		);
-		$locations = get_terms( 'location', array(
-			'hide_empty'   => false,
-		) );
+		$locations = mf_get_all_locations();
 		$faires = get_terms( 'faire', array( 'hide_empty' => false, 'order' => 'DESC' ) );
 		$tags = get_terms( 'post_tag', array( 'hide_empty' => false ) ); ?>
 		<div class="wrap" id="iscic">
@@ -2704,10 +2702,7 @@ class MAKER_FAIRE_FORM {
 							<select name="location" id="location">
 								<option value="all">All Locations</option>
 								<?php foreach ( $locations as $location ) : ?>
-									<?php $location_short_name = substr( $location->name, 0, 2 ); // For MFNY2013 we needed a fast way to separate faire locations. add a_ was the route... for now only display those locations....
-									if ( $location_short_name == 'a_' ) : ?>
-										<option value="<?php echo esc_attr( $location->slug ); ?>"><?php echo esc_html( $location->name ); ?></option>
-									<?php endif; ?>
+									<option value="<?php echo absint( $location->ID ); ?>"><?php echo esc_html( $location->post_title ); ?></option>
 								<?php endforeach; ?>
 							</select>
 						</li>
@@ -3791,10 +3786,19 @@ class MAKER_FAIRE_FORM {
 			'type'			 => ( isset( $filters['type'] ) && $filters['type'] != 'all' ) ? sanitize_text_field( $filters['type'] ) : '',
 			'cat'			 => ( isset( $filters['cat'] ) && $filters['cat'] != 0 ) ? absint( $filters['cat'] ) : '',
 			'tag'			 => ( isset( $filters['tag'] ) && $filters['tag'] != 'all' ) ? sanitize_text_field( $filters['tag'] ) : '',
-			'location'		 => ( isset( $filters['location'] ) && $filters['location'] != 'all' ) ? sanitize_text_field( $filters['location'] ) : '',
 		);
 
-		//Sometimes we'll need to pull application based on meta data, this little area will do just that
+		// Modify our query if we are looking for applications by location
+		if ( isset( $filters['location'] ) && $filters['location'] != 'all' ) {
+			$args['meta_query'] = array(
+				array(
+					'key' => 'faire_location',
+					'value' => serialize( array( absint( $filters['location'] ) ) ), // Sadly we are saving locations as a serialized array.... soooooo
+				),
+			);
+		}
+
+		//Sometimes we'll need to pull application based on misc meta data, this little area will do just that
 		if ( isset( $filters['meta_query'] ) && ! empty( $filters['meta_query'] ) ) {
 
 			$count = 0;

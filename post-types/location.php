@@ -304,9 +304,44 @@ function mf_get_locations( $post_id ) {
 					$loc_titles .= ', ';
 			}
 
-			wp_cache_set( 'location-' . absint( $location_id[0] ), esc_html( $loc_titles ), 'locations', 86400 );
+			wp_cache_set( 'location-' . absint( $location_id[0] ), esc_html( $loc_titles ), 'locations', DAY_IN_SECONDS );
 		}
 
 		return $loc_titles;
 	}
+}
+
+
+/**
+ * Return the a list of all locations for a specific faire
+ * This function also will cache the request to save any extended database calls.
+ * @param  int    $post_id The post ID to pull the locations from
+ * @return object          Returns the locations object
+ *
+ * @since Optimus Prime
+ */
+function mf_get_all_locations() {
+	$locations = false;//wp_cache_get( 'location-all', 'locations' );
+	if ( $locations === false ) {
+		$loc_args = array(
+			'post_type'	=> 'location',
+			'posts_per_page' => 200,
+			'order' => 'ASC',
+			'orderby' => 'title',
+			'tax_query' => array(
+				array(
+					'taxonomy' 	=> 'faire',
+					'field' 	=> 'slug',
+					'terms' 	=> sanitize_title( MF_CURRENT_FAIRE ),
+				)
+			)
+		);
+		$locations = new WP_Query( $loc_args );
+
+
+		if ( ! empty( $locations->posts ) ) 
+			wp_cache_set( 'location-all', $locations, 'locations', 30 * MINUTE_IN_SECONDS );
+	}
+
+	return $locations->posts;
 }
