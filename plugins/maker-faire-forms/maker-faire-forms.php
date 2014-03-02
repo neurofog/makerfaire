@@ -3798,8 +3798,10 @@ class MAKER_FAIRE_FORM {
 			);
 		}
 
-		//Sometimes we'll need to pull application based on misc meta data, this little area will do just that
-		if ( isset( $filters['meta_query'] ) && ! empty( $filters['meta_query'] ) ) {
+		// Sometimes we'll need to pull application based on misc meta data, this little area will do just that
+		// We'll also want to make sure we aren't passing any locations.
+		// @todo Fix this up to allow locations and custom meta queries
+		if ( isset( $filters['meta_query'] ) && ! empty( $filters['meta_query'] ) && ! isset( $args['meta_query'] ) ) {
 
 			$count = 0;
 			$last = end( $filters['meta_query'] );
