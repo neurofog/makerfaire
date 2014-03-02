@@ -283,7 +283,7 @@ function mf_get_locations( $post_id ) {
 	$location_id = get_post_meta( absint( $post_id ), 'faire_location', true );
 
 	if ( ! empty( $location_id ) ) {
-		$loc_titles = false;//wp_cache_get( 'location-' . absint( $location_id[0] ), 'locations' );
+		$loc_titles = wp_cache_get( 'location-' . absint( $location_id[0] ), 'locations' );
 		if ( $loc_titles === false ) {
 			$loc_args = array(
 				'post_type'	=> 'location',
