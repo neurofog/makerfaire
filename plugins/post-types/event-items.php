@@ -173,9 +173,9 @@ function makerfaire_meta_box( $post ) {
 	<a title="Edit event items" href="#" class="post-edit-link">View Application</a> (opens new window with given application)
 	<label>Schedule Completed</label>
 	<input name="mfei_schedule_completed" type="checkbox" value="1" /> &nbsp; Event is Scheduled
-	<script>		
+	<script>
 		jQuery( '#ei-details a' ).click( function() {
-			window.open('/wp-admin/post.php?post=' + jQuery( '#mfei_record' ).val() + '&action=edit', '_blank');
+			window.open('/makerfaire/wp-admin/post.php?post=' + jQuery( '#mfei_record' ).val() + '&action=edit', '_blank');
 		});
 	</script>
 	<?php mf_schedule_mailto( $meta ); ?>

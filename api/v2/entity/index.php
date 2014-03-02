@@ -133,7 +133,7 @@ if ( $type == 'entity' ) {
 	}
 
 	// Merge the header and the entities
-	$merged = array_merge( $header, array( 'entity' => $app ) );
+	$merged = array_merge( $header, array( 'entity' => $apps ) );
 
 	// Output the JSON
 	echo json_encode( $merged );

@@ -40,15 +40,13 @@ if ( $type == 'schedule' ) {
 
 	// Loop through the posts
 	foreach ( $query->posts as $post ) {
-		var_dump($post);
-		die();
 		// Return some post meta
 		$app_id = get_post_meta( absint( $post->ID ), 'mfei_record', true );
 		$day = get_post_meta( absint( $post->ID ), 'mfei_day', true );
 		$start = get_post_meta( absint( $post->ID ), 'mfei_start', true );
 		$stop = get_post_meta( absint( $post->ID ), 'mfei_stop', true );
 
-		// Not happy with this... must figure out a better way to handle the dates for the different faires.
+		// Not happy with this... must figure out a better way to handle the event dates for the different faires.
 		if ( $faire == 'maker-faire-bay-area-2014' ) {
 			if ( $day == 'Saturday' ) {
 				$date = '5/17/2014';
@@ -75,32 +73,38 @@ if ( $type == 'schedule' ) {
 		// REQUIED: Application title paired to scheduled item
 		$schedule['name'] = html_entity_decode( get_the_title( absint( $app_id ) ), ENT_COMPAT, 'utf-8' );
 
-
-		$jsonpost["entity_id_refs"] = array( $id ); // Make this an array
-		$json = json_decode( mf_clean_content( get_page( $id )->post_content ) );
-		$url = mf_get_the_maker_image( $json );
-		$jsonpost["large_img_url"] = $url;
-		$size = array ( 'h' => '80', 'w' => '80', 'crop' => 1 );
-		$jsonpost["thumb_img_url"] = ($url) ? add_query_arg( $size, $url ) : null;
-		$jsonpost["name"] = str_replace( array( '&#8217;', '&#038;'), array( '\'', '&'), htmlspecialchars_decode( get_the_title( $id ) ) );
-		$jsonpost["original_id"] = $id;
-		if ( strpos( $faire, 'new-york' ) !== false ) { // Check if the faire variable contains the 'new-york' in it. If it does, spit out the dates with a EST instead of PST
-			$jsonpost["time_start"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $start . ' EST' ) ) );
-			$jsonpost["time_stop"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $stop . ' EST') ) );	
+		// REQUIRED: Schedule start and end times
+		if ( strpos( $faire, 'new-york' ) !== false ) {
+			$time_zone = ' EST';
 		} else {
-			$jsonpost["time_start"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $start . ' PST' ) ) );
-			$jsonpost["time_stop"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $stop . ' PST') ) );
+			$time_zone = ' PST';
 		}
-		$locs = get_the_terms( get_the_ID(), 'location' );
-		$term = array_shift( array_values( $locs ) );
-		$jsonpost["venue_id_ref"] = $term->term_id;
+		
+		$schedule['time_start'] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $day . $start . $time_zone ) ) );
+		$schedule['time_end'] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $day . $stop . $time_zone ) ) );
 
-		// Put the content into the entity
-		array_push($entities, $jsonpost);
+		// REQUIRED: Venue ID reference
+		$locations = get_post_meta( absint( $post->ID ), 'faire_location', true );
+		
+		$schedule['venue_id_ref'] = $locations[0];
+
+		// Schedule thumbnails. Nothing more than images from the application it is tied to
+		$post_content = json_decode( mf_clean_content( get_page( absint( $app_id ) )->post_content ) );
+		$app_image = mf_get_the_maker_image( $post_content );
+		
+		$schedule['thumb_img_url'] = esc_url( wpcom_vip_get_resized_remote_image_url( $app_image, '80', '80' ) );
+		$schedule['large_img_url'] = esc_url( $app_image );
+
+
+		// A list of applications assigned to this event (should only be one really...)
+		$schedule['entity_id_refs'] = array( absint( $app_id ) );
+
+		// Put the application into our list of schedules
+		array_push( $schedules, $schedule );
 	}
 
 	// Merge the header and the entities
-	$merged = array_merge($header,array('schedule' => $entities, ) );
+	$merged = array_merge( $header, array( 'schedule' => $schedules ) );
 
 	// Output the JSON
 	echo json_encode( $merged );
