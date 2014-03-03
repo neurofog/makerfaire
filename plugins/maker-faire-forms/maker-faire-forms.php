@@ -3745,6 +3745,11 @@ class MAKER_FAIRE_FORM {
 				'performer' => 'uid',
 				'presenter' => 'presenter_gigyaid'
 			),
+			'project_description' => array(
+				'exhibit' => 'public_description',
+				'performer' => 'public_description',
+				'presenter' => 'short_description'
+			),
 		);
 
 		if ( $reverse && isset( $conv[ $key ][ $reverse ] ) )
@@ -4134,7 +4139,7 @@ class MAKER_FAIRE_FORM {
 		( update_post_meta( $maker_id, 'email', sanitize_email( $maker['email'] ) ) )     ? $messages['success'][] .= 'Email ' . $process_completed    : $messages['errors'][] .= 'Email Not ' . $process_completed;
 
 		// Add the maker photo
-		( update_post_meta( $maker_id, 'photo_url', esc_url( $maker['photo'] ) ) )     	   	  ? $messages['success'][] .= 'Photo ' . $process_completed    : $messages['errors'][] .= 'Photo Not ' . $process_completed;
+		( update_post_meta( $maker_id, 'photo_url', esc_url( $maker['photo'] ) ) )     	  ? $messages['success'][] .= 'Photo ' . $process_completed    : $messages['errors'][] .= 'Photo Not ' . $process_completed;
 
 		// Add the maker website
 		( update_post_meta( $maker_id, 'website', esc_url( $maker['website'] ) ) ) 	   	  ? $messages['success'][] .= 'Website ' . $process_completed  : $messages['errors'][] .= 'Website Not ' . $process_completed;
