@@ -80,7 +80,7 @@ if ( $type == 'entity' ) {
 			$maker_ids[] = absint( $maker->ID );
 		}
 
-		$app['child_id_refs'] = $maker_ids;
+		$app['child_id_refs'] = ( ! empty( $maker_ids ) ) ? $maker_ids : null;
 
 		// Application Categories
 		$cats = wp_get_post_terms( absint( $post->ID ), array( 'category', 'post_tag', 'group' ) );
