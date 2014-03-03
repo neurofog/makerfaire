@@ -2298,21 +2298,32 @@ class MAKER_FAIRE_FORM {
 			$m .= '<p>Sabrina Merlo<br />Program Director<br />Maker Media, Inc.</p>';
 			$m .= '<p>Maker Faire (<a href="' . esc_url( home_url() ) . '">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		} elseif ( $r['form_type'] == 'performer' ) {
+			// Call for Makers is running Auto-Responder text
 			// $m .= '<p>You can update your application anytime until the Call For Makers closes:</p>';
 			// $m .= '<ol><li>Log into your maker account from <a href="' . esc_url( home_url() ) . '">makerfaire.com</a>. The login link is in the blue header at the top of every page.</li>';
 			// $m .= '<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
-			$m .= '<p>You will be notified as to the status of your application no later than <strong>April 2nd</strong>.</p>';
-			$m .= '<p>If your application is accepted, we have agreed to the concept of your performance. However, we are not able to guarantee all of your requests at this time. Our team will contact you before the event to finalize details.</p>';
-			$m .= '<p>Spread the word - Like us on <a href="https://www.facebook.com/makerfaire">Facebook</a> and follow us on <a href="https://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/104410464300110463062/posts">Google+</a></p>';
+			// $m .= '<p>You will be notified as to the status of your application no later than <strong>April 2nd</strong>.</p>';
+			// $m .= '<p>If your application is accepted, we have agreed to the concept of your performance. However, we are not able to guarantee all of your requests at this time. Our team will contact you before the event to finalize details.</p>';
+			// $m .= '<p>Spread the word - Like us on <a href="https://www.facebook.com/makerfaire">Facebook</a> and follow us on <a href="https://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/104410464300110463062/posts">Google+</a></p>';
+			// Call for Makers is closed Auto-Responder text
+			$m .= '<p>Please note that the deadline for Maker entries has passed. However, there are several ways that you can still participate!:</p>';
+			$m .= '<ol><li>We will consider your entry as a last-minute addition. If you do not receive an acceptance letter by April 29, we were not able to find space for your exhibit. We will do our best to notify you before then.</li>';
+			$m .= '<li>If you would like to volunteer your time and make an invaluable contribution to the success of Maker Faire, please sign up for our <a href="' . esc_url( home_url( '/bay-area-2014/traveler-program/' ) ) . '">Maker Faire Traveler Program</a>, which is a platform to enhance your skills and learn about the Maker Movement. You will have a behind-the-scenes experience, and help make the Greatest Show (and Tell) on Earth happen! <a href="' . esc_url( home_url( '/bay-area-2014/traveler-program/' ) ) . '">Learn more here</a>.</li>';
+			$m .= '<li>Plan to come as an attendee, enjoy the show and support the Maker movement by <a href="Plan to come as an attendee, enjoy the show and support the Maker movement by purchasing your tickets early!">purchasing your tickets early</a>!</li>';
+			$m .= '<li>Spread the word - Like us on <a href="https://www.facebook.com/makerfaire">Facebook</a> and follow us on <a href="https://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/104410464300110463062/posts">Google+</a></li></ol>';
 			$m .= '<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
 			$m .= '<p>Maker Faire (<a href="' . esc_url( home_url() ) . '">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		} else {
-			// $m .= '<p>You can update your application anytime until the Call For Makers closes:</p>';
-			// $m .= '<ol><li>Log into your maker account from <a href="' . esc_url( home_url() ) . '">makerfaire.com</a>. The login link is in the blue header at the top of every page.</li>';
-			// $m .= '<li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ol>';
-			$m .= '<p>You will be notified as to the status of your application no later than <strong>March 19th</strong>.</p>';
-			$m .= '<p>If your application is accepted, we have agreed to the concept of your exhibit. However, we are not able to guarantee all of your requests at this time. What we can provide will be outlined in a confirmation letter before the event.</p>';
-			$m .= '<p>Spread the word - Like us on <a href="https://www.facebook.com/makerfaire">Facebook</a> and follow us on <a href="https://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/104410464300110463062/posts">Google+</a></p>';
+			// Call for Makers is running Auto-Responder text
+			// $m .= '<p>You will be notified as to the status of your application no later than <strong>March 19th</strong>.</p>';
+			// $m .= '<p>If your application is accepted, we have agreed to the concept of your exhibit. However, we are not able to guarantee all of your requests at this time. What we can provide will be outlined in a confirmation letter before the event.</p>';
+			// $m .= '<p>Spread the word - Like us on <a href="https://www.facebook.com/makerfaire">Facebook</a> and follow us on <a href="https://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/104410464300110463062/posts">Google+</a></p>';
+			// Call for Makers is closed Auto-Responder text
+			$m .= '<p>Please note that the deadline for Maker entries has passed. However, there are several ways that you can still participate!:</p>';
+			$m .= '<ol><li>We will consider your entry as a last-minute addition. If you do not receive an acceptance letter by April 29, we were not able to find space for your exhibit. We will do our best to notify you before then.</li>';
+			$m .= '<li>If you would like to volunteer your time and make an invaluable contribution to the success of Maker Faire, please sign up for our <a href="' . esc_url( home_url( '/bay-area-2014/traveler-program/' ) ) . '">Maker Faire Traveler Program</a>, which is a platform to enhance your skills and learn about the Maker Movement. You will have a behind-the-scenes experience, and help make the Greatest Show (and Tell) on Earth happen! <a href="' . esc_url( home_url( '/bay-area-2014/traveler-program/' ) ) . '">Learn more here</a>.</li>';
+			$m .= '<li>Plan to come as an attendee, enjoy the show and support the Maker movement by <a href="Plan to come as an attendee, enjoy the show and support the Maker movement by purchasing your tickets early!">purchasing your tickets early</a>!</li>';
+			$m .= '<li>Spread the word - Like us on <a href="https://www.facebook.com/makerfaire">Facebook</a> and follow us on <a href="https://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/104410464300110463062/posts">Google+</a></li></ol>';
 			$m .= '<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
 			$m .= '<p>Maker Faire (<a href="' . esc_url( home_url() ) . '">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
 		}
