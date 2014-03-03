@@ -42,13 +42,6 @@ if ( $type == 'category') {
 		// REQUIRED: Category ID
 		$venue['id'] = absint( $term->term_id );
 
-		// List any child categories assigned to the cat
-		$child_cats = get_terms( $taxonomies, array(
-			'hide_empty' => 0,
-			'child_of' => absint( $term->term_id ),
-		) );
-		var_dump($child_cats);
-
 		// REQUIRED: Category Name
 		$venue['name'] = esc_html( $term->name );
 
@@ -59,7 +52,6 @@ if ( $type == 'category') {
 	$merged = array_merge( $header, array( 'entity' => $venues, ) );
 
 	// Output the JSON
-	// echo json_encode( $merged );
-	var_dump($merged);
+	echo json_encode( $merged );
 	
 }

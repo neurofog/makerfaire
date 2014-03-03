@@ -61,9 +61,9 @@ if ( $type == 'entity' ) {
 		// Application Locations
 		$locations = get_post_meta( absint( $post->ID ), 'faire_location', true );
 
-		if ( empty ( $locations ) ) {
+		if ( empty ( $locations ) )
 			$locations = null;
-		}
+
 		$app['venue_id_ref'] = $locations;
 
 		// Application Makers

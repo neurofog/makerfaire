@@ -32,7 +32,6 @@ define( 'MF_EVENTBASE_API_VERSION', '2.06' );
 $allowed_types = array(
 	'category',
 	'entity',
-	'location',
 	'location_category',
 	'maker',
 	'schedule',
@@ -88,7 +87,7 @@ if ( ! file_exists( $api_path ) )
 	return;
 
 // Set the JSON header
-// header( 'Content-type: application/json' );
+header( 'Content-type: application/json' );
 
 // Load the file and process everything
 include_once( $api_path );

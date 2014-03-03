@@ -10,57 +10,68 @@
  * @version 2.0
  */
 
-if( $type == 'maker' ) {
+// Stop any direct calls to this file
+defined( 'ABSPATH' ) or die( 'This file cannot be called directly!' );
+
+// Double check again we have requested this file
+if ( $type == 'maker' ) {
+
 	// Set the query args.
 	$args = array(
-		'no_found_rows' 	=> true,
-		'post_type' 		=>'maker',
-		'post_status' 		=> 'any',
-		'posts_per_page'	=> 2000,
-		'faire'				=> $faire
+		'no_found_rows'  => true,
+		'post_type' 	 => 'maker',
+		'post_status' 	 => 'any',
+		'posts_per_page' => absint( MF_POSTS_PER_PAGE ),
+		'faire'			 => sanitize_title( $faire ),
+	);
+	$query = new WP_Query( $args );
+
+	// Define the API header (specific for Eventbase)
+	$header = array(
+		'header' => array(
+			'version' => esc_html( MF_EVENTBASE_API_VERSION ), 
+			'results' => intval( $query->post_count ),
+		),
 	);
 
 
-	// Run the query
-	$query = new WP_Query( $args );
-	$posts = $query->posts;
-
-
-	// Start of the XOMO header
-	$header = array( 'header' =>
-		array(
-			'version' 			=> '2.0', 
-			'results'			=> $query->post_count
-		) );
-
 	// Init the entities header
-	$entities = array();
+	$makers = array();
 
 	// Loop through the posts
-	foreach ($posts as $post) {
-		$pid = get_the_ID();
-		$jsonpost["id"] = $pid;
-		$jsonpost["child_id_refs"] = array_unique( get_post_meta( $pid, 'mfei_record' ) );
-		$jsonpost['name'] = ucwords( mf_clean_content( get_the_title() ) );
-		$url = get_post_meta( $pid, 'photo_url', true );
-		$big = $url;
-		if ( strlen($url) > 1 ) {
-			$url = add_query_arg( 'w', 80, $url );
-			$url = add_query_arg( 'h', 80, $url );
-			$url = add_query_arg( 'crop', 1, $url );
-			$jsonpost["thumb_img_url"] = $url;
-			$jsonpost["large_img_url"] = $big;
-		} else {
-			$jsonpost["thumb_img_url"] = null;
-			$jsonpost["large_img_url"] = null;
-		}
-		$jsonpost['description'] = ( !empty( $post->post_content ) ) ? mf_clean_content( $post->post_content ) : null;
-		$video = get_post_meta( $pid, 'video', true );
-		$jsonpost['youtube_url'] = ( !empty( $video ) ) ? $video : null ;
-		array_push($entities, $jsonpost);
-	} 
+	foreach ( $query->posts as $post ) {
+
+		// REQUIRED: The maker ID
+		$maker['id'] = absint( $post->ID );
+		
+		// REQUIRED: The maker name
+		$maker['name'] = html_entity_decode( get_the_title(), ENT_COMPAT, 'utf-8' );
+
+		// Maker Thumbnail and Large Images
+		$maker_image = get_post_meta( absint( $post->ID ), 'photo_url', true );
+		$maker['thumb_img_url'] = esc_url( wpcom_vip_get_resized_remote_image_url( $maker_image, '80', '80' ) );
+		$maker['large_image_url'] = esc_url( $maker_image );
+
+		// Application ID this maker is assigned to
+		$maker['child_id_refs'] = array_unique( get_post_meta( absint( $post->ID ), 'mfei_record' ) );
+
+		// Maker bio information
+		$maker['description'] = ( ! empty( $post->post_content ) ) ? mf_clean_content( $post->post_content ) : null;
+
+		// Maker Video link
+		$maker_video = get_post_meta( absint( $post->ID ), 'video', true );
+		$maker['youtube_url'] = ( ! empty( $maker_video ) ) ? esc_url( $maker_video ) : null;
+
+		// Maker Website link
+		$maker_website = get_post_meta( absint( $post->ID ), 'website', true );
+		$maker['website_url'] = ( ! empty( $maker_website ) ) ? esc_url( $maker_website ) : null;
+
+		// Put the maker into our list of makers
+		array_push( $makers, $maker );
+	}
+
 	// Merge the header and the entities
-	$merged = array_merge( $header, array( 'entity' => $entities ) );
+	$merged = array_merge( $header, array( 'entity' => $makers ) );
 
 	// Output the JSON
 	echo json_encode( $merged );
