@@ -173,7 +173,6 @@ function mf_inner_location_box( $post ) {
  * @param int $post_id The ID of the post being saved.
  */
 function mf_save_postdata( $post_id ) {
-
 	/*
 	* We need to verify this came from the our screen and with proper authorization,
 	* because save_post can be triggered at other times.
@@ -195,14 +194,12 @@ function mf_save_postdata( $post_id ) {
 
 	// Check the user's permissions.
   	if ( 'page' == $_POST['post_type'] ) {
-
     	if ( ! current_user_can( 'edit_page', $post_id ) )
 			return $post_id;
   
   	} else {
-
     	if ( ! current_user_can( 'edit_post', $post_id ) )
-		return $post_id;
+			return $post_id;
 	}
 
 	/* OK, its safe for us to save the data now. */

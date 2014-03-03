@@ -88,19 +88,34 @@ add_action( 'template_redirect', 'mf_redirect_to_parent_permalink' );
 
 function mf_schedule_mailto( $meta ) {
 	if ( isset( $meta['mfei_record'][0] ) ) {
-	$linked_post = get_post( $meta['mfei_record'][0] );
-	$json = json_decode( $linked_post->post_content );
-	$loc = get_the_terms( $linked_post->ID, 'location' );
-	$email = esc_url( 'mailto:' . $json->email );
-	$subject = '?&subject=Event+Scheduled: ' . esc_attr( $linked_post->post_title );
-	$body = rawurlencode(
-		"Event: " . esc_attr( $linked_post->post_title ) . "\n" .
-		"Start Time: " . esc_attr( $meta['mfei_start'][0] ) . "\n" .
-		"End Time: " . esc_attr( $meta['mfei_stop'][0] ) . "\n" .
-		"Location: " . esc_attr( $loc[0]->name ) .  "\n" );
-	$url = add_query_arg( array( 'subject' => $subject ),  $email );
-	$url = add_query_arg( array( 'body' => $body ), $url );
-	echo '<p><a href="' . $url . '" class="button" target="_blank">Email Presenter Schedule</a></p>';
+		$linked_post = get_post( absint( $meta['mfei_record'][0] ) );
+		$json = json_decode( $linked_post->post_content );
+		$loc_ids = get_post_meta( absint( $linked_post->ID ), 'faire_location', true );
+		$loc_args = array(
+			'post_type' => 'location',
+			'post__in' => $loc_ids,
+			'order' => 'ASC',
+			'orderby' => 'title'
+		);
+		$locations = get_posts( $loc_args );
+		$end_loc = end( $locations );
+		$loc = '';
+		foreach ( $locations as $location ) {
+			$loc .= $location->post_title;
+
+			if ( $location != $end_loc )
+				$loc .= ', ';
+		}
+		$email = sanitize_email( $json->email );
+		$subject = '?&subject=Event+Scheduled: ' . esc_attr( $linked_post->post_title );
+		$body = rawurlencode(
+			"Event: " . esc_attr( $linked_post->post_title ) . "\n" .
+			"Start Time: " . esc_attr( $meta['mfei_start'][0] ) . "\n" .
+			"End Time: " . esc_attr( $meta['mfei_stop'][0] ) . "\n" .
+			"Location: " . esc_attr( $loc ) .  "\n" );
+		$url = add_query_arg( array( 'subject' => $subject ),  sanitize_email( $email ) );
+		$url = add_query_arg( array( 'body' => $body ), $url );
+		echo '<p><a href="mailto:' . $url . '" class="button" target="_blank">Email Presenter Schedule</a></p>';
 	}
 }
 
@@ -158,9 +173,9 @@ function makerfaire_meta_box( $post ) {
 	<a title="Edit event items" href="#" class="post-edit-link">View Application</a> (opens new window with given application)
 	<label>Schedule Completed</label>
 	<input name="mfei_schedule_completed" type="checkbox" value="1" /> &nbsp; Event is Scheduled
-	<script>		
+	<script>
 		jQuery( '#ei-details a' ).click( function() {
-			window.open('/wp-admin/post.php?post=' + jQuery( '#mfei_record' ).val() + '&action=edit', '_blank');
+			window.open('/makerfaire/wp-admin/post.php?post=' + jQuery( '#mfei_record' ).val() + '&action=edit', '_blank');
 		});
 	</script>
 	<?php mf_schedule_mailto( $meta ); ?>
@@ -198,47 +213,34 @@ add_action( 'add_meta_boxes', 'makerfaire_add_meta_boxes' );
 * =====================================================================*/
 function makerfaire_update_event( $id ) {
 
-	if ( empty( $_POST ) || get_post_type( $id ) != 'event-items' || $_POST['post_status'] != 'publish' )
+	if ( empty( $_POST ) || get_post_type( absint( $id ) ) != 'event-items' || $_POST['post_status'] != 'publish' )
 		return false;
 	
-	if ( !isset( $_POST['mfei_submit_nonce'] ) || !wp_verify_nonce( $_POST['mfei_submit_nonce'], 'mfei_nonce' ) )
+	if ( ! isset( $_POST['mfei_submit_nonce'] ) || ! wp_verify_nonce( $_POST['mfei_submit_nonce'], 'mfei_nonce' ) )
 		return false;
 	
-	//CONFIRM THAT MFEI RECORD IS AN APPLICATION
-	$is_mf_form = get_post_type( intval( $_POST['mfei_record'] ) ) == 'mf_form';
+	// Confirm that an application ID is passed
+	$is_mf_form = get_post_type( absint( $_POST['mfei_record'] ) ) == 'mf_form';
 
 	$meta = array(
 		'mfei_day'    => sanitize_text_field( $_POST['mfei_day'] ),
 		'mfei_start'  => sanitize_text_field( $_POST['mfei_start'] ),
 		'mfei_stop'   => sanitize_text_field( $_POST['mfei_stop'] ),
-		'mfei_record' => $is_mf_form ? intval( $_POST['mfei_record'] ) : 0,
+		'mfei_record' => $is_mf_form ? absint( $_POST['mfei_record'] ) : 0,
 		'mfei_coverage' => esc_url( $_POST['mfei_coverage'] ),
 	);
 
-	foreach( $meta as $meta_key => $meta_value ) {
+	// Update the post meta for the event
+	foreach ( $meta as $meta_key => $meta_value ) {
 		update_post_meta( $id, $meta_key, $meta_value );	
 	}
 	
-	
-	if ( !$is_mf_form )
+	if ( ! $is_mf_form )
 		return;
 	
-	//UDPATE LOCATIONS OF CONNECTED APPLICATION
-	$locs = $_POST['tax_input']['location'];
-	unset($locs[0]);
-	
-	$san_locs = array();
-	foreach( $locs as $loc ) {
-		$san_locs[] = intval( $loc );
-	}
-	
-	wp_set_post_terms( $meta['mfei_record'], $san_locs, 'location' );
-	
-	//UPDATE SCHEDULED STATUS OF CONNECTED APPLICATION
-	update_post_meta( $meta['mfei_record'], '_ef_editorial_meta_checkbox_schedule-completed', ( isset( $_POST['mfei_schedule_completed'] ) ? 1 : 0 ) );
+	// Update scheduled status of connection application
+	update_post_meta( absint( $meta['mfei_record'] ), '_ef_editorial_meta_checkbox_schedule-completed', ( isset( $_POST['mfei_schedule_completed'] ) ? 1 : 0 ) );
 }
-
-/* SAVE POST HOOK */
 add_action( 'save_post', 'makerfaire_update_event' );
 
 
