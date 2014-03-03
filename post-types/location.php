@@ -338,9 +338,7 @@ function mf_get_all_locations() {
 		);
 		$locations = new WP_Query( $loc_args );
 
-
-		if ( ! empty( $locations->posts ) ) 
-			wp_cache_set( 'location-all', $locations, 'locations', 30 * MINUTE_IN_SECONDS );
+		wp_cache_set( 'location-all', $locations, 'locations', 30 * MINUTE_IN_SECONDS );
 	}
 
 	return $locations->posts;
