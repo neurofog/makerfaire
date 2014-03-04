@@ -8,20 +8,26 @@
 
 
 function mf_sync_all_editorial_comments_with_jdb() { 
+	global $mf_jdb;
 
 	// Check if we have passed in the Editorial Comments 
-	?>
+	if ( ( $_SERVER['REQUEST_METHOD'] === 'POST' ) && isset( $_POST['mf_editorial_comments_sync'] ) && wp_verify_nonce( $_POST['mf_editorial_comments_sync'], 'mf_sync_editorial_comments_jdb' ) ) {
+		$response = $mf_jdb->sync_editorial_comments();
+	} ?>
 	<h1>Sync All Editorial Comments with JDB</h1>
 	<?php if ( mf_is_dev_server() ) : ?>
 		<p>Sync all editorial comments with JDB.</p>
 		<form action="" method="post">
-			<p class="submit"><input type="submit" value="Sync All Editorial Comments with JDB" class="button button-primary button-large" /></p>
+			<input type="submit" value="Sync All Editorial Comments with JDB" class="button button-primary button-large" />
 			<?php wp_nonce_field( 'mf_sync_editorial_comments_jdb', 'mf_editorial_comments_sync' ); ?>
 		</form>
+		<?php echo ( isset( $response ) ) ? wp_kses_post( $response ) : ''; ?>
 	<?php else : ?>
 		Running on a testing server. JDB sync has been disabled.
 	<?php endif; ?>
 <?php }
+
+
 
 
 function build_comments_export( $options ) {

@@ -39,6 +39,9 @@ include_once dirname( __FILE__ ) . '/plugins/hide-post-locker/hide-post-locker.p
 // Load the settings field for the Applications API
 include_once dirname( __FILE__ ) . '/api/admin-settings.php';
 
+// Load the JDB class (aka Joe's Database)
+include_once dirname( __FILE__ ) . '/plugins/classes/class.jdb.php';
+
 
 require_once( 'taxonomies/type.php' );
 require_once( 'taxonomies/location.php' );
