@@ -18,6 +18,14 @@ class MF_JDB {
 
 
 	/**
+	 * Displays a generic message when using this in testing environments
+	 *
+	 * #since P-body
+	 */
+	static public $dev_server_notification;
+
+
+	/**
 	 * Run some things on init
 	 *
 	 * @since P-body
@@ -26,18 +34,24 @@ class MF_JDB {
 
 		// Add our JDB host name
 		$this->jdb_host = 'http://db.makerfaire.com';
+
+		// Add our generic dev message
+		$this->dev_server_notification = 'Running on a testing server. JDB sync has been disabled.';
 	}
 
 
 	/**
 	 * Runs the actual interfacing of syncing data to JDB
 	 * @param  array $post The $_POST object being passed. Should at least contain the Request Method and Editorial Comments Nonce for this to run
-	 * @return string|WP_Error
+	 * @return string
 	 *
 	 * @since P-body
 	 */
 	public function sync_editorial_comments() {
-		// Check that we are good to actually process this
+		if ( mf_is_dev_server() )
+			return false;
+
+		// Check that we are good to actually process any requests
 		if ( ( $_SERVER['REQUEST_METHOD'] !== 'POST' ) || ! isset( $_POST['mf_editorial_comments_sync'] ) && ! wp_verify_nonce( $_POST['mf_editorial_comments_sync'], 'mf_sync_editorial_comments_jdb' ) )
 			return $this->sync_status_message( 'error', 'Request could not be validated or was called inappropriately.' );
 
@@ -51,7 +65,7 @@ class MF_JDB {
 
 		foreach ( $comments as $comment ) {
 			// Just double checking that the comment being synced is from an application and the current faire
-			if ( $comment->post_type === 'mf_form' && has_term( MF_CURRENT_FAIRE, 'faire', $comment->comment_post_ID ) ) {
+			if ( $comment->post_type === 'mf_form' && has_term( MF_CURRENT_FAIRE, 'faire', absint( $comment->comment_post_ID ) ) ) {
 				$comments_obj[ intval( $i ) ]['app_id'] = absint( $comment->comment_post_ID );
 				$comments_obj[ intval( $i ) ]['id'] = absint( $comment->comment_ID );
 				$comments_obj[ intval( $i ) ]['comment'] = wp_kses_post( $comment->comment_content );
@@ -63,9 +77,17 @@ class MF_JDB {
 			}
 		}
 
-		var_dump($comments_obj);
+		// Send the data over to JDB
+		$results = $this->sync_to_jdb( 'editorial-comments', $comments_obj );
 
-		return $this->sync_status_message( 'success', null );
+		// Handle the results from the sync. This can be a boolean value or a string (which contains an error message)
+		if ( $results === false ) {
+			return $this->sync_status_message( 'error', $this->dev_server_notification );
+		} elseif ( is_string( $results ) ) {
+			return $results;
+		} else {
+			return $this->sync_status_message( 'success', null );
+		}
 	}
 
 
@@ -73,7 +95,7 @@ class MF_JDB {
 	 * Handles all the syncing of data to JDB
 	 * @param  string $type   The type of data we wish to push. Different types require different endpoints on JDB
 	 * @param  mixed  $object The object, array, string, or whatever that needs to be sent to JDB.
-	 * @return string|WP_Error
+	 * @return bool|string
 	 *
 	 * @since P-body
 	 */
@@ -90,23 +112,29 @@ class MF_JDB {
 
 		// Test that the type passed is valid
 		if ( ! in_array( $type, $accepted_types ) )
-			return $this->sync_status_message( 'error', 'Could not validate the type of content to sync.' );
+			return $this->sync_status_message( 'error', 'Could not validate the type of data to sync.' );
 
+		// Handle our different requests
 		switch( $type ) {
 			case 'editorial-comments' :
 				$body = array(
-					'body' => array(
-
-					),
+					'body' => $object,
 				);
-				// $result = wp_remote_post( esc_url( $this->jdb_host . '/NAME' ), $body );
+				$result = ''; // wp_remote_post( esc_url( $this->jdb_host . '/NAME' ), $body );
 				break;
 		}
+
+		// Test that all was gooooood
+		if ( wp_remote_retrieve_response_code( $result ) !== 200 ) {
+			return $this->sync_status_message( 'error', 'Could not connect. Please try again.' );
+		} else {
+			return true;
+		}
 	}
-	
+
 
 	/**
-	 * Process sync status messages into a consistent interface and easy way to handle the output
+	 * Helper function to process sync status messages into a consistent interface and easy way to handle the output
 	 * @param  [type] $type    Can either be 'error' or 'success'
 	 * @param  [type] $message The message you want to return
 	 * @return string|wp_error

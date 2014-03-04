@@ -2589,7 +2589,6 @@ class MAKER_FAIRE_FORM {
 		}
 	
 		// $stats = $this->get_reports_stats();
-		$fails = $this->get_failed_syncs();
 		$app_types = array(
 			'Exhibit' => 'exhibit',
 			'Performer' => 'performer',
@@ -2616,7 +2615,7 @@ class MAKER_FAIRE_FORM {
 				<h3><?php echo esc_html( wpcom_vip_get_term_by( 'slug', MF_CURRENT_FAIRE, 'faire' )->name ); ?> Stats</h3>
 				<?php echo mf_count_post_statuses( 'table' ); ?>
 
-				<h1 style="margin-top:20px;">Sync Status with JDB</h1>
+				<h2 style="margin-top:20px;">Sync Status with JDB</h2>
 				<?php if ( ! mf_is_dev_server() ) : ?>
 					<p>Syncs 100 applications at a time.<br />To do a full sync start at 0 and increase by 100 until you're done.</p>
 					<form action="" method="post">
@@ -2626,7 +2625,7 @@ class MAKER_FAIRE_FORM {
 								<select name="offset">
 									<option value="0">0</option>
 									<?php foreach( range( 100, 1000, 100 ) as $v ) : ?>
-									<option value="<?php echo intval( $v ); ?>"><?php echo intval( $v ); ?></option>
+										<option value="<?php echo intval( $v ); ?>"><?php echo intval( $v ); ?></option>
 									<?php endforeach; ?>
 								</select>
 							</div>
@@ -2641,24 +2640,13 @@ class MAKER_FAIRE_FORM {
 
 				<?php mf_sync_all_editorial_comments_with_jdb(); ?>
 
-				<h1 style="margin-top:40px;">Sync with JDB</h1>
+				<h2>Sync with JDB</h2>
 				<?php if ( ! mf_is_dev_server() ) : ?>
 					<p>Last Sync : <?php echo esc_html( get_option( 'mf_full_jdb_sync', 'NEVER' ) ); ?></p>
 					<form action="" method="post">
 						<p class="submit"><input type="submit" value="Sync With JDB Now" class="button button-primary button-large" /></p>
 						<?php wp_nonce_field( 'mf_syncjdb', 'mf_syncjdb' ); ?>
 					</form>
-				<?php else : ?>
-					<p>Running on a testing server. JDB sync has been disabled.</p>
-				<?php endif; ?>
-
-				<h2>Failed Syncs</h2>
-				<?php if ( ! mf_is_dev_server() ) : ?>
-					<ul>
-						<?php foreach( $fails as $fail ) : ?>
-							<li><a href="<?php echo esc_url( admin_url( 'post.php?post=' . intval( $fail->ID ) . '&amp;action=edit' ) ); ?>"><?php echo esc_html( $fail->post_title ); ?></a></li>
-						<?php endforeach; ?>
-					</ul>
 				<?php else : ?>
 					<p>Running on a testing server. JDB sync has been disabled.</p>
 				<?php endif; ?>
