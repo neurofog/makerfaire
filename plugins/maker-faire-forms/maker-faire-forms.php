@@ -1691,11 +1691,9 @@ class MAKER_FAIRE_FORM {
 		$tos = array_merge( array( $maker_email ), $toss );
 		// default bcc
 		$bcc = 'makers@makerfaire.com';
-
-		$local_server = array( 'localhost', 'make.com', 'vip.dev', 'staging.makerfaire.com' );
 		
 		// Send all emails in testing environments to one account.
-		if ( isset( $_SERVER['HTTP_HOST'] ) && in_array( $_SERVER['HTTP_HOST'], $local_server ) ) {
+		if ( mf_is_dev_server() ) {
 			$tos = array( 'cgeissinger@makermedia.com' );
 			$bcc = '';
 		}
@@ -2615,40 +2613,55 @@ class MAKER_FAIRE_FORM {
 			<?php echo screen_icon(); ?>
 			<h2>Maker Faire Reports</h2>
 			<div style="width:45%; float:left">
-				<h3><?php echo wpcom_vip_get_term_by( 'slug', MF_CURRENT_FAIRE, 'faire')->name; ?> Stats</h3>
+				<h3><?php echo esc_html( wpcom_vip_get_term_by( 'slug', MF_CURRENT_FAIRE, 'faire' )->name ); ?> Stats</h3>
 				<?php echo mf_count_post_statuses( 'table' ); ?>
-			<h1 style="margin-top:20px;">Sync Status with JDB</h1>
-			Syncs 100 applications at a time.<br />To do a full sync start at 0 and increase by 100 until you're done.
-			<form action="" method="post">
-				<p>
-					<div style="float:left; width:50px">
-						<strong>Start</strong><br />
-						<select name="offset">
-							<option value="0">0</option>
-							<?php foreach( range( 100, 1000, 100 ) as $v ) : ?>
-							<option value="<?php echo intval( $v ); ?>"><?php echo intval( $v ); ?></option>
-							<?php endforeach; ?>
-						</select>
-					</div>
-				</p>
-				<div class="clear"></div>
-				<p class="submit"><input type="submit" value="Sync Statuses With JDB Now" class="button button-primary button-large" /></p>
-				<?php wp_nonce_field( 'mf_syncstatusjdb', 'mf_syncstatusjdb' ); ?>
-			</form>
-			<h1 style="margin-top:40px;">Sync with JDB</h1>
-			<?php if( !isset( $_SERVER['SERVER_ADDR_NAME'] ) || $_SERVER['SERVER_ADDR_NAME'] != 'iscrackweb1' ) : ?>
-				Last Sync : <?php echo esc_html( get_option( 'mf_full_jdb_sync', 'NEVER' ) ); ?><br />
-				<form action="" method="post">
-					<p class="submit"><input type="submit" value="Sync With JDB Now" class="button button-primary button-large" /></p>
-					<?php wp_nonce_field( 'mf_syncjdb', 'mf_syncjdb' ); ?>
-				</form>
-			<?php endif; ?>
-			<h2>Failed Syncs</h2>
-			<ul>
-			<?php foreach( $fails as $fail ) : ?>
-				<li><a href="post.php?post=<?php echo intval( $fail->ID ); ?>&amp;action=edit"><?php echo esc_html( $fail->post_title ); ?></a></li>
-			<?php endforeach; ?>
-			</ul>
+
+				<h1 style="margin-top:20px;">Sync Status with JDB</h1>
+				<?php if ( ! mf_is_dev_server() ) : ?>
+					<p>Syncs 100 applications at a time.<br />To do a full sync start at 0 and increase by 100 until you're done.</p>
+					<form action="" method="post">
+						<p>
+							<div style="float:left; width:50px">
+								<strong>Start</strong><br />
+								<select name="offset">
+									<option value="0">0</option>
+									<?php foreach( range( 100, 1000, 100 ) as $v ) : ?>
+									<option value="<?php echo intval( $v ); ?>"><?php echo intval( $v ); ?></option>
+									<?php endforeach; ?>
+								</select>
+							</div>
+						</p>
+						<div class="clear"></div>
+						<p class="submit"><input type="submit" value="Sync Statuses With JDB Now" class="button button-primary button-large" /></p>
+						<?php wp_nonce_field( 'mf_syncstatusjdb', 'mf_syncstatusjdb' ); ?>
+					</form>
+				<?php else : ?>
+					<p>Running on a testing server. JDB sync has been disabled.</p>
+				<?php endif; ?>
+
+				<?php mf_sync_all_editorial_comments_with_jdb(); ?>
+
+				<h1 style="margin-top:40px;">Sync with JDB</h1>
+				<?php if ( ! mf_is_dev_server() ) : ?>
+					<p>Last Sync : <?php echo esc_html( get_option( 'mf_full_jdb_sync', 'NEVER' ) ); ?></p>
+					<form action="" method="post">
+						<p class="submit"><input type="submit" value="Sync With JDB Now" class="button button-primary button-large" /></p>
+						<?php wp_nonce_field( 'mf_syncjdb', 'mf_syncjdb' ); ?>
+					</form>
+				<?php else : ?>
+					<p>Running on a testing server. JDB sync has been disabled.</p>
+				<?php endif; ?>
+
+				<h2>Failed Syncs</h2>
+				<?php if ( ! mf_is_dev_server() ) : ?>
+					<ul>
+						<?php foreach( $fails as $fail ) : ?>
+							<li><a href="<?php echo esc_url( admin_url( 'post.php?post=' . intval( $fail->ID ) . '&amp;action=edit' ) ); ?>"><?php echo esc_html( $fail->post_title ); ?></a></li>
+						<?php endforeach; ?>
+					</ul>
+				<?php else : ?>
+					<p>Running on a testing server. JDB sync has been disabled.</p>
+				<?php endif; ?>
 			</div>
 			<div style="width:45%; float:right; border:1px solid #DFDFDF; border-radius:3px; padding:10px; background:#F2F2F2">
 				<h1>Generate Reports</h1>
@@ -3942,12 +3955,9 @@ class MAKER_FAIRE_FORM {
 	* @param int $id Post id to SYNC
 	* =====================================================================*/
 	private function sync_jdb( $id = 0 ) {
-
-		// Setup a list of our local servers...
-		$local_server = array( 'localhost', 'make.com', 'vip.dev', 'staging.makerfaire.com' );
 		
 		// Don't sync from any of our testing locations.
-		if ( isset( $_SERVER['HTTP_HOST'] ) && in_array( $_SERVER['HTTP_HOST'], $local_server ) )
+		if ( mf_is_dev_server() )
 			return false;
 	
 		if ( ! $id ) {

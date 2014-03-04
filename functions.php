@@ -12,6 +12,9 @@ require_once( __DIR__ . '/plugins/gigya/gigya.php' );
 // include maker-faire-forms plugin
 require_once( __DIR__ . '/plugins/maker-faire-forms/maker-faire-forms.php' );
 
+// include the reports controller to load our reporting modules
+require_once( __DIR__ . '/plugins/reports/reports.php' );
+
 // include maker-faire-forms plugin
 require_once( __DIR__ . '/plugins/public-pages/makers.php' );
 
@@ -110,6 +113,27 @@ function mf_clean_content( $content, $report = false ) {
 	$cleaned = str_replace( $bad, $good, htmlspecialchars_decode( mf_convert_newlines( $content ) ) );
 
 	return $cleaned;
+}
+
+
+/**
+ * Allows us to check if the host server is a dev server.
+ * There are some functions we don't want to run, such as any JDB syncing from dev environments
+ * or email auto responders to actual makers when testing applications
+ * @return bool
+ *
+ * @since P-body
+ */
+function mf_is_dev_server() {
+	// Setup a list of our local servers...
+	$local_server = array( 'localhost', 'make.com', 'vip.dev', 'staging.makerfaire.com' );
+		
+	// Don't sync from any of our testing locations.
+	if ( isset( $_SERVER['HTTP_HOST'] ) && in_array( $_SERVER['HTTP_HOST'], $local_server ) ) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 
