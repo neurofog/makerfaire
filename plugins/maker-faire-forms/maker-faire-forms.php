@@ -2290,9 +2290,9 @@ class MAKER_FAIRE_FORM {
 		$m.='<p>' . esc_html( ucfirst( $r['name'] ) ) . ',</p>';
 		$m.='<p>Thanks for your interest in participating in ' . esc_html( $this->faire_friendly_name ) . '! We have received your application for: <strong>' . $app_name . '</strong> ' . $app_info . '.</p>';
 		if (  $r['form_type'] == 'presenter' ) {
-			$m .= '<p>You will be notified as to the status of your application no later than <strong>April 2nd</strong>.</p>';
+			$m .= '<p>You will be notified as to the status of your application no later than <strong>April 11th</strong>.</p>';
 			$m .= '<p>If there are changes to your application (e.g. a new picture or a new panelist), you can update your presentation application as you receive new information. (Note that those submitting panel presentation proposals are responsible for collecting and entering all bio information from proposed panelists—so please come back and finish your application if those fields are not yet complete.)</p>';
-			$m .= '<ul><li>Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li><li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ul>';
+			$m .= '<ul><li>Log into your maker account from <a href="' . esc_url( home_url() ) . '">makerfaire.com</a>. The login link is in the blue header at the top of every page.</li><li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li></ul>';
 			$m .= '<p>If your presentation is accepted, we will do our best to accommodate your requests. Please understand that your requests are not guaranteed. What we can provide will be confirmed in a follow-up letter after acceptance.</p>';
 			$m .= '<p>In the meantime, please stay in touch and spread the word: like us on <a href="https://www.facebook.com/makerfaire">Facebook</a> and follow us on <a href="https://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/104410464300110463062/posts">Google+</a></p>';
 			$m .= '<p>Sabrina Merlo<br />Program Director<br />Maker Media, Inc.</p>';
