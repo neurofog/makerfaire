@@ -38,11 +38,13 @@ include_once dirname( __FILE__ ) . '/api/admin-settings.php';
 
 
 require_once( 'taxonomies/type.php' );
+require_once( 'taxonomies/sponsor-category.php' );
 require_once( 'taxonomies/location.php' );
 require_once( 'taxonomies/faire.php' );
 require_once( 'taxonomies/location_category.php' );
 require_once( 'taxonomies/group.php' );
 require_once( 'plugins/post-types/event-items.php' );
+require_once( 'post-types/sponsor.php' );
 require_once( 'post-types/location.php' );
 if ( defined( 'WP_CLI' ) && WP_CLI )
 	require_once( 'plugins/wp-cli/wp-cli.php' );
@@ -649,3 +651,19 @@ function maker_faire_trashed_application_redirect() {
     }
 }
 add_action( 'load-edit.php','maker_faire_trashed_application_redirect' );
+
+
+$field_data = array (
+	'sponsor_meta' => array (
+		'fields' => array(
+			'Sponsor_URL' => array( 
+				'type' 	=> 'textarea',
+				'label'	=> 'Projects Conclusion',
+				),
+		),
+		'title'		=> 'Sponsor Meta',
+		'context'	=> 'advanced',
+		'pages'		=> array( 'sponsor' ),
+	),
+);
+$easy_cf = new Easy_CF($field_data);

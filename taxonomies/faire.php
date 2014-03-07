@@ -1,7 +1,7 @@
 <?php
 
 	function faire_init() {
-		register_taxonomy( 'faire', array( 'mf_form', 'event-items', 'maker' ), array(
+		register_taxonomy( 'faire', array( 'mf_form', 'event-items', 'maker', 'sponsor' ), array(
 			'hierarchical'            => true,
 			'public'                  => true,
 			'show_in_nav_menus'       => true,
