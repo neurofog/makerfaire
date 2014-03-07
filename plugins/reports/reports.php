@@ -19,7 +19,7 @@ function mf_sync_all_editorial_comments_with_jdb() {
 	if ( ( $_SERVER['REQUEST_METHOD'] === 'POST' ) && isset( $_POST['mf_editorial_comments_sync'] ) && wp_verify_nonce( $_POST['mf_editorial_comments_sync'], 'mf_sync_editorial_comments_jdb' ) )
 		$response = $mf_jdb->sync_editorial_comments(); ?>
 	<h2>Sync All Editorial Comments with JDB</h2>
-	<?php if ( ! mf_is_dev_server() ) : ?>
+	<?php if ( mf_is_dev_server() ) : ?>
 		<p>Sync all editorial comments with JDB.</p>
 		<form action="" method="post">
 			<input type="submit" value="Sync All Editorial Comments with JDB" class="button button-primary button-large" />

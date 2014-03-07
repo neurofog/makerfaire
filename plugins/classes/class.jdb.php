@@ -48,8 +48,8 @@ class MF_JDB {
 	 * @since P-body
 	 */
 	public function sync_editorial_comments() {
-		if ( mf_is_dev_server() )
-			return false;
+		// if ( mf_is_dev_server() )
+		// 	return false;
 
 		// Check that we are good to actually process any requests
 		if ( ( $_SERVER['REQUEST_METHOD'] !== 'POST' ) || ! isset( $_POST['mf_editorial_comments_sync'] ) && ! wp_verify_nonce( $_POST['mf_editorial_comments_sync'], 'mf_sync_editorial_comments_jdb' ) )
@@ -102,8 +102,8 @@ class MF_JDB {
 	private function sync_to_jdb( $type, $object ) {
 
 		// Don't sync from any of our testing locations.
-		if ( mf_is_dev_server() )
-			return false;
+		// if ( mf_is_dev_server() )
+		// 	return false;
 
 		// List out what type of JDB data we can sync
 		$accepted_types = array(
@@ -117,10 +117,20 @@ class MF_JDB {
 		// Handle our different requests
 		switch( $type ) {
 			case 'editorial-comments' :
+				$date = date_create();
 				$body = array(
-					'body' => $object,
+					'app_id' => 19252,
+					'id' => 1,
+					'comment' => 'THIS IS A MANUAL EDITORIAL COMMENT TEST',
+					'author' => 'Cole Geissinger',
+					'email' => 'cgeissinger@makermedia.com',
+					'date_posted' => date_timestamp_get($date),
 				);
-				$result = ''; // wp_remote_post( esc_url( $this->jdb_host . '/NAME' ), $body );
+				
+				var_dump($body);
+				var_dump(esc_url( $this->jdb_host . '/addExhibitNote'));
+				die();
+				$result = wp_remote_post( esc_url( $this->jdb_host . '/addExhibitNote' ), $body );
 				break;
 		}
 
