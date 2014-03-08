@@ -14,7 +14,7 @@ class MF_JDB {
 	 *
 	 * @since P-body
 	 */
-	static private $jdb_host;
+	private $jdb_host;
 
 
 	/**
@@ -22,7 +22,7 @@ class MF_JDB {
 	 *
 	 * #since P-body
 	 */
-	static public $dev_server_notification;
+	public $dev_server_notification;
 
 
 	/**
@@ -119,18 +119,16 @@ class MF_JDB {
 			case 'editorial-comments' :
 				$date = date_create();
 				$body = array(
-					'app_id' => 19252,
+					'app_id' => 13280,
 					'id' => 1,
+					'cs_id' => 20883,
 					'comment' => 'THIS IS A MANUAL EDITORIAL COMMENT TEST',
 					'author' => 'Cole Geissinger',
 					'email' => 'cgeissinger@makermedia.com',
 					'date_posted' => date_timestamp_get($date),
 				);
 				
-				var_dump($body);
-				var_dump(esc_url( $this->jdb_host . '/addExhibitNote'));
-				die();
-				$result = wp_remote_post( esc_url( $this->jdb_host . '/addExhibitNote' ), $body );
+				$result = wp_remote_post( esc_url( $this->jdb_host . '/addExhibitNote' ), json_encode( $body ) );
 				break;
 		}
 
