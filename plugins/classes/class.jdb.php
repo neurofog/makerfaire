@@ -119,17 +119,14 @@ class MF_JDB {
 			case 'editorial-comments' :
 				$date = date_create();
 				$body = array(
-					'app_id' => 19252,
+					'app_id' => 20883,
 					'id' => 1,
 					'comment' => 'THIS IS A MANUAL EDITORIAL COMMENT TEST',
 					'author' => 'Cole Geissinger',
 					'email' => 'cgeissinger@makermedia.com',
 					'date_posted' => date_timestamp_get($date),
 				);
-				
-				var_dump($body);
-				var_dump(esc_url( $this->jdb_host . '/addExhibitNote'));
-				die();
+			
 				$result = wp_remote_post( esc_url( $this->jdb_host . '/addExhibitNote' ), $body );
 				break;
 		}
