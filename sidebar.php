@@ -72,6 +72,35 @@
                 </div> 
 
         </div>
+
+        <div class="sidebar-bordered sponsored">
+ 
+               <h3>Goldsmith Sponsors</h3>
+ 
+               <div id="myCarousel" class="carousel slide">
+                       <div class="carousel-inner">
+                               <?php echo mf_sponsor_carousel( 'Goldsmith Sponsor' ); ?>
+                       </div>
+               </div>
+ 
+               <h3>Silversmith Sponsors</h3>
+ 
+               <div id="myCarousel" class="carousel slide">
+                       <div class="carousel-inner">
+                               <?php echo mf_sponsor_carousel( 'Silversmith Sponsor' ); ?>
+                       </div>
+               </div>
+ 
+               <h3>Coppersmith Sponsors</h3>
+ 
+               <div id="myCarousel" class="carousel slide">
+                       <div class="carousel-inner">
+                               <?php echo mf_sponsor_carousel( 'Coppersmith Sponsor' ); ?>
+                       </div>
+               
+               </div>
+ 
+       </div>
 	
 	<!-- Beginning Sync AdSlot 2 for Ad unit header ### size: [[300,250]]  -->
 	<div id='div-gpt-ad-664089004995786621-2' class="adblock">
