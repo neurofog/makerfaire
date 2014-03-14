@@ -75,7 +75,7 @@
 
         <div class="sidebar-bordered sponsored">
  
-               <h3>Goldsmith Sponsors</h3>
+               <h3><a href="<?php echo esc_url( home_url( '/sponsors' ) ); ?>">Goldsmith Sponsors</a></h3>
  
                <div id="myCarousel" class="carousel slide">
                        <div class="carousel-inner">
@@ -83,7 +83,7 @@
                        </div>
                </div>
  
-               <h3>Silversmith Sponsors</h3>
+               <h3><a href="<?php echo esc_url( home_url( '/sponsors' ) ); ?>">Silversmith Sponsors</a></h3>
  
                <div id="myCarousel" class="carousel slide">
                        <div class="carousel-inner">
@@ -91,7 +91,7 @@
                        </div>
                </div>
  
-               <h3>Coppersmith Sponsors</h3>
+               <h3><a href="<?php echo esc_url( home_url( '/sponsors' ) ); ?>">Coppersmith Sponsors</a></h3>
  
                <div id="myCarousel" class="carousel slide">
                        <div class="carousel-inner">
