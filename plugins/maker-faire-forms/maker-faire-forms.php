@@ -2918,6 +2918,9 @@ class MAKER_FAIRE_FORM {
 		// Setup the results array
 		$results = array();
 
+		// Define the body variable that will contain the output
+		$body = '';
+
 		// Process our rows.
 		foreach ( $applications as $app ) {
 			// Get the current applications content (which is json data)
@@ -2925,7 +2928,15 @@ class MAKER_FAIRE_FORM {
 
 			// Let's clean up the content of any special characters and other ugly things
 			foreach ( $form as $key => $value ) {
-				$form[ sanitize_text_field( $key ) ] = mf_clean_content( $value, true );
+				if ( is_array( $value ) ) {
+					$key_value = array();
+					foreach ( $value as $k => $v ) {
+						$key_value[] = mf_clean_content( $v, true );
+					}
+				} else {
+					$key_value = mf_clean_content( $value, true );
+				}
+				$form[ sanitize_key( $key ) ] = $key_value;
 			}
 
 			// Let's make sure we're actually getting what we expect..
@@ -2979,7 +2990,7 @@ class MAKER_FAIRE_FORM {
 
 					// Process a makers info
 					if ( $key == 'm_maker_gigyaid' ) {
-						for ( $i = 0; $i < 3; $i++ ) {
+						for ( $i = 1; $i < 4; $i++ ) {
 							foreach ( array( 'm_maker_name', 'm_maker_email', 'm_maker_gigyaid', 'm_maker_photo', 'm_maker_twitter' ) as $n ) {
 								if ( $n != 'm_maker_twitter' ) {
 									$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ][ $i ];
@@ -2993,12 +3004,14 @@ class MAKER_FAIRE_FORM {
 					} elseif( $key == 'presenter_gigyaid' ) {
 						for ( $i = 1; $i < 4; $i++ ) {
 							foreach ( array( 'presenter_name', 'presenter_email', 'presenter_gigyaid', 'presenter_photo', 'presenter_twitter' ) as $n ) {
-								if ( $n != 'presenter_twitter' ) {
-									$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ][ $i ];
-									$row .= "\t" . $form[ $n ][ $i ];
+								if ( $n == 'presenter_name' || $n == 'presenter_email' || $n == 'presenter_twitter' ) {
+									$output = ( ! empty( $form[ $n ][ $i ] ) ? $form[ $n ][ $i ] : '' );
+									$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $output;
+									$row .= "\t" . $output;
 								} else {
-									$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $form[ $n ];
-									$row .= "\t" . $form[ $n ];
+									$output = ( ! empty( $form[ $n ] ) ? $form[ $n ] : '' );
+									$results[ $app->ID ][ $n . '_' . ( $i + 1 ) ] = $output;
+									$row .= "\t" . $output;
 								}
 
 							}
@@ -3052,7 +3065,7 @@ class MAKER_FAIRE_FORM {
 
 			// Get all of the Edit Flow terms and process them into our CSV
 			foreach( $ef_terms as $ef_id => $ef_term ) {
-				$results_ef = $results[ $app->ID ][ $ef_term['slug'] ];
+				$results_ef = ( ! empty( $results[ $app->ID ][ $ef_term['slug'] ] ) ) ? $results[ $app->ID ][ $ef_term['slug'] ] : '';
 
 				if ( isset( $ef_data[ $app->ID ][ $ef_id ] ) ) {
 
@@ -3070,9 +3083,9 @@ class MAKER_FAIRE_FORM {
 					}
 
 				} else {
-
-					$results[ $app->ID ][ $ef_term['slug'] ] = $ef_def[ $ef_term['type'] ];
-					$row .= "\t" . $ef_def[ $ef_term['type'] ];
+					$output = ( ! empty( $ef_def[ $ef_term['type'] ] ) ) ? $ef_def[ $ef_term['type'] ] : '';
+					$results[ $app->ID ][ $ef_term['slug'] ] = $output;
+					$row .= "\t" . $output;
 
 				}
 			}
@@ -3085,7 +3098,7 @@ class MAKER_FAIRE_FORM {
 
 
 			// Set List of Makers
-			$makers = $form['m_maker_name'];
+			$makers = ( ! empty( $form['m_maker_name'] ) ) ? $form['m_maker_name'] : '';
 
 			// $makers can return an array, a single string or empty. Handle them as needed.
 			if ( empty( $makers ) ) {
