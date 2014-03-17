@@ -160,14 +160,14 @@ add_action( 'init', function() {
 }, 400 );
 
 function makerfaire_index_feed($n = 4) {
-	$f = fetch_feed('http://makezine.com/tag/maker-faire/feed/'); 
+	$f = fetch_feed('http://makezine.com/tag/maker-faire/feed/');
 
 	if(is_wp_error($f))
 		return false;
 
-	$max = $f->get_item_quantity($n); 	
+	$max = $f->get_item_quantity($n);
 	$fs  = $f->get_items(0, $max);
-	
+
 	$res = array();
 	foreach($fs as $i)
 	{
@@ -188,7 +188,7 @@ add_action( 'init', 'isc_register_menus' );
 
 function makerfaire_carousel_shortcode( $atts ) {
 	extract( shortcode_atts( array( 'id' => 'biggins'), $atts ) );
-	
+
 	return 	'<a class="carousel-control left" href="#' . esc_attr( $id ) . '" data-slide="prev">&lsaquo;</a>
 			<a class="carousel-control right" href="#' . esc_attr( $id ) . '" data-slide="next">&rsaquo;</a>';
 }
@@ -222,23 +222,23 @@ function makerfaire_newsletter_shortcode() {
 
 		$output = '<form action="http://makermedia.createsend.com/t/r/s/jjuruj/" method="post" class="form-horizontal" id="subForm">
 			<fieldset>
-			
+
 			<legend>Sign up for the Maker Faire Newsletter</legend>
-			
+
 			<div class="control-group">
 				<label for="name" class="control-label">Your Name:</label>
 				<div class="controls">
 					<input type="text" class="input-xlarge" name="cm-name" id="name" size="35" />
 				</div>
 			</div>
-			
+
 			<div class="control-group">
 				<label class="control-label" for="jjuruj-jjuruj">Your Email:</label>
 				<div class="controls">
 					<input type="text" class="input-xlarge" name="cm-jjuruj-jjuruj" id="jjuruj-jjuruj" size="35" />
 				</div>
 			</div>
-			
+
 			<div class="control-group">
 				<label class="control-label" for="cm621683"></label>
 				<div class="controls">
@@ -248,7 +248,7 @@ function makerfaire_newsletter_shortcode() {
 					</label>
 				</div>
 			</div>
-			
+
 			<div class="control-group">
 				<label class="control-label" for="optionsCheckbox">Any chance we could interest you in...</label>
 				<div class="controls">
@@ -260,11 +260,11 @@ function makerfaire_newsletter_shortcode() {
 					</label>
 				</div>
 			</div>
-			
+
 			<div class="form-actions">
 				<input type="submit" value="Subscribe" class="btn btn-primary" />
 			</div>
-			
+
 			</fieldset>
 		</form>';
 
@@ -277,7 +277,7 @@ add_shortcode( 'newsletter', 'makerfaire_newsletter_shortcode' );
  * Modal Window Builder
  */
 function make_modal_builder( $atts, $content = null ) {
-	
+
 	extract( shortcode_atts( array(
 		'launch' 	=> 'Launch Window',
 		'title' 	=> 'Modal Title',
@@ -313,7 +313,7 @@ function makerfaire_news_rss() { ?>
 	<div class="newsies">
 		<div class="news post">
 			<h3 style="color: #fc040c;"><a href="http://makezine.com/tag/maker-faire/">Latest Maker Faire News</a></h3>
-			<?php 
+			<?php
 			$fs = makerfaire_index_feed();
 
 			foreach($fs as $f) : $a = $f['i']->get_authors(); ?>
@@ -326,14 +326,14 @@ function makerfaire_news_rss() { ?>
 					<?php echo str_replace(array($f['img'], '<p><a href="'.$f['i']->get_link().'">Read the full article on MAKE</a></p>'), '', html_entity_decode(esc_html($f['i']->get_description()))); ?>
 					<p class="read_more" style="margin:10px 0"><strong>
 					<a class="btn btn-primary btn-mini" href="<?php echo esc_url($f['i']->get_link()); ?>">Read full story &raquo;</a></strong></p>
-					
+
 						<ul class="unstyled">
 							<li>Posted by <?php echo esc_html($a[0]->name); ?> | <?php echo esc_html($f['i']->get_date()); ?></li>
 							<li>Categories: <?php foreach($f['i']->get_categories() as $cat) : echo esc_html($cat->term.', '); endforeach; ?></li>
 						</ul>
 					</div>
 				</div>
-			<?php endforeach; ?> 
+			<?php endforeach; ?>
 		</div>
 	</div>
 	<h4><a href="http://makezine.com/tag/maker-faire/">Read More &rarr;</a></h4>
@@ -382,7 +382,7 @@ function mf_quick_links() {
 
 if (is_admin())
 	add_action('admin_menu', 'mf_quick_links_box');
-	
+
 function mf_clean_title( $title ) {
     $title = str_replace('&nbsp;', ' ', $title);
     return $title;
@@ -403,27 +403,27 @@ add_filter( 'wp_kses_allowed_html', 'mf_allow_data_atts', 10, 2 );
 function mf_allow_data_atts( $allowedposttags, $context ) {
 	$tags = array( 'div', 'a', 'li' );
 	$new_attributes = array( 'data-toggle' => true );
- 
+
 	foreach ( $tags as $tag ) {
 		if ( isset( $allowedposttags[ $tag ] ) && is_array( $allowedposttags[ $tag ] ) )
 			$allowedposttags[ $tag ] = array_merge( $allowedposttags[ $tag ], $new_attributes );
 	}
-	
+
 	return $allowedposttags;
 }
 
 
-add_filter('tiny_mce_before_init', 'mf_filter_tiny_mce_before_init'); 
-function mf_filter_tiny_mce_before_init( $options ) { 
+add_filter('tiny_mce_before_init', 'mf_filter_tiny_mce_before_init');
+function mf_filter_tiny_mce_before_init( $options ) {
 
-	if ( ! isset( $options['extended_valid_elements'] ) ) 
-		$options['extended_valid_elements'] = ''; 
+	if ( ! isset( $options['extended_valid_elements'] ) )
+		$options['extended_valid_elements'] = '';
 
 	$options['extended_valid_elements'] .= ',a[data*|class|id|style|href]';
 	$options['extended_valid_elements'] .= ',li[data*|class|id|style]';
 	$options['extended_valid_elements'] .= ',div[data*|class|id|style]';
 
-	return $options; 
+	return $options;
 }
 
 
@@ -439,12 +439,12 @@ add_filter( 'jetpack_open_graph_tags', function( $tags ) {
 	global $post;
 	if ($post->post_type == 'mf_form') {
 		$json = json_decode( $post->post_content );
-		$tags['og:description'] = $json->public_description;	
+		$tags['og:description'] = $json->public_description;
 	} else {
 		setup_postdata($post);
 		$tags['og:description'] = get_the_excerpt();
 	}
-	
+
 	return $tags;
 }, 10 );
 
@@ -452,7 +452,7 @@ add_filter( 'jetpack_open_graph_tags', function( $tags ) {
 /**
  * Hide Maker Faire applications from past faires
  *
- * In the past, CS had a method for only selecting the current 
+ * In the past, CS had a method for only selecting the current
  * faire for applications. We want to do the same here, and prevent
  * all applications from showing up in the edit screen.
  *
@@ -523,10 +523,10 @@ function mf_send_hipchat_notification( $message = 'Default Message', $from = 'Ma
 	$room 		= 198932;
 	$notify 	= 1;
 
-	$opts = array( 
-		'auth_token'=> $auth_token, 
-		'room_id'	=> $room, 
-		'from' 		=> $from, 
+	$opts = array(
+		'auth_token'=> $auth_token,
+		'room_id'	=> $room,
+		'from' 		=> $from,
 		'notify' 	=> $notify,
 		'message'	=> urlencode( $message ),
 		'color'		=> 'green'
@@ -540,14 +540,14 @@ function mf_send_hipchat_notification( $message = 'Default Message', $from = 'Ma
 function mf_page_redirect_to_app_stores() {
 	if ( ! is_page( 'app' ) && function_exists( 'jetpack_is_mobile' ) )
 		return;
- 
+
 	$redirect_to = '';
- 
+
  	if ( Jetpack_User_Agent_Info::is_iphone_or_ipod() )
 		$redirect_to = 'https://itunes.apple.com/us/app/maker-faire-the-official-app/id641794889';
 	elseif ( Jetpack_User_Agent_Info::is_android() )
 		$redirect_to = 'https://play.google.com/store/apps/details?id=com.xomodigital.makerfaire';
- 	
+
 	if ( ! empty( $redirect_to ) ) {
 		wp_redirect( $redirect_to, 301 );  // Permanent redirect
 		exit;
@@ -656,7 +656,7 @@ add_action( 'load-edit.php','maker_faire_trashed_application_redirect' );
 $field_data = array (
 	'sponsor_meta' => array (
 		'fields' => array(
-			'Sponsor_URL' => array( 
+			'Sponsor_URL' => array(
 				'type' 	=> 'textarea',
 				'label'	=> 'Projects Conclusion',
 				),
