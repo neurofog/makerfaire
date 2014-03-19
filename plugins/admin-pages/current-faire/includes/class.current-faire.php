@@ -610,6 +610,12 @@
 		 * @return string
 		 */
 		function convert_boolean( $boolean ) {
+			// Convert the words yes and no to boolean values
+			if ( $boolean == 'Yes' ) {
+				$boolean = 1;
+			} else {
+				$boolean = 0;
+			}
 
 			if ( $boolean ) {
 				$answer = 'Yes';
