@@ -4116,7 +4116,7 @@ class MAKER_FAIRE_FORM {
 		) );
 		$existing_maker = $list_of_makers->get_posts();
 
-		// Fall back incase a maker doesn't have an email setup, but still have an account.
+		// Fall back in-case a maker doesn't have an email setup, but still have an account.
 		$existing_maker_title = wpcom_vip_get_page_by_title( htmlspecialchars( $maker['title'], ENT_QUOTES ), OBJECT, 'maker' );
 
 		// Create our post array
@@ -4174,8 +4174,17 @@ class MAKER_FAIRE_FORM {
 		// Add the Maker Gigya ID
 		( update_post_meta( $maker_id, 'guid', sanitize_text_field( $maker['gigya'] ) ) ) ? $message['success'][]  .= 'Gigya ID ' . $process_completed : $messages['errors'][] .= 'Gigya ID Not ' . $process_completed;
 
-		// Add Update the faire taxonomy
-		$term_status = wp_set_object_terms( $maker_id, $maker['mfei_record'], 'faire', true );
+		// Add Update the faire taxonomy and append any existing past faires that were assigned.
+		$terms = wp_get_post_terms( absint( $maker_id ), 'faire' );
+		$faire_terms = array();
+		if ( ! empty( $terms ) ) {
+
+			foreach ( $terms as $term ) {
+				$faire_terms[] = $term->slug;
+			}
+		}
+		$faire_terms[] = $maker['mfei_record'];
+		$term_status = wp_set_object_terms( $maker_id, $faire_terms, 'faire', true );
 		( $term_status ) ? $messages['success'][] .= 'MF ' . $process_completed       : $messages['errors'][] .= 'MF Not ' . $process_completed;
 
 		// Add our New Maker ID to the messages
