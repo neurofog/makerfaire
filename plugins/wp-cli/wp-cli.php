@@ -8,7 +8,7 @@ class MAKE_CLI extends WP_CLI_Command {
 	 * Read the category and tag out of the JSON array, and then assign to the post.
 	 *
 	 * @subcommand cats
-	 * 
+	 *
 	 */
 	public function copy_category_to_tag( $args, $assoc_args ) {
 
@@ -81,7 +81,7 @@ class MAKE_CLI extends WP_CLI_Command {
 					}
 				}
 			}
-			
+
 
 		WP_CLI::line( '' );
 		endwhile;
@@ -93,7 +93,7 @@ class MAKE_CLI extends WP_CLI_Command {
 	 * Read the category and tag out of the JSON array, and then assign to the post.
 	 *
 	 * @subcommand hands
-	 * 
+	 *
 	 */
 	public function hands_on( $args, $assoc_args ) {
 
@@ -126,7 +126,7 @@ class MAKE_CLI extends WP_CLI_Command {
 				WP_CLI::line('Hands On:');
 				if ( !empty( $result ) ) {
 					WP_CLI::success( get_the_title() );
-				}	
+				}
 			}
 		endwhile;
 		WP_CLI::success( "Boom!" );
@@ -137,7 +137,7 @@ class MAKE_CLI extends WP_CLI_Command {
 	 * Inserts places from Make: Projects
 	 *
 	 * @subcommand places
-	 * 
+	 *
 	 */
 	public function mf_location_import() {
 		include_once 'placement.php';
@@ -180,7 +180,7 @@ class MAKE_CLI extends WP_CLI_Command {
 	 *
 	 * @subcommand makers
 	 * @synopsis [--faire=<faire>]
-	 * 
+	 *
 	 */
 	public function mf_create_makers( $args, $assoc_args ) {
 		global $mfform;
@@ -215,7 +215,7 @@ class MAKE_CLI extends WP_CLI_Command {
 				'gigya'    	  => ( ! is_array( $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ] ) ? $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ] : $content[ $mfform->merge_fields( 'user_gigya', $content['form_type'] ) ][0] ),
 				'mfei_record' => $mfei_record,
 			);
-			
+
 			// Update or create our individual maker and report back.
 			if ( ! empty( $maker['title'] ) )
 				$maker_status = $mfform->add_to_maker_cpt( $maker );
@@ -248,7 +248,7 @@ class MAKE_CLI extends WP_CLI_Command {
 
 			// Process any additional makers that are setup in an application
 			foreach ( array( 'exhibit' => 'm_maker_', 'presenter' => 'presenter' ) as $type => $prefix ) {
-				
+
 				// Check if the form field contains more than one maker name and email.
 				if ( $content['form_type'] == $type && is_array( $content[ $prefix . 'name' ] ) && is_array( $content[ $prefix . 'email' ] ) ) {
 
@@ -302,46 +302,46 @@ class MAKE_CLI extends WP_CLI_Command {
 	 * Delete all of the Makers in the makers custom post type
 	 *
 	 * @subcommand mjolnir
-	 * 
+	 *
 	 */
 	public function mf_delete_makers( $args, $assoc_args ) {
 
-		WP_CLI::line( ' 
-                                                  zee.                      
-        z**=.                                  .P"  $                       
-         %   ^c                               z"   $                        
-          b    %                             d    4"                        
-          4     $            ....           4"    $                         
-           F     L       .P"       "%.      $     $                         
-           $     4     e"             "c    "     $                         
-           $      F  z"                 *  4      $                         
-           P      $ d                    3.$      $                         
-           %      $d       ..eeeec..      *$      \'b                        
-          d       $%   .e$*c d" ".z**$%.   $       $                        
-          F       $  e" $   *F   $   ^F.db.$        b                       
-         J        $d\" ^$   4b   $    $  3/$        *                       
-         $        $*$   $c  P *P" * ."F  .$$         b                      
-        4F        $ $c .EeP""      ^C$$..*F F        $                      
-        J         $ $.*"-"*.      ."    "b$ F        \'r                     
-        $         *"$   zc. ..  -"..-""\  $$%         $                     
-        $          $      ..  L P  ebe    4$          $                     
-        $          ^F   d%*$J%3 $ *$* "   4F          $                     
-        *          4b       @   3 ^r      4$          $                     
-        4          d$.          4         $3.        4F                     
-         L         $$*.                  %$ $        J                      
-         $        d $ $      -   ^.     P $c $       $                      
-          r      z".$L L    .$%..*$    J  $P. *.    d                       
-          "     z" P$$ ^%  z"      ".  L d$$"c "e  z%                       
-           *  .P .*$$$  "*"   .$c        $$$$.b  ^$"                        
-            *$  dL$$$$r ^4. ./" ""%..r"  $$$$$$J$e"                         
-             *$b$$$$$$F        ""        $$$$$$$P                           
-              ^$$$$$$$$                  $$$$$"                             
-                 "*$$$$                  $"                                 
-                      \'                 4                                   
-                       *  $         .$  F                                   
-                        % 4F       .$  "                                    
-                          *$%     .$dr                                      
-                            *.    .*                                        
+		WP_CLI::line( '
+                                                  zee.
+        z**=.                                  .P"  $
+         %   ^c                               z"   $
+          b    %                             d    4"
+          4     $            ....           4"    $
+           F     L       .P"       "%.      $     $
+           $     4     e"             "c    "     $
+           $      F  z"                 *  4      $
+           P      $ d                    3.$      $
+           %      $d       ..eeeec..      *$      \'b
+          d       $%   .e$*c d" ".z**$%.   $       $
+          F       $  e" $   *F   $   ^F.db.$        b
+         J        $d\" ^$   4b   $    $  3/$        *
+         $        $*$   $c  P *P" * ."F  .$$         b
+        4F        $ $c .EeP""      ^C$$..*F F        $
+        J         $ $.*"-"*.      ."    "b$ F        \'r
+        $         *"$   zc. ..  -"..-""\  $$%         $
+        $          $      ..  L P  ebe    4$          $
+        $          ^F   d%*$J%3 $ *$* "   4F          $
+        *          4b       @   3 ^r      4$          $
+        4          d$.          4         $3.        4F
+         L         $$*.                  %$ $        J
+         $        d $ $      -   ^.     P $c $       $
+          r      z".$L L    .$%..*$    J  $P. *.    d
+          "     z" P$$ ^%  z"      ".  L d$$"c "e  z%
+           *  .P .*$$$  "*"   .$c        $$$$.b  ^$"
+            *$  dL$$$$r ^4. ./" ""%..r"  $$$$$$J$e"
+             *$b$$$$$$F        ""        $$$$$$$P
+              ^$$$$$$$$                  $$$$$"
+                 "*$$$$                  $"
+                      \'                 4
+                       *  $         .$  F
+                        % 4F       .$  "
+                          *$%     .$dr
+                            *.    .*
                               ".." ' );
 
 		$args = array(
@@ -363,7 +363,7 @@ class MAKE_CLI extends WP_CLI_Command {
 		$query = new WP_Query( $args );
 
 		while ( $query->have_posts() ) : $query->the_post();
-		
+
 		$title = get_the_title( get_the_ID() );
 
 		$del = wp_delete_post( get_the_ID() );
@@ -380,7 +380,7 @@ class MAKE_CLI extends WP_CLI_Command {
 	 * Assign all of the Maker Faire Applications to the Bay Area 2013 Faire
 	 *
 	 * @subcommand faires
-	 * 
+	 *
 	 */
 	public function mf_assign_faire( $args, $assoc_args ) {
 
@@ -399,7 +399,7 @@ class MAKE_CLI extends WP_CLI_Command {
 		$query = new WP_Query( $args );
 
 		while ( $query->have_posts() ) : $query->the_post();
-		
+
 		$title = get_the_title( get_the_ID() );
 
 		$faire = wp_set_object_terms( get_the_ID(), 'Maker Faire Bay Area 2013', 'faire' );
@@ -416,7 +416,7 @@ class MAKE_CLI extends WP_CLI_Command {
 	 * Assign the type of form to a taxonomy
 	 *
 	 * @subcommand types
-	 * 
+	 *
 	 */
 	public function mf_application_type() {
 
@@ -452,7 +452,7 @@ class MAKE_CLI extends WP_CLI_Command {
 			}
 		endwhile;
 		WP_CLI::success( "Boom!" );
-		
+
 	}
 
 }
