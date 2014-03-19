@@ -880,10 +880,18 @@ class MAKER_FAIRE_FORM {
 				}
 			} elseif ( $maker_type == 'A group or association' ) {
 				$result = esc_html( $data->group_name ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $data->group_name ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a>';
-			} elseif ( $maker_type == 'performer' || $maker_type == 'presenter' ) {
-				$result = esc_html( $data->name ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $data->name ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a>';
+			} elseif ( $maker_type == 'performer' ) {
+				$result = esc_html( $data->performer_name ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $data->performer_name ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a>';
+			} elseif ( $maker_type == 'presenter' ) {
+				if ( is_array( $data->presenter_name ) ) {
+					foreach ( $data->presenter_name as $presenter ) {
+						$result = esc_html( $presenter ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $presenter ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a>';
+					}
+				} else {
+					$result = esc_html( $data->presenter_name ) . ' <a target="_blank" style="float:right" href="' . esc_url( admin_url( '/edit.php?s=' . urlencode( $data->presenter_name ) . '&post_status=all&post_type=maker' ) ) . '">Lookup Maker</a>';
+				}
 			} else {
-				$result = 'No maker type set! Cannot return Makers.';
+				$result = 'Could not find makers to list!';
 			}
 
 			echo '<strong>' . $result . '</strong>';
