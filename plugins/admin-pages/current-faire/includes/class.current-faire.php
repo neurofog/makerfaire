@@ -1,5 +1,5 @@
 <?php
-	
+
 	/**
 	 * Current Faire Dashboard.
 	 *
@@ -100,7 +100,7 @@
 			'auto-draft',
 		);
 
-		
+
 		/**
 		 * List all the of the columns to be outputted.
 		 * Used in the Screen Options and table header/footer
@@ -248,7 +248,7 @@
 				'order_by'		 => ( isset( $_GET['order_by'] ) && in_array( $_GET['order_by'], $order_by_options ) ) ? sanitize_text_field( $_GET['order_by'] ) : '',
 				'posts_per_page' => ( isset( $_GET['posts_per_page'] ) && $_GET['posts_per_page'] <= 1000 ) ? absint( $_GET['posts_per_page'] ) : 40,
 				'search' 		 => ( isset( $_GET['s'] ) && ! empty( $_GET['s'] ) ) ? sanitize_text_field( $_GET['s'] ) : '',
-				'post_id'		 => ( isset( $_GET['p'] ) && ! empty( $_GET['p'] ) ) ? absint( $_GET['p'] ) : '', 
+				'post_id'		 => ( isset( $_GET['p'] ) && ! empty( $_GET['p'] ) ) ? absint( $_GET['p'] ) : '',
 			);
 
 			return $query_vars;
@@ -267,7 +267,7 @@
 
 			// Make sure everything is as it's supposed to.
 			if ( isset( $_POST['submission'] ) && $_POST['submission'] == 'submit-current-faire-screen-options' && wp_verify_nonce( $_POST['nonce'], 'current-faire-screen-save' ) ) {
-				
+
 				// Turn our query string into an array
 				parse_str( sanitize_text_field( $_POST['data'] ), $data );
 
@@ -343,7 +343,7 @@
 				);
 
 				array_push( $results, $query_results );
-				
+
 			}
 
 			foreach ( $results as $result ) {
@@ -367,7 +367,7 @@
 					'format' 	=> '&paged=%#%',
 					'current' 	=> max( 1, sanitize_text_field( $paged ) ),
 					'total' 	=> absint( $total )
-				) 
+				)
 			);
 
 			return $links;
@@ -418,7 +418,7 @@
 		 * @return string
 		 */
 		function orderby_dropdown() {
-			
+
 			$query_vars = $this->get_query_vars();
 
 			$output = '<select name="order_by" id="order-by">';
@@ -578,7 +578,7 @@
 								<input type="checkbox" class="hide-column-tog" id="<?php echo $column; ?>-hide" name="<?php echo $column; ?>-hide" value="<?php echo $column; ?>"<?php echo $this->check_screen_options( $column, true, $details['default'] ); ?>> <?php echo $details['label']; ?>
 							</label>
 						<?php endforeach; ?>
-						
+
 					</div>
 					<div class="screen-options"></div>
 				</form>
@@ -618,7 +618,7 @@
 			}
 
 			return $answer;
-		} 
+		}
 
 
 		/**
@@ -683,12 +683,12 @@
 		 */
 		function display_current_faire_page() {
 
-			//must check that the user has the required capability 
+			//must check that the user has the required capability
 			if ( ! current_user_can( $this->user_capabilities ) )
 				wp_die( __( 'You do not have sufficient permissions to access this page.', 'make' ) );
 
 			// Get any query variables if set
-			$query_vars = $this->get_query_vars(); 
+			$query_vars = $this->get_query_vars();
 
 			// Check if we are filtering our results by post type.
 			if ( empty( $query_vars['post_status'] ) || $query_vars['post_status'] == 'all' ) {
@@ -722,7 +722,7 @@
 					<input type="hidden" name="post_type" value="<?php echo esc_attr( $_REQUEST['post_type'] ); ?>" />
 					<input type="hidden" name="page" value="<?php echo esc_attr( $_REQUEST['page'] ); ?>" />
 					<?php wp_nonce_field( 'overview-form-save', $this->nonce_name, false ); ?>
-					
+
 					<p class="search-box">
 						<label for="post-search-input" class="screen-reader-text">Search All Applications</label>
 						<input type="search" id="post-search-input" name="s" value="<?php echo ( isset( $query_vars['search'] ) ) ? esc_attr( $query_vars['search'] ) : ''; ?>">
@@ -743,9 +743,9 @@
 							<span class="displaying-num"><?php echo absint( $query->found_posts ); ?> Items</span>
 							<?php echo $this->get_pagination_link( $query->max_num_pages, $query_vars['paged'] ); ?>
 						</div>
-						
+
 					</div>
-					
+
 					<table id="current-faire" class="wp-list-table widefat fixed pages">
 						<thead>
 							<tr>
@@ -812,7 +812,7 @@
 									echo '<tr class="no-items"><td class="colspanchange" colspan="3">No content found.</td></tr>';
 								} ?>
 						</tbody>
-						
+
 					</table>
 					<div class="tablenav bottom">
 
@@ -820,7 +820,7 @@
 							<span class="displaying-num"><?php echo absint( $query->found_posts ); ?> Items</span>
 							<?php echo $this->get_pagination_link( $query->max_num_pages, $query_vars['paged'] ); ?>
 						</div>
-						
+
 					</div>
 				</form>
 			</div>
