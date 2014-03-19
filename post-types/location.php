@@ -79,7 +79,7 @@ add_action( 'add_meta_boxes', 'mf_add_custom_box' );
 
 /**
  * Prints the box content.
- * 
+ *
  * @param WP_Post $post The object for the current post/page.
  */
 function mf_inner_location_box( $post ) {
@@ -120,7 +120,7 @@ function mf_inner_location_box( $post ) {
 		$query = new WP_Query( $args );
 
 		echo '<ul style="-moz-column-count:3;-moz-column-gap:20px;-webkit-column-count:3;-webkit-column-gap:20px;">';
-		
+
 		foreach ( $query->posts as $location ) {
 
 			// Display only the parent elements first.
@@ -128,7 +128,7 @@ function mf_inner_location_box( $post ) {
 			if ( $location->post_parent == 0 ) {
 				echo '<li><label class="checkbox">';
 				if ( in_array( $location->ID, $faire_location ) ) {
-					echo '<input type="checkbox" name="location[]" value="' . absint( $location->ID ) .'" checked>';	
+					echo '<input type="checkbox" name="location[]" value="' . absint( $location->ID ) .'" checked>';
 				} else {
 					echo '<input type="checkbox" name="location[]" value="' . absint( $location->ID ) .'">';
 				}
@@ -144,7 +144,7 @@ function mf_inner_location_box( $post ) {
 					foreach ( $children as $child_loc ) {
 						echo '<li> <strong>—</strong> &nbsp; <label class="checkbox">';
 						if ( in_array( $child_loc->ID, $faire_location ) ) {
-							echo '<input type="checkbox" name="location[]" value="' . absint( $child_loc->ID ) .'" checked>';	
+							echo '<input type="checkbox" name="location[]" value="' . absint( $child_loc->ID ) .'" checked>';
 						} else {
 							echo '<input type="checkbox" name="location[]" value="' . absint( $child_loc->ID ) .'">';
 						}
@@ -189,14 +189,14 @@ function mf_save_postdata( $post_id ) {
 		return $post_id;
 
 	// If this is an autosave, our form has not been submitted, so we don't want to do anything.
-	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
 		return $post_id;
 
 	// Check the user's permissions.
   	if ( 'page' == $_POST['post_type'] ) {
     	if ( ! current_user_can( 'edit_page', $post_id ) )
 			return $post_id;
-  
+
   	} else {
     	if ( ! current_user_can( 'edit_post', $post_id ) )
 			return $post_id;
@@ -272,7 +272,7 @@ add_action( 'manage_location_posts_custom_column', 'mf_location_column_content' 
  * Return the list of locations based on the application ID
  * This function also will cache the request to save any extended database calls.
  * @param  int    $post_id The post ID to pull the locations from
- * @return string          Returns the location title  
+ * @return string          Returns the location title
  *
  * @since Optimus Prime
  */
