@@ -613,7 +613,7 @@
 			// Convert the words yes and no to boolean values
 			if ( $boolean == 'Yes' ) {
 				$boolean = 1;
-			} else {
+			} elseif ( $boolean == 'No' ) {
 				$boolean = 0;
 			}
 
