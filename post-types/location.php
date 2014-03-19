@@ -280,28 +280,23 @@ function mf_get_locations( $post_id ) {
 	$location_id = get_post_meta( absint( $post_id ), 'faire_location', true );
 
 	if ( ! empty( $location_id ) ) {
-		$loc_titles = wp_cache_get( 'location-' . absint( $location_id[0] ), 'locations' );
-		if ( $loc_titles === false ) {
-			$loc_args = array(
-				'post_type'	=> 'location',
-				'post_per_page' => 10,
-				'order' => 'ASC',
-				'orderby' => 'title',
-				'post__in' => $location_id,
-			);
-			$locations = new WP_Query( $loc_args );
+		$loc_args = array(
+			'post_type'	=> 'location',
+			'post_per_page' => 10,
+			'order' => 'ASC',
+			'orderby' => 'title',
+			'post__in' => $location_id,
+		);
+		$locations = new WP_Query( $loc_args );
 
-			$loc_end = end( $locations->posts );
-			$loc_titles = '';
-			foreach( $locations->posts as $location ) {
-				$loc_titles .= esc_html( $location->post_title );
+		$loc_end = end( $locations->posts );
+		$loc_titles = '';
+		foreach( $locations->posts as $location ) {
+			$loc_titles .= esc_html( $location->post_title );
 
 
-				if ( $location != $loc_end )
-					$loc_titles .= ', ';
-			}
-
-			wp_cache_set( 'location-' . absint( $location_id[0] ), esc_html( $loc_titles ), 'locations', DAY_IN_SECONDS );
+			if ( $location != $loc_end )
+				$loc_titles .= ', ';
 		}
 
 		return $loc_titles;
