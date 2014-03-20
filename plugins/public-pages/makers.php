@@ -30,7 +30,7 @@ function mf_location( $id ) {
 			$output .= ( !empty( $booth[0] ) ) ? '<span class="divider">/</span><li>Booth: ' . esc_html( $booth[0] ) . '</li>' : '' ;
 
 		}
-		$output .= '</ul>';	
+		$output .= '</ul>';
 	}
 	return $output;
 }
@@ -61,18 +61,18 @@ function mf_public_blurb( $json ) {
 	$type = $json->form_type;
 
 	if ($type == 'exhibit') {
-		
+
 		if (!empty($json->project_photo)) {
 			$url = $json->project_photo;
 			$url = add_query_arg( 'w', 610, $url );
 			echo '<img src="'. esc_url( $url ) . '" class="thumbnail" />';
 		}
 		echo '<hr>';
-		
+
 		echo '<div class="lead">';
 		echo ( !empty( $json->public_description ) ) ? Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) : null;
 		echo '</div>';
-		
+
 		if ( $json->project_website || $json->project_video ) {
 			echo '<hr>';
 			echo ( !empty( $json->project_website ) ) ? '<a class="btn btn-info" href="'. esc_url( $json->project_website ) . '"><i class="icon-home icon-white"></i> Website</a>' : null ;
@@ -93,7 +93,7 @@ function mf_public_blurb( $json ) {
 			}
 			echo '</p>';
 		}
-		
+
 		if ( $json->maker == 'One maker') {
 			if (!empty($json->maker_name)) {
 				echo '<h3>About the Maker</h3>';
@@ -123,7 +123,7 @@ function mf_public_blurb( $json ) {
 				if (!empty($json->group_website)) {
 					echo '<a class="btn btn-info" href="'.esc_url( $json->group_website ) . '"><i class="icon-home icon-white"></i> Website</a>';
 				}
-				echo '</div></div>';	
+				echo '</div></div>';
 			}
 		} elseif ( $json->maker == 'A list of makers' ) {
 			if (!empty($json->m_maker_name)) {
@@ -135,7 +135,7 @@ function mf_public_blurb( $json ) {
 					if ( !empty( $json->m_maker_photo[ $i ] ) && strlen( $json->m_maker_photo[ $i ] ) > 1 ) {
 						echo '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->m_maker_photo[ $i ], 130, 130, true ) . '" class="media-object thumbnail pull-left" />';
 					} elseif (isset( $json->m_maker_email[ $i ] ) ) {
-						echo get_avatar( $json->m_maker_email[ $i ], 130 ); 
+						echo get_avatar( $json->m_maker_email[ $i ], 130 );
 					}
 					echo '<div class="media-body">';
 					echo '<h4>' . $maker . '</h4>';
@@ -163,7 +163,7 @@ function mf_public_blurb( $json ) {
 			}
 			echo '</div>';
 		}
-		
+
 		if ( $json->presentation_website || $json->video ) {
 			echo '<hr>';
 			echo ( !empty( $json->presentation_website ) ) ? '<a class="btn btn-info" href="'. esc_url( $json->presentation_website ) . '"><i class="icon-home icon-white"></i> Website</a>' : null ;
@@ -195,13 +195,13 @@ function mf_public_blurb( $json ) {
 					if ( !empty( $json->presenter_photo[ $i ] ) && strlen( $json->presenter_photo[ $i ] ) > 1 ) {
 						echo '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->presenter_photo[ $i ], 130, 130, true ) . '" class="media-object thumbnail pull-left" />';
 					} elseif (isset( $json->presenter_email[ $i ] )) {
-						echo get_avatar( $json->presenter_email[ $i ], 130 ); 
+						echo get_avatar( $json->presenter_email[ $i ], 130 );
 					}
 				} else {
 					if ( !empty( $json->presenter_photo ) && strlen( $json->presenter_photo ) > 1 ) {
 						echo '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->presenter_photo, 130, 130, true ) . '" class="media-object thumbnail pull-left" />';
 					} elseif (isset( $json->presenter_email[ $i ] )) {
-						echo get_avatar( $json->presenter_email[ $i ], 130 ); 
+						echo get_avatar( $json->presenter_email[ $i ], 130 );
 					}
 				}
 				echo '<div class="media-body">';
@@ -227,7 +227,7 @@ function mf_public_blurb( $json ) {
 			if (!empty($json->group_website)) {
 				echo '<a class="btn btn-info" href="'.esc_url( $json->group_website ) . '"><i class="icon-home icon-white"></i> Website</a>';
 			}
-			echo '</div></div>';	
+			echo '</div></div>';
 		}
 	} elseif ($type == 'performer') {
 		if (!empty($json->performer_photo)) {
@@ -236,11 +236,11 @@ function mf_public_blurb( $json ) {
 			echo '<img src="'. esc_url( $url ) . '" class="thumbnail" />';
 		}
 		echo '<hr>';
-		
+
 		echo '<div class="lead">';
 		echo ( $json->public_description ) ? Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) : null;
 		echo '</div>';
-		
+
 		if ( $json->performer_website || $json->performer_video ) {
 			echo '<hr>';
 			echo ( !empty( $json->performer_website ) ) ? '<a class="btn btn-info" href="'. esc_url( $json->performer_website ) . '"><i class="icon-home icon-white"></i> Website</a>' : null ;
@@ -268,7 +268,7 @@ function mf_public_blurb( $json ) {
 	if ( $terms ) {
 		echo '<h3>Other exhibits in this group:</h3>';
 		foreach ( $terms as $term ) {
-			$args = array( 
+			$args = array(
 				'tax_query' => array(
 					array(
 						'taxonomy' => 'group',
@@ -304,8 +304,8 @@ function mf_public_blurb( $json ) {
  */
 add_shortcode( 'featured', 'mf_featured_makers' );
 function mf_featured_makers( $atts ) {
-	$args = array( 
-		'meta_key'		=> '_ef_editorial_meta_checkbox_featured', 
+	$args = array(
+		'meta_key'		=> '_ef_editorial_meta_checkbox_featured',
 		'meta_value'	=> true,
 		'post_type'		=> 'mf_form',
 		'post_status'	=> 'accepted',
@@ -473,7 +473,7 @@ function mf_merged_terms( $atts ) {
 		} else {
 			$output .= '<li><a href="' . esc_url( get_term_link( $cat ) ) . '">' . esc_html( $cat->name ) . '</a></li>';
 		}
-		
+
 	}
 	$output .= '</ul>';
 	return $output;
@@ -481,12 +481,12 @@ function mf_merged_terms( $atts ) {
 
 add_shortcode('mf_cat_list', 'mf_merged_terms');
 
-add_filter('the_title', function($title) { 
+add_filter('the_title', function($title) {
 	return str_replace('u03a9', '&#8486;', $title);
 	}
 );
 
-add_filter('the_content', function($content) { 
+add_filter('the_content', function($content) {
 	return str_replace('u03a9', '&#8486;', $content);
 }
 );
@@ -497,8 +497,8 @@ add_filter('the_content', function($content) {
  */
 add_shortcode( 'featured_home', 'mf_featured_makers_home' );
 function mf_featured_makers_home() {
-	$args = array( 
-		'meta_key'		=> '_ef_editorial_meta_checkbox_featured', 
+	$args = array(
+		'meta_key'		=> '_ef_editorial_meta_checkbox_featured',
 		'meta_value'	=> true,
 		'post_type'		=> 'mf_form',
 		'post_status'	=> 'accepted',
@@ -587,7 +587,7 @@ function mf_stage_description( $term ) {
 function mf_schedule( $atts ) {
 
 	extract( shortcode_atts( array(), $atts ) );
-	
+
 	$output = '';
 	$location = ( isset($atts['location'] ) ) ? sanitize_text_field( $atts['location'] ) : '';
 	$faire = ( isset($atts['faire'] ) ) ? sanitize_text_field( $atts['faire'] ) : '';
@@ -606,10 +606,10 @@ function mf_schedule( $atts ) {
 	if( !isset( $term->slug ) )
 		return;
 	if( $query == false ) {
-		$args = array( 
+		$args = array(
 			'location' 		=> sanitize_title( $term->slug ),
 			'post_type'		=> 'event-items',
-			'orderby' 		=> 'meta_value', 
+			'orderby' 		=> 'meta_value',
 			'meta_key'		=> 'mfei_start',
 			'order'			=> 'asc',
 			'posts_per_page'=> '30',
@@ -702,10 +702,10 @@ function mf_schedule( $atts ) {
 	if ( $query->found_posts >= 1 ) :
 	$query = wp_cache_get( $location . '_sunday_schedule' );
 	if( $query == false ) {
-		$args = array( 
+		$args = array(
 			'location' 		=> sanitize_title( $term->slug ),
 			'post_type'		=> 'event-items',
-			'orderby' 		=> 'meta_value', 
+			'orderby' 		=> 'meta_value',
 			'meta_key'		=> 'mfei_start',
 			'order'			=> 'asc',
 			'posts_per_page'=> '30',
@@ -769,7 +769,7 @@ function mf_schedule( $atts ) {
 		} elseif ( !empty($json->public_description ) ) {
 			$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) ;
 		}
-		
+
 		if ( ! empty( $meta['mfei_coverage'][0] ) )
 			$output .= '<p><a href="' . esc_url( $meta['mfei_coverage'][0] ) . '" class="btn btn-mini btn-primary">Watch Video</a></p>';
 		// $output .= '<ul class="unstyled">';
@@ -799,9 +799,9 @@ add_shortcode('mf_full_schedule', 'mf_schedule');
 function mf_get_scheduled_item( $the_ID ) {
 	$query = wp_cache_get( $the_ID . '_saturday_schedule' );
 	if( $query == false ) {
-		$args = array( 
+		$args = array(
 			'post_type'		=> 'event-items',
-			'orderby' 		=> 'meta_value', 
+			'orderby' 		=> 'meta_value',
 			'meta_key'		=> 'mfei_start',
 			'order'			=> 'asc',
 			'posts_per_page'=> '30',
@@ -848,9 +848,9 @@ function mf_get_scheduled_item( $the_ID ) {
 	wp_reset_postdata();
 	$query = wp_cache_get( $the_ID . '_sunday_schedule' );
 	if( $query == false ) {
-		$args = array( 
+		$args = array(
 			'post_type'		=> 'event-items',
-			'orderby' 		=> 'meta_value', 
+			'orderby' 		=> 'meta_value',
 			'meta_key'		=> 'mfei_start',
 			'order'			=> 'asc',
 			'posts_per_page'=> '30',
@@ -932,7 +932,7 @@ function make_video_photo_gallery( $attr ) {
 		$i++;
 
 		if ($i == 1) {
-			$output .= '<div class="item active">';	
+			$output .= '<div class="item active">';
 		} else {
 			$output .= '<div class="item">';
 		}
@@ -953,7 +953,7 @@ function make_video_photo_gallery( $attr ) {
 			$output .= do_shortcode('[youtube='. esc_url( $post ) .'&w=620]');
 		}
 		$output .= '</div>';
-		
+
 	} //foreach
 	wp_reset_postdata();
 	$output .= '</div>

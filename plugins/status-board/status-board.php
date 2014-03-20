@@ -42,12 +42,12 @@ function mf_get_post_count() {
 			array_push( $pending, $the );
 		}
 	}
-	$datasequences = array( 
-		array( 
-			'title' => 'Accepted', 
+	$datasequences = array(
+		array(
+			'title' => 'Accepted',
 			'datapoints' => $accepted
 		), array (
-			'title' => 'Pending', 
+			'title' => 'Pending',
 			'datapoints' => $pending
 		)
 	);
@@ -59,8 +59,8 @@ function mf_get_post_count() {
  */
 function mf_application_stats( $output ) {
 
-	$graph = array( 
-		'graph' => array( 
+	$graph = array(
+		'graph' => array(
 			'title' => 'Maker Faire Applications',
 			'datasequences' => $output
 			)

@@ -29,7 +29,7 @@ if ( $type == 'maker' ) {
 	// Define the API header (specific for Eventbase)
 	$header = array(
 		'header' => array(
-			'version' => esc_html( MF_EVENTBASE_API_VERSION ), 
+			'version' => esc_html( MF_EVENTBASE_API_VERSION ),
 			'results' => intval( $query->post_count ),
 		),
 	);
@@ -43,7 +43,7 @@ if ( $type == 'maker' ) {
 
 		// REQUIRED: The maker ID
 		$maker['id'] = absint( $post->ID );
-		
+
 		// REQUIRED: The maker name
 		$maker['name'] = html_entity_decode( get_the_title(), ENT_COMPAT, 'utf-8' );
 

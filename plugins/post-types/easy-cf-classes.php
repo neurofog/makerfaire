@@ -14,7 +14,7 @@ if ( !class_exists( "Easy_CF_Field_Toggle" ) ) {
 			$hint = ( empty( $this->_field_data['hint'] ) ) ? '' :  '<p><em>' . $this->_field_data['hint'] . '</em></p>';
 
 			$admin_only = ( empty( $this->_field_data['args']['admin_only'] ) ) ? false : $this->_field_data['args']['admin_only'];
-			
+
 			$admin_only_notice = $admin_only ? '(Admin Only!)' : '';
 
 			$label_format =
@@ -464,7 +464,7 @@ if ( !class_exists( "Easy_CF_Field_Image" ) ) {
 			$label_format =
 				'<div class="%s">'.
 				'<p><label for="%s"><strong>%s</strong></label></p>'.
-				
+
 				$display .
 				'<p><a class="thickbox" id="upload_image-%s" href="'. get_admin_url() .'media-upload.php?post_id=%s&amp;type=image&amp;&amp;tab=library&amp;TB_iframe=1&amp;width=640&amp;height=534" title="%s">%s</a>' . $remove . '</p>'.
 				'</div>'.
@@ -475,7 +475,7 @@ if ( !class_exists( "Easy_CF_Field_Image" ) ) {
 				'		window.send_to_editor = function(html) {'.
 				'			var imgClass = jQuery("img",html).attr("class");'.
 				'			var imgSrc = jQuery("img",html).attr("src");'.
-				'			var thumbImg = "";'.				
+				'			var thumbImg = "";'.
 				'			if (!imgClass)'.
 				'				var imgClass = jQuery(html).attr("class");'.
 				'			imgClass = imgClass.substring( ( imgClass.lastIndexOf( "-" ) + 1 ), imgClass.length );'.

@@ -16,7 +16,7 @@ var path = window.location.pathname.substring(1);
  * @since  HAL 9000
  */
 function makerfaire_profile( maker ) {
-	
+
 	// Use jQuery to add some user info stuff on the forms
 	if ( path.indexOf( 'exhibit' ) >= 0 || path.indexOf( 'presenter' ) >= 0 || path.indexOf( 'performer' ) >= 0 ) {
 
@@ -28,10 +28,10 @@ function makerfaire_profile( maker ) {
 			jQuery( 'input.default-name' ).val( maker.profile.firstName + ' ' + maker.profile.lastName );
 			jQuery( 'input.default-email' ).val( maker.profile.email );
 		}
-		
+
 		jQuery( 'h3.default-name' ).html( maker.profile.firstName + ' ' + maker.profile.lastName );
 		jQuery( 'h3.default-email' ).html( maker.profile.email );
-		
+
 		jQuery( '#uid' ).val( maker.UID );
 		jQuery( window ).bind( 'beforeunload', function() {
 			return 'Are you sure you want to leave?';
@@ -57,7 +57,7 @@ function makerfaire_profile( maker ) {
 			var now = new Date();
 			var expire_date = new Date( '2013/10/04' ); // Set a date that applications older or equal to this will be considered previous faire.
 			var end_date = new Date( '2014/02/24' ); // Set the date that call to makers closes.
-			
+
 			for ( var type in results.forms ) {
 				for ( var app_id in results.forms[ type ] ) {
 					// Get the post date and convert the dashes to slashes. Other wise, Firefox return NaN

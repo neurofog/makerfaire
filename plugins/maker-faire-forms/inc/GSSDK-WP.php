@@ -1,8 +1,8 @@
 <?php
-class GSRequestWP extends GSRequest  {  
-	
+class GSRequestWP extends GSRequest  {
+
 	protected function curl($url, $params, $timeout=null, $options = array())
-	{   
+	{
 		foreach($params->getKeys() as $key)
 		{
 			$value = $params->getString($key);
@@ -28,6 +28,6 @@ class GSRequestWP extends GSRequest  {
 		}
 
 		return wp_remote_retrieve_body( $response );
-	} 
+	}
 }
 ?>

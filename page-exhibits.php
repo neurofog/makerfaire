@@ -11,20 +11,20 @@ get_header(); ?>
 	<div class="row">
 
 		<div class="content span8">
-			
+
 			<div class="page-header">
-				
-				<h1><?php the_title(); ?> <small>Maker Faire Bay Area 2013</small></h1>	
-				
+
+				<h1><?php the_title(); ?> <small>Maker Faire Bay Area 2013</small></h1>
+
 			</div>
-			
+
 			<form role="search" method="get" class="form-search" id="searchform" action="<?php echo home_url( '/' ); ?>">
 				<input type="text" value="<?php echo get_search_query( true ); ?>" name="s" id="s" class="input-medium search-query" />
 				<input type="hidden" name="post_type" value="mf_form" />
 				<input type="hidden" name="faire" value="maker-faire-bay-area-2013" />
 				<input type="submit" id="searchsubmit" class="btn btn-primary" value="Search" />
 			</form>
-			
+
 			<?php
 			$paged = get_query_var('paged') ? get_query_var('paged') : 1;
 			$args = array(
@@ -51,13 +51,13 @@ get_header(); ?>
 			<?php endif; ?>
 			<?php wp_reset_query(); ?>
 
-		
+
 		</div><!--Content-->
 
 		<?php get_sidebar(); ?>
 
 	</div>
-	
+
 </div><!--Container-->
 
 <?php get_footer(); ?>

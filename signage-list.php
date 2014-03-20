@@ -1,4 +1,4 @@
-<?php // Template Name: Signage 
+<?php // Template Name: Signage
 
 if ( isset( $_GET['location'] ) )
     $location = sanitize_title_for_query( $_GET['location'] );
@@ -8,7 +8,7 @@ if ( ! isset( $_GET['description'] ) ) {
 } else {
     $short_description = false;
 }
-    
+
 
 if ( isset( $_GET['day'] ) )
     $day = sanitize_title_for_query( $_GET['day'] );
@@ -27,10 +27,10 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
     if ( empty( $day_set ) || $day_set == 'saturday' ) {
         $saturday = wp_cache_get( $location . '_saturday_schedule' );
         if( $saturday == false ) {
-            $args = array( 
+            $args = array(
                 'location'      => $location,
                 'post_type'     => 'event-items',
-                'orderby'       => 'meta_value', 
+                'orderby'       => 'meta_value',
                 'meta_key'      => 'mfei_start',
                 'faire'         => MF_CURRENT_FAIRE,
                 'order'         => 'asc',
@@ -59,7 +59,7 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
             $output .= '<tr>';
             $output .= '<td width="160" style="max-width:160px; padding:15px 0;" valign="top">';
             if ( ! isset ( $location ) ) {
-                $output .= '<h4 style="margin-top:0;">' . strip_tags( get_the_term_list( get_the_ID(), 'location' ) ) . '</h4>'; 
+                $output .= '<h4 style="margin-top:0;">' . strip_tags( get_the_term_list( get_the_ID(), 'location' ) ) . '</h4>';
             }
             $output .= '<h2 style="font-size:.9em; color:#333; margin-top:3px;">' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</h2>';
             $output .= '</td>';
@@ -88,10 +88,10 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
     if ( empty( $day_set ) || $day_set == 'sunday' ) {
         $sunday = wp_cache_get( $location . '_sunday_schedule' );
         if( $sunday == false ) {
-            $args = array( 
+            $args = array(
                 'location'      => $location,
                 'post_type'     => 'event-items',
-                'orderby'       => 'meta_value', 
+                'orderby'       => 'meta_value',
                 'meta_key'      => 'mfei_start',
                 'faire'         => MF_CURRENT_FAIRE,
                 'order'         => 'asc',
@@ -119,7 +119,7 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
             $output .= '<tr>';
             $output .= '<td width="160" style="max-width:160px; padding:15px 0;" valign="top">';
             if ( ! isset ( $location ) ) {
-                $output .= '<h4 style="margin-top:0;">' . strip_tags( get_the_term_list( get_the_ID(), 'location' ) ) . '</h4>'; 
+                $output .= '<h4 style="margin-top:0;">' . strip_tags( get_the_term_list( get_the_ID(), 'location' ) ) . '</h4>';
             }
             $output .= '<h2 style="font-size:.9em; color:#333; margin-top:3px;">' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</h2>';
             $output .= '</td>';

@@ -51,7 +51,7 @@ function make_app_api_settings_description() {
  */
 function make_app_api_text_field( $args ) {
 	$value = get_option( esc_attr( $args['name'] ) );
-	
+
 	echo '<input type="text" name="' . esc_attr( $args['name'] ) . '" id="' . esc_attr( $args['id'] ) . '" class="regular-text" value="' . ( ! empty( $value ) ? esc_attr( $value ) : '' ) . '" />';
 }
 

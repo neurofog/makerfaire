@@ -88,14 +88,14 @@ class Make_Gigya {
 	 * Sadly, we have to manually echo this to wp_head() because Gigya requires the socialize.js API key to be passed with options wrapped in the same script tag... lame sauce.
 	 *
 	 * Well nly enable Facebook, Twitter and Google+ as social media providers, we'll also tell Gigya to end the users session with their service after 24 hours
-	 * 
+	 *
 	 * @return html
 	 * @since  HAL 9000
 	 */
 	public function socialize_api() { ?>
 		<script src="http://cdn.gigya.com/JS/socialize.js?apikey=<?php echo urlencode( MAKE_GIGYA_PUBLIC_KEY ); ?>">{ enabledProviders: 'facebook,twitter,googleplus', sessionExpiration: 86400 }</script>
 	<?php }
-	
+
 
 	/**
 	 * Let's add all of our resouces to make our magic happen.
@@ -128,10 +128,10 @@ class Make_Gigya {
 	 * @since  HAL 9000
 	 */
 	public function user_login() {
-		
+
 		// Check our nonce and make sure it's correct
 		check_ajax_referer( 'ajax-nonce', 'nonce' );
-		
+
 		// Make sure some required fields are being passed first
 		if ( isset( $_POST['request'] ) && $_POST['request'] == 'login' && wp_verify_nonce( $_POST['nonce'], 'ajax-nonce' ) ) {
 
@@ -184,7 +184,7 @@ class Make_Gigya {
 		} else {
 			$results = array(
 				'loggedin' => false,
-				'message' => 'Missing required parameters', 
+				'message' => 'Missing required parameters',
 			);
 		}
 
@@ -203,7 +203,7 @@ class Make_Gigya {
 	private function search_for_maker( $uid ) {
 		// Stick a hashed version of our usr ID for wp cache
 		$user_hash = md5( sanitize_text_field( $uid ) );
-		
+
 		// Check if our users are already cached
 		$users = wp_cache_get( 'mf_user_' . $user_hash );
 

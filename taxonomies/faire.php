@@ -65,7 +65,7 @@
 
 		// Add our security checkpoint
 		wp_nonce_field( 'save_faire_archive_tax', 'make-faire-tax', false );
-		
+
 		$output = '<select name="faire-tax" id="tag-dropdown">';
 		$output .= '<option value="none">Select A Faire</option>';
 
@@ -83,7 +83,7 @@
 	 * Saves our custom meta box on post save
 	 */
 	function make_faire_topic_save_metabox( $post_id ) {
-		
+
 		// Make sure we passed the right nonce...
 		if ( isset( $_POST['make-faire-tax'] ) && !wp_verify_nonce( $_POST['make-faire-tax'], 'save_faire_archive_tax' ) )
 			return false;

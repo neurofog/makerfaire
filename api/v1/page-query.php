@@ -55,7 +55,7 @@ if ($type == 'entity') {
 	// Start of the XOMO header
 	$header = array( 'header' =>
 		array(
-			'version' 			=> '2.0', 
+			'version' 			=> '2.0',
 			'results'			=> $query->post_count
 		) );
 
@@ -69,7 +69,7 @@ if ($type == 'entity') {
 		if ( isset( $exhibit->form_type ) ) {
 			$jsonpost["type"] = $exhibit->form_type;
 		}
-		
+
 		$jsonpost["id"] = get_the_ID();
 
 		// We need our Makers ID's so the exhibits can be linked to their maker profiles in the app.
@@ -96,7 +96,7 @@ if ($type == 'entity') {
 			$url = add_query_arg( 'w', 80, $url );
 			$url = add_query_arg( 'h', 80, $url );
 			$url = add_query_arg( 'crop', 1, $url );
-			$jsonpost["thumb_img_url"] = $url;	
+			$jsonpost["thumb_img_url"] = $url;
 		} else {
 			$jsonpost["thumb_img_url"] = null;
 		}
@@ -109,7 +109,7 @@ if ($type == 'entity') {
 		} else {
 			$jsonpost["venue_id_ref"] = null;
 		}
-		
+
 		$cats = get_the_terms( get_the_ID(), array( 'category', 'post_tag', 'group' ) );
 		$category_id_refs = array();
 		if ($cats) {
@@ -153,7 +153,7 @@ if ($type == 'entity') {
 			$jsonpost["tags"] = null;
 		}
 		$jsonpost["featured"] = '';
-		
+
 		$jsonpost["url"] = get_permalink( get_the_ID() );
 
 		// Put the content into the entity
@@ -168,7 +168,7 @@ if ($type == 'entity') {
 
 	// Reset the Query
 	wp_reset_postdata();
-	
+
 } elseif( $type == 'venue') {
 /**
  * Venue Feed
@@ -178,7 +178,7 @@ if ($type == 'entity') {
 	// Start of the XOMO header
 	$header = array( 'header' =>
 		array(
-			'version' 			=> '2.0', 
+			'version' 			=> '2.0',
 			'results'			=> count($terms)
 		) );
 
@@ -207,18 +207,18 @@ if ($type == 'entity') {
 			array_push($venues, $venue);
 		}
 	}
-	
+
 	$merged = array_merge($header,array('venue' => $venues, ) );
 
 	// Output the JSON
 	echo json_encode( $merged );
-	
+
 } elseif( $type == 'category') {
 	$terms = get_terms(array( 'category', 'post_tag', 'group' ), array( 'hide_empty' => 0 ) );
 	// Start of the XOMO header
 	$header = array( 'header' =>
 		array(
-			'version' 			=> '2.0', 
+			'version' 			=> '2.0',
 			'results'			=> count($terms)
 		) );
 
@@ -229,18 +229,18 @@ if ($type == 'entity') {
 		$venue['name'] = mf_clean_content( $term->name );
 		array_push($venues, $venue);
 	}
-	
+
 	$merged = array_merge($header,array('entity' => $venues, ) );
 
 	// Output the JSON
 	echo json_encode( $merged );
-	
+
 } elseif( $type == 'location_category') {
 	$terms = get_terms(array( 'location_category' ), array( 'hide_empty' => 0 ) );
 	// Start of the XOMO header
 	$header = array( 'header' =>
 		array(
-			'version' 			=> '2.0', 
+			'version' 			=> '2.0',
 			'results'			=> count($terms)
 		) );
 
@@ -251,12 +251,12 @@ if ($type == 'entity') {
 		$venue['name'] = mf_clean_content( $term->name );
 		array_push($venues, $venue);
 	}
-	
+
 	$merged = array_merge($header,array('entity' => $venues, ) );
 
 	// Output the JSON
 	echo json_encode( $merged );
-	
+
 } elseif ($type == 'schedule') {
 /**
  * Schedule Feed
@@ -281,7 +281,7 @@ if ($type == 'entity') {
 	// Start of the XOMO header
 	$header = array( 'header' =>
 		array(
-			'version' 			=> '2.0', 
+			'version' 			=> '2.0',
 			'results'			=> $query->post_count
 		) );
 
@@ -296,7 +296,7 @@ if ($type == 'entity') {
 		$start = get_post_meta(get_the_ID(), 'mfei_start', true );
 		$stop = get_post_meta(get_the_ID(), 'mfei_stop', true );
 
-		// Really? We need a better data structure here... 
+		// Really? We need a better data structure here...
 		if ( $faire == MF_CURRENT_FAIRE ) {
 			if ( $day == 'Saturday' ) {
 				$date = '5/17/2013';
@@ -328,7 +328,7 @@ if ($type == 'entity') {
 		$jsonpost["original_id"] = $id;
 		if ( strpos( $faire, 'new-york' ) !== false ) { // Check if the faire variable contains the 'new-york' in it. If it does, spit out the dates with a EST instead of PST
 			$jsonpost["time_start"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $start . ' EST' ) ) );
-			$jsonpost["time_stop"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $stop . ' EST') ) );	
+			$jsonpost["time_stop"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $stop . ' EST') ) );
 		} else {
 			$jsonpost["time_start"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $start . ' PST' ) ) );
 			$jsonpost["time_stop"] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $date . $stop . ' PST') ) );
@@ -349,7 +349,7 @@ if ($type == 'entity') {
 
 	// Reset the Query
 	wp_reset_postdata();
-	
+
 } elseif ($type == 'maker') {
 
 /**
@@ -376,7 +376,7 @@ if ($type == 'entity') {
 	// Start of the XOMO header
 	$header = array( 'header' =>
 		array(
-			'version' 			=> '2.0', 
+			'version' 			=> '2.0',
 			'results'			=> $query->post_count
 		) );
 
@@ -479,7 +479,7 @@ if ($type == 'entity') {
 				$jsonpost['description'] = null;
 			}
 			$jsonpost['youtube_url'] = ($exhibit->performer_video ? $exhibit->performer_video  : null);
-		}		
+		}
 		$locs = get_the_terms( get_the_ID(), 'location' );
 		if ($locs) {
 			$term = array_shift( array_values( $locs ) );
@@ -498,7 +498,7 @@ if ($type == 'entity') {
 
 	// Reset the Query
 	wp_reset_postdata();
-	
+
 } elseif( $type == 'new_maker' ) {
 	// Set the query args.
 	$args = array(
@@ -518,7 +518,7 @@ if ($type == 'entity') {
 	// Start of the XOMO header
 	$header = array( 'header' =>
 		array(
-			'version' 			=> '2.0', 
+			'version' 			=> '2.0',
 			'results'			=> $query->post_count
 		) );
 
@@ -547,7 +547,7 @@ if ($type == 'entity') {
 		$video = get_post_meta( $pid, 'video', true );
 		$jsonpost['youtube_url'] = ( !empty( $video ) ) ? $video : null ;
 		array_push($entities, $jsonpost);
-	} 
+	}
 	// Merge the header and the entities
 	$merged = array_merge( $header, array( 'entity' => $entities ) );
 

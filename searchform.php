@@ -1,4 +1,4 @@
-<?php 
+<?php
 	global $wp_query
 ?>
 <form role="search" method="get" class="form-search" id="searchform" action="<?php echo home_url( '/' ); ?>">

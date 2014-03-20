@@ -51,7 +51,7 @@
 		 * @since   0.1
 		 */
 		public function resources( $hook ) {
-			
+
 			// Only load this when we are viewing the post editor on applications!
 			if ( $hook != 'post.php' && get_post_type() == 'mf_form' )
 				return;
@@ -90,7 +90,7 @@
 		 * Adds a block of content we can use to notify the user they are currently previewing the editor window
 		 * and will not be able to save or make edits. Just preview.
 		 * @return  string
-		 * 
+		 *
 		 * @version 0.1
 		 * @since   0.1
 		 */
@@ -118,4 +118,3 @@
 		}
 	}
 	$geissinger_hpl = new CG_Hide_Post_Locker();
-		

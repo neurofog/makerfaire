@@ -56,7 +56,7 @@ jQuery( document ).ready(function() {
  *
  * @since  HAL 9000
  */
-gigya.accounts.addEventHandlers({ // 
+gigya.accounts.addEventHandlers({ //
 	onLogin: make_on_login,
 	onLogout: make_on_logout
 });
@@ -67,7 +67,7 @@ gigya.accounts.addEventHandlers({ //
  * http://developers.gigya.com/020_Client_API/010_Socialize/socialize.addEventHandlers#section_1
  *
  * NOTE: It is important to use the REST API for logging in or registering users http://developers.gigya.com/037_API_reference/010_Socialize
- * 
+ *
  * @param  object eventObj The event object?
  * @since  HAL 9000
  */
@@ -122,7 +122,7 @@ function make_on_login( eventObj ) {
 /**
  * onLogout Event handler
  * After we have successfully logged out, we'll redirect to the homepage.
- * 
+ *
  * @since HAL 9000
  */
 function make_on_logout() {
@@ -144,7 +144,7 @@ function make_on_logout() {
 function make_is_logged_in( maker ) {
 	if ( gigya_debug )
 		console.log( maker );
-	
+
 	if ( maker.errorCode === 0 ) {
 		if ( gigya_debug )
 			console.log( 'User Logged In.' );

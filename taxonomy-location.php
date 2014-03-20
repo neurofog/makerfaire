@@ -8,7 +8,7 @@
 
 		<div class="content span8">
 
-			<?php 
+			<?php
 				$term_obj = get_queried_object();
 				echo mf_schedule( array( 'location' => $term_obj->term_id ) );
 			?>
@@ -18,7 +18,7 @@
 		<?php get_sidebar(); ?>
 
 	</div>
-	
+
 </div><!--Container-->
 
 <?php get_footer(); ?>

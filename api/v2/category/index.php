@@ -22,14 +22,14 @@ $taxonomies = array(
 // Double check again we have requested this file
 if ( $type == 'category') {
 	// Fetch the categories and tags as one
-	$terms = get_terms( $taxonomies, array( 
+	$terms = get_terms( $taxonomies, array(
 		'hide_empty' => 0,
 	) );
 
 	// Define the API header (specific for Eventbase)
 	$header = array(
 		'header' => array(
-			'version' => esc_html( MF_EVENTBASE_API_VERSION ), 
+			'version' => esc_html( MF_EVENTBASE_API_VERSION ),
 			'results' => count( $terms ),
 		),
 	);
@@ -48,10 +48,10 @@ if ( $type == 'category') {
 		// Put the application into our list of apps
 		array_push( $venues, $venue );
 	}
-	
+
 	$merged = array_merge( $header, array( 'entity' => $venues, ) );
 
 	// Output the JSON
 	echo json_encode( $merged );
-	
+
 }

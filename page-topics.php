@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Tag/Category/Faire Archive Page
  * Template Name: Faire Tax Archive Page
@@ -23,12 +23,12 @@ get_header(); ?>
 	<div class="row">
 
 		<div class="content span8">
-			
+
 			<div class="page-header">
-				
+
 				<h1><?php the_title(); ?> <small><?php echo ( ! empty( $faire ) ) ? esc_html( $faire->name ) : 'All Faires'; ?></small></h1>
 				<h2><?php echo esc_html( $tag_obj->name ); ?></h2>
-				
+
 			</div>
 			<p class="pull-right button"><a href="<?php echo get_permalink( absint( $post->post_parent ) ); ?>maker-info">Back to Meet the Makers</a></p>
 			<form role="search" method="get" class="form-search" id="searchform" action="<?php echo home_url( '/' ); ?>">
@@ -37,9 +37,9 @@ get_header(); ?>
 				<input type="hidden" name="faire" value="<?php echo ( ! empty( $current_faire_slug ) || $current_faire_slug != 'none' ) ? esc_attr( $current_faire_slug ) : ''; ?>" />
 				<input type="submit" id="searchsubmit" class="btn btn-primary" value="Search" />
 			</form>
-			
+
 			<?php
-			
+
 			$args = array(
 				'post_type'		=> 'mf_form',
 				'post_status'	=> 'accepted',
@@ -66,13 +66,13 @@ get_header(); ?>
 			<?php endif; ?>
 			<?php wp_reset_query(); ?>
 
-		
+
 		</div><!--Content-->
 
 		<?php get_sidebar(); ?>
 
 	</div>
-	
+
 </div><!--Container-->
 
 <?php get_footer(); ?>

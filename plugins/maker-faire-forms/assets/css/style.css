@@ -5,7 +5,7 @@
 .no-js .mf-breadcrumbs,
 .js .hide-if-js,
 .no-js .hide-if-no-js {
-	display: none; 
+	display: none;
 }
 
 .mf-form{}
@@ -39,19 +39,19 @@
 	.mf-form input[type=text], .mf-editprofile input[type=text]{width:75%}
 	.mf-form textarea, .mf-editprofile textarea{width:75%; height:100px;}
 
-	.mf-form label, .mf-editprofile label{display:block; font-weight:bold; font-size:16px; } 
+	.mf-form label, .mf-editprofile label{display:block; font-weight:bold; font-size:16px; }
 	.mf-form .columns label { font-weight:normal; font-size:1em; }
 	.mf-form h2, .mf-editprofile { font-size:2.3em; }
 	.mf-form h2 + div, .mf-editprofile h2 + div { margin-bottom:20px !important; }
 	.mf-form h3, .mf-editprofile h3{font-weight:bold; font-size:12px; line-height:inherit !important;}
-	.mf-form .info, .mf-editprofile .info{color:#888; font-size:13px; margin-bottom:10px;} 
+	.mf-form .info, .mf-editprofile .info{color:#888; font-size:13px; margin-bottom:10px;}
 	.mf-form .secondary-info, .mf-editprofile .secondary-info{margin-left:30px}
 
 .mf-err {background: none repeat scroll 0 0 #EC1C23;border-radius: 2px 2px 2px 2px;color: #FFFFFF;font-size: 10px;padding: 2px 5px; width:30%; display:none; margin-bottom:10px;}
 .mf-frm-err-top{color:#EC1C23; font-size:20px !important; margin-bottom:20px;}
 	.mf-frm-err-top ul{font-size:12px; margin-top:10px;}
 .mf-form .input .mf-err:first-of-type{display:block}
-	
+
 .mf-breadcrumbs{width:510px; height:39px; background:url(../i/breadcrumbs-bg.jpg) no-repeat; position:relative; margin:10px auto 20px auto}
 	.mf-breadcrumbs	div{width:31px; height:31px; text-align:center; font-size:23px; color:#aaaaad; position:absolute; top:4px; font-weight:bold; padding-top:7px}
 	.mf-breadcrumbs	div:nth-of-type(1){left:73px;}
@@ -60,19 +60,19 @@
 	.mf-breadcrumbs	div:nth-of-type(4){left:403px;}
 	.mf-breadcrumbs	div:nth-of-type(5){left:513px;}
 	.mf-breadcrumbs	div.active{background:url(../i/step-bg.png) no-repeat; color:#FFF; cursor:pointer;}
-	
-.mf-shorter-field{width:40% !important}	
-	.mf-extra-short{width:100px !important}	
-	.mf-extra-extra-small{width:40px !important}	
-	.mf-extra-tall{height:200px !important}	
-	textarea.mf-shorter-field{height:70px !important}	
-	
+
+.mf-shorter-field{width:40% !important}
+	.mf-extra-short{width:100px !important}
+	.mf-extra-extra-small{width:40px !important}
+	.mf-extra-tall{height:200px !important}
+	textarea.mf-shorter-field{height:70px !important}
+
 .mf-form .information .name{cursor:pointer}
 .mf-form .information {margin-bottom:20px;}
 .mf-form .up{border:2px solid #EEE; background:#F8F8F8; border-radius:5px; padding:5px 10px}
 
 .mf-form .overwrite{font-weight:bold; margin-top:10px; cursor:pointer;}
-	
+
 /*-  TAGS
 ----------------------------------------------------------------------*/
 .mf-form .tag-cluster {float:left; width:200px}

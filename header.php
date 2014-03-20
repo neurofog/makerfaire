@@ -34,7 +34,7 @@
 	<!-- TypeKit -->
 	<link rel="stylesheet" href="http://use.typekit.com/c/4690c1/museo-slab:n8:n9:n1:n3,bebas-neue:n4,proxima-nova:n4:i4:n7:i7,museo-slab:n5.QL3:F:2,QL5:F:2,QL7:F:2,SKB:F:2,TGd:F:2,W0V:F:2,W0W:F:2,W0Y:F:2,W0Z:F:2,WH7:F:2/d?3bb2a6e53c9684ffdc9a98f6135b2a62e9fd3f37bbbb30d58844c72ca542eb12d9fc18cda0192bd960a04b65e2f2facc738d907514640137ac74942ecfe54dd35844bc349bb4c1279a7aaf8651616db7b59a075388454f5f4a07fb5c0b8f09dcccc3d70f9605ca7a1dbf9b12b3c351656254cd3fc59e92f2e542459e636860be01542f5c784cda4fe2fc310798ac7c1670eeda393aa990e8b58d73431e6bae280cf620ce09d0a49a9554ea7f25339dd274cf69ee61d55e93d9cb159fd2848203940e4eb67ad0455b5b574d1a27fec0ae65">
 	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-	
+
 	<?php get_template_part('dfp'); ?>
 
 	<script type="text/javascript">
@@ -55,7 +55,7 @@
 		<script>
 			// Track our 404 errors and log them to GA
 			_gaq.push(['_trackEvent', '404', 'URL', document.location.pathname + document.location.search]);
-		</script>	
+		</script>
 	<?php endif; ?>
 
 	<script type="text/javascript">
@@ -74,8 +74,8 @@
 	})(window,document,'script','dataLayer','GTM-WR8NLB');</script>
 	<!-- End Google Tag Manager -->
 
-	<script type="text/javascript">document.body.className = document.body.className.replace('no-js','js');</script> 
-<!-- 
+	<script type="text/javascript">document.body.className = document.body.className.replace('no-js','js');</script>
+<!--
 ======
 Topbar
 ======
@@ -101,16 +101,16 @@ Topbar
 			</ul>
 			<ul class="nav pull-right">
 				<li>
-					<form action="http://makezine.com/search/" class="form-horizontal form-search"> 
-						<input type="hidden" name="as_sitesearch" value="makerfaire.com" /> 
-						<input type="text" name="q" class="span2" /> 
-						<input type="submit" class="btn btn-primary" value="Search" /> 
+					<form action="http://makezine.com/search/" class="form-horizontal form-search">
+						<input type="hidden" name="as_sitesearch" value="makerfaire.com" />
+						<input type="text" name="q" class="span2" />
+						<input type="submit" class="btn btn-primary" value="Search" />
 					</form>
 				</li>
 			</ul>
 		</div>
-			
-			
+
+
 		</div>
 	</div>
 </div>
@@ -126,19 +126,19 @@ Topbar
 					googletag.cmd.push(function(){googletag.display('div-gpt-ad-664089004995786621-1')});
 				</script>
 			</div>
-			<!-- End AdSlot 1 -->  
+			<!-- End AdSlot 1 -->
 		</div>
-		
+
 			<div class="row">
-			
+
 				<div class="span5">
-			
+
 					<h1><a href="http://makerfaire.com" title="Maker Faire"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/logo.jpg" width="380" alt="Maker Faire" title="Maker Faire"></a></h1>
-			
+
 				</div>
-				
+
 				<div class="span7">
-			
+
 					<div class="nav navi">
 
 						<?php
@@ -162,18 +162,18 @@ Topbar
 								'walker'          => ''
 							);
 
-						wp_nav_menu( $defaults );	
+						wp_nav_menu( $defaults );
 
 						?>
-					
+
 					</div><!--end nav wrapper-->
-					
+
 				</div>
-			
+
 			</div>
-		
+
 		</div>
-		
+
 	</div>
 
 

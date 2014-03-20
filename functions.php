@@ -651,19 +651,3 @@ function maker_faire_trashed_application_redirect() {
     }
 }
 add_action( 'load-edit.php','maker_faire_trashed_application_redirect' );
-
-
-$field_data = array (
-	'sponsor_meta' => array (
-		'fields' => array(
-			'Sponsor_URL' => array(
-				'type' 	=> 'textarea',
-				'label'	=> 'Projects Conclusion',
-				),
-		),
-		'title'		=> 'Sponsor Meta',
-		'context'	=> 'advanced',
-		'pages'		=> array( 'sponsor' ),
-	),
-);
-$easy_cf = new Easy_CF($field_data);

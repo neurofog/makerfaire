@@ -1,5 +1,5 @@
 jQuery(document).ready(function( $ ) {
-	
+
 	// Make sure our button actually exists...
 	if ( $( '#post-lock-dialog' ).length === 1 ) {
 

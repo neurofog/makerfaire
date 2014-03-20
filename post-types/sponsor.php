@@ -6,8 +6,8 @@ function sponsor_init() {
 		'public'            => true,
 		'show_in_nav_menus' => true,
 		'show_ui'           => true,
-		'supports'          => array( 'title', 'editor', 'thumbnail', 'revisions' ),
-		'has_archive'       => true,
+		'supports'          => array( 'title', 'editor', 'thumbnail', 'revisions', 'page-attributes' ),
+		'has_archive'       => false,
 		'query_var'         => true,
 		'rewrite'           => true,
 		'labels'            => array(
@@ -55,3 +55,50 @@ function sponsor_updated_messages( $messages ) {
 	return $messages;
 }
 add_filter( 'post_updated_messages', 'sponsor_updated_messages' );
+
+
+/**
+ * Add meta boxes to the sponsor edit screen
+ * @return void
+ */
+function mf_sponsor_add_meta_boxes() {
+	add_meta_box( 'mf-sponsor-details', __( 'Sponsor Details', 'makerfaire' ), 'mf_sponsor_details_mb', 'sponsor' );
+}
+add_action( 'add_meta_boxes', 'mf_sponsor_add_meta_boxes' );
+
+
+/**
+ * Adds the details meta box.
+ * @param  object $post The post object
+ * @return string
+ */
+function mf_sponsor_details_mb( $post ) {
+	wp_nonce_field( basename( __FILE__ ), 'mf-sponsor-details' );
+	$details = get_post_meta( absint( $post->ID ), 'sponsor-details', true );
+
+	$output  = '<p><label for="sponsor-details" style="width:100px;display:inline-block">URL</label>';
+	$output .= '<input type="text" name="sponsor-details" id="sponsor-details" value="' . ( ! empty( $details ) ? esc_url( $details ) : '' ) . '" style="width:100%;" /></p>';
+
+	echo $output;
+}
+
+
+/**
+ * Saves our meta boxes
+ * @param  int $post_id The post ID
+ * @return void
+ */
+function mf_save_sponsor_meta( $post_id ) {
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+		return;
+
+	if ( ! isset( $_POST['mf-sponsor-details'] ) || ! wp_verify_nonce( $_POST['mf-sponsor-details'], basename( __FILE__ ) ) )
+		return;
+
+	if ( ! current_user_can( 'edit_post', absint( $post_id ) ) )
+		return;
+
+	if ( get_post_type() == 'sponsor' && isset( $_POST['sponsor-details'] ) )
+		update_post_meta( absint( $post_id ), 'sponsor-details', esc_url( $_POST['sponsor-details'] ) );
+}
+add_action( 'save_post', 'mf_save_sponsor_meta' );

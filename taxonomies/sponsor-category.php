@@ -2,7 +2,7 @@
 
 function sponsor_category_init() {
 	register_taxonomy( 'sponsor-category', array( 'sponsor' ), array(
-		'hierarchical'      => false,
+		'hierarchical'      => true,
 		'public'            => true,
 		'show_in_nav_menus' => true,
 		'show_ui'           => true,

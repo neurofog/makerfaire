@@ -11,8 +11,8 @@
 	 * @version 0.1
 	 * @since   0.1
 	 */
-	
-	// Make sure we haven't already loaded our class.. 
+
+	// Make sure we haven't already loaded our class..
 	if ( ! class_exists( 'Make_List_Tables_Current_Faire' ) && is_admin() ) {
 		require_once( 'includes/class.current-faire.php' );
 
@@ -27,19 +27,19 @@
 	 * TODO: move this into the proper file.
 	 */
 	function mf_count_post_statuses( $display = 'list' ) {
-		$types = array( 
-			'All' 				=> 'any', 
-			'Accepted'			=> 'accepted', 
-			'Draft'				=> 'draft', 
-			'In Progress'		=> 'in-progress', 
-			'Proposed'			=> 'proposed', 
+		$types = array(
+			'All' 				=> 'any',
+			'Accepted'			=> 'accepted',
+			'Draft'				=> 'draft',
+			'In Progress'		=> 'in-progress',
+			'Proposed'			=> 'proposed',
 			'Rejected'			=> 'rejected',
 			'More Info'	 		=> 'more-info',
 			'wait-list'			=> 'wait-list',
 			);
 		$output = ( $display == 'table' ) ? '  <table width="300" border="0" cellspacing="0" cellpadding="3" style="border:1px solid #DFDFDF;">' : '';
 		foreach ($types as $k => $type) {
-			$args = array( 
+			$args = array(
 				'post_type'			=> 'mf_form',
 				'post_status'		=> 'any',
 				'posts_per_page' 	=> 1,

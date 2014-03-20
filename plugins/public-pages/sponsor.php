@@ -23,7 +23,7 @@ function mf_sponsor_carousel( $category_name ) {
 
 		// Loop through the individual sponsors
 		foreach ($sponsor as $spon) {
-			$output .= '<div class="span6"><div class="thumb"><a href="' . esc_url( $spon->link_url ) . '"><img src="' . wpcom_vip_get_resized_remote_image_url( $spon->link_image, 125, 105 ) . '" alt="' . esc_attr( $spon->link_name ) . '"></a></div></div>';	
+			$output .= '<div class="span6"><div class="thumb"><a href="' . esc_url( $spon->link_url ) . '"><img src="' . wpcom_vip_get_resized_remote_image_url( $spon->link_image, 125, 105 ) . '" alt="' . esc_attr( $spon->link_name ) . '"></a></div></div>';
 		}
 		$output .= '</div></div>';
 	}

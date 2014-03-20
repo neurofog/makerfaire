@@ -42,7 +42,7 @@ jQuery(function($) {
 				err = '<h3 class="mf-frm-err-top">Whoops! You left a required field blank or need to correct some information. Please scroll down and correct the fields marked in red.<ul>';
 
 				for(i in r.errors) {
-					for(j in r.errors[i]) {				
+					for(j in r.errors[i]) {
 						if(typeof r.errors[i][j] == 'object') {
 							for(k in r.errors[i][j]) {
 								n = '[name=data\\['+i+'\\]\\['+j+'\\]\\['+(parseInt(k) + 1)+'\\]]';
@@ -54,25 +54,25 @@ jQuery(function($) {
 							}
 						} else {
 							n = '[name=data\\['+i+'\\]\\['+j+'\\]]';
-							
+
 							if(j == 'presentation_photo' || j == 'performer_photo' || j == 'project_photo' || j == 'maker_photo' || j == 'group_photo' ||  j == 'presenter_photo' || j == 'm_maker_photo')
 								n = '[name='+j+']';
-							
+
 							e = r.errors[i][j];
-							
+
 							err += '<li>'+j.replace('_', ' ').toUpperCase()+' : '+e+'</li>';
-							
+
 							$('input'+n+', select'+n+', textarea'+n).css('border', '3px solid #EC1C23');
-							$('<div class="mf-err">'+e+'</div>').insertAfter($('label', $('input'+n+', select'+n+', textarea'+n).closest('.input')));	
+							$('<div class="mf-err">'+e+'</div>').insertAfter($('label', $('input'+n+', select'+n+', textarea'+n).closest('.input')));
 						}
-						
+
 					}
 				}
-				
+
 				$('.mf-form').prepend(err+'</ul></h3>');
 			} else {
 				$('#id').val(r.id);
-				
+
 				for(i in r.files)
 				{
 					if(typeof r.files[i] == 'object')
@@ -81,7 +81,7 @@ jQuery(function($) {
 						{
 							$('input[name='+i+'\\['+j+'\\]]').parent().append('<img src="'+r.thumbs[i][j]+'" style="max-width:600px" /><input type="hidden" name="data[s'+step+']['+i+']['+j+']" value="'+r.files[i][j]+'" /><div id="'+i+'['+j+']" class="info overwrite">Overwrite File</div>');
 
-							$('input[name='+i+'\\['+j+'\\]]').remove();							
+							$('input[name='+i+'\\['+j+'\\]]').remove();
 						}
 					}
 					else
@@ -90,16 +90,16 @@ jQuery(function($) {
 							$('input[name='+i+']').parent().append('<a href="'+r.files[i]+'" target="_blank">'+r.files[i]+'</a><input type="hidden" name="data[s'+step+']['+i+']" value="'+r.files[i]+'" />');
 						else
 							$('input[name='+i+']').parent().append('<img src="'+r.thumbs[i]+'" style="max-width:600px" /><input type="hidden" name="data[s'+step+']['+i+']" value="'+r.files[i]+'" /><input type="hidden" name="data[s'+step+']['+i+'_thumb]" value="'+r.thumbs[i]+'" />');
-							
+
 						$('input[name='+i+']').parent().append('<div id="'+i+'" class="info overwrite">Overwrite File</div>');
 						$('input[name='+i+']').remove();
 					}
 				}
-				
-				$('.overwrite').click(function() { overwrite_file($(this));	});	
-				
+
+				$('.overwrite').click(function() { overwrite_file($(this));	});
+
 				step++
-		
+
 				if(step == 5) {
 					$('.step, .mf-breadcrumbs, .mf-form input[type=submit], .review, .mf-edit-app').hide();
 					build_review();
@@ -110,14 +110,14 @@ jQuery(function($) {
 					$('.mf-breadcrumbs div:nth-of-type(' + step + ')').click();
 				}
 			}
-			
+
 			window.scrollTo(0, 0);
 		}
-	}); 
-	
+	});
+
 
 	// Load our loading screen when clicking the continue button
-	$('.mf-form input[type=submit]').click(function() { 
+	$('.mf-form input[type=submit]').click(function() {
 		$(this).hide();
 		$('.ajax-loader').show();
 	});
@@ -128,23 +128,23 @@ jQuery(function($) {
 		$('.ajax-loader').show();
 	});
 
-	
-	
+
+
 	enable_breadcrumb();
 	$('.mf-breadcrumbs div:nth-of-type('+step+')').click();
-	
+
 	function enable_breadcrumb()
 	{
-		$('.mf-breadcrumbs div:nth-of-type('+step+')').click(function() 
-		{		
+		$('.mf-breadcrumbs div:nth-of-type('+step+')').click(function()
+		{
 			step = $(this).index() + 1;
-			
+
 			$('.step').hide();
 			$('#step'+step).show();
 			$('#step').val(step);
-			
+
 			build_review();
-			
+
 			if($(this).index() + 1 == 4)
 			{
 				$('.review, .mf-edit-app').show();
@@ -155,20 +155,20 @@ jQuery(function($) {
 				$('.review, .mf-edit-app').hide();
 				$('.mf-form input[type=submit]').val('Continue');
 			}
-			
+
 			window.scrollTo(0, 0);
-			
+
 		}).addClass('active');
 	}
-	
+
 	function build_review()
 	{
 		html = '';
-		$('.input').each(function() 
+		$('.input').each(function()
 		{
 			lbl = $('label', this).html();
 			$('input, select, textarea', $(this)).each(function() {
-																
+
 				if(($(this).attr('type') != 'radio' && $(this).attr('type') != 'checkbox') || $(this).is(':checked'))
 				{
 					val  = $(this).val();
@@ -177,19 +177,19 @@ jQuery(function($) {
 					mlbl = lbl;
 
 					skip = (n.indexOf('photo') > -1 && n.indexOf('thumb') == -1);
-					
+
 					if(!skip)
 					{
 						if(lbl.indexOf('Photo') > -1)
 							val = '<img src="'+val+'" style="max-width:600px" />';
-							
+
 						if(lbl == 'Address *')
 							mlbl = $(this).next('div.info').html();
 						else if(lbl == 'Contact Phone Number *' && n.indexOf('type') > -1)
 							mlbl = 'Contact Phone Number Type *';
 						else if(lbl == 'Second Phone Number' && n.indexOf('type') > -1)
 							mlbl = 'Second Phone Number Type';
-						
+
 						html += '<h3>'+mlbl+'</h3><h4>'+(val == undefined ? 'N/A' : val)+'</h4>';
 					}
 				}

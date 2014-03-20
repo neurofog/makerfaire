@@ -3,9 +3,9 @@
 <div class="beige">
 
 	<div class="container">
-	
+
 		<div class="topad">
-							
+
 			<!-- Beginning Sync AdSlot 4 for Ad unit header ### size: [[728,90]]  -->
 			<div id='div-gpt-ad-664089004995786621-4'>
 				<script type='text/javascript'>
@@ -13,9 +13,9 @@
 				</script>
 			</div>
 			<!-- End AdSlot 4 -->
-			
+
 		</div>
-	
+
 		<footer>
 
 			<div class="row">
@@ -23,48 +23,48 @@
 				<div class="span4" style="background-color:#e8f1f4;">
 
 					<div class="fb-like-box" data-href="http://www.facebook.com/makerfaire" data-width="300" data-height="393" data-show-faces="true" data-stream="false" data-header="false"></div>
-		
+
 				</div><!--Facebook-->
-				
-		
+
+
 				<div class="span4">
 					<?php get_template_part('feat_faires'); ?>
 				</div><!--find a faire-->
-							
+
 				<div class="span4">
                     <a href="https://www.pubservice.com/MK/subscribe.aspx?PC=MK&PK=M3AMFB">
                     	<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/mf_subscribe_ad.jpg" alt="Subscribe to MAKE magazine!" width="300" height="393" />
                     </a>
                 </div><!--subad-->
-		
+
 			</div>
-			
+
 			<div class="row">
-			
+
 				<div class="span12">
-			
+
 					<ul class="nav nav-pills">
-					
+
 						<li><a href="http://makerfaire.com/makerfairehistory/">About</a></li>
 						<li><a href="http://blog.makezine.com/tag/maker-faire/">Blog</a></li>
 						<li><a href="http://makerfaire.com/contact/">Contact Us</a></li>
 						<li><a href="http://makerfaire.com/newsletter/">Newsletter</a></li>
 						<li><a href="http://makermedia.com/privacy/">Privacy Policy</a></li>
 						<li><a href="http://makerfaire.com/sponsors/">Sponsors</a></li>
-						<li><a href="http://makerfaire.com/be-a-maker/">Be a Maker</a></li>			
+						<li><a href="http://makerfaire.com/be-a-maker/">Be a Maker</a></li>
 					</ul>
-					
+
 				</div>
-				
+
 				<div class="span12 center">
-					<?php echo make_copyright_footer(); ?>	
+					<?php echo make_copyright_footer(); ?>
 				</div>
-			
+
 			</div>
 		</footer>
-		
+
 	</div>
-	
+
 </div>
 <script type="text/javascript">
 
@@ -85,7 +85,7 @@
 	});
 
 </script>
-	
+
 <div id="fb-root"></div>
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
@@ -144,21 +144,21 @@ jQuery(document).ready(function(){
 	jQuery(".scroll").click(function(event){
 		//prevent the default action for the click event
 		event.preventDefault();
- 
+
 		//get the full url - like mysitecom/index.htm#home
 		var full_url = this.href;
- 
+
 		//split the url by # and get the anchor target name - home in mysitecom/index.htm#home
 		var parts = full_url.split("#");
 		var trgt = parts[1];
- 
+
 		//get the top offset of the target anchor
 		var target_offset = jQuery("#"+trgt).offset();
 		var target_top = target_offset.top;
- 
+
 		//goto that anchor by setting the body scroll top to anchor top
 		jQuery('html, body').animate({scrollTop:target_top - 50}, 1000);
-		
+
 	});
 	var exists = jQuery('td.has-video').length;
 	if ( exists === 0 ) {

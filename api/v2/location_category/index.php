@@ -22,7 +22,7 @@ if ( $type == 'location_category' ) {
 	// Define the API header (specific for Eventbase)
 	$header = array(
 		'header' => array(
-			'version' => esc_html( MF_EVENTBASE_API_VERSION ), 
+			'version' => esc_html( MF_EVENTBASE_API_VERSION ),
 			'results' => count($terms),
 		),
 	);
@@ -41,12 +41,12 @@ if ( $type == 'location_category' ) {
 		// Put the lcoation category into our list of location categories
 		array_push( $loc_cats, $loc_cat );
 	}
-	
+
 	$merged = array_merge( $header, array( 'entity' => $loc_cats ) );
 
 	// Output the JSON
 	echo json_encode( $merged );
-	
+
 	// Reset the Query
 	wp_reset_postdata();
 }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 function event_items_init() {
 	register_post_type( 'event-items', array(
 		'hierarchical'        => false,
@@ -119,19 +119,19 @@ function mf_schedule_mailto( $meta ) {
 	}
 }
 
-/* 
+/*
 * Callback for adding meta box to EVENT ITEM
 * =====================================================================*/
 function makerfaire_add_meta_boxes() {
 	add_meta_box( 'ei-details', 'Event Item Details', 'makerfaire_meta_box', 'event-items', 'normal', 'default' );
 }
-/* 
+/*
 * Display EVENT ITEM Form
 *
 * @param object $post Post being edited
 * =====================================================================*/
 function makerfaire_meta_box( $post ) {
-	
+
 	$meta = array(
 		'mfei_day'    	=> 'Saturday',
 		'mfei_start'  	=> '8:00 AM',
@@ -139,8 +139,8 @@ function makerfaire_meta_box( $post ) {
 		'mfei_record' 	=> '',
 		'mfei_coverage'	=> '',
 	);
-	
-	if( $post->post_status == 'publish' ) 
+
+	if( $post->post_status == 'publish' )
 		$meta = get_post_custom( $post->ID ); ?>
 
 	<style>#ei-details label{font-weight:bold; display:block; margin:15px 0 5px 0;} #ei-details select,#ei-details input[type=text]{width:200px}</style>
@@ -168,7 +168,7 @@ function makerfaire_meta_box( $post ) {
 		} else {
 			$id = ( !empty( $meta['mfei_record'][0] ) ) ? esc_attr( $meta['mfei_record'][0] ) : '';
 			echo '<input type="text" name="mfei_record" id="mfei_record" value="' . $id . '" />';
-		} 
+		}
 	?>
 	<a title="Edit event items" href="#" class="post-edit-link">View Application</a> (opens new window with given application)
 	<label>Schedule Completed</label>
@@ -179,17 +179,17 @@ function makerfaire_meta_box( $post ) {
 		});
 	</script>
 	<?php mf_schedule_mailto( $meta ); ?>
-	
-<?php	
+
+<?php
 }
-/* 
+/*
 * Saves Event Item Meta as well as the connected MakerFaire Application
 *
 * @param int $id Updated Post ID
 * =====================================================================*/
 function makerfaire_create_time( $val ) {
 
-	// Set some variables. 
+	// Set some variables.
 	$start_time = "10:00:00"; // Time to start at...
 	$end_time = "10:00:00"; // Not sure why setting at or below 10 gives us the correct time frame...
 
@@ -206,7 +206,7 @@ add_action( 'add_meta_boxes', 'makerfaire_add_meta_boxes' );
 
 
 
-/* 
+/*
 * Saves Event Item Meta as well as the connected MakerFaire Application
 *
 * @param int $id Updated Post ID
@@ -215,10 +215,10 @@ function makerfaire_update_event( $id ) {
 
 	if ( empty( $_POST ) || get_post_type( absint( $id ) ) != 'event-items' || $_POST['post_status'] != 'publish' )
 		return false;
-	
+
 	if ( ! isset( $_POST['mfei_submit_nonce'] ) || ! wp_verify_nonce( $_POST['mfei_submit_nonce'], 'mfei_nonce' ) )
 		return false;
-	
+
 	// Confirm that an application ID is passed
 	$is_mf_form = get_post_type( absint( $_POST['mfei_record'] ) ) == 'mf_form';
 
@@ -232,12 +232,12 @@ function makerfaire_update_event( $id ) {
 
 	// Update the post meta for the event
 	foreach ( $meta as $meta_key => $meta_value ) {
-		update_post_meta( $id, $meta_key, $meta_value );	
+		update_post_meta( $id, $meta_key, $meta_value );
 	}
-	
+
 	if ( ! $is_mf_form )
 		return;
-	
+
 	// Update scheduled status of connection application
 	update_post_meta( absint( $meta['mfei_record'] ), '_ef_editorial_meta_checkbox_schedule-completed', ( isset( $_POST['mfei_schedule_completed'] ) ? 1 : 0 ) );
 }
@@ -247,79 +247,79 @@ add_action( 'save_post', 'makerfaire_update_event' );
 
 
 
-  
-/* 
+
+/*
 * Add Custom Event Item Columns
 *
 * @param array $cs Array of default columns
 * =====================================================================*/
-function makerfaire_add_column( $cs ) { 
+function makerfaire_add_column( $cs ) {
 
 	unset( $cs['title'], $cs['date'] );
-	
+
 	$ncs = array(
 		'event_id'     => 'Event ID',
 		'location'     => 'Location',
-		'day'          => 'Day',		
+		'day'          => 'Day',
 		'start_time'   => 'Start Time',
 		'stop_time'    => 'Stop Time',
 		'project_name' => 'Project Name',
 		'project_id'   => 'Project ID'
 	);
-	
+
 	return array_merge( $cs, $ncs );
-}  
-/* 
+}
+/*
 * Add data to custom Event Item Column
 *
 * @param string $column_name Column ID
 * @param int $post_ID Row Post ID
 * =====================================================================*/
-function makerfaire_add_name_to_column( $column_name, $post_ID ) { 
+function makerfaire_add_name_to_column( $column_name, $post_ID ) {
 
 	switch( $column_name ) {
 		case 'event_id' :
-			
-			edit_post_link( 'Event ID : '.$post_ID , '', '', $post_ID );		
+
+			edit_post_link( 'Event ID : '.$post_ID , '', '', $post_ID );
 			break;
-			
+
 		case 'project_id' :
-			
-			echo intval( get_post_meta( $post_ID, 'mfei_record', true ) );			
+
+			echo intval( get_post_meta( $post_ID, 'mfei_record', true ) );
 			break;
-			
+
 		case 'day' :
-		
+
 			echo esc_html( get_post_meta( $post_ID, 'mfei_day', true ) );
 			break;
-			
+
 		case 'project_name' :
-		
+
 			$id = get_post_meta( $post_ID, 'mfei_record', true );
 			edit_post_link( get_the_title( $id ), '', '', $id );
 			break;
-			
+
 		case 'start_time' :
-		
-			echo esc_html( get_post_meta( $post_ID, 'mfei_start', true ) );		
+
+			echo esc_html( get_post_meta( $post_ID, 'mfei_start', true ) );
 			break;
-			
+
 		case 'stop_time' :
-			
-			echo esc_html( get_post_meta( $post_ID, 'mfei_stop', true ) );		
+
+			echo esc_html( get_post_meta( $post_ID, 'mfei_stop', true ) );
 			break;
-			
+
 		case 'location' :
-		
+
 			$locs = get_the_terms( $post_ID, 'location' );
 			$loca = array();
-			
+
 			foreach ($locs as $loc) {
 				$loca[] = esc_html( $loc->name );
-			}	
-			
+			}
+
 			echo implode( ', ', $loca );
-			
+
 			break;
 	}
 }
@@ -330,7 +330,7 @@ add_action( 'manage_event-items_posts_custom_column',   'makerfaire_add_name_to_
 
 
 
-/* 
+/*
 * Add Sortable Columns to Event Item List
 *
 * @param array $cs Default Sortable Columns
@@ -340,18 +340,18 @@ function makerfaire_columns_sortable( $cs ) {
 	$cs['start_time']   = 'start_time';
 	$cs['stop_time']    = 'stop_time';
 	$cs['project_id']   = 'project_id';
-	
+
 	return $cs;
 }
-/* 
+/*
 * Filter WP Query with Meta Data / Taxonomy Data
 *
 * @param array $vars All Default Query Variables
 * =====================================================================*/
 function makerfaire_columns_orderby( $vars ) {
-	
+
 	if ( is_admin() && isset( $vars['orderby'] ) && $vars['post_type'] == 'event-items' ) {
-		
+
 		switch( $vars['orderby'] ) {
 			case 'day' :
 				$vars = array_merge( $vars, array(
@@ -364,7 +364,7 @@ function makerfaire_columns_orderby( $vars ) {
 					'meta_key' => 'mfei_start',
 					'orderby'  => 'meta_value'
 				) );
-			break;	
+			break;
 			case 'stop_time' :
 				$vars = array_merge( $vars, array(
 					'meta_key' => 'mfei_stop',
@@ -377,9 +377,9 @@ function makerfaire_columns_orderby( $vars ) {
 					'orderby'  => 'meta_value'
 				) );
 			break;
-		}		
-	} 
-	if ( is_admin() && isset( $vars['location'] ) && $vars['location'] != 0 && $vars['post_type'] == 'event-items' ) { 
+		}
+	}
+	if ( is_admin() && isset( $vars['location'] ) && $vars['location'] != 0 && $vars['post_type'] == 'event-items' ) {
 		$loc = get_term( $vars['location'], 'location' );
 		$vars['location'] = $loc->name;
 	}
@@ -393,21 +393,21 @@ add_filter( 'request', 'makerfaire_columns_orderby' );
 
 
 
-/* 
+/*
 * Add Location Taxonomy filter to posts
 * =====================================================================*/
 function makerfaire_manage_posts() {
 	$location = ( !empty( $_GET['location'] ) ) ? intval( $_GET['location'] ) : '';
 	if( !isset( $_GET['post_type'] ) || $_GET['post_type'] != 'event-items' )
 		return;
-	
+
 	$args = array(
 		'show_option_all' => "View All Locations",
 		'taxonomy'        => 'location',
 		'name'            => 'location',
 		'selected'        => $location,
 	);
-	wp_dropdown_categories($args); 
+	wp_dropdown_categories($args);
 	echo '<style>select[name="m"]{display:none}</style>';
 }
 /* CUSTOM FILTER HOOK */
@@ -473,7 +473,7 @@ function mf_restrict_listings_by_faire() {
 
 add_action('restrict_manage_posts','mf_restrict_listings_by_faire');
 
-/* 
+/*
  * A walker class to use that extends wp_dropdown_categories and allows it to use the term's slug as a value rather than ID.
  *
  * See http://core.trac.wordpress.org/ticket/13258
@@ -484,7 +484,7 @@ add_action('restrict_manage_posts','mf_restrict_listings_by_faire');
  * But specify the custom walker class, and (optionally) a 'id' or 'slug' for the 'value' parameter:
  * $args=array('walker'=> new SH_Walker_TaxonomyDropdown(), 'value'=>'slug', .... );
  * wp_dropdown_categories($args);
- * 
+ *
  * If the 'value' parameter is not set it will use term ID for categories, and the term's slug for other taxonomies in the value attribute of the term's <option>.
 */
 
@@ -501,7 +501,7 @@ class SH_Walker_TaxonomyDropdown extends Walker_CategoryDropdown {
 		$value = ($args['value']=='slug' ? $category->slug : $category->term_id );
 
 		$output .= "\t<option class=\"level-$depth\" value=\"".$value."\"";
-		if ( $value === (string) $args['selected'] ){ 
+		if ( $value === (string) $args['selected'] ){
 			$output .= ' selected="selected"';
 		}
 		$output .= '>';
@@ -528,5 +528,5 @@ function mf_generate_dropdown( $tax, $selected ) {
 			'hide_empty'		=> false,
 			'name'				=> $tax,
 			)
-	);	
+	);
 }

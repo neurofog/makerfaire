@@ -44,7 +44,7 @@
 
 <body id="bootstrap-js" onLoad="onLoad()" <?php body_class(); ?> >
 
-<!-- 
+<!--
 ======
 Topbar
 ======
@@ -70,16 +70,16 @@ Topbar
 			</ul>
 			<ul class="nav pull-right">
 				<li>
-					<form action="http://blog.makezine.com/search/" class="form-horizontal form-search"> 
-						<input type="hidden" name="as_sitesearch" value="makerfaire.com" /> 
-						<input type="text" name="q" class="span2" /> 
-						<input type="submit" class="btn btn-primary" value="Search" /> 
+					<form action="http://blog.makezine.com/search/" class="form-horizontal form-search">
+						<input type="hidden" name="as_sitesearch" value="makerfaire.com" />
+						<input type="text" name="q" class="span2" />
+						<input type="submit" class="btn btn-primary" value="Search" />
 					</form>
 				</li>
 			</ul>
 		</div>
-			
-			
+
+
 		</div>
 	</div>
 </div>
@@ -89,21 +89,21 @@ Topbar
 	<div class="container">
 
 		<p class="tagline"><strong><em>A two-day, family-friendly festival of invention, creativity and resourcefulness, and a celebration of the Maker movement.</em></strong></p>
-		
+
 			<div class="row">
-			
+
 				<div class="span5">
-			
+
 					<h1><a href="http://makerfaire.com" title="Maker Faire"><img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/logo.jpg" width="380" alt="Maker Faire" title="Maker Faire"></a></h1>
-			
+
 				</div>
-				
+
 				<div class="span7">
 					<!--<p class="blurb">
 						Maker Faire is the premier event for grassroots American innovation.
 						<img src="http://makerfaire.com/new/images/cross.png" alt="Cross" />
 					</p>-->
-			
+
 					<div class="nav navi">
 
 						<?php
@@ -127,12 +127,12 @@ Topbar
 								'walker'          => ''
 							);
 
-						wp_nav_menu( $defaults );	
+						wp_nav_menu( $defaults );
 
 						?>
-					
+
 						<!--<ul style="margin-left:10px;">
-							
+
 							<li class="dropdown inline">
 								<a href="http://makerfaire.com/be-a-maker.html">
 									<img src="http://makerfaire.com/new/images/be-a-maker.png" alt="Be a Maker" title="Be a Maker">
@@ -152,7 +152,7 @@ Topbar
 									<!--<li class="divider"></li>
 									<li><h4>Bay Area</h4></li>
 									<li><a href="http://makerfairebayarea.eventbrite.com/">Buy Tickets</a></li
-									<li><a href="http://makerfaire.com/bayarea/2012/tickets/">Ticket Information</a></li>								
+									<li><a href="http://makerfaire.com/bayarea/2012/tickets/">Ticket Information</a></li>
 									<li><a href="http://makerfaire.com/bayarea/2012/tickets/outlets.html">Ticket Outlets</a></li>
 									<li><a href="http://makerfaire.com/bayarea/2012/schedule/index.html">Program Guide &amp; Schedule</a></li>
 									<li><a href="http://makerfaire.com/bayarea/2012/makerinfo">Meet the Makers</a></li>
@@ -164,9 +164,9 @@ Topbar
 									<li><a href="http://makerfaire.com/bayarea/2012/faq.html">FAQ</a></li>
 
 								</ul>-->
-								
+
 							<!--</li>
-							
+
 							<li class="dropdown inline">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 									<img src="http://makerfaire.com/new/images/check-out-the-program.png" alt="Check out the Program" title="Check out the Program">
@@ -186,12 +186,12 @@ Topbar
 
 								</ul>
 							</li>
-							
+
 							<li class="dropdown inline">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 									<img src="http://cdn.makezine.com/make/makerfaire/bayarea/2012/images/how-to-participate1.png" alt="How to Participate" title="See all the Faires">
 								</a>
-								
+
 								<ul class="dropdown-menu">
 									<li><h4>New York</h4></li>
 									<li><a href="http://makerfaire.com/newyork/2012/callformakers/">Call for Makers</a></li>
@@ -213,13 +213,13 @@ Topbar
 									<!--<li><a href="http://makerfaire.com/education/">Educators</a></li>-->
 									<!--<li><a href="http://makezine.com/makerfaire/be-a-maker.html">Be A Maker</a></li>
 								</ul>
-								
+
 							</li>
 							<li class="dropdown inline">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 									<img src="http://makerfaire.com/new/images/nav_03.png" alt="In the Media" title="In the Media">
 								</a>
-								
+
 								<ul class="dropdown-menu">
 									<li><a href="http://makerfaire.com/press/highlights.html">Highlights</a></li>
 									<li><a href="http://makerfaire.com/newyork/2012/beat-reports/index.html">MAKE Editorial Coverage</a></li>
@@ -228,15 +228,15 @@ Topbar
 									<li><a href="http://makerfaire.com/bayarea/2012/press/releases.html">Press Releases</a></li>
 									<li><a href="http://makerfaire.com/bayarea/2012/press/kits.html">Press Kits</a></li-->
 								<!--</ul>
-								
-								
-								
+
+
+
 							</li>
 							<li class="dropdown inline"><a href="http://makerfaire.com/bayarea/2012/map.html">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 									<img src="http://makerfaire.com/new/images/nav_04.png" alt="See all the Faires" title="See all the Faires">
 								</a>
-								
+
 								<ul class="dropdown-menu">
 									<li><a href="http://makerfaire.com/newyork/2012/">New York</a></li>
 									<li><a href="http://makerfaire.com/bayarea/2012/index.html">Bay Area</a></li>
@@ -245,21 +245,21 @@ Topbar
 									<li><a href="http://makerfaire.com/mini/make-a-maker-faire.html">Make a Maker Faire</a></li>
 									<li class="divider"></li>
 									<li><a href="http://makerfaire.com/archive.html">See Faires From Years Past</a></li>
-									<li><a href="http://makerfaire.com/blue-ribbon/">Blue Ribbon Winners</a></li>			
+									<li><a href="http://makerfaire.com/blue-ribbon/">Blue Ribbon Winners</a></li>
 
 								</ul>
-							
+
 							</li>
 						</ul>-->
-					
+
 					</div><!--end nav wrapper-->
-					
+
 				</div>
-			
+
 			</div>
-		
+
 		</div>
-		
+
 	</div>
 
 

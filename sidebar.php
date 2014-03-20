@@ -35,7 +35,7 @@
 
                 <h3>Get news and updates on all faires and calls for makers.</h3>
 
-                <form class="form-inline" action="http://makermedia.createsend.com/t/r/s/jjuruj/" method="post" id="subForm"> 
+                <form class="form-inline" action="http://makermedia.createsend.com/t/r/s/jjuruj/" method="post" id="subForm">
                         <input type="text" placeholder="Enter your email" class="news-signup" name="cm-jjuruj-jjuruj" id="jjuruj-jjuruj">
                         <input type="image" src="<?php echo esc_url( get_stylesheet_directory_uri() ); ?>/images/go.png" value="Go!" class="btn">
                         <div class="control-group hide hidden">
@@ -64,44 +64,44 @@
                         <a class="footer-sprite ico-facebook" href="http://facebook.com/makerfaire" title="Facebook" target="_blank"></a>
                         <a class="footer-sprite ico-twitter"  href="http://twitter.com/makerfaire" title="Twitter" target="_blank"></a>
                         <a class="footer-sprite ico-google-plus" href="https://google.com/+MAKE/" title="Google+" target="_blank"></a>
-                        <a class="footer-sprite ico-flickr" href="http://www.flickr.com/photos/tags/makerfaire/" title="Flickr" target="_blank"></a>             
-                        <a class="footer-sprite ico-instagram" href="http://instagram.com/makerfaire" title="Instagram" target="_blank"></a>  
+                        <a class="footer-sprite ico-flickr" href="http://www.flickr.com/photos/tags/makerfaire/" title="Flickr" target="_blank"></a>
+                        <a class="footer-sprite ico-instagram" href="http://instagram.com/makerfaire" title="Instagram" target="_blank"></a>
                         <a class="footer-sprite ico-youtube" href="http://youtube.com/makerfaire" title="Youtube" target="_blank"></a>
                         <a class="footer-sprite ico-rss" href="http://makezine.com/tag/maker-faire/feed/" title="RSS Feed" target="_blank"></a>
                 <!-- END socialArea -->
-                </div> 
+                </div>
 
         </div>
 
         <div class="sidebar-bordered sponsored">
- 
+
                <h3><a href="<?php echo esc_url( home_url( '/sponsors' ) ); ?>">Goldsmith Sponsors</a></h3>
- 
+
                <div id="myCarousel" class="carousel slide">
                        <div class="carousel-inner">
                                <?php echo mf_sponsor_carousel( 'Goldsmith Sponsor' ); ?>
                        </div>
                </div>
- 
+
                <h3><a href="<?php echo esc_url( home_url( '/sponsors' ) ); ?>">Silversmith Sponsors</a></h3>
- 
+
                <div id="myCarousel" class="carousel slide">
                        <div class="carousel-inner">
                                <?php echo mf_sponsor_carousel( 'Silversmith Sponsor' ); ?>
                        </div>
                </div>
- 
+
                <h3><a href="<?php echo esc_url( home_url( '/sponsors' ) ); ?>">Coppersmith Sponsors</a></h3>
- 
+
                <div id="myCarousel" class="carousel slide">
                        <div class="carousel-inner">
                                <?php echo mf_sponsor_carousel( 'Coppersmith Sponsor' ); ?>
                        </div>
-               
+
                </div>
- 
+
        </div>
-	
+
 	<!-- Beginning Sync AdSlot 2 for Ad unit header ### size: [[300,250]]  -->
 	<div id='div-gpt-ad-664089004995786621-2' class="adblock">
 		<script type='text/javascript'>
