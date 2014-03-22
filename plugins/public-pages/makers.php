@@ -43,6 +43,8 @@ function mf_better_name( $str ) {
 		return 'Maker Faire Bay Area 2013';
 	} elseif ( $str == '2013_newyork' ) {
 		return 'World Maker Faire New York 2013';
+	} elseif ( $str == '2014_bayarea' ) {
+		return 'Maker Faire Bay Area 2014';
 	}
 }
 

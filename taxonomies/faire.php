@@ -45,7 +45,7 @@
 		$template_file = get_post_meta( get_the_ID(), '_wp_page_template', true );
 
 		// We only want to load our meta box when the Faire Tax Archive Page template is selected
-		if ( $template_file == 'page-topics.php' ) {
+		if ( $template_file == 'page-topics.php' || $template_file == 'page-makers.php' ) {
 			add_meta_box( 'make_faire_topic', 'Faire', 'make_faire_topic', 'page', 'side', 'default' );
 		}
 	}
