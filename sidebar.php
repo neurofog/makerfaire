@@ -10,7 +10,7 @@
                         <script type="text/javascript">
 
                                 jQuery(document).ready(function() {
-                                        mfba = new Date(2014, 5-1, 17, 10, 00);
+                                        mfba = new Date(2014, 5-1, 17, 9, 00);
                                         jQuery('.countdown').countdown({
                                                 until: mfba,
                                                 timezone: -8,
