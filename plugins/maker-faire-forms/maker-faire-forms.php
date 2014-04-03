@@ -521,6 +521,9 @@ class MAKER_FAIRE_FORM {
 			add_meta_box( 'mf_summary',   'Summary',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 			add_meta_box( 'mf_details',   'Details',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 			add_meta_box( 'mf_logistics', 'Edit Form', array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
+			if ( has_term( 'presenter', 'type' ) ) {
+				add_meta_box( 'mf_presenter_promos', 'Eventbrite Promo Codes', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
+			}
 		} else {
 			add_meta_box( 'mf_form_type', 'Application Type',  array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 			add_meta_box( 'mf_exhibit',   'Exhibit Details',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'exhibit' ) );
@@ -836,6 +839,11 @@ class MAKER_FAIRE_FORM {
 
 			// Why do we have so much crap in this method? Let's break this up... because I'm losing my mind here :P
 			$this->app_details( $post, $args, $data );
+
+		} elseif ( $args['id'] == 'mf_presenter_promos' ) {
+
+			// Load the presenter promo meta box for Eventbrite. This is used to store promo codes to give to Presenters
+			$this->presenter_promos( $post, $args, $data );
 
 		} elseif ( $args['id'] == 'mf_maker_contact' ) { // Display "Contact Info" for the contact of the application.
 
@@ -1172,6 +1180,19 @@ class MAKER_FAIRE_FORM {
 	}
 
 
+	/**
+	 * Displays a text field in a meta box so we can email promo codes to presenters on acceptance
+	 * @param  [type] $post [description]
+	 * @param  [type] $args [description]
+	 * @param  [type] $data [description]
+	 * @return [type]       [description]
+	 */
+	private function presenter_promos( $post ) {
+		$promo = get_post_meta( absint( $post->ID ), 'app-presenter-promo-code', true ); ?>
+		<input type="text" placeholder="Insert the unique Eventbrite promo code" name="presenter-promo-code" value="<?php echo ( ! empty( $promo ) ) ? esc_attr( $promo ) : ''; ?>" style="width:100%;">
+	<?php }
+
+
 	/*
 	* Creates Backend MakerFaire Application Forms
 	*
@@ -1456,6 +1477,10 @@ class MAKER_FAIRE_FORM {
 
 		if ( empty( $_POST ) || ( ! isset( $_POST['mf_form'] ) && isset( $_POST['form_type'] ) && isset( $this->fields[ $_POST['form_type'] ] ) ) || isset( $_POST['mf_updated'] ) )
 			return false;
+
+		// If we are trying to save any presenter promo codes...
+		if ( $_POST['form_type'] == 'presenter' && isset( $_POST['presenter-promo-code'] ) && ! empty( $_POST['presenter-promo-code'] ) )
+			update_post_meta( absint( $id ), 'app-presenter-promo-code', esc_attr( $_POST['presenter-promo-code'] ) );
 
 		// Set some variables yo.
 		$form_type  = sanitize_text_field( $_POST['form_type'] );

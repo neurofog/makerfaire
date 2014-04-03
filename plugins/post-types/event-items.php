@@ -82,43 +82,6 @@ function mf_redirect_to_parent_permalink() {
 add_action( 'template_redirect', 'mf_redirect_to_parent_permalink' );
 
 
-/**
- * Function to generate a mailto: link with the presentation details.
- */
-
-function mf_schedule_mailto( $meta ) {
-	if ( isset( $meta['mfei_record'][0] ) ) {
-		$linked_post = get_post( absint( $meta['mfei_record'][0] ) );
-		$json = json_decode( $linked_post->post_content );
-		$loc_ids = get_post_meta( absint( $linked_post->ID ), 'faire_location', true );
-		$loc_args = array(
-			'post_type' => 'location',
-			'post__in' => $loc_ids,
-			'order' => 'ASC',
-			'orderby' => 'title'
-		);
-		$locations = get_posts( $loc_args );
-		$end_loc = end( $locations );
-		$loc = '';
-		foreach ( $locations as $location ) {
-			$loc .= $location->post_title;
-
-			if ( $location != $end_loc )
-				$loc .= ', ';
-		}
-		$email = sanitize_email( $json->email );
-		$subject = '?&subject=Event+Scheduled: ' . esc_attr( $linked_post->post_title );
-		$body = rawurlencode(
-			"Event: " . esc_attr( $linked_post->post_title ) . "\n" .
-			"Start Time: " . esc_attr( $meta['mfei_start'][0] ) . "\n" .
-			"End Time: " . esc_attr( $meta['mfei_stop'][0] ) . "\n" .
-			"Location: " . esc_attr( $loc ) .  "\n" );
-		$url = add_query_arg( array( 'subject' => $subject ),  sanitize_email( $email ) );
-		$url = add_query_arg( array( 'body' => $body ), $url );
-		echo '<p><a href="mailto:' . $url . '" class="button" target="_blank">Email Presenter Schedule</a></p>';
-	}
-}
-
 /*
 * Callback for adding meta box to EVENT ITEM
 * =====================================================================*/
@@ -141,7 +104,10 @@ function makerfaire_meta_box( $post ) {
 	);
 
 	if( $post->post_status == 'publish' )
-		$meta = get_post_custom( $post->ID ); ?>
+		$meta = get_post_custom( $post->ID );
+
+	$app_id = ( isset( $meta['mfei_record'][0] ) && ! empty( $meta['mfei_record'][0] ) ) ? $meta['mfei_record'][0] : '';
+	$event_scheduled = get_post_meta( absint( $app_id ), '_ef_editorial_meta_checkbox_schedule-completed', true ); ?>
 
 	<style>#ei-details label{font-weight:bold; display:block; margin:15px 0 5px 0;} #ei-details select,#ei-details input[type=text]{width:200px}</style>
 	<?php wp_nonce_field('mfei_nonce', 'mfei_submit_nonce'); ?>
@@ -164,24 +130,36 @@ function makerfaire_meta_box( $post ) {
 	<?php
 		// Check if we are loading from a referring post and add that ID to our Record field
 		if ( isset( $_GET['refer_id'] ) && ! empty( $_GET['refer_id'] ) ) {
-			echo  '<input type="text" name="mfei_record" id="mfei_record" value="' . intval( $_GET['refer_id'] ) . '" />';
+			echo  '<input type="text" name="mfei_record" id="mfei_record" value="' . absint( $_GET['refer_id'] ) . '" />';
 		} else {
-			$id = ( !empty( $meta['mfei_record'][0] ) ) ? esc_attr( $meta['mfei_record'][0] ) : '';
+			$id = ( !empty( $meta['mfei_record'][0] ) ) ? absint( $meta['mfei_record'][0] ) : '';
 			echo '<input type="text" name="mfei_record" id="mfei_record" value="' . $id . '" />';
 		}
 	?>
 	<a title="Edit event items" href="#" class="post-edit-link">View Application</a> (opens new window with given application)
 	<label>Schedule Completed</label>
-	<input name="mfei_schedule_completed" type="checkbox" value="1" /> &nbsp; Event is Scheduled
+	<input name="mfei_schedule_completed" type="checkbox" value="<?php echo ( $event_scheduled === '1' ) ? '1' : '0'; ?>" <?php echo checked( $event_scheduled, '1' ); ?> /> &nbsp; Event is Scheduled
+	<p><button class="button mf-email-schedule">Email Presenter Schedule</button></p>
+	<?php wp_nonce_field( 'email-presenter-schedulees', 'mf-email-schedule' ); ?>
+	<?php mf_email_presenter_schedule( $meta ); ?>
 	<script>
-		jQuery( '#ei-details a' ).click( function() {
-			window.open('/makerfaire/wp-admin/post.php?post=' + jQuery( '#mfei_record' ).val() + '&action=edit', '_blank');
+		jQuery( document ).ready( function( $ ) {
+			// Listen for a call to set the MFEI Record
+			$( '#ei-details a' ).click( function() {
+				window.open('/makerfaire/wp-admin/post.php?post=' + jQuery( '#mfei_record' ).val() + '&action=edit', '_blank');
+			});
+
+			// Handle the request to email the schedule to the presenters over ajax
+			$( '.mf-email-schedule' ).click( function( e ) {
+				e.preventDefault();
+
+				console.log('clicked');
+			});
 		});
 	</script>
-	<?php mf_schedule_mailto( $meta ); ?>
+<?php }
 
-<?php
-}
+
 /*
 * Saves Event Item Meta as well as the connected MakerFaire Application
 *
@@ -219,6 +197,9 @@ function makerfaire_update_event( $id ) {
 	if ( ! isset( $_POST['mfei_submit_nonce'] ) || ! wp_verify_nonce( $_POST['mfei_submit_nonce'], 'mfei_nonce' ) )
 		return false;
 
+	var_dump($_POST);
+	die();
+
 	// Confirm that an application ID is passed
 	$is_mf_form = get_post_type( absint( $_POST['mfei_record'] ) ) == 'mf_form';
 
@@ -244,7 +225,35 @@ function makerfaire_update_event( $id ) {
 add_action( 'save_post', 'makerfaire_update_event' );
 
 
+/**
+ * Generates a configurable/canned email response to the presenter.
+ * @param  obj $meta The meta information assigned to our event
+ * @return void
+ */
+function mf_email_presenter_schedule( $meta ) {
 
+	// Validate the nonce
+	$local_server = array( 'localhost', 'make.com', 'vip.dev', 'staging.makerfaire.com' );
+
+		// Send all emails in testing environments to one account.
+		if ( isset( $_SERVER['HTTP_HOST'] ) && in_array( $_SERVER['HTTP_HOST'], $local_server ) ) {
+			$tos = array( 'cgeissinger@makermedia.com' );
+			$bcc = '';
+		}
+	$find_and_replace = array(
+		'$presenter_name' => '',
+		'$faire_name' => '',
+		'$app_name' => '',
+		'$scheduled_date' => '',
+		'$scheduled_start_time' => '',
+		'$scheduled_end_time' => '',
+		'$location_name' => '',
+		'$map_url' => '',
+		'$app_url' => '',
+		'$location_description' => '',
+		'$app_eb_promo_code' => '',
+	);
+}
 
 
 
@@ -529,4 +538,13 @@ function mf_generate_dropdown( $tax, $selected ) {
 			'name'				=> $tax,
 			)
 	);
+}
+
+
+/**
+ * Built specifically for handling the scheduling confirmation emails, but can be used else where
+ * @return [type] [description]
+ */
+function mf_get_presenter_schedule() {
+
 }
