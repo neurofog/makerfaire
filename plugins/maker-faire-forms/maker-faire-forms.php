@@ -3473,7 +3473,15 @@ class MAKER_FAIRE_FORM {
 
 			// Loop through all the content and clean it up
 			foreach ( $form as $key => $value ) {
-				$form[ sanitize_key( $key ) ] = mf_clean_content( $value, true );
+				if ( is_array( $value ) ) {
+					$i = 0;
+					foreach ( $value as $v ) {
+						$form[ sanitize_key( $key ) ][ intval( $i ) ] = mf_clean_content( $v, true );
+						$i++;
+					}
+				} else {
+					$form[ sanitize_key( $key ) ] = mf_clean_content( $value, true );
+				}
 			}
 
 			// Process our name field. We'll want to handle exhibit maker types differently.
