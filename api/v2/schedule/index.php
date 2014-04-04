@@ -30,7 +30,7 @@ if ( $type == 'schedule' ) {
 	// Define the API header (specific for Eventbase)
 	$header = array(
 		'header' => array(
-			'version' => esc_html( MF_EVENTBASE_API_VERSION ), 
+			'version' => esc_html( MF_EVENTBASE_API_VERSION ),
 			'results' => intval( $query->post_count ),
 		),
 	);
@@ -79,19 +79,19 @@ if ( $type == 'schedule' ) {
 		} else {
 			$time_zone = ' PST';
 		}
-		
+
 		$schedule['time_start'] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $day . $start . $time_zone ) ) );
 		$schedule['time_end'] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $day . $stop . $time_zone ) ) );
 
 		// REQUIRED: Venue ID reference
 		$locations = get_post_meta( absint( $post->ID ), 'faire_location', true );
-		
+
 		$schedule['venue_id_ref'] = $locations[0];
 
 		// Schedule thumbnails. Nothing more than images from the application it is tied to
 		$post_content = json_decode( mf_clean_content( get_page( absint( $app_id ) )->post_content ) );
 		$app_image = mf_get_the_maker_image( $post_content );
-		
+
 		$schedule['thumb_img_url'] = esc_url( wpcom_vip_get_resized_remote_image_url( $app_image, '80', '80' ) );
 		$schedule['large_img_url'] = esc_url( $app_image );
 
@@ -111,5 +111,5 @@ if ( $type == 'schedule' ) {
 
 	// Reset the Query
 	wp_reset_postdata();
-	
+
 }

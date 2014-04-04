@@ -18,7 +18,7 @@ define( 'MF_API_VERSION', 'v2' );
 // Set the post per page for our queries
 define( 'MF_POSTS_PER_PAGE', 2000 );
 
-// Set the API keys to run this API. 
+// Set the API keys to run this API.
 define( 'MF_API_KEY', sanitize_text_field( get_option( 'make_app_api_key' ) ) );
 
 // Set the Eventbase API version
@@ -42,7 +42,7 @@ $allowed_types = array(
 $key = ( ! empty( $_REQUEST['key'] ) ? sanitize_text_field( $_REQUEST['key'] ) : null );
 $type = ( ! empty( $_REQUEST['type'] ) ? sanitize_text_field( $_REQUEST['type'] ) : null );
 $faire = ( ! empty( $_REQUEST['faire'] ) ? sanitize_text_field( $_REQUEST['faire'] ) : null );
-	
+
 // Check that our keys passed are in our $keys array and that a type and faire are passed
 if ( empty( $key ) ) {
 	header( 'HTTP/1.0 403 Forbidden' );
@@ -75,7 +75,7 @@ if ( empty( $key ) ) {
  * Process the passed query string and fetch the appropriate API section
  */
 
-// Get the appropriate API file. 
+// Get the appropriate API file.
 $api_path = __DIR__ . '/api/' . sanitize_title( MF_API_VERSION ) . '/' . sanitize_title( $type ) . '/index.php';
 
 // Prevent Path Traversal

@@ -33,7 +33,7 @@ if ( $type == 'entity' ) {
 	// Define the API header (specific for Eventbase)
 	$header = array(
 		'header' => array(
-			'version' => esc_html( MF_EVENTBASE_API_VERSION ), 
+			'version' => esc_html( MF_EVENTBASE_API_VERSION ),
 			'results' => intval( $query->post_count ),
 		),
 	);
@@ -84,7 +84,7 @@ if ( $type == 'entity' ) {
 
 		// Application Categories
 		$cats = wp_get_post_terms( absint( $post->ID ), array( 'category', 'post_tag', 'group' ) );
-		
+
 		if ( $cats && ! is_wp_error( $cats ) ) {
 			foreach( $cats as $cat ) {
 				$category_ids[] = absint( $cat->term_id );
@@ -97,7 +97,7 @@ if ( $type == 'entity' ) {
 
 		// Application Description
 		$app_description_field = $mfform->merge_fields( 'project_description', $app_data->form_type );
-		
+
 		$app['description'] = $app_data->{$app_description_field};
 
 		// Application YouTube URL
@@ -140,5 +140,5 @@ if ( $type == 'entity' ) {
 
 	// Reset the Query
 	wp_reset_postdata();
-	
+
 }
