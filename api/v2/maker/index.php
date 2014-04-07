@@ -50,7 +50,7 @@ if ( $type == 'maker' ) {
 		// Maker Thumbnail and Large Images
 		$maker_image = get_post_meta( absint( $post->ID ), 'photo_url', true );
 		$maker['thumb_img_url'] = esc_url( wpcom_vip_get_resized_remote_image_url( $maker_image, '80', '80' ) );
-		$maker['large_image_url'] = esc_url( $maker_image );
+		$maker['large_image_url'] = esc_url( wpcom_vip_get_resized_remote_image_url( $maker_image, '600', '600' ) );;
 
 		// Application ID this maker is assigned to
 		$maker['child_id_refs'] = array_unique( get_post_meta( absint( $post->ID ), 'mfei_record' ) );
