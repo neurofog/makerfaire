@@ -76,6 +76,8 @@ if ( $type == 'entity' ) {
 		);
 		$makers = new WP_Query( $maker_args );
 
+		$maker_ids = array();
+
 		foreach ( $makers->posts as $maker ) {
 			$maker_ids[] = absint( $maker->ID );
 		}
@@ -84,6 +86,8 @@ if ( $type == 'entity' ) {
 
 		// Application Categories
 		$cats = wp_get_post_terms( absint( $post->ID ), array( 'category', 'post_tag', 'group' ) );
+
+		$category_ids = array();
 
 		if ( $cats && ! is_wp_error( $cats ) ) {
 			foreach( $cats as $cat ) {
