@@ -53,15 +53,8 @@ if ( $type == 'schedule' ) {
 		// REQUIED: Application title paired to scheduled item
 		$schedule['name'] = html_entity_decode( get_the_title( absint( $app_id ) ), ENT_COMPAT, 'utf-8' );
 
-		// REQUIRED: Schedule start and end times
-		if ( strpos( $faire, 'new-york' ) !== false ) {
-			$time_zone = ' EST';
-		} else {
-			$time_zone = ' PST';
-		}
-
-		$schedule['time_start'] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $dates[$day] . $start . $time_zone ) ) );
-		$schedule['time_end'] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $dates[$day] . $stop . $time_zone ) ) );
+		$schedule['time_start'] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $dates[$day] . $start . $dates['time_zone'] ) ) );
+		$schedule['time_end'] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $dates[$day] . $stop . $dates['time_zone'] ) ) );
 
 		// REQUIRED: Venue ID reference
 		$locations = get_post_meta( absint( $post->ID ), 'faire_location', true );

@@ -543,12 +543,15 @@ function mf_get_faire_date( $faire ) {
 	if ( $faire == 'maker-faire-bay-area-2014' ) {
 		$output['Saturday'] = '5/17/2014';
 		$output['Sunday'] 	= '5/18/2014';
+		$output['time_zone']= ' PST';
 	} elseif ( $faire == 'world-maker-faire-new-york-2013' ) {
 		$output['Saturday'] = '9/21/2013';
 		$output['Sunday'] 	= '9/22/2013';
+		$output['time_zone']= ' EST';
 	} elseif ( $faire == 'maker-faire-bay-area-2013') {
 		$output['Saturday'] = '5/18/2013';
 		$output['Sunday'] 	= '5/19/2013';
+		$output['time_zone']= ' PST';
 	}
 
 	return $output;
