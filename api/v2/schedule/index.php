@@ -45,27 +45,7 @@ if ( $type == 'schedule' ) {
 		$day = get_post_meta( absint( $post->ID ), 'mfei_day', true );
 		$start = get_post_meta( absint( $post->ID ), 'mfei_start', true );
 		$stop = get_post_meta( absint( $post->ID ), 'mfei_stop', true );
-
-		// Not happy with this... must figure out a better way to handle the event dates for the different faires.
-		if ( $faire == 'maker-faire-bay-area-2014' ) {
-			if ( $day == 'Saturday' ) {
-				$date = '5/17/2014';
-			} elseif ( $day == 'Sunday' ) {
-				$date = '5/18/2014';
-			}
-		} elseif ( $faire == 'world-maker-faire-new-york-2013' ) {
-			if ( $day == 'Saturday' ) {
-				$date = '9/21/2013';
-			} elseif ( $day = 'Sunday') {
-				$date = '9/22/2013';
-			}
-		} elseif ( $faire == 'maker-faire-bay-area-2013') {
-			if ( $day == 'Saturday' ) {
-				$date = '5/18/2013';
-			} elseif ( $day = 'Sunday') {
-				$date = '5/19/2013';
-			}
-		}
+		$dates = mf_get_faire_date( $faire );
 
 		// REQUIRED: Schedule ID
 		$schedule['id'] = absint( $post->ID );
@@ -80,8 +60,8 @@ if ( $type == 'schedule' ) {
 			$time_zone = ' PST';
 		}
 
-		$schedule['time_start'] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $day . $start . $time_zone ) ) );
-		$schedule['time_end'] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $day . $stop . $time_zone ) ) );
+		$schedule['time_start'] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $dates[$day] . $start . $time_zone ) ) );
+		$schedule['time_end'] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $dates[$day] . $stop . $time_zone ) ) );
 
 		// REQUIRED: Venue ID reference
 		$locations = get_post_meta( absint( $post->ID ), 'faire_location', true );
