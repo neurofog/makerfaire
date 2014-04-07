@@ -66,7 +66,7 @@ if ( $type == 'schedule' ) {
 		$app_image = mf_get_the_maker_image( $post_content );
 
 		$schedule['thumb_img_url'] = esc_url( wpcom_vip_get_resized_remote_image_url( $app_image, '80', '80' ) );
-		$schedule['large_img_url'] = esc_url( $app_image );
+		$schedule['large_img_url'] = esc_url( wpcom_vip_get_resized_remote_image_url( $app_image, '600', '600' ) );
 
 
 		// A list of applications assigned to this event (should only be one really...)
