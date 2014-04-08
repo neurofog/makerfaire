@@ -136,24 +136,43 @@ function makerfaire_meta_box( $post ) {
 			echo '<input type="text" name="mfei_record" id="mfei_record" value="' . $id . '" />';
 		}
 	?>
-	<a title="Edit event items" href="#" class="post-edit-link">View Application</a> (opens new window with given application)
+	<a title="Edit event items" href="#" id="view-application" class="post-edit-link">View Application</a> (opens new window with given application)
 	<label>Schedule Completed</label>
 	<input name="mfei_schedule_completed" type="checkbox" value="<?php echo ( $event_scheduled === '1' ) ? '1' : '0'; ?>" <?php echo checked( $event_scheduled, '1' ); ?> /> &nbsp; Event is Scheduled
-	<p><button class="button mf-email-schedule">Email Presenter Schedule</button></p>
+	<p><a href="#" id="mf-email-schedule-button" class="button">Email Presenter Schedule</a></p>
 	<?php wp_nonce_field( 'email-presenter-schedulees', 'mf-email-schedule' ); ?>
-	<?php mf_email_presenter_schedule( $meta ); ?>
+	<input type="hidden" name="meta-data" id="schedule-id" value="<?php echo absint( $post->ID ); ?>">
 	<script>
 		jQuery( document ).ready( function( $ ) {
 			// Listen for a call to set the MFEI Record
-			$( '#ei-details a' ).click( function() {
+			$( '#view-application' ).click( function() {
 				window.open('/makerfaire/wp-admin/post.php?post=' + jQuery( '#mfei_record' ).val() + '&action=edit', '_blank');
 			});
 
 			// Handle the request to email the schedule to the presenters over ajax
-			$( '.mf-email-schedule' ).click( function( e ) {
-				e.preventDefault();
+			$( '#mf-email-schedule-button' ).click( function() {
+				// e.preventDefault();
 
 				console.log('clicked');
+
+				$.ajax({
+					type: 'POST',
+					dataType: 'json',
+					url: ajaxurl,
+					data: {
+						'action' : 'mf_email_schedule',
+						'nonce'  : $( '#mf-email-schedule' ).val(),
+						'meta'   : $( '#schedule-id' ).val(),
+					},
+					success: function( results ) {
+
+					},
+					error: function( jqHXR, textStatus, errorThrown ) {
+						console.log( 'ERROR' );
+						console.log( textStatus );
+						console.log( errorThrown );
+					}
+				});
 			});
 		});
 	</script>
@@ -197,9 +216,6 @@ function makerfaire_update_event( $id ) {
 	if ( ! isset( $_POST['mfei_submit_nonce'] ) || ! wp_verify_nonce( $_POST['mfei_submit_nonce'], 'mfei_nonce' ) )
 		return false;
 
-	var_dump($_POST);
-	die();
-
 	// Confirm that an application ID is passed
 	$is_mf_form = get_post_type( absint( $_POST['mfei_record'] ) ) == 'mf_form';
 
@@ -230,30 +246,109 @@ add_action( 'save_post', 'makerfaire_update_event' );
  * @param  obj $meta The meta information assigned to our event
  * @return void
  */
-function mf_email_presenter_schedule( $meta ) {
+function mf_email_presenter_schedule() {
+	// Verify we have the right credentials
+	if ( isset( $_POST['nonce'] ) && ! wp_verify_nonce( $_POST['nonce'], 'email-presenter-schedulees' ) )
+		wp_die( new WP_Error( 'security-check-failed', 'We couldn\'t validate your request. Try again.' ) );
 
-	// Validate the nonce
-	$local_server = array( 'localhost', 'make.com', 'vip.dev', 'staging.makerfaire.com' );
+	// Get the application and the event schedule
+	$schedule_meta = get_post_custom( absint( $_POST['meta'] ) );
+	$application = get_post( absint( $schedule_meta['mfei_record'][0] ) );
+	
+	// Make sure we have an application
+	if ( empty( $application ) )
+		wp_die( new WP_Error( 'empty-application', 'We couldn\'t find the application #' . absint( $schedule_meta['mfei_record'][0] ) ) );
 
-		// Send all emails in testing environments to one account.
-		if ( isset( $_SERVER['HTTP_HOST'] ) && in_array( $_SERVER['HTTP_HOST'], $local_server ) ) {
-			$tos = array( 'cgeissinger@makermedia.com' );
-			$bcc = '';
-		}
-	$find_and_replace = array(
-		'$presenter_name' => '',
-		'$faire_name' => '',
-		'$app_name' => '',
-		'$scheduled_date' => '',
-		'$scheduled_start_time' => '',
-		'$scheduled_end_time' => '',
-		'$location_name' => '',
-		'$map_url' => '',
-		'$app_url' => '',
-		'$location_description' => '',
-		'$app_eb_promo_code' => '',
+	// Extract the application data
+	$app = json_decode( str_replace( "\'", "'", $application->post_content ) );
+	
+	// Fetch the locations and process our data into something useable
+	$locations = mf_get_locations( absint( $_POST['meta'] ), true );
+
+	if ( ! empty( $locations ) ) {
+		foreach ( $)
+	}
+
+	// Set some variables based on what type of application we are using
+	$makers = array(
+		'names'  => array(),
+		'emails' => array(),
 	);
+	switch ( $app->form_type ) {
+		case 'presenter':
+			// Save each presenter name
+			if ( is_array( $app->presenter_name ) && ! empty( $app->presenter_name ) ) {
+				foreach ( $app->presenter_name as $name ) {
+					$makers['names'][] = $name;
+				}
+			} else {
+				$makers['names'][] = $app->presenter_name;
+			}
+
+			// Save each presenter email
+			if ( is_array( $app->presenter_email ) && ! empty( $app->presenter_email ) ) {
+				foreach ( $app->presenter_email as $email ) {
+					$makers['emails'][] = $email;
+				}
+			} else {
+				$makers['emails'][] = $email;
+			}
+			break;
+	}
+
+	// Send all emails in testing environments to one account.
+	if ( isset( $_SERVER['HTTP_HOST'] ) && in_array( $_SERVER['HTTP_HOST'], array( 'localhost', 'make.com', 'vip.dev', 'staging.makerfaire.com' ) ) ) {
+		$makers = array(
+			'names' => array( 'Cole Geissinger' ),
+			'emails' => array( 'cgeissinger@makermedia.com' ),
+		);
+	}
+
+	// Fetch our email template
+	$email_path = dirname( __DIR__ ) . '/maker-faire-forms/emails/schedule-event-presenter.html';
+
+	// Prevent Path Traversal
+	if ( strpos( $email_path, '../' ) !== false || strpos( $email_path, "..\\" ) !== false || strpos( $email_path, '/..' ) !== false || strpos( $email_path, '\..' ) !== false )
+		return;
+
+	// Make sure the file exists...
+	if ( ! file_exists( $email_path ) )
+		return;
+
+	// get the contents of the email_template as the body
+	$email_temp = file_get_contents( $email_path );
+
+	// Update and send out an email for each maker
+	$maker_count = count( $makers['names'] );
+	for ( $i = 0; $i <= $maker_count -1; $i++ ) {
+		// Save our email template into a new variable so we don't have to fetch it again
+		$email_body = $email_temp;
+
+		// Add our single maker name and email and prep them for email
+		$maker = array(
+			'name' => $makers['names'][ intval( $i ) ],
+			'email' => $makers['emails'][ intval( $i ) ],
+		);
+
+		// Pair our custom variables found in the email to actual data. We will run a find and replace on it for a dynamic email
+		$find_and_replace = array(
+			'$presenter_name' => esc_html( $maker['name'] ),
+			'$faire_name' => 'Maker Faire Bay Area 2014',
+			'$app_name' => esc_html( $application->post_title ),
+			'$scheduled_date' => esc_html( $schedule_meta['mfei_day'][0] ),
+			'$scheduled_start_time' => esc_html( $schedule_meta['mfei_start'][0] ),
+			'$scheduled_end_time' => esc_html( $schedule_meta['mfei_start'][0] ),
+			'$location_name' => esc_html( $locations ),
+			'$map_url' => '',
+			'$app_url' => '',
+			'$location_description' => '',
+			'$app_eb_promo_code' => '',
+		);
+	}
+
+	wp_die();
 }
+add_action( 'wp_ajax_mf_email_schedule', 'mf_email_presenter_schedule' );
 
 
 

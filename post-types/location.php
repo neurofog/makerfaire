@@ -270,13 +270,13 @@ add_action( 'manage_location_posts_custom_column', 'mf_location_column_content' 
 
 /**
  * Return the list of locations based on the application ID
- * This function also will cache the request to save any extended database calls.
  * @param  int    $post_id The post ID to pull the locations from
+ * @param  bool   $raw 	   Allows us to return the raw data of a location instead of a list of the titles
  * @return string          Returns the location title
  *
  * @since Optimus Prime
  */
-function mf_get_locations( $post_id ) {
+function mf_get_locations( $post_id, $raw = false ) {
 	$location_id = get_post_meta( absint( $post_id ), 'faire_location', true );
 
 	if ( ! empty( $location_id ) ) {
@@ -289,17 +289,21 @@ function mf_get_locations( $post_id ) {
 		);
 		$locations = new WP_Query( $loc_args );
 
-		$loc_end = end( $locations->posts );
-		$loc_titles = '';
-		foreach( $locations->posts as $location ) {
-			$loc_titles .= esc_html( $location->post_title );
+		if ( ! $raw ) {
+			$loc_end = end( $locations->posts );
+			$loc_titles = '';
+			foreach( $locations->posts as $location ) {
+				$loc_titles .= esc_html( $location->post_title );
 
 
-			if ( $location != $loc_end )
-				$loc_titles .= ', ';
+				if ( $location != $loc_end )
+					$loc_titles .= ', ';
+			}
+
+			return $loc_titles;
+		} else {
+			return $locations->posts;
 		}
-
-		return $loc_titles;
 	}
 }
 
