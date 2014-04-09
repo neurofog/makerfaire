@@ -73,6 +73,9 @@ function mf_add_custom_box() {
             'mf_inner_location_box',
             $screen
         );
+
+        // Add a map URL link for the location
+        add_meta_box( 'mf-map-url', 'Map', 'mf_map_mb', 'location', 'side', 'default' );
     }
 }
 add_action( 'add_meta_boxes', 'mf_add_custom_box' );
@@ -167,6 +170,21 @@ function mf_inner_location_box( $post ) {
 
 }
 
+	
+/**
+ * Adds the Map URL meta box to locations
+ * @param  obj $post The post object
+ * @return void
+ */
+function mf_map_mb( $post ) {
+	$map_url = get_post_meta( absint( $post->ID ), 'location-map', true );
+	wp_nonce_field( 'mf_inner_location_box', 'mf_inner_location_box_nonce' );
+
+	echo '<input type="text" name="mf-map-url" id="mf-map-url-field" value="' . ( ! empty( $map_url ) ? esc_url( $map_url ) : '' ) . '" style="width:100%;">';
+	echo '<p>Please upload an image of the map with the location highlighted and paste URL here.</p>';
+}
+
+
 /**
  * When the post is saved, saves our location data.
  *
@@ -182,10 +200,8 @@ function mf_save_postdata( $post_id ) {
 	if ( ! isset( $_POST['mf_inner_location_box_nonce'] ) )
 		return $post_id;
 
-	$nonce = $_POST['mf_inner_location_box_nonce'];
-
 	// Verify that the nonce is valid.
-	if ( ! wp_verify_nonce( $nonce, 'mf_inner_location_box' ) )
+	if ( ! wp_verify_nonce( $_POST['mf_inner_location_box_nonce'], 'mf_inner_location_box' ) )
 		return $post_id;
 
 	// If this is an autosave, our form has not been submitted, so we don't want to do anything.
@@ -204,8 +220,7 @@ function mf_save_postdata( $post_id ) {
 
 	/* OK, its safe for us to save the data now. */
 
-	// Sanitize user input, and save to post meta.
-
+	// Sanitize and save the locations
 	if ( isset( $_POST['location'] ) ) {
   		$locations = array();
 		foreach ( $_POST['location'] as $location ) {
@@ -216,6 +231,9 @@ function mf_save_postdata( $post_id ) {
 		delete_post_meta( $post_id, 'faire_location' );
 	}
 
+	// Sanitize and save the map url
+	if ( isset( $_POST['mf-map-url'] ) )
+		update_post_meta( absint( $post_id ), 'location-map', esc_url( $_POST['mf-map-url'] ) );
 }
 add_action( 'save_post', 'mf_save_postdata' );
 

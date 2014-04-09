@@ -874,8 +874,13 @@ class MAKER_FAIRE_FORM {
 			<?php echo esc_html( $data->private_city.', '.$data->private_state.' '.$data->private_zip.' '.$data->private_country ); ?><br /><br />
 			<strong>Bio</strong><br />
 			<?php echo wp_kses_post( mf_convert_newlines( $bio ) ); ?>
+	
+		<?php } elseif ( $args['id'] == 'mf_eb_promo_codes' ) {
 
-		<?php } elseif ( $args['id'] == 'mf_maker_info' ) {
+			// Load the Eventbrite Promo Code meta box
+			$this->eventbrite_promo_codes( $post, $args, $data );
+
+		} elseif ( $args['id'] == 'mf_maker_info' ) {
 
 			$maker_type = ( ! empty( $data->maker ) ) ? $data->maker : $data->form_type;
 

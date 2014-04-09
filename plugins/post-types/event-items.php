@@ -107,7 +107,8 @@ function makerfaire_meta_box( $post ) {
 		$meta = get_post_custom( $post->ID );
 
 	$app_id = ( isset( $meta['mfei_record'][0] ) && ! empty( $meta['mfei_record'][0] ) ) ? $meta['mfei_record'][0] : '';
-	$event_scheduled = get_post_meta( absint( $app_id ), '_ef_editorial_meta_checkbox_schedule-completed', true ); ?>
+	$event_scheduled = get_post_meta( absint( $app_id ), '_ef_editorial_meta_checkbox_schedule-completed', true ); 
+	$schedules_emailed = get_post_meta( absint( $app_id ), 'app-emails-sent', true ); ?>
 
 	<style>#ei-details label{font-weight:bold; display:block; margin:15px 0 5px 0;} #ei-details select,#ei-details input[type=text]{width:200px}</style>
 	<?php wp_nonce_field('mfei_nonce', 'mfei_submit_nonce'); ?>
@@ -139,9 +140,13 @@ function makerfaire_meta_box( $post ) {
 	<a title="Edit event items" href="#" id="view-application" class="post-edit-link">View Application</a> (opens new window with given application)
 	<label>Schedule Completed</label>
 	<input name="mfei_schedule_completed" type="checkbox" value="<?php echo ( $event_scheduled === '1' ) ? '1' : '0'; ?>" <?php echo checked( $event_scheduled, '1' ); ?> /> &nbsp; Event is Scheduled
-	<p><a href="#" id="mf-email-schedule-button" class="button">Email Presenter Schedule</a></p>
-	<?php wp_nonce_field( 'email-presenter-schedulees', 'mf-email-schedule' ); ?>
-	<input type="hidden" name="meta-data" id="schedule-id" value="<?php echo absint( $post->ID ); ?>">
+	<?php if ( ! $schedules_emailed ) : ?>
+		<p><a href="#" id="mf-email-schedule-button" class="button">Email Presenter Schedule</a></p>
+		<?php wp_nonce_field( 'email-presenter-schedulees', 'mf-email-schedule' ); ?>
+		<input type="hidden" name="meta-data" id="schedule-id" value="<?php echo absint( $post->ID ); ?>">
+	<?php else : ?>
+		<div id="email-status" style="color:#468847;background-color:#dff0d8;border:1px solid #d6e9c6;padding:8px 35px 8px 14px;text-shadow:0 1px 0 rgba(255,255,255,.5);border-radius:4px;width:25%;margin-top:10px;">Emails have already been sent!</div>
+	<?php endif; ?>
 	<script>
 		jQuery( document ).ready( function( $ ) {
 			// Listen for a call to set the MFEI Record
@@ -150,8 +155,8 @@ function makerfaire_meta_box( $post ) {
 			});
 
 			// Handle the request to email the schedule to the presenters over ajax
-			$( '#mf-email-schedule-button' ).click( function() {
-				// e.preventDefault();
+			$( '#mf-email-schedule-button' ).click( function( e ) {
+				e.preventDefault();
 
 				console.log('clicked');
 
@@ -165,7 +170,13 @@ function makerfaire_meta_box( $post ) {
 						'meta'   : $( '#schedule-id' ).val(),
 					},
 					success: function( results ) {
-
+						if ( results.messages_sent ) {
+							$( '#email-status' ).remove();
+							$( '#mf-email-schedule-button' ).parent().replaceWith( '<div id="email-status" style="color:#468847;background-color:#dff0d8;border:1px solid #d6e9c6;padding:8px 35px 8px 14px;text-shadow:0 1px 0 rgba(255,255,255,.5);border-radius:4px;width:25%;margin-top:10px;">Emails were successfully sent!</div>' );
+						} else {
+							$( '#email-status' ).remove();
+							$( '#mf-email-schedule-button' ).parent().after( '<div id="email-status" style="color:#b94a48;background-color:#f2dede;border:1px solid #eed3d7;padding:8px 35px 8px 14px;text-shadow:0 1px 0 rgba(255,255,255,.5);border-radius:4px;width:50%;margin-top:10px;">Email failed for ' + results.failed_email + '</div>' );
+						}
 					},
 					error: function( jqHXR, textStatus, errorThrown ) {
 						console.log( 'ERROR' );
@@ -261,13 +272,25 @@ function mf_email_presenter_schedule() {
 
 	// Extract the application data
 	$app = json_decode( str_replace( "\'", "'", $application->post_content ) );
+	$app_promo_code = get_post_meta( absint( $application->ID ), 'app-presenter-promo-code', true );
 	
 	// Fetch the locations and process our data into something useable
-	$locations = mf_get_locations( absint( $_POST['meta'] ), true );
+	$locations_raw = mf_get_locations( absint( $_POST['meta'] ), true );
+	$locations = array();
+	
+	// Process the location objects into a comma separated lists
+	if ( ! empty( $locations_raw ) ) {
+		$locations = '';
 
-	if ( ! empty( $locations ) ) {
-		foreach ( $)
+		foreach ( $locations_raw as $location ) {
+			$map_url = get_post_meta( absint( $location->ID ), 'location-map', true );
+			$locations .= '<h2 style="margin-bottom:0;">LOCATION</h2>';
+			$locations .= '<p style="margin-top:0;">' . esc_html( $location->post_title ) . '<br /><strong>Map</strong>: <a href="' . esc_url( $map_url ) . '">' . esc_url( $map_url ) . '</a></p>';
+			$locations .= '<h2 style="margin-bottom:0;">AUDIO AND VISUAL EQUIPMENT</h2>';
+			$locations .= '<p style="margin-top:0;">' . $location->post_content . '</p>';
+		}
 	}
+
 
 	// Set some variables based on what type of application we are using
 	$makers = array(
@@ -338,15 +361,30 @@ function mf_email_presenter_schedule() {
 			'$scheduled_date' => esc_html( $schedule_meta['mfei_day'][0] ),
 			'$scheduled_start_time' => esc_html( $schedule_meta['mfei_start'][0] ),
 			'$scheduled_end_time' => esc_html( $schedule_meta['mfei_start'][0] ),
-			'$location_name' => esc_html( $locations ),
-			'$map_url' => '',
-			'$app_url' => '',
-			'$location_description' => '',
-			'$app_eb_promo_code' => '',
+			'$location_information' => $locations,
+			'$app_url' => get_permalink( absint( $application->ID ) ),
+			'$app_eb_promo_code' => sanitize_text_field( $app_promo_code ),
 		);
+		$body = force_balance_tags( str_replace( array_keys( $find_and_replace ), array_values( $find_and_replace ), $email_body ) );
+
+		// Email it baby!
+		$results[ $maker['name'] ] = wp_mail( esc_html( $maker['name'] ) . ' <' . sanitize_email( $maker['email'] ) . '>', 'THIS IS A TEST Confirmation and logistics for your presentation @Maker Faire Bay Area 2014', $body, array( 'Content-Type: text/html', "From: Sabrina Merlo <sabrina@makerfaire.com", "Bcc: sabrina@makerfaire.com" ) );
+	}
+	
+	// Check each result of the email and see if any failed.
+	foreach ( $results as $key => $value ) {
+		if ( $value ) {
+			$done = array( 'messages_sent' => true );
+
+			// Update the post meta that emails have been sent to the presenters
+			update_post_meta( absint( $application->ID ), 'app-emails-sent', 'true' );
+		} else {
+			$done = array( 'messages_sent' => false, 'failed_email' => esc_html( $key ) );
+ 		}
 	}
 
-	wp_die();
+	// Return the results
+	wp_die( json_encode( $done ) );
 }
 add_action( 'wp_ajax_mf_email_schedule', 'mf_email_presenter_schedule' );
 
