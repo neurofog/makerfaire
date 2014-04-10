@@ -533,6 +533,7 @@ function mf_generate_dropdown( $tax, $selected ) {
 
 /**
  * Based on the faire, output the dates of the event
+ * @param  string $faire The faire slug
  *
  * @return array $faire
  */
@@ -542,10 +543,6 @@ function mf_get_faire_date( $faire ) {
 
 	if ( $faire == 'maker-faire-bay-area-2014' ) {
 		$output = array(
-			'title' => array(
-				'Saturday' 	=> 'Saturday 17th, 2014',
-				'Sunday'	=> 'Sunday 18th, 2014',
-			),
 			'Saturday' 	=> '5/17/2014',
 			'Sunday' 	=> '5/18/2014',
 			'time_zone' => ' PST',
