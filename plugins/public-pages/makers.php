@@ -971,25 +971,35 @@ function make_video_photo_gallery( $attr ) {
 add_shortcode( 'video_gallery', 'make_video_photo_gallery' );
 
 
+/**
+ * The new and improved schedule by location shortcode.
+ *
+ * We wanted a better code base that is more maintainable and performant that also supports our new location architecture.
+ * To use, pass in the location_id attribute in the shortcode with the locations ID along with what faire you want applications from. Passing the faire is necessary for future archiving.
+ * From there we'll query all events for each day and cache them.
+ * Now we'll loop through each day spitting out all applications scheduled for those days from 10am to closing of that day.
+ * 
+ * @param  array $atts The attributes being passed through the shortcode
+ * @return string
+ */
 function mf_display_schedule_by_location( $atts ) {
 	global $mfform;
+
 	$data = shortcode_atts( array(
 		'location_id' 	=> '',
 		'faire'			=> MF_CURRENT_FAIRE,
 	), $atts );
 
+	// Get the faire date array
+	$faire_date = mf_get_faire_date( sanitize_title( $data['faire'] ) );
+
 	// Get the location name.
-	$location_title = get_the_title( absint( $data['location_id'] ) );
-	// $location_obj = get_post(28245);
-	// $location_meta = get_post_custom( 28245 );
-	// var_dump( $location_obj );
-	// var_dump( $location_meta );
-	// var_dump( serialize( array( absint( $data['location_id'] ) ) ) );
+	$location = get_post( absint( $data['location_id'] ) );
 	
-	// Get all events by location
-	$events = false;//wp_cache_get( str_replace( '-', '_', sanitize_title( $location_title ) ) . '_saturday_schedule', 'locations' );
-	if ( $events === false ) {
-		$events_args = array(
+	// Get Saturday events by location
+	$saturday = wp_cache_get( sanitize_title( $location->post_title ) . '_saturday_schedule_' . sanitize_title( $data['faire'] ), 'locations' );
+	if ( $saturday === false ) {
+		$events_saturday_args = array(
 			'post_type' => 'event-items',
 			'orderby' => 'meta_value',
 			'order' => 'ASC',
@@ -1007,203 +1017,100 @@ function mf_display_schedule_by_location( $atts ) {
 				),
 			),
 		);
-		$events = new WP_Query( $events_args );
+		$saturday = new WP_Query( $events_saturday_args );
 
-		// wp_cache_set( str_replace( '-', '_', sanitize_title( $location_title ) ) . '_saturday_schedule', $events, 'locations', 300 );
+		wp_cache_set( sanitize_title( $location->post_title ) . '_saturday_schedule_' . sanitize_title( $data['faire'] ), $saturday, 'locations', 300 );
 	}
+
+	// Get Sunday Events by location
+	$sunday = wp_cache_get( sanitize_title( $location->post_title ) . '_sunday_schedule_' . sanitize_title( $data['faire'] ), 'locations' );
+	if ( $sunday === false ) {
+		$events_sunday_args = array(
+			'post_type' => 'event-items',
+			'orderby' => 'meta_value',
+			'order' => 'ASC',
+			'meta_key' => 'mfei_start',
+			'posts_per_page' => 30,
+			'faire' => sanitize_title( $data['faire'] ),
+			'meta_query' => array(
+				array(
+					'key' => 'mfei_day',
+					'value' => 'Sunday',
+				),
+				array(
+					'key' => 'faire_location',
+					'value' => serialize( array( absint( $data['location_id'] ) ) ), // We need a specific setup to search for the faire location
+				),
+			),
+		);
+		$sunday = new WP_Query( $events_sunday_args );
+
+		wp_cache_set( sanitize_title( $location->post_title ) . '_sunday_schedule_' . sanitize_title( $data['faire'] ), $sunday, 'locations', 300 );
+	}
+
+	$output = '<a href="' . esc_url( home_url( '/stage-schedule/?location=' . absint( $data['location_id'] ) ) ) . '" class="pull-right" style="position:relative;top:7px;"><img src="' . get_stylesheet_directory_uri() . '/images/print-ico.png" alt="Print this schedule" /></a>';
+	$output .= '<h2><a href="' . esc_url( get_permalink( absint( $data['location_id'] ) ) ) . '">' . esc_html( $location->post_title ) . '</a></h2>';
 	
-	// Make sure something was actually returned
-	if ( $events->found_posts >= 1 ) {
-		$output = '<table class="table table-striped table-bordered table-schedule">';
-			$output .= '<a href="' . esc_url( home_url( '/stage-schedule/?location=' . absint( $data['location_id'] ) ) ) . '" class="pull-right" style="position:relative;top:7px;"><img src="' . get_stylesheet_directory_uri() . '/images/print-ico.png" alt="Print this schedule" /></a>';
-			$output .= '<h2><a href="' . esc_url( get_permalink( absint( $data['location_id'] ) ) ) . '">' . esc_html( $location_title ) . '</a></h2>';
-		$output .= '</table>';
+	if ( ! empty( $location->post_content ) )
+		$output .= '<div class="alert alert-info"><p>' . wp_kses_post( $location->post_content ) . '</p></div>';
 
-		// Loop through the events and get the applications
-		while ( $events->have_posts() ) : $events->the_post();
-			$meta = get_post_meta( absint( get_the_ID() ) );
-			$app_obj = get_post( absint( $meta['mfei_record'][0] ) );
-			$app = json_decode( mf_convert_newlines( str_replace( "\'", "'", $app_obj->post_content ) ) );
-			var_dump( $meta );
-			var_dump( $app );
+	// Let's loop through each day and spit out a schedule?
+	$days = array( 'saturday', 'sunday' );
+	foreach ( $days as $key => $day ) {
 
-			$output .= '<tr>';
-				$output .= '<td width="150" style="max-width:150px;">';
-					$output .= '<h5>' . esc_html( $meta['mfei_day'][0] ) . '</h5>';
-					$output .= '<p>' . esc_html( $meta['mfei_start'][0] ) . ' &mdash; ' . esc_html( $meta['mfei_stop'][0] ) . '</p>';
-					if ( isset( $app->{ $mfform->merge_fields( 'form_photo', $app->form_type ) } ) ) {
-						$output .= '<div class="pull-left thumbnail">';
-							$output .= '<a href="' . get_permalink( $app_obj->ID ) . '"><img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $app ), 140, 140 ) . '" alt="' . esc_attr( $app_obj->post_title ) . '" width="140" height="140"></a>';
-						$output .= '</div>';
-					}
-				$output .= '</td>';
-			$output .= '</tr>';
-		endwhile;
+		// Make sure something was actually returned
+		if ( ${ $day }->found_posts >= 1 ) {
+
+			// Start the schedule
+			$output .= '<table id="' . esc_attr( $day ) . '" class="table table-striped table-bordered table-schedule">';
+				$output .= '<thead><tr><th colspan="2">' . esc_html( date( 'l dS, Y', strtotime( $faire_date[ ucfirst( $day ) ] ) ) ) . '</th></tr></thead>';
+
+				// Loop through the events and get the applications
+				while ( ${ $day }->have_posts() ) : ${ $day }->the_post();
+					$event_id = get_the_ID();
+					$meta = get_post_meta( absint( get_the_ID() ) );
+					$app_obj = get_post( absint( $meta['mfei_record'][0] ) );
+					$app = json_decode( mf_convert_newlines( str_replace( "\'", "'", $app_obj->post_content ) ) );
+
+					$output .= '<tr>';
+						$output .= '<td width="150" style="max-width:150px;">';
+							$output .= '<h5>' . esc_html( $meta['mfei_day'][0] ) . '</h5>';
+							$output .= '<p>' . esc_html( $meta['mfei_start'][0] ) . ' &mdash; ' . esc_html( $meta['mfei_stop'][0] ) . '</p>';
+							if ( isset( $app->{ $mfform->merge_fields( 'form_photo', $app->form_type ) } ) || has_post_thumbnail( absint( $event_id ) ) ) {
+								$output .= '<div class="pull-left thumbnail">';
+									// We may want to over ride the photo of an application on the schedule page by checking if there is a featured image on the event item
+									if ( has_post_thumbnail( absint( $event_id ) ) ) {
+										$output .= get_the_post_thumbnail( absint( $event_id ), 'schedule-thumb' );
+									} else {
+										$output .= '<a href="' . get_permalink( absint( $app_obj->ID ) ) . '"><img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $app ), 140, 140 ) . '" alt="' . esc_attr( $app_obj->post_title ) . '" width="140" height="140"></a>';
+									}
+								$output .= '</div>';
+							}	
+						$output .= '</td><td>';
+							$output .= '<h3><a href="' . get_permalink( absint( $app_obj->ID ) ) . '">' . get_the_title( absint( $app_obj->ID ) ) . '</a></h3>';
+							
+							// Presenter Name(s)
+							if ( ! empty( $app->presenter_name ) )
+								$output .= '<h4 class="maker-name">' . implode(', ', $app->presenter_name ) . '</h4>';
+
+							// Application Descriptions
+							$description = $app->{ $mfform->merge_fields( 'project_description', $app->form_type ) };
+							if ( ! empty( $description ) )
+								$output .= Markdown( stripslashes( wp_filter_post_kses( mf_convert_newlines( $description ) ) ) );
+
+							// Add our video link for video coverage
+							if ( ! empty( $meta['mfei_coverage'][0] ) )
+								$output .= '<p><a href="' . esc_url( $meta['mfei_coverage'][0] ) . '" class="btn btn-mini btn-primary">Watch Video</a></p>';
+						$output .= '</td>';
+					$output .= '</tr>';
+				endwhile;
+
+			$output .= '</table>';
+			wp_reset_postdata();
+		}
 	}
 
-
-	// while ( $query->have_posts() ) : $query->the_post();
-	// 	$meta = get_post_meta( get_the_ID() );
-	// 	$sched_post = get_post( $meta['mfei_record'][0] );
-	// 	$json = json_decode( mf_convert_newlines( str_replace( "\'", "'", $sched_post->post_content ) ) );
-	// 	$day = ($meta['mfei_day'][0]) ? $meta['mfei_day'][0] : '' ;
-	// 	$start = ($meta['mfei_start'][0]) ? $meta['mfei_start'][0] : '' ;
-	// 	$stop = ($meta['mfei_stop'][0]) ? $meta['mfei_stop'][0] : '' ;
-	// 	$output .= '<tr>';
-	// 	$output .= '<td width="150" style="max-width:150px;">';
-	// 	$output .= '<h5>' . esc_html( $day ) . '</h5>';
-	// 	$output .= '<p>' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</p>';
-	// 	if ( isset( $json->presenter_photo ) or isset($json->project_photo) or isset($json->presentation_photo) or isset($json->performer_photo) or has_post_thumbnail( get_the_ID() ) ) {
-	// 		if ( get_the_post_thumbnail() ) {
-	// 			$output .= '<div class="pull-left thumbnail"><a href="';
-	// 			$output .= get_permalink( $sched_post ) . '">';
-	// 			$output .= get_the_post_thumbnail( get_the_ID(), 'schedule-thumb' );
-	// 			$output .= '</a></div>';
-	// 		} elseif ( isset( $json->presenter_photo[0] ) && !is_array( $json->presenter_photo[0] ) && strlen( $json->presenter_photo[0] ) > 5 ) {
-	// 			$output .= '<div class="pull-left thumbnail"><a href="';
-	// 			$output .= get_permalink( $sched_post ) . '">';
-	// 			$output .= '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->presenter_photo[0], 140, 140 ) . '" alt="' . esc_attr( get_the_title( $sched_post->ID ) ) .'" />';
-	// 			$output .= '</a></div>';
-	// 		} else {
-	// 			$output .= '<div class="pull-left thumbnail"><a href="';
-	// 			$output .= get_permalink( $sched_post ) . '">';
-	// 			$output .= '<img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 140, 140 ) . '" alt="' . esc_attr( get_the_title( $sched_post->ID ) ) .'" />';
-	// 			$output .= '</a></div>';
-	// 		}
-	// 	}
-	// 	$output .= '</td>';
-	// 	$output .= '<td>';
-	// 	$output .= '<h3><a href="' . get_permalink( $sched_post ) . '">' . get_the_title( $sched_post->ID ) . '</a></h3>';
-	// 	if ( !empty( $json->presenter_name ) ) {
-	// 		$names = $json->presenter_name;
-	// 		$names_output = '';
-	// 		foreach ( $names as $name ) {
-	// 			$names_output .= ', ' . $name;
-	// 		}
-	// 		$output .= '<h4>' . substr($names_output, 2) . '</h4>';
-	// 	}
-	// 	if ( !empty($json->short_description ) ) {
-	// 		$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->short_description, "\n" ) ) ) ) ;
-	// 	} elseif ( !empty($json->public_description ) ) {
-	// 		$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) ;
-	// 	}
-
-	// 	if ( ! empty( $meta['mfei_coverage'][0] ) )
-	// 		$output .= '<p><a href="' . esc_url( $meta['mfei_coverage'][0] ) . '" class="btn btn-mini btn-primary">Watch Video</a></p>';
-	// 	// $output .= '<ul class="unstyled">';
-	// 	// $terms = get_the_terms( $sched_post->ID, array( 'category', 'post_tag' ) );
-	// 	// if (!empty($terms)) {
-	// 	// 	$output .= '<li>Topics: ';
-	// 	// 	$the_terms = '';
-	// 	// 	foreach ($terms as $idx => $term) {
-	// 	// 		$the_terms .= ', <a href="' . esc_url( get_term_link( $term ) ) . '">' . $term->name . '</a>';
-	// 	// 	}
-	// 	// 	$output .= substr( $the_terms, 2 );
-	// 	// 	$output .= '</li>';
-	// 	// }
-	// 	// $output .= '</ul>';
-	// 	$output .= '</td>';
-	// 	$output .= '</tr>';
-	// endwhile;
-	// $output .= '</table>';
-	// endif;
-	// wp_reset_postdata();
-
-	// // Roll the schedule for Sunday.
-
-	// if ( $query->found_posts >= 1 ) :
-	// $query = wp_cache_get( $location . '_sunday_schedule' );
-	// if( $query == false ) {
-	// 	$args = array(
-	// 		'location' 		=> sanitize_title( $term->slug ),
-	// 		'post_type'		=> 'event-items',
-	// 		'orderby' 		=> 'meta_value',
-	// 		'meta_key'		=> 'mfei_start',
-	// 		'order'			=> 'asc',
-	// 		'posts_per_page'=> '30',
-	// 		'faire'			=> $faire,
-	// 		'meta_query' => array(
-	// 			array(
-	// 				'key' 	=> 'mfei_day',
-	// 				'value'	=> 'Sunday'
-	// 		   )
-	// 		)
-	// 		);
-	// 	$query = new WP_Query( $args );
-	// 	wp_cache_set( $location . '_sunday_schedule', $query, '', 300 );
-	// }
-	// $output .= '<table class="table table-striped table-bordered table-schedule">';
-	// if ( $faire == 'world-maker-faire-new-york-2013' ) {
-	// 	$output .= '<thead><tr><th colspan="2">September 22nd, 2013</th></tr></thead>';
-	// }
-	// while ( $query->have_posts() ) : $query->the_post();
-	// 	$meta = get_post_meta( get_the_ID());
-	// 	$sched_post = get_post( $meta['mfei_record'][0] );
-	// 	$json = json_decode( str_replace( "\'", "'", $sched_post->post_content ) );
-	// 	$day = ($meta['mfei_day'][0]) ? $meta['mfei_day'][0] : '' ;
-	// 	$start = ($meta['mfei_start'][0]) ? $meta['mfei_start'][0] : '' ;
-	// 	$stop = ($meta['mfei_stop'][0]) ? $meta['mfei_stop'][0] : '' ;
-	// 	$output .= '<tr>';
-	// 	$output .= '<td width="150">';
-	// 	$output .= '<h5>' . esc_html( $day ) . '</h5>';
-	// 	$output .= '<p>' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</p>';
-	// 	if ( isset( $json->presenter_photo ) or isset($json->project_photo) or isset($json->presentation_photo) or isset($json->performer_photo) or has_post_thumbnail( get_the_ID() ) ) {
-	// 		if ( get_the_post_thumbnail() ) {
-	// 			$output .= '<div class="pull-left thumbnail"><a href="';
-	// 			$output .= get_permalink( $sched_post ) . '">';
-	// 			$output .= get_the_post_thumbnail( get_the_ID(), 'schedule-thumb' );
-	// 			$output .= '</a></div>';
-	// 		} elseif ( isset( $json->presenter_photo[0] ) && !is_array( $json->presenter_photo[0] ) && strlen( $json->presenter_photo[0] ) > 5 ) {
-	// 			$output .= '<div class="pull-left thumbnail"><a href="';
-	// 			$output .= get_permalink( $sched_post ) . '">';
-	// 			$output .= '<img src="' . wpcom_vip_get_resized_remote_image_url( $json->presenter_photo[0], 140, 140 ) . '" alt="' . esc_attr( get_the_title( $sched_post->ID ) ) .'" />';
-	// 			$output .= '</a></div>';
-	// 		} else {
-	// 			$output .= '<div class="pull-left thumbnail"><a href="';
-	// 			$output .= get_permalink( $sched_post ) . '">';
-	// 			$output .= '<img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $json ), 140, 140 ) . '" alt="' . esc_attr( get_the_title( $sched_post->ID ) ) .'" />';
-	// 			$output .= '</a></div>';
-	// 		}
-	// 	}
-	// 	$output .= '</td>';
-	// 	$output .= '<td>';
-	// 	$output .= '<h3><a href="' . get_permalink( $sched_post ) . '">' . get_the_title( $sched_post->ID ) . '</a></h3>';
-	// 	if ( !empty( $json->presenter_name ) ) {
-	// 		$names = $json->presenter_name;
-	// 		$names_output = '';
-	// 		foreach ( $names as $name ) {
-	// 			$names_output .= ', ' . $name;
-	// 		}
-	// 		$output .= '<h4>' . substr($names_output, 2) . '</h4>';
-	// 	}
-	// 	if ( !empty($json->short_description ) ) {
-	// 		$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->short_description, "\n" ) ) ) ) ;
-	// 	} elseif ( !empty($json->public_description ) ) {
-	// 		$output .= Markdown ( stripslashes( wp_filter_post_kses( mf_convert_newlines( $json->public_description, "\n" ) ) ) ) ;
-	// 	}
-
-	// 	if ( ! empty( $meta['mfei_coverage'][0] ) )
-	// 		$output .= '<p><a href="' . esc_url( $meta['mfei_coverage'][0] ) . '" class="btn btn-mini btn-primary">Watch Video</a></p>';
-	// 	// $output .= '<ul class="unstyled">';
-	// 	// $terms = get_the_terms( $sched_post->ID, array( 'category', 'post_tag' ) );
-	// 	// if (!empty($terms)) {
-	// 	// 	$output .= '<li>Topics: ';
-	// 	// 	$the_terms = '';
-	// 	// 	foreach ($terms as $idx => $term) {
-	// 	// 		$the_terms .= ', <a href="' . get_term_link( $term ) . '">' . $term->name . '</a>';
-	// 	// 	}
-	// 	// 	$output .= substr( $the_terms, 2 );
-	// 	// 	$output .= '</li>';
-	// 	// }
-	// 	// $output .= '</ul>';
-	// 	$output .= '</td>';
-	// 	$output .= '</tr>';
-	// endwhile;
-	// $output .= '</table>';
-	// endif;
-	// wp_reset_postdata();
-
+	// OMG WTF JUST HAPPENED. LET'S JUST RETURN THIS. :P
 	return $output;
 }
-
 add_shortcode('mf_schedule_by_location', 'mf_display_schedule_by_location');
