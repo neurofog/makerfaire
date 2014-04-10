@@ -585,6 +585,7 @@ function mf_stage_description( $term ) {
 
 /**
  * Generate the schedule for the schedule page. Based on a shortcode. Pass in the ID, and get the schedule for both days.
+ * @deprecated Used for older faires. Please use mf_display_schedule() shortcode
  */
 function mf_schedule( $atts ) {
 
@@ -594,7 +595,8 @@ function mf_schedule( $atts ) {
 	$location = ( isset($atts['location'] ) ) ? sanitize_text_field( $atts['location'] ) : '';
 	$faire = ( isset($atts['faire'] ) ) ? sanitize_text_field( $atts['faire'] ) : '';
 
-	if (!empty($location)) {
+	// Get the location
+	if ( ! empty( $location ) ) {
 		$term = wpcom_vip_get_term_by( 'id', $location, 'location');
 		$url = get_term_link( $term );
 		if ( !is_wp_error( $url ) ) {
@@ -795,7 +797,7 @@ function mf_schedule( $atts ) {
 	return $output;
 }
 
-add_shortcode('mf_full_schedule', 'mf_schedule');
+// add_shortcode('mf_full_schedule', 'mf_schedule');
 
 
 function mf_get_scheduled_item( $the_ID ) {
@@ -967,3 +969,148 @@ function make_video_photo_gallery( $attr ) {
 }
 
 add_shortcode( 'video_gallery', 'make_video_photo_gallery' );
+
+
+/**
+ * The new and improved schedule by location shortcode.
+ *
+ * We wanted a better code base that is more maintainable and performant that also supports our new location architecture.
+ * To use, pass in the location_id attribute in the shortcode with the locations ID along with what faire you want applications from. Passing the faire is necessary for future archiving.
+ * From there we'll query all events for each day and cache them.
+ * Now we'll loop through each day spitting out all applications scheduled for those days from 10am to closing of that day.
+ * 
+ * @param  array $atts The attributes being passed through the shortcode
+ * @return string
+ */
+function mf_display_schedule_by_location( $atts ) {
+	global $mfform;
+
+	$data = shortcode_atts( array(
+		'location_id' 	=> '',
+		'faire'			=> MF_CURRENT_FAIRE,
+	), $atts );
+
+	// Get the faire date array
+	$faire_date = mf_get_faire_date( sanitize_title( $data['faire'] ) );
+
+	// Get the location name.
+	$location = get_post( absint( $data['location_id'] ) );
+	
+	// Get Saturday events by location
+	$saturday = wp_cache_get( sanitize_title( $location->post_title ) . '_saturday_schedule_' . sanitize_title( $data['faire'] ), 'locations' );
+	if ( $saturday === false ) {
+		$events_saturday_args = array(
+			'post_type' => 'event-items',
+			'orderby' => 'meta_value',
+			'order' => 'ASC',
+			'meta_key' => 'mfei_start',
+			'posts_per_page' => 30,
+			'faire' => sanitize_title( $data['faire'] ),
+			'meta_query' => array(
+				array(
+					'key' => 'mfei_day',
+					'value' => 'Saturday',
+				),
+				array(
+					'key' => 'faire_location',
+					'value' => serialize( array( absint( $data['location_id'] ) ) ), // We need a specific setup to search for the faire location
+				),
+			),
+		);
+		$saturday = new WP_Query( $events_saturday_args );
+
+		wp_cache_set( sanitize_title( $location->post_title ) . '_saturday_schedule_' . sanitize_title( $data['faire'] ), $saturday, 'locations', 300 );
+	}
+
+	// Get Sunday Events by location
+	$sunday = wp_cache_get( sanitize_title( $location->post_title ) . '_sunday_schedule_' . sanitize_title( $data['faire'] ), 'locations' );
+	if ( $sunday === false ) {
+		$events_sunday_args = array(
+			'post_type' => 'event-items',
+			'orderby' => 'meta_value',
+			'order' => 'ASC',
+			'meta_key' => 'mfei_start',
+			'posts_per_page' => 30,
+			'faire' => sanitize_title( $data['faire'] ),
+			'meta_query' => array(
+				array(
+					'key' => 'mfei_day',
+					'value' => 'Sunday',
+				),
+				array(
+					'key' => 'faire_location',
+					'value' => serialize( array( absint( $data['location_id'] ) ) ), // We need a specific setup to search for the faire location
+				),
+			),
+		);
+		$sunday = new WP_Query( $events_sunday_args );
+
+		wp_cache_set( sanitize_title( $location->post_title ) . '_sunday_schedule_' . sanitize_title( $data['faire'] ), $sunday, 'locations', 300 );
+	}
+
+	$output = '<a href="' . esc_url( home_url( '/stage-schedule/?location=' . absint( $data['location_id'] ) ) ) . '" class="pull-right" style="position:relative;top:7px;"><img src="' . get_stylesheet_directory_uri() . '/images/print-ico.png" alt="Print this schedule" /></a>';
+	$output .= '<h2><a href="' . esc_url( get_permalink( absint( $data['location_id'] ) ) ) . '">' . esc_html( $location->post_title ) . '</a></h2>';
+	
+	if ( ! empty( $location->post_content ) )
+		$output .= '<div class="alert alert-info"><p>' . wp_kses_post( $location->post_content ) . '</p></div>';
+
+	// Let's loop through each day and spit out a schedule?
+	$days = array( 'saturday', 'sunday' );
+	foreach ( $days as $key => $day ) {
+
+		// Make sure something was actually returned
+		if ( ${ $day }->found_posts >= 1 ) {
+
+			// Start the schedule
+			$output .= '<table id="' . esc_attr( $day ) . '" class="table table-striped table-bordered table-schedule">';
+				$output .= '<thead><tr><th colspan="2">' . esc_html( date( 'l dS, Y', strtotime( $faire_date[ ucfirst( $day ) ] ) ) ) . '</th></tr></thead>';
+
+				// Loop through the events and get the applications
+				while ( ${ $day }->have_posts() ) : ${ $day }->the_post();
+					$event_id = get_the_ID();
+					$meta = get_post_meta( absint( get_the_ID() ) );
+					$app_obj = get_post( absint( $meta['mfei_record'][0] ) );
+					$app = json_decode( mf_convert_newlines( str_replace( "\'", "'", $app_obj->post_content ) ) );
+
+					$output .= '<tr>';
+						$output .= '<td width="150" style="max-width:150px;">';
+							$output .= '<h5>' . esc_html( $meta['mfei_day'][0] ) . '</h5>';
+							$output .= '<p>' . esc_html( $meta['mfei_start'][0] ) . ' &mdash; ' . esc_html( $meta['mfei_stop'][0] ) . '</p>';
+							if ( isset( $app->{ $mfform->merge_fields( 'form_photo', $app->form_type ) } ) || has_post_thumbnail( absint( $event_id ) ) ) {
+								$output .= '<div class="pull-left thumbnail">';
+									// We may want to over ride the photo of an application on the schedule page by checking if there is a featured image on the event item
+									if ( has_post_thumbnail( absint( $event_id ) ) ) {
+										$output .= get_the_post_thumbnail( absint( $event_id ), 'schedule-thumb' );
+									} else {
+										$output .= '<a href="' . get_permalink( absint( $app_obj->ID ) ) . '"><img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $app ), 140, 140 ) . '" alt="' . esc_attr( $app_obj->post_title ) . '" width="140" height="140"></a>';
+									}
+								$output .= '</div>';
+							}	
+						$output .= '</td><td>';
+							$output .= '<h3><a href="' . get_permalink( absint( $app_obj->ID ) ) . '">' . get_the_title( absint( $app_obj->ID ) ) . '</a></h3>';
+							
+							// Presenter Name(s)
+							if ( ! empty( $app->presenter_name ) )
+								$output .= '<h4 class="maker-name">' . implode(', ', $app->presenter_name ) . '</h4>';
+
+							// Application Descriptions
+							$description = $app->{ $mfform->merge_fields( 'project_description', $app->form_type ) };
+							if ( ! empty( $description ) )
+								$output .= Markdown( stripslashes( wp_filter_post_kses( mf_convert_newlines( $description ) ) ) );
+
+							// Add our video link for video coverage
+							if ( ! empty( $meta['mfei_coverage'][0] ) )
+								$output .= '<p><a href="' . esc_url( $meta['mfei_coverage'][0] ) . '" class="btn btn-mini btn-primary">Watch Video</a></p>';
+						$output .= '</td>';
+					$output .= '</tr>';
+				endwhile;
+
+			$output .= '</table>';
+			wp_reset_postdata();
+		}
+	}
+
+	// OMG WTF JUST HAPPENED. LET'S JUST RETURN THIS. :P
+	return $output;
+}
+add_shortcode('mf_schedule_by_location', 'mf_display_schedule_by_location');

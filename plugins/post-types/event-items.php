@@ -673,6 +673,7 @@ function mf_generate_dropdown( $tax, $selected ) {
 
 /**
  * Based on the faire, output the dates of the event
+ * @param  string $faire The faire slug
  *
  * @return array $faire
  */
@@ -681,10 +682,12 @@ function mf_get_faire_date( $faire ) {
 	$output = array();
 
 	if ( $faire == 'maker-faire-bay-area-2014' ) {
-		$output['Saturday'] = '5/17/2014';
-		$output['Sunday'] 	= '5/18/2014';
-		$output['time_zone']= ' PST';
-	} elseif ( $faire == 'world-maker-faire-new-york-2013' ) {
+		$output = array(
+			'Saturday' 	=> '5/17/2014',
+			'Sunday' 	=> '5/18/2014',
+			'time_zone' => ' PST',
+ 		);
+	} elseif ( $faire == 'world-maker-faire-new-york-2013' ) { // @todo let's update this to match 2014's object but honestly, we'll need to update a bunch of legacy code. Another time me thinks.
 		$output['Saturday'] = '9/21/2013';
 		$output['Sunday'] 	= '9/22/2013';
 		$output['time_zone']= ' EST';
