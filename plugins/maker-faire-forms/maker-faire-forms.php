@@ -875,12 +875,7 @@ class MAKER_FAIRE_FORM {
 			<strong>Bio</strong><br />
 			<?php echo wp_kses_post( mf_convert_newlines( $bio ) ); ?>
 	
-		<?php } elseif ( $args['id'] == 'mf_eb_promo_codes' ) {
-
-			// Load the Eventbrite Promo Code meta box
-			$this->eventbrite_promo_codes( $post, $args, $data );
-
-		} elseif ( $args['id'] == 'mf_maker_info' ) {
+		<?php } elseif ( $args['id'] == 'mf_maker_info' ) {
 
 			$maker_type = ( ! empty( $data->maker ) ) ? $data->maker : $data->form_type;
 
