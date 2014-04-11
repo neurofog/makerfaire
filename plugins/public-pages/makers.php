@@ -585,7 +585,7 @@ function mf_stage_description( $term ) {
 
 /**
  * Generate the schedule for the schedule page. Based on a shortcode. Pass in the ID, and get the schedule for both days.
- * @deprecated Used for older faires. Please use mf_display_schedule() shortcode
+ * @deprecated Used for older faires. Please use mf_display_schedule_by_location() shortcode
  */
 function mf_schedule( $atts ) {
 
@@ -797,7 +797,7 @@ function mf_schedule( $atts ) {
 	return $output;
 }
 
-// add_shortcode('mf_full_schedule', 'mf_schedule');
+add_shortcode('mf_full_schedule', 'mf_schedule');
 
 
 function mf_get_scheduled_item( $the_ID ) {
@@ -993,7 +993,7 @@ function mf_display_schedule_by_location( $atts ) {
 	// Get the faire date array
 	$faire_date = mf_get_faire_date( sanitize_title( $data['faire'] ) );
 
-	// Get the location name.
+	// Get the location object.
 	$location = get_post( absint( $data['location_id'] ) );
 	
 	// Get Saturday events by location
