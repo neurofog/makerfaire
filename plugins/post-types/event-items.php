@@ -451,15 +451,7 @@ function makerfaire_add_name_to_column( $column_name, $post_ID ) {
 
 		case 'location' :
 
-			$locs = get_the_terms( $post_ID, 'location' );
-			$loca = array();
-
-			foreach ($locs as $loc) {
-				$loca[] = esc_html( $loc->name );
-			}
-
-			echo implode( ', ', $loca );
-
+			echo mf_get_locations( $post_ID );
 			break;
 	}
 }
