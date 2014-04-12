@@ -990,8 +990,12 @@ function mf_display_schedule_by_location( $atts ) {
 		'faire'			=> MF_CURRENT_FAIRE,
 	), $atts );
 
-	// Get the faire date array
+	// Get the faire date array. If the 
 	$faire_date = mf_get_faire_date( sanitize_title( $data['faire'] ) );
+
+	// Make sure we actually passed a valid faire...
+	if ( empty( $faire_date ) )
+		return '<h3>Not a valid faire!</h3>';
 
 	// Get the location object.
 	$location = get_post( absint( $data['location_id'] ) );
@@ -1048,7 +1052,6 @@ function mf_display_schedule_by_location( $atts ) {
 		wp_cache_set( sanitize_title( $location->post_title ) . '_sunday_schedule_' . sanitize_title( $data['faire'] ), $sunday, 'locations', 300 );
 	}
 
-	$output = '<a href="' . esc_url( home_url( '/stage-schedule/?location=' . absint( $data['location_id'] ) ) ) . '" class="pull-right" style="position:relative;top:7px;"><img src="' . get_stylesheet_directory_uri() . '/images/print-ico.png" alt="Print this schedule" /></a>';
 	$output .= '<h2><a href="' . esc_url( get_permalink( absint( $data['location_id'] ) ) ) . '">' . esc_html( $location->post_title ) . '</a></h2>';
 	
 	if ( ! empty( $location->post_content ) )
