@@ -3398,7 +3398,7 @@ class MAKER_FAIRE_FORM {
 		$sql = "SELECT * FROM $wpdb->comments LEFT OUTER JOIN $wpdb->posts ON ($wpdb->comments.comment_post_ID = $wpdb->posts.ID) WHERE comment_type = 'editorial-comment' AND post_type = 'mf_form' ORDER BY comment_date_gmt DESC LIMIT 1999";
 
 		$comments        = $wpdb->get_results( $sql );
-		$output          = "Project ID\tProject Name\tUsers & Groups Flagged\tDate Timestamp\tUser Name\tComment Text\r\n";
+		$output          = "Project ID\tProject Name\tProject Status\tUsers & Groups Flagged\tDate Timestamp\tUser Name\tComment Text\r\n";
 		$following_users = array();
 
 		foreach( $comments as $comment ) {
@@ -3424,6 +3424,7 @@ class MAKER_FAIRE_FORM {
 
 			$row  = absint( $comment->ID ) . "\t";
 			$row .= $comment->post_title . "\t";
+			$row .= $comment->post_status . "\t";
 			$row .= substr( $user_list, 2 ) . "\t";
 			$row .= $comment->comment_date . "\t";
 			$row .= $comment->comment_author . "\t";
