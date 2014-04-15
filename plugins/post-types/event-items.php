@@ -244,6 +244,146 @@ function makerfaire_update_event( $id ) {
 add_action( 'save_post', 'makerfaire_update_event' );
 
 
+/**
+ * Generates a configurable/canned email response to the presenter.
+ * @param  obj $meta The meta information assigned to our event
+ * @return void
+ */
+function mf_email_presenter_schedule() {
+	// Verify we have the right credentials
+	if ( isset( $_POST['nonce'] ) && ! wp_verify_nonce( $_POST['nonce'], 'email-presenter-schedulees' ) )
+		wp_die( new WP_Error( 'security-check-failed', 'We couldn\'t validate your request. Try again.' ) );
+
+	// Get the application and the event schedule
+	$schedule_meta = get_post_custom( absint( $_POST['meta'] ) );
+	$application = get_post( absint( $schedule_meta['mfei_record'][0] ) );
+	
+	// Make sure we have an application
+	if ( empty( $application ) )
+		wp_die( new WP_Error( 'empty-application', 'We couldn\'t find the application #' . absint( $schedule_meta['mfei_record'][0] ) ) );
+
+	// Extract the application data
+	$app = json_decode( str_replace( "\'", "'", $application->post_content ) );
+	$app_promo_code = get_post_meta( absint( $application->ID ), 'app-presenter-promo-code', true );
+	
+	// Fetch the locations and process our data into something useable
+	$locations_raw = mf_get_locations( absint( $_POST['meta'] ), true );
+	$locations = array();
+	
+	// Process the location objects into a comma separated lists
+	if ( ! empty( $locations_raw ) ) {
+		$locations = '';
+
+		foreach ( $locations_raw as $location ) {
+			$map_url = get_post_meta( absint( $location->ID ), 'location-map', true );
+			$locations .= '<h2 style="margin-bottom:0;">LOCATION</h2>';
+			$locations .= '<p style="margin-top:0;">' . esc_html( $location->post_title ) . '<br /><strong>Map</strong>: <a href="' . esc_url( $map_url ) . '">' . esc_url( $map_url ) . '</a></p>';
+			$locations .= '<h2 style="margin-bottom:0;">AUDIO AND VISUAL EQUIPMENT</h2>';
+			$locations .= '<p style="margin-top:0;">' . wp_kses_post( $location->post_content ) . '</p>';
+		}
+	}
+
+
+	// Set some variables based on what type of application we are using
+	$makers = array(
+		'names'  => array(),
+		'emails' => array(),
+	);
+	switch ( $app->form_type ) {
+		case 'presenter':
+			// Save each presenter name
+			if ( is_array( $app->presenter_name ) && ! empty( $app->presenter_name ) ) {
+				foreach ( $app->presenter_name as $name ) {
+					$makers['names'][] = $name;
+				}
+			} else {
+				$makers['names'][] = $app->presenter_name;
+			}
+
+			// Save each presenter email
+			if ( is_array( $app->presenter_email ) && ! empty( $app->presenter_email ) ) {
+				foreach ( $app->presenter_email as $email ) {
+					$makers['emails'][] = $email;
+				}
+			} else {
+				$makers['emails'][] = $email;
+			}
+			break;
+	}
+
+	// Send all emails in testing environments to one account.
+	if ( isset( $_SERVER['HTTP_HOST'] ) && in_array( $_SERVER['HTTP_HOST'], array( 'localhost', 'make.com', 'vip.dev', 'staging.makerfaire.com' ) ) ) {
+		$makers = array(
+			'names' => array( 'Jake Spurlock' ),
+			'emails' => array( 'jspurlock@makermedia.com' ),
+		);
+	}
+
+	// Fetch our email template
+	$email_path = dirname( __DIR__ ) . '/maker-faire-forms/emails/schedule-event-presenter.html';
+
+	// Prevent Path Traversal
+	if ( strpos( $email_path, '../' ) !== false || strpos( $email_path, "..\\" ) !== false || strpos( $email_path, '/..' ) !== false || strpos( $email_path, '\..' ) !== false )
+		return;
+
+	// Make sure the file exists...
+	if ( ! file_exists( $email_path ) )
+		return;
+
+	// get the contents of the email_template as the body
+	$email_temp = file_get_contents( $email_path );
+
+	// Update and send out an email for each maker
+	$maker_count = count( $makers['names'] );
+	for ( $i = 0; $i <= $maker_count - 1; $i++ ) {
+		// Save our email template into a new variable so we don't have to fetch it again
+		$email_body = $email_temp;
+
+		// Add our single maker name and email and prep them for email
+		$maker = array(
+			'name' => $makers['names'][ intval( $i ) ],
+			'email' => $makers['emails'][ intval( $i ) ],
+		);
+
+		// Get full date
+		$faire_date = mf_get_faire_date( MF_CURRENT_FAIRE );
+
+		// Pair our custom variables found in the email to actual data. We will run a find and replace on it for a dynamic email
+		$find_and_replace = array(
+			'$presenter_name' => esc_html( $maker['name'] ),
+			'$faire_name' => 'Maker Faire Bay Area 2014',
+			'$app_name' => esc_html( $application->post_title ),
+			'$scheduled_date' => date( 'l, F j, Y', strtotime( $faire_date[ $schedule_meta['mfei_day'][0] ] ) ),
+			'$scheduled_start_time' => esc_html( $schedule_meta['mfei_start'][0] ),
+			'$scheduled_end_time' => esc_html( $schedule_meta['mfei_start'][0] ),
+			'$location_information' => $locations,
+			'$app_url' => get_permalink( absint( $application->ID ) ),
+			'$app_eb_promo_code' => sanitize_text_field( $app_promo_code ),
+		);
+		$body = force_balance_tags( str_replace( array_keys( $find_and_replace ), array_values( $find_and_replace ), $email_body ) );
+
+		// Email it baby!
+		$results[ $maker['name'] ] = wp_mail( esc_html( $maker['name'] ) . ' <' . sanitize_email( $maker['email'] ) . '>', 'Confirmation and logistics for your presentation @Maker Faire Bay Area 2014', $body, array( 'Content-Type: text/html', "From: Sabrina Merlo <sabrina@makerfaire.com", "Bcc: sabrina@makerfaire.com" ) );
+	}
+	
+	// Check each result of the email and see if any failed.
+	foreach ( $results as $key => $value ) {
+		if ( $value ) {
+			$done = array( 'messages_sent' => true );
+
+			// Update the post meta that emails have been sent to the presenters
+			update_post_meta( absint( $application->ID ), 'app-emails-sent', 'true' );
+		} else {
+			$done = array( 'messages_sent' => false, 'failed_email' => esc_html( $key ) );
+ 		}
+	}
+	
+	// Return the results
+	wp_die( json_encode( $done ) );
+}
+add_action( 'wp_ajax_mf_email_schedule', 'mf_email_presenter_schedule' );
+
+
 
 
 
