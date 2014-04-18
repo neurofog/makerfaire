@@ -351,12 +351,15 @@ function mf_email_presenter_schedule() {
 			'email' => $makers['emails'][ intval( $i ) ],
 		);
 
+		// Get full date
+		$faire_date = mf_get_faire_date( MF_CURRENT_FAIRE );
+
 		// Pair our custom variables found in the email to actual data. We will run a find and replace on it for a dynamic email
 		$find_and_replace = array(
 			'$presenter_name' => esc_html( $maker['name'] ),
 			'$faire_name' => 'Maker Faire Bay Area 2014',
 			'$app_name' => esc_html( $application->post_title ),
-			'$scheduled_date' => esc_html( $schedule_meta['mfei_day'][0] ),
+			'$scheduled_date' => date( 'l, F j, Y', strtotime( $faire_date[ $schedule_meta['mfei_day'][0] ] ) ),
 			'$scheduled_start_time' => esc_html( $schedule_meta['mfei_start'][0] ),
 			'$scheduled_end_time' => esc_html( $schedule_meta['mfei_start'][0] ),
 			'$location_information' => $locations,
