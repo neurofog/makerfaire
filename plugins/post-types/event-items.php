@@ -107,7 +107,7 @@ function makerfaire_meta_box( $post ) {
 		$meta = get_post_custom( $post->ID );
 
 	$app_id = ( isset( $meta['mfei_record'][0] ) && ! empty( $meta['mfei_record'][0] ) ) ? $meta['mfei_record'][0] : '';
-	$event_scheduled = get_post_meta( absint( $app_id ), '_ef_editorial_meta_checkbox_schedule-completed', true ); 
+	$event_scheduled = get_post_meta( absint( $app_id ), '_ef_editorial_meta_checkbox_schedule-completed', true );
 	$schedules_emailed = get_post_meta( absint( $app_id ), 'app-emails-sent', true ); ?>
 
 	<style>#ei-details label{font-weight:bold; display:block; margin:15px 0 5px 0;} #ei-details select,#ei-details input[type=text]{width:200px}</style>
@@ -241,6 +241,11 @@ function makerfaire_update_event( $id ) {
 		update_post_meta( $id, $meta_key, $meta_value );
 	}
 
+	// If we are trying to save any presenter promo codes...
+	if ( isset( $_POST['presenter-promo-code'] ) && ! empty( $_POST['presenter-promo-code'] ) )
+		update_post_meta( absint( $_POST['mfei_record'] ), 'app-presenter-promo-code', esc_attr( $_POST['presenter-promo-code'] ) );
+
+
 	if ( ! $is_mf_form )
 		return;
 
@@ -263,7 +268,7 @@ function mf_email_presenter_schedule() {
 	// Get the application and the event schedule
 	$schedule_meta = get_post_custom( absint( $_POST['meta'] ) );
 	$application = get_post( absint( $schedule_meta['mfei_record'][0] ) );
-	
+
 	// Make sure we have an application
 	if ( empty( $application ) )
 		wp_die( new WP_Error( 'empty-application', 'We couldn\'t find the application #' . absint( $schedule_meta['mfei_record'][0] ) ) );
@@ -271,11 +276,11 @@ function mf_email_presenter_schedule() {
 	// Extract the application data
 	$app = json_decode( str_replace( "\'", "'", $application->post_content ) );
 	$app_promo_code = get_post_meta( absint( $application->ID ), 'app-presenter-promo-code', true );
-	
+
 	// Fetch the locations and process our data into something useable
 	$locations_raw = mf_get_locations( absint( $_POST['meta'] ), true );
 	$locations = array();
-	
+
 	// Process the location objects into a comma separated lists
 	if ( ! empty( $locations_raw ) ) {
 		$locations = '';
@@ -371,7 +376,7 @@ function mf_email_presenter_schedule() {
 		// Email it baby!
 		$results[ $maker['name'] ] = wp_mail( esc_html( $maker['name'] ) . ' <' . sanitize_email( $maker['email'] ) . '>', 'Confirmation and logistics for your presentation @Maker Faire Bay Area 2014', $body, array( 'Content-Type: text/html', "From: Sabrina Merlo <sabrina@makerfaire.com", "Bcc: sabrina@makerfaire.com" ) );
 	}
-	
+
 	// Check each result of the email and see if any failed.
 	foreach ( $results as $key => $value ) {
 		if ( $value ) {

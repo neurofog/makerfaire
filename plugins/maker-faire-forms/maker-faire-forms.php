@@ -524,6 +524,7 @@ class MAKER_FAIRE_FORM {
 			if ( has_term( 'presenter', 'type' ) ) {
 				add_meta_box( 'mf_presenter_promos', 'Eventbrite Promo Codes', array( &$this, 'meta_box' ), 'mf_form', 'side', 'default' );
 			}
+			add_meta_box( 'mf_presenter_promos', 'Eventbrite Promo Codes', array( &$this, 'meta_box' ), 'event-items', 'side', 'default' );
 		} else {
 			add_meta_box( 'mf_form_type', 'Application Type',  array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default' );
 			add_meta_box( 'mf_exhibit',   'Exhibit Details',   array( &$this, 'meta_box' ), 'mf_form', 'normal', 'default', array( 'type'=>'exhibit' ) );
@@ -874,7 +875,7 @@ class MAKER_FAIRE_FORM {
 			<?php echo esc_html( $data->private_city.', '.$data->private_state.' '.$data->private_zip.' '.$data->private_country ); ?><br /><br />
 			<strong>Bio</strong><br />
 			<?php echo wp_kses_post( mf_convert_newlines( $bio ) ); ?>
-	
+
 		<?php } elseif ( $args['id'] == 'mf_maker_info' ) {
 
 			$maker_type = ( ! empty( $data->maker ) ) ? $data->maker : $data->form_type;
@@ -1188,7 +1189,12 @@ class MAKER_FAIRE_FORM {
 	 * @return [type]       [description]
 	 */
 	private function presenter_promos( $post ) {
-		$promo = get_post_meta( absint( $post->ID ), 'app-presenter-promo-code', true ); ?>
+		if ( get_post_type( $post ) == 'event-items' ) {
+			$record = get_post_meta( absint( $post->ID ), 'mfei_record', true );
+			$promo = get_post_meta( absint( $record ), 'app-presenter-promo-code', true );
+		} else {
+			$promo = get_post_meta( absint( $post->ID ), 'app-presenter-promo-code', true );
+		} ?>
 		<input type="text" placeholder="Insert the unique Eventbrite promo code" name="presenter-promo-code" value="<?php echo ( ! empty( $promo ) ) ? esc_attr( $promo ) : ''; ?>" style="width:100%;">
 	<?php }
 
