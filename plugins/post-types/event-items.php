@@ -243,7 +243,7 @@ function makerfaire_update_event( $id ) {
 
 	// If we are trying to save any presenter promo codes...
 	if ( isset( $_POST['presenter-promo-code'] ) && ! empty( $_POST['presenter-promo-code'] ) )
-		update_post_meta( absint( $_POST['mfei_record'] ), 'app-presenter-promo-code', esc_attr( $_POST['presenter-promo-code'] ) );
+		update_post_meta( absint( $_POST['mfei_record'] ), 'app-presenter-promo-code', sanitize_text_field( $_POST['presenter-promo-code'] ) );
 
 
 	if ( ! $is_mf_form )
