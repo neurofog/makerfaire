@@ -738,6 +738,12 @@ tr.time {
 .tab-content h4 {
   margin: 6px 0 6px;
 }
+.alert p {
+  margin: 10px 0;
+}
+.alert p a {
+  color: red;
+}
 .meetthemakers {
   background-color: #fff;
   background: rgba(255, 255, 255, 0.8);
