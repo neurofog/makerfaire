@@ -835,12 +835,17 @@ function mf_get_scheduled_item( $the_ID ) {
 			$day = ($meta['mfei_day'][0]) ? $meta['mfei_day'][0] : '' ;
 			$start = ($meta['mfei_start'][0]) ? $meta['mfei_start'][0] : '' ;
 			$stop = ($meta['mfei_stop'][0]) ? $meta['mfei_stop'][0] : '' ;
+			$location = mf_get_locations( get_the_id() );
 			$coverage = ( !empty( $meta['mfei_coverage'][0] ) ) ? $meta['mfei_coverage'][0] : '';
 			$output .= '<tr>';
 			$output .= '<td>' . esc_html( $day ) . '</td>';
 			$output .= '<td>' . esc_html( $start ) . '</td>';
 			$output .= '<td>' . esc_html( $stop ) . '</td>';
-			$output .= '<td>' . get_the_term_list( get_the_ID(), 'location' ) . '</td>';
+			if ( ! empty( $location ) ) {
+				$output .= '<td>' . esc_html( $location ) . '</td>';
+			} else {
+				$output .= '<td>' . get_the_term_list( get_the_ID(), 'location' ) . '</td>';
+			}
 			if ( ! empty( $coverage ) ) {
 				$output .= '<td class="has-video"><a href="' . esc_url( $coverage ) . '" class="btn btn-mini btn-primary">Watch Video</a></td>';
 			} else {
@@ -978,7 +983,7 @@ add_shortcode( 'video_gallery', 'make_video_photo_gallery' );
  * To use, pass in the location_id attribute in the shortcode with the locations ID along with what faire you want applications from. Passing the faire is necessary for future archiving.
  * From there we'll query all events for each day and cache them.
  * Now we'll loop through each day spitting out all applications scheduled for those days from 10am to closing of that day.
- * 
+ *
  * @param  array $atts The attributes being passed through the shortcode
  * @return string
  */
@@ -990,7 +995,7 @@ function mf_display_schedule_by_location( $atts ) {
 		'faire'			=> MF_CURRENT_FAIRE,
 	), $atts );
 
-	// Get the faire date array. If the 
+	// Get the faire date array. If the
 	$faire_date = mf_get_faire_date( sanitize_title( $data['faire'] ) );
 
 	// Make sure we actually passed a valid faire...
@@ -999,7 +1004,7 @@ function mf_display_schedule_by_location( $atts ) {
 
 	// Get the location object.
 	$location = get_post( absint( $data['location_id'] ) );
-	
+
 	// Get Saturday events by location
 	$saturday = wp_cache_get( sanitize_title( $location->post_title ) . '_saturday_schedule_' . sanitize_title( $data['faire'] ), 'locations' );
 	if ( $saturday === false ) {
@@ -1053,7 +1058,7 @@ function mf_display_schedule_by_location( $atts ) {
 	}
 
 	$output .= '<h2><a href="' . esc_url( get_permalink( absint( $data['location_id'] ) ) ) . '">' . esc_html( $location->post_title ) . '</a></h2>';
-	
+
 	if ( ! empty( $location->post_content ) )
 		$output .= '<div class="alert alert-info"><p>' . wp_kses_post( $location->post_content ) . '</p></div>';
 
@@ -1088,10 +1093,10 @@ function mf_display_schedule_by_location( $atts ) {
 										$output .= '<a href="' . get_permalink( absint( $app_obj->ID ) ) . '"><img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $app ), 140, 140 ) . '" alt="' . esc_attr( $app_obj->post_title ) . '" width="140" height="140"></a>';
 									}
 								$output .= '</div>';
-							}	
+							}
 						$output .= '</td><td>';
 							$output .= '<h3><a href="' . get_permalink( absint( $app_obj->ID ) ) . '">' . get_the_title( absint( $app_obj->ID ) ) . '</a></h3>';
-							
+
 							// Presenter Name(s)
 							if ( ! empty( $app->presenter_name ) )
 								$output .= '<h4 class="maker-name">' . implode(', ', $app->presenter_name ) . '</h4>';
