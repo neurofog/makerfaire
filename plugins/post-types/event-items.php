@@ -365,7 +365,7 @@ function mf_email_presenter_schedule() {
 			'$app_name' => esc_html( $application->post_title ),
 			'$scheduled_date' => date( 'l, F j, Y', strtotime( $faire_date[ $schedule_meta['mfei_day'][0] ] ) ),
 			'$scheduled_start_time' => esc_html( $schedule_meta['mfei_start'][0] ),
-			'$scheduled_end_time' => esc_html( $schedule_meta['mfei_start'][0] ),
+			'$scheduled_end_time' => esc_html( $schedule_meta['mfei_stop'][0] ),
 			'$location_information' => $locations,
 			'$app_url' => get_permalink( absint( $application->ID ) ),
 			'$app_eb_promo_code' => sanitize_text_field( $app_promo_code ),
