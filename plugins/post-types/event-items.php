@@ -140,11 +140,10 @@ function makerfaire_meta_box( $post ) {
 	<a title="Edit event items" href="#" id="view-application" class="post-edit-link">View Application</a> (opens new window with given application)
 	<label>Schedule Completed</label>
 	<input name="mfei_schedule_completed" type="checkbox" value="<?php echo ( $event_scheduled === '1' ) ? '1' : '0'; ?>" <?php echo checked( $event_scheduled, '1' ); ?> /> &nbsp; Event is Scheduled
-	<?php if ( ! $schedules_emailed ) : ?>
-		<p><a href="#" id="mf-email-schedule-button" class="button">Email Presenter Schedule</a></p>
-		<?php wp_nonce_field( 'email-presenter-schedulees', 'mf-email-schedule' ); ?>
-		<input type="hidden" name="meta-data" id="schedule-id" value="<?php echo absint( $post->ID ); ?>">
-	<?php else : ?>
+	<p><a href="#" id="mf-email-schedule-button" class="button">Email Presenter Schedule</a></p>
+	<?php wp_nonce_field( 'email-presenter-schedulees', 'mf-email-schedule' ); ?>
+	<input type="hidden" name="meta-data" id="schedule-id" value="<?php echo absint( $post->ID ); ?>">
+	<?php if ( $schedules_emailed ) : ?>
 		<div id="email-status" style="color:#468847;background-color:#dff0d8;border:1px solid #d6e9c6;padding:8px 35px 8px 14px;text-shadow:0 1px 0 rgba(255,255,255,.5);border-radius:4px;width:25%;margin-top:10px;">Emails have already been sent!</div>
 	<?php endif; ?>
 	<script>
