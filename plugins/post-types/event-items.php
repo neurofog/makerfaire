@@ -104,8 +104,11 @@ function makerfaire_meta_box( $post ) {
 		'mfei_coverage'	=> '',
 	);
 
-	if( $post->post_status == 'publish' )
-		$meta = get_post_custom( $post->ID );
+	// Get the post meta
+	$post_meta = get_post_custom( $post->ID );
+
+	// Merge with defaults.
+	$meta = shortcode_atts( $defaults, $post_meta );
 
 	$app_id = ( isset( $meta['mfei_record'][0] ) && ! empty( $meta['mfei_record'][0] ) ) ? $meta['mfei_record'][0] : '';
 	$event_scheduled = get_post_meta( absint( $app_id ), '_ef_editorial_meta_checkbox_schedule-completed', true );
