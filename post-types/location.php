@@ -87,20 +87,41 @@ add_action( 'add_meta_boxes', 'mf_add_custom_box' );
  */
 function mf_inner_location_box( $post ) {
 
-	// Add an nonce field so we can check for it later.
-	wp_nonce_field( 'mf_inner_location_box', 'mf_inner_location_box_nonce' );
+	$faires 		= array();
+	$faire_location = array();
 
-	$faire_location_meta = get_post_meta( $post->ID, 'faire_location', true );
+	if ( isset( $_POST['nonce'] ) && ! wp_verify_nonce( $_POST['nonce'] ) ) {
 
-	$faire_location = ( is_array( $faire_location_meta ) ) ? $faire_location_meta : array() ;
+		// Add an nonce field so we can check for it later.
+		wp_nonce_field( 'mf_inner_location_box', 'mf_inner_location_box_nonce' );
 
-	$faires = get_the_terms( $post, 'faire' );
+		// Get all of the faires.
+		$terms = $_POST['faire'];
 
-	$faire = array();
+		// Loop through the faires, and get all of the
+		foreach ( $terms as $faire ) {
+			// Need to attach the entire term object to this...
+			$faires[ $faire ] = get_term( absint( $faire ), 'faire' );
+		}
+	}
 
+	if ( $post ) {
+
+		// Add an nonce field so we can check for it later.
+		wp_nonce_field( 'mf_inner_location_box', 'mf_inner_location_box_nonce' );
+
+		$faire_location_meta = get_post_meta( $post->ID, 'faire_location', true );
+
+		$faire_location = ( is_array( $faire_location_meta ) ) ? $faire_location_meta : array() ;
+
+		$faires = get_the_terms( $post, 'faire' );
+
+	}
+
+	// Since we have a few, loop through, and get all of the results.
 	if ( $faires ) {
 
-		foreach ($faires as $da_faire ) {
+		foreach ( $faires as $da_faire ) {
 			$faire[] = sanitize_title( $da_faire->slug );
 		}
 
@@ -122,8 +143,9 @@ function mf_inner_location_box( $post ) {
 		// The Query
 		$query = new WP_Query( $args );
 
-		echo '<ul style="-moz-column-count:3;-moz-column-gap:20px;-webkit-column-count:3;-webkit-column-gap:20px;">';
+		echo '<ul class="style="-moz-column-count:3;-moz-column-gap:20px;-webkit-column-count:3;-webkit-column-gap:20px;">';
 
+		// Build the interface.
 		foreach ( $query->posts as $location ) {
 
 			// Display only the parent elements first.
@@ -165,12 +187,16 @@ function mf_inner_location_box( $post ) {
 		echo '</ul>';
 
 
+	} else {
+		echo 'You don\'t have a location created for this event yet. Add one, and the appropriate locations will be added.';
 	}
+
+	// Add new locations
 	echo '<p><a class="button" target="_blank" href="' . esc_url( admin_url( 'post-new.php?post_type=location' ) ) . '">Add a New Location</a><p>';
 
 }
 
-	
+add_action( 'wp_ajax_mf_inner_location_box', 'mf_inner_location_box' );
 /**
  * Adds the Map URL meta box to locations
  * @param  obj $post The post object
