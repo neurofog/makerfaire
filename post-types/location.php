@@ -197,6 +197,69 @@ function mf_inner_location_box( $post ) {
 }
 
 add_action( 'wp_ajax_mf_inner_location_box', 'mf_inner_location_box' );
+
+/**
+ * Admin Javascript
+ */
+function location_admin_javascript() { ?>
+	<script type="text/javascript" charset="utf-8" async defer>
+
+		jQuery( document ).ready( function( $ ) {
+
+			// Let's get an admin spinny gif...
+			var spinner = '<?php echo esc_url( admin_url( 'images/spinner.gif' ) ); ?>';
+
+			// And, let's build that into an image tag.
+			var img =  '<img src="' + spinner + '" alt="Loading..." class="alignleft" style="padding-right:5px;">';
+
+			// Let's see if we can get all of the locations.
+			$('#fairechecklist').change( function() {
+
+				// Setup the form object
+				var form_obj = {};
+
+				// Build an empty array for the locations to be held.
+				var locations = [];
+
+				// Loop though all of the options, and get all selected and them the locations array.
+				$('#fairechecklist input').each( function() {
+					if ( $( this ).is( ':checked' ) ) {
+						val = jQuery( this ).attr( 'value' );
+						locations.push( val );
+					};
+				});
+
+				// Clear out the content, and bring the loading gif.
+				$('#mf_sectionid .inside').empty().html( img + ' Loading...' );
+
+				// Setup the form array.
+				var form_obj = {};
+
+				// Add the action, nonce, and faire to the object.
+				form_obj.action 	= 'mf_inner_location_box';
+				form_obj.nonce 		= '<?php echo wp_create_nonce( 'mf_inner_location_box' ); ?>';
+				form_obj.faire 		= locations;
+
+				// Kick of the AJAX request.
+				$.ajax({
+					url: ajaxurl,
+					data: form_obj,
+					type: 'POST',
+					success: function( response ) {
+						// If we get a response back, kick it into the meta box.
+						$('#mf_sectionid .inside').empty().html( response );
+					}
+				});
+
+			});
+
+		});
+
+	</script>
+<?php }
+
+add_filter( 'admin_head', 'location_admin_javascript' );
+
 /**
  * Adds the Map URL meta box to locations
  * @param  obj $post The post object
