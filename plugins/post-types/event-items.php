@@ -95,7 +95,8 @@ function makerfaire_add_meta_boxes() {
 * =====================================================================*/
 function makerfaire_meta_box( $post ) {
 
-	$meta = array(
+	// Let's use these as defaults
+	$defaults = array(
 		'mfei_day'    	=> 'Saturday',
 		'mfei_start'  	=> '8:00 AM',
 		'mfei_stop'   	=> '8:30 AM',
@@ -218,7 +219,7 @@ add_action( 'add_meta_boxes', 'makerfaire_add_meta_boxes' );
 * =====================================================================*/
 function makerfaire_update_event( $id ) {
 
-	if ( empty( $_POST ) || get_post_type( absint( $id ) ) != 'event-items' || $_POST['post_status'] != 'publish' )
+	if ( empty( $_POST ) || get_post_type( absint( $id ) ) != 'event-items' )
 		return false;
 
 	if ( ! isset( $_POST['mfei_submit_nonce'] ) || ! wp_verify_nonce( $_POST['mfei_submit_nonce'], 'mfei_nonce' ) )
