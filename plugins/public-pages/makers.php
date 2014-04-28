@@ -1084,12 +1084,15 @@ function mf_display_schedule_by_location( $atts ) {
 						$output .= '<td width="150" style="max-width:150px;">';
 							$output .= '<h5>' . esc_html( $meta['mfei_day'][0] ) . '</h5>';
 							$output .= '<p>' . esc_html( $meta['mfei_start'][0] ) . ' &mdash; ' . esc_html( $meta['mfei_stop'][0] ) . '</p>';
-							if ( isset( $app->{ $mfform->merge_fields( 'form_photo', $app->form_type ) } ) || has_post_thumbnail( absint( $event_id ) ) ) {
+							if ( isset( $app->{ $mfform->merge_fields( 'form_photo', $app->form_type ) } ) || has_post_thumbnail( absint( $event_id ) ) || isset( $app->{ $mfform->merge_fields( 'user_photo', $app->form_type ) } ) ) {
 								$output .= '<div class="pull-left thumbnail">';
 									// We may want to over ride the photo of an application on the schedule page by checking if there is a featured image on the event item
 									if ( has_post_thumbnail( absint( $event_id ) ) ) {
 										$output .= get_the_post_thumbnail( absint( $event_id ), 'schedule-thumb' );
-									} else {
+									} elseif ( isset( $app->{ $mfform->merge_fields( 'user_photo', $app->form_type ) } ) ) {
+										$output .= '<a href="' . get_permalink( absint( $app_obj->ID ) ) . '"><img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $app ), 140, 140 ) . '" alt="' . esc_attr( $app_obj->post_title ) . '" width="140" height="140"></a>';
+									}
+									else {
 										$output .= '<a href="' . get_permalink( absint( $app_obj->ID ) ) . '"><img src="' . wpcom_vip_get_resized_remote_image_url( mf_get_the_maker_image( $app ), 140, 140 ) . '" alt="' . esc_attr( $app_obj->post_title ) . '" width="140" height="140"></a>';
 									}
 								$output .= '</div>';
