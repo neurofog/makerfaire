@@ -153,7 +153,7 @@ function mf_inner_location_box( $post ) {
 			// Display only the parent elements first.
 			// If the parent has children, we'll handle that below
 			if ( $location->post_parent == 0 ) {
-				echo '<li><label class="checkbox">';
+				echo '<li style="-moz-column-count:3;-moz-column-gap:20px;-webkit-column-count:3;-webkit-column-gap:20px;"><label class="checkbox">';
 				if ( in_array( $location->ID, $faire_location ) ) {
 					echo '<input type="checkbox" name="location[]" value="' . absint( $location->ID ) .'" checked>';
 				} else {
