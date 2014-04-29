@@ -121,6 +121,8 @@ function mf_inner_location_box( $post ) {
 	// Since we have a few, loop through, and get all of the results.
 	if ( $faires ) {
 
+		$faire = array();
+
 		foreach ( $faires as $da_faire ) {
 			$faire[] = sanitize_title( $da_faire->slug );
 		}
