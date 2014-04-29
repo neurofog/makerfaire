@@ -231,6 +231,11 @@ function location_admin_javascript() { ?>
 					};
 				});
 
+				if ( locations.length == 0 ) {
+					$('#mf_sectionid .inside').empty();
+					return;
+				};
+
 				// Clear out the content, and bring the loading gif.
 				$('#mf_sectionid .inside').empty().html( img + ' Loading...' );
 
