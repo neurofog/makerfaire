@@ -141,35 +141,37 @@ class MAKE_CLI extends WP_CLI_Command {
 	 */
 	public function mf_location_import() {
 		include_once 'placement.php';
-		foreach ($placement as $place) {
-			WP_CLI::line();
-			WP_CLI::line( get_the_title( $place['CS_ID'] ) );
-			$del = delete_post_meta( $place['CS_ID'], 'booth' );
-			$pid = add_post_meta( $place['CS_ID'], 'booth', $place['Location'] );
-			if ( !$del ) {
-				WP_CLI::warning( "Nothing to delete" );
+		foreach ( $placement as $place ) {
+			WP_CLI::line( $place['Name'] . ' ' . $place['Subarea'] );
+			WP_CLI::line( get_the_title( $place['ID'] ) );
+
+			// Do the area lookup:
+			// Let's find the parent first, as there are grand children that have the same name:
+			$parent = get_page_by_title( $place['Area'], OBJECT, 'location' );
+			WP_CLI::line( 'Parent: ' . esc_html( $parent->post_title ) . ' [' . intval( $parent->ID ) . ']'  );
+
+			// Let's get the children now...
+			$args = array(
+				'post_parent'	=> intval( $parent->ID ),
+				'post_name'		=> sanitize_title( $place['Subarea'] ),
+				'post_type'		=> 'location',
+			);
+			$posts = new WP_Query( $args );
+
+			// We found a child!
+			$child = $posts->posts[0];
+
+			// Sanitize and save the locations
+			if ( $child ) {
+				WP_CLI::line( 'Found child: ' . esc_html( $child->post_title ) . ' [' . intval( $child->ID ) . ']' );
+				$locations = array( intval( $child->ID ) );
+				$loc = update_post_meta( intval( $place['ID'] ), 'faire_location', $locations );
+			} elseif ( $parent ) {
+				WP_CLI::line( 'Using parent: ' . esc_html( $parent->post_title ) . ' [' . intval( $parent->ID ) . ']' );
+				$locations = array( intval( $parent->ID ) );
+				$loc = update_post_meta( intval( $place['ID'] ), 'faire_location', $locations );
 			} else {
-				WP_CLI::success( 'Deleted ' . $place['CS_ID'] );
-			}
-			if ( $pid == null ) {
-				WP_CLI::warning( "Booth number isn't set, unfortunately..." );
-			} else {
-				WP_CLI::success( 'Inserted booth number: ' . $place['Location'] );
-			}
-			if ( !empty( $place['New Subarea'] ) ) {
-				$result = wp_set_object_terms( $place['CS_ID'], $place['New Subarea'], 'location', false );
-				if ( !empty( $result ) ) {
-					WP_CLI::success( 'Subarea: ' . $place['New Subarea'] );
-				} else {
-					WP_CLI::warning( $place['New Subarea'] );
-				}
-			} else {
-				$result = wp_set_object_terms( $place['CS_ID'], $place['Area'], 'location', false );
-				if ( !empty( $result ) ) {
-					WP_CLI::success( 'Area was used, instead of subarea: ' . $place['Area'] );
-				} else {
-					WP_CLI::warning( $place['Area'] );
-				}
+				$loc = delete_post_meta( intval( $place['ID'] ), 'faire_location' );
 			}
 		}
 	}
