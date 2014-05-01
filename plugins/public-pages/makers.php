@@ -888,12 +888,17 @@ function mf_get_scheduled_item( $the_ID ) {
 			$day = ($meta['mfei_day'][0]) ? $meta['mfei_day'][0] : '' ;
 			$start = ($meta['mfei_start'][0]) ? $meta['mfei_start'][0] : '' ;
 			$stop = ($meta['mfei_stop'][0]) ? $meta['mfei_stop'][0] : '' ;
-			$coverage = ( isset( $meta['mfei_coverage'][0] ) ) ? $meta['mfei_coverage'][0] : '';
+			$location = mf_get_locations( get_the_id() );
+			$coverage = ( !empty( $meta['mfei_coverage'][0] ) ) ? $meta['mfei_coverage'][0] : '';
 			$output .= '<tr>';
 			$output .= '<td>' . esc_html( $day ) . '</td>';
 			$output .= '<td>' . esc_html( $start ) . '</td>';
 			$output .= '<td>' . esc_html( $stop ) . '</td>';
-			$output .= '<td>' . get_the_term_list( get_the_ID(), 'location' ) . '</td>';
+			if ( ! empty( $location ) ) {
+				$output .= '<td>' . esc_html( $location ) . '</td>';
+			} else {
+				$output .= '<td>' . get_the_term_list( get_the_ID(), 'location' ) . '</td>';
+			}
 			if ( ! empty( $coverage ) ) {
 				$output .= '<td class="has-video"><a href="' . esc_url( $coverage ) . '" class="btn btn-mini btn-primary">Watch Video</a></td>';
 			} else {
