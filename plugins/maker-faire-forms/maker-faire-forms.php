@@ -2664,7 +2664,7 @@ class MAKER_FAIRE_FORM {
 						<strong>Start</strong><br />
 						<select name="offset">
 							<option value="0">0</option>
-							<?php foreach( range( 100, 1000, 100 ) as $v ) : ?>
+							<?php foreach( range( 100, intval( wp_count_posts( 'mf_form' )->accepted ), 100 ) as $v ) : ?>
 							<option value="<?php echo intval( $v ); ?>"><?php echo intval( $v ); ?></option>
 							<?php endforeach; ?>
 						</select>
