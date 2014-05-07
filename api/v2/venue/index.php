@@ -69,8 +69,8 @@ if ( $type == 'venue' ) {
 		$meta = get_post_meta( $post->ID );
 
 		// Attach the lat/long to the data feed
-		$venue['latitude']	= ( isset( $meta['latitude'] ) ) ? $meta['latitude'][0] : '';
-		$venue['longitude']	= ( isset( $meta['longitude'] ) ) ? $meta['longitude'][0] : '';
+		$venue['latitude']	= ( isset( $meta['latitude'] ) ) ? floatval( $meta['latitude'][0] ) : '';
+		$venue['longitude']	= ( isset( $meta['longitude'] ) ) ? floatval( $meta['longitude'][0] ) : '';
 
 
 		// Put the maker into our list of makers

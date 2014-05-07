@@ -337,14 +337,14 @@ function mf_save_postdata( $post_id ) {
 
 	// Sanitize and save the locations
 	if ( isset( $_POST['latitude'] ) ) {
-		update_post_meta( $post_id, 'latitude', $_POST['latitude'] );
+		update_post_meta( $post_id, 'latitude', floatval( $_POST['latitude'] ) );
 	} else {
 		delete_post_meta( $post_id, 'latitude' );
 	}
 
 	// Sanitize and save the locations
 	if ( isset( $_POST['longitude'] ) ) {
-		update_post_meta( $post_id, 'longitude', $_POST['longitude'] );
+		update_post_meta( $post_id, 'longitude', floatval( $_POST['longitude'] ) );
 	} else {
 		delete_post_meta( $post_id, 'longitude' );
 	}
@@ -581,7 +581,7 @@ function mapper_admin_javascript() { ?>
 	}
 
 	function initialize() {
-		var latLng = new google.maps.LatLng( <?php echo mf_default_locations(); ?> );
+		var latLng = new google.maps.LatLng( <?php echo esc_js( mf_default_locations() ); ?> );
 		var map = new google.maps.Map(document.getElementById('mapCanvas'), {
 			zoom: 16,
 			center: latLng,
@@ -637,6 +637,6 @@ function mf_default_locations() {
 
 	$new = shortcode_atts( $gps, $db );
 
-	return $new['latitude'] . ', ' . $new['longitude'];
+	return floatval( $new['latitude'] ) . ', ' . floatval( $new['longitude'] );
 
 }
