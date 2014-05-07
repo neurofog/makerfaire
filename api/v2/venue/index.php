@@ -60,7 +60,18 @@ if ( $type == 'venue' ) {
 		}
 
 		// Get the description, if it exists.
-		$venue['description'] = html_entity_decode( get_the_content(), ENT_COMPAT, 'utf-8' );
+		$venue['description'] = html_entity_decode( trim( Markdown( get_the_excerpt() ) ), ENT_COMPAT, 'utf-8' );
+
+		// Do we have a subtitle?
+		$venue['subtitle'] = ( $post->post_parent != 0 ) ? get_the_title( $post->post_parent ) : '';
+
+		// Do we have lat/long?
+		$meta = get_post_meta( $post->ID );
+
+		// Attach the lat/long to the data feed
+		$venue['latitude']	= ( isset( $meta['latitude'] ) ) ? $meta['latitude'][0] : '';
+		$venue['longitude']	= ( isset( $meta['longitude'] ) ) ? $meta['longitude'][0] : '';
+
 
 		// Put the maker into our list of makers
 		array_push( $venues, $venue );
