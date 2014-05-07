@@ -63,20 +63,20 @@ add_filter( 'post_updated_messages', 'location_updated_messages' );
  */
 function mf_add_custom_box() {
 
-    $screens = array( 'mf_form', 'event-items' );
+	$screens = array( 'mf_form', 'event-items' );
 
-    foreach ( $screens as $screen ) {
+	foreach ( $screens as $screen ) {
 
-        add_meta_box(
-            'mf_sectionid',
-            __( 'Location', 'makerfaire' ),
-            'mf_inner_location_box',
-            $screen
-        );
+		add_meta_box(
+			'mf_sectionid',
+			__( 'Location', 'makerfaire' ),
+			'mf_inner_location_box',
+			$screen
+		);
 
-        // Add a map URL link for the location
-        add_meta_box( 'mf-map-url', 'Map', 'mf_map_mb', 'location', 'side', 'default' );
-    }
+		// Add a map URL link for the location
+		add_meta_box( 'mf-map-url', 'Map', 'mf_map_mb', 'location', 'side', 'default' );
+	}
 }
 add_action( 'add_meta_boxes', 'mf_add_custom_box' );
 
@@ -305,12 +305,12 @@ function mf_save_postdata( $post_id ) {
 		return $post_id;
 
 	// Check the user's permissions.
-  	if ( 'page' == $_POST['post_type'] ) {
-    	if ( ! current_user_can( 'edit_page', $post_id ) )
+	if ( 'page' == $_POST['post_type'] ) {
+		if ( ! current_user_can( 'edit_page', $post_id ) )
 			return $post_id;
 
-  	} else {
-    	if ( ! current_user_can( 'edit_post', $post_id ) )
+	} else {
+		if ( ! current_user_can( 'edit_post', $post_id ) )
 			return $post_id;
 	}
 
@@ -318,7 +318,7 @@ function mf_save_postdata( $post_id ) {
 
 	// Sanitize and save the locations
 	if ( isset( $_POST['location'] ) ) {
-  		$locations = array();
+		$locations = array();
 		foreach ( $_POST['location'] as $location ) {
 			$locations[] = absint( $location );
 		}
