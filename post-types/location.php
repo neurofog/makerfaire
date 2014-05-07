@@ -330,6 +330,22 @@ function mf_save_postdata( $post_id ) {
 	// Sanitize and save the map url
 	if ( isset( $_POST['mf-map-url'] ) )
 		update_post_meta( absint( $post_id ), 'location-map', esc_url( $_POST['mf-map-url'] ) );
+
+	// Sanitize and save the locations
+	if ( isset( $_POST['latitude'] ) ) {
+		update_post_meta( $post_id, 'latitude', $_POST['latitude'] );
+	} else {
+		delete_post_meta( $post_id, 'latitude' );
+	}
+
+	// Sanitize and save the locations
+	if ( isset( $_POST['longitude'] ) ) {
+		update_post_meta( $post_id, 'longitude', $_POST['longitude'] );
+	} else {
+		delete_post_meta( $post_id, 'longitude' );
+	}
+
+
 }
 add_action( 'save_post', 'mf_save_postdata' );
 
