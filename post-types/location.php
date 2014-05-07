@@ -300,6 +300,10 @@ function mf_save_postdata( $post_id ) {
 	if ( ! wp_verify_nonce( $_POST['mf_inner_location_box_nonce'], 'mf_inner_location_box' ) )
 		return $post_id;
 
+	// Verify that the nonce is valid.
+	if ( ! wp_verify_nonce( $_POST['location_mapper'], 'location_mapper' ) )
+		return $post_id;
+
 	// If this is an autosave, our form has not been submitted, so we don't want to do anything.
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
 		return $post_id;
@@ -499,7 +503,7 @@ add_action( 'add_meta_boxes', 'mf_location_mapper' );
  * @param WP_Post $post The object for the current post/page.
  */
 function mf_mapper_inner( $post ) { ?>
-	<?php wp_create_nonce( 'location_mapper' ); ?>
+	<?php wp_nonce_field( 'location_mapper', 'location_mapper' ); ?>
 	<div id="mapCanvas"></div>
 	<div id="infoPanel">
 		<b>Marker status:</b>
