@@ -1,11 +1,11 @@
 <?php
 
 function location_category_init() {
-	register_taxonomy( 'location_category', array( 'mf_form' ), array(
-		'hierarchical'            => false,
+	register_taxonomy( 'location_category', array( 'mf_form', 'location' ), array(
+		'hierarchical'            => true,
 		'public'                  => true,
 		'show_in_nav_menus'       => true,
-		'show_ui'                 => false,
+		'show_ui'                 => true,
 		'query_var'               => 'location_category',
 		'rewrite'                 => true,
 		'capabilities'            => array(
