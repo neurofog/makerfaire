@@ -469,3 +469,170 @@ function mf_get_all_locations() {
 
 	return $locations->posts;
 }
+
+
+/**
+ * Adds a box to the main column on the Post and Page edit screens.
+ */
+function mf_location_mapper() {
+
+	$screens = array( 'location' );
+
+	foreach ( $screens as $screen ) {
+
+		add_meta_box(
+			'mf_sectionid',
+			__( 'Location', 'makerfaire' ),
+			'mf_inner_location_box',
+			$screen
+		);
+
+		// Add a map URL link for the location
+		add_meta_box( 'mf_location_mapper', 'Maker Faire Mapper', 'mf_mapper_inner', 'location', 'normal', 'default' );
+	}
+}
+add_action( 'add_meta_boxes', 'mf_location_mapper' );
+
+/**
+ * Prints the box content.
+ *
+ * @param WP_Post $post The object for the current post/page.
+ */
+function mf_mapper_inner( $post ) { ?>
+	<?php wp_create_nonce( 'location_mapper' ); ?>
+	<div id="mapCanvas"></div>
+	<div id="infoPanel">
+		<b>Marker status:</b>
+		<div id="markerStatus">
+			<i>Click and drag the marker.</i>
+		</div>
+		<b>Current position:</b>
+		<div id="info"></div>
+		<b>Closest matching address:</b>
+		<div id="address"></div>
+		<label class="latitude form-input">Latitude: </label><input type="text" name="latitude" id="latitude" value="">
+		<br>
+		<label class="longitude form-input">Longitude: </label><input type="text" name="longitude" id="longitude" value="">
+	</div>
+	<div class="clear"></div>
+
+
+<?php }
+
+add_action( 'wp_ajax_mf_inner_location_box', 'mf_mapper_inner' );
+
+/**
+ * Admin Javascript for the mapper...
+ */
+function mapper_admin_javascript() { ?>
+	<style>
+		.form-input {
+			width: 80px;
+			display: inline-block;
+		}
+		#mapCanvas {
+			width: 500px;
+			height: 400px;
+			float: left;
+		}
+		#infoPanel {
+			float: left;
+			margin-left: 10px;
+		}
+		#infoPanel div {
+			margin-bottom: 5px;
+		}
+	</style>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<script type="text/javascript">
+		var geocoder = new google.maps.Geocoder();
+
+		function geocodePosition(pos) {
+			geocoder.geocode({
+				latLng: pos
+			}, function(responses) {
+				if (responses && responses.length > 0) {
+					updateMarkerAddress(responses[0].formatted_address);
+				} else {
+					updateMarkerAddress('Cannot determine address at this location.');
+				}
+			});
+		}
+
+	function updateMarkerStatus(str) {
+		document.getElementById('markerStatus').innerHTML = str;
+	}
+
+	function updateMarkerPosition(latLng) {
+		document.getElementById('info').innerHTML = [
+			latLng.lat(),
+			latLng.lng()
+		].join(', ');
+		jQuery('#latitude').val( latLng.lat() );
+		jQuery('#longitude').val( latLng.lng() );
+	}
+
+	function updateMarkerAddress(str) {
+		document.getElementById('address').innerHTML = str;
+	}
+
+	function initialize() {
+		var latLng = new google.maps.LatLng( <?php echo mf_default_locations(); ?> );
+		var map = new google.maps.Map(document.getElementById('mapCanvas'), {
+			zoom: 16,
+			center: latLng,
+			mapTypeId: google.maps.MapTypeId.HYBRID
+		});
+		var marker = new google.maps.Marker({
+			position: latLng,
+			title: 'Point A',
+			map: map,
+			draggable: true
+		});
+
+		// Update current position info.
+		updateMarkerPosition(latLng);
+		geocodePosition(latLng);
+
+		// Add dragging event listeners.
+		google.maps.event.addListener(marker, 'dragstart', function() {
+			updateMarkerAddress('Dragging...');
+		});
+
+		google.maps.event.addListener(marker, 'drag', function() {
+			updateMarkerStatus('Dragging...');
+			updateMarkerPosition(marker.getPosition());
+		});
+
+		google.maps.event.addListener(marker, 'dragend', function() {
+			updateMarkerStatus('Drag ended');
+			geocodePosition(marker.getPosition());
+		});
+	}
+
+	// Onload handler to fire off the app.
+	google.maps.event.addDomListener(window, 'load', initialize);
+	</script>
+<?php }
+
+add_filter( 'admin_head', 'mapper_admin_javascript' );
+
+function mf_default_locations() {
+	global $post;
+
+	// The Defaults
+	$gps = array(
+		'latitude' => '27.54540624221166',
+		'longitude' => '-122.30208400894168',
+		);
+
+	// Do we have anything in the DB?
+	$db = array();
+	$db['latitude']		= get_post_meta( get_the_id(), 'latitude', true );
+	$db['longitude']	= get_post_meta( get_the_id(), 'longitude', true );
+
+	$new = shortcode_atts( $gps, $db );
+
+	return $new['latitude'] . ', ' . $new['longitude'];
+
+}
