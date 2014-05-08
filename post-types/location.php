@@ -626,7 +626,7 @@ function mf_default_locations() {
 
 	// The Defaults
 	$gps = array(
-		'latitude' => '27.54540624221166',
+		'latitude' => '37.54540624221166',
 		'longitude' => '-122.30208400894168',
 		);
 
@@ -635,7 +635,7 @@ function mf_default_locations() {
 	$db['latitude']		= get_post_meta( get_the_id(), 'latitude', true );
 	$db['longitude']	= get_post_meta( get_the_id(), 'longitude', true );
 
-	$new = shortcode_atts( $gps, $db );
+	$new = shortcode_atts( $db, $gps );
 
 	return floatval( $new['latitude'] ) . ', ' . floatval( $new['longitude'] );
 
