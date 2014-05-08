@@ -1,7 +1,7 @@
 <?php // Template Name: Signage
 
-if ( isset( $_GET['location'] ) )
-	$location = sanitize_title_for_query( $_GET['location'] );
+if ( isset( $_GET['loc'] ) )
+	$location = intval( $_GET['loc'] );
 
 if ( ! isset( $_GET['description'] ) ) {
 	$short_description = true;
@@ -25,26 +25,27 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
 	$output = '';
 
 	if ( empty( $day_set ) || $day_set == 'saturday' ) {
-		$saturday = wp_cache_get( $location . '_saturday_schedule' );
-		if( $saturday == false ) {
-			$args = array(
-				'location'      => $location,
-				'post_type'     => 'event-items',
-				'orderby'       => 'meta_value',
-				'meta_key'      => 'mfei_start',
-				'faire'         => MF_CURRENT_FAIRE,
-				'order'         => 'asc',
-				'posts_per_page'=> '30',
-				'meta_query' => array(
-						array(
-							'key'   => 'mfei_day',
-							'value' => 'Saturday'
-					   )
+
+		$args = array(
+			'post_type'			=> 'event-items',
+			'orderby'			=> 'meta_value',
+			'meta_key'			=> 'mfei_start',
+			'faire'				=> MF_CURRENT_FAIRE,
+			'order'				=> 'asc',
+			'posts_per_page'	=> '30',
+			'meta_query' 		=> array(
+					array(
+						'key'		=> 'mfei_day',
+						'value'		=> 'Saturday'
+					),
+					array(
+						'key'		=> 'faire_location',
+						'value'		=> intval( $location ),
+						'compare'	=> 'LIKE',
 					)
-				);
-			$saturday = new WP_Query( $args );
-			wp_cache_set( $location . '_saturday_schedule', $saturday, '', 300 );
-		}
+				)
+			);
+		$saturday = new WP_Query( $args );
 
 		$output .= '<h2>Saturday</h1>';
 		$output .= '<table style="width:100%;">';
@@ -59,7 +60,7 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
 			$output .= '<tr>';
 			$output .= '<td width="160" style="max-width:160px; padding:15px 0;" valign="top">';
 			if ( ! isset ( $location ) ) {
-				$output .= '<h4 style="margin-top:0;">' . strip_tags( get_the_term_list( get_the_ID(), 'location' ) ) . '</h4>';
+				$output .= '<h4 style="margin-top:0;">' . get_the_title( $location ) . '</h4>';
 			}
 			$output .= '<h2 style="font-size:.9em; color:#333; margin-top:3px;">' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</h2>';
 			$output .= '</td>';
@@ -82,30 +83,32 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
 		endwhile;
 		$output .= '</table>';
 		wp_reset_postdata();
+
 	}
 
 	// Roll the schedule for Sunday.
 	if ( empty( $day_set ) || $day_set == 'sunday' ) {
-		$sunday = wp_cache_get( $location . '_sunday_schedule' );
-		if( $sunday == false ) {
-			$args = array(
-				'location'      => $location,
-				'post_type'     => 'event-items',
-				'orderby'       => 'meta_value',
-				'meta_key'      => 'mfei_start',
-				'faire'         => MF_CURRENT_FAIRE,
-				'order'         => 'asc',
-				'posts_per_page'=> '30',
-				'meta_query' => array(
+		$args = array(
+			'post_type'			=> 'event-items',
+			'orderby'			=> 'meta_value',
+			'meta_key'			=> 'mfei_start',
+			'faire'				=> MF_CURRENT_FAIRE,
+			'order'				=> 'asc',
+			'posts_per_page'	=> '30',
+			'meta_query' 		=> array(
 					array(
-						'key'   => 'mfei_day',
-						'value' => 'Sunday'
-				   )
+						'key'		=> 'mfei_day',
+						'value'		=> 'Sunday'
+					),
+					array(
+						'key'		=> 'faire_location',
+						'value'		=> intval( $location ),
+						'compare'	=> 'LIKE',
+					)
 				)
-				);
-			$sunday = new WP_Query( $args );
-			wp_cache_set( $location . '_sunday_schedule', $sunday, '', 300 );
-		}
+			);
+		$sunday = new WP_Query( $args );
+
 		$output .= '<h2 style="margin-top:30px;">Sunday</h1>';
 		$output .= '<table style="width:100%;">';
 		while ( $sunday->have_posts() ) : $sunday->the_post();
@@ -119,7 +122,7 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
 			$output .= '<tr>';
 			$output .= '<td width="160" style="max-width:160px; padding:15px 0;" valign="top">';
 			if ( ! isset ( $location ) ) {
-				$output .= '<h4 style="margin-top:0;">' . strip_tags( get_the_term_list( get_the_ID(), 'location' ) ) . '</h4>';
+				$output .= '<h4 style="margin-top:0;">' . get_the_title( $location ) . '</h4>';
 			}
 			$output .= '<h2 style="font-size:.9em; color:#333; margin-top:3px;">' . esc_html( $start ) . ' &mdash; ' . esc_html( $stop ) . '</h2>';
 			$output .= '</td>';
@@ -166,7 +169,7 @@ function get_schedule_list( $location, $short_description = false, $day_set = ''
 		</style>
 	</head>
 	<body>
-		<h1 style="font-size:2.2em; margin:31px 0 0; max-width:75%;"><?php echo ucwords( str_replace( '-', ' ', esc_html( $location ) ) ); ?></h1>
+		<h1 style="font-size:2.2em; margin:31px 0 0; max-width:75%;"><?php echo get_the_title( $location ); ?></h1>
 		<?php if ( ! empty( $term->description ) ) {
 			echo '<div style="font-weight:normal; margin-top:-15px; margin-left:5px; text-decoration:italic;">' . Markdown( esc_html( $term->description ) ) . '</div>';
 		} ?>
