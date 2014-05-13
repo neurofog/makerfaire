@@ -300,10 +300,6 @@ function mf_save_postdata( $post_id ) {
 	if ( ! wp_verify_nonce( $_POST['mf_inner_location_box_nonce'], 'mf_inner_location_box' ) )
 		return $post_id;
 
-	// Verify that the nonce is valid.
-	if ( ! wp_verify_nonce( $_POST['location_mapper'], 'location_mapper' ) )
-		return $post_id;
-
 	// If this is an autosave, our form has not been submitted, so we don't want to do anything.
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
 		return $post_id;
@@ -335,6 +331,21 @@ function mf_save_postdata( $post_id ) {
 	if ( isset( $_POST['mf-map-url'] ) )
 		update_post_meta( absint( $post_id ), 'location-map', esc_url( $_POST['mf-map-url'] ) );
 
+}
+add_action( 'save_post', 'mf_save_postdata' );
+
+
+function mf_save_mapper( $post_id ) {
+
+	// Check if our nonce is set.
+	if ( ! isset( $_POST['location_mapper'] ) )
+		return $post_id;
+
+
+	// Verify that the nonce is valid.
+	if ( ! wp_verify_nonce( $_POST['location_mapper'], 'location_mapper' ) )
+		return $post_id;
+
 	// Sanitize and save the locations
 	if ( isset( $_POST['latitude'] ) ) {
 		update_post_meta( $post_id, 'latitude', floatval( $_POST['latitude'] ) );
@@ -349,10 +360,9 @@ function mf_save_postdata( $post_id ) {
 		delete_post_meta( $post_id, 'longitude' );
 	}
 
-
 }
-add_action( 'save_post', 'mf_save_postdata' );
 
+add_action( 'save_post', 'mf_save_mapper' );
 
 /**
  * Customize the columns for the locations
