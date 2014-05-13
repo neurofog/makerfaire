@@ -72,6 +72,22 @@ if ( $type == 'schedule' ) {
 		// A list of applications assigned to this event (should only be one really...)
 		$schedule['entity_id_refs'] = array( absint( $app_id ) );
 
+		// Application Makers
+		$maker_args = array(
+			'post_type' 		=> 'maker',
+			'posts_per_page' 	=> 20,
+			'mfei_record' 		=> absint( $app_id ),
+		);
+		$makers = new WP_Query( $maker_args );
+
+		$maker_ids = array();
+
+		foreach ( $makers->posts as $maker ) {
+			$maker_ids[] = absint( $maker->ID );
+		}
+
+		$schedule['maker_id_refs'] = ( ! empty( $maker_ids ) ) ? $maker_ids : null;
+
 		// Put the application into our list of schedules
 		array_push( $schedules, $schedule );
 	}
