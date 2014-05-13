@@ -783,22 +783,22 @@ class MAKER_FAIRE_FORM {
 
 										// Check that fields are set, and display them as needed.
 										if ( ! empty( $event_record['mfei_day'][0] ) ) : ?>
-											<tr>
+											<tr <?php post_class(); ?>>
 												<td style="width:80px;" valign="top"><strong>Day:</strong></td>
-												<td valign="top"><?php echo esc_html( $event_record['mfei_day'][0] ); ?> &nbsp; &nbsp; &nbsp; <a href="<?php echo esc_url( $edit_event_url ); ?>" target="_blank">Edit the Time and Date</a></td>
+												<td valign="top"><?php echo esc_html( $event_record['mfei_day'][0] ); ?></td>
 											</tr>
 										<?php endif; if ( ! empty( $event_record['mfei_start'][0] ) ) : ?>
-											<tr>
+											<tr class="<?php post_class(); ?>">
 												<td style="width:80px;" valign="top"><strong>Start Time:</strong></td>
 												<td valign="top"><?php echo esc_html( $event_record['mfei_start'][0] ); ?></td>
 											</tr>
 										<?php endif; if ( ! empty( $event_record['mfei_stop'][0] ) ) : ?>
-											<tr>
+											<tr class="<?php post_class(); ?>">
 												<td style="width:80px;" valign="top"><strong>Stop Time:</strong></td>
 												<td valign="top"><?php echo esc_html( $event_record['mfei_stop'][0] ); ?></td>
 											</tr>
 										<?php endif; if ( ! empty( $event_record['mfei_schedule_completed'][0] ) ) : ?>
-											<tr>
+											<tr class="<?php post_class(); ?>">
 												<td style="width:80px;" valign="top"><strong>Schedule Completed:</strong></td>
 												<td valign="top"><?php echo esc_html( $event_record['mfei_schedule_completed'][0] ); ?></td>
 											</tr>
