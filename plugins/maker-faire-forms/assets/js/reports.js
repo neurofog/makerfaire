@@ -5,6 +5,8 @@ jQuery(document).ready(function($) {
 		// Prevent the button from triggering
 		e.preventDefault();
 
+		$( this ).prop( 'disabled', true );
+
 		var meta = $(this).data();
 
 		meta.action = 'mf_delete_scheduled_event';
