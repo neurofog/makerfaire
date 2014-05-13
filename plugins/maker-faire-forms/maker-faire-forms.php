@@ -263,6 +263,8 @@ class MAKER_FAIRE_FORM {
 		add_action( 'wp_ajax_nopriv_mfform_step', 	  array( &$this, 'ajax_handler' ) );
 		add_action( 'wp_ajax_mfform_step', 			  array( &$this, 'ajax_handler' ) );
 
+		add_action( 'wp_ajax_mf_delete_scheduled_event', array( &$this, 'mf_delete_scheduled_event' ) );
+
 		add_action( 'wp_ajax_nopriv_mfform_getforms', array( &$this, 'ajax_getforms' ) );
 		add_action( 'wp_ajax_mfform_getforms', 		  array( &$this, 'ajax_getforms' ) );
 
@@ -733,26 +735,20 @@ class MAKER_FAIRE_FORM {
 								// Store the current application ID so we can return it within the loop
 								$parent_post_id = get_the_ID();
 
-								// Jake's fancy cached events query found in 'plugins/public-pages/makers.php' in mf_get_scheduled_item()
-								// The function output things for the front-end and all we want is the data.
-								$get_events = wp_cache_get( $post->ID . '_schedule' );
-								if ( $get_events == false ) {
-									$args = array(
-										'post_type'		=> 'event-items',
-										'orderby' 		=> 'meta_value',
-										'meta_key'		=> 'mfei_start',
-										'order'			=> 'asc',
-										'posts_per_page'=> '30',
-										'meta_query' 	=> array(
-											array(
-												'key' 	=> 'mfei_record',
-												'value'	=> $post->ID
-										   ),
-										)
-									);
-									$get_events = new WP_Query( $args );
-									wp_cache_set( $post->ID . '_schedule', $get_events, '', 300 );
-								}
+								$args = array(
+									'post_type'		=> 'event-items',
+									'orderby' 		=> 'meta_value',
+									'meta_key'		=> 'mfei_start',
+									'order'			=> 'asc',
+									'posts_per_page'=> '30',
+									'meta_query' 	=> array(
+										array(
+											'key' 	=> 'mfei_record',
+											'value'	=> $post->ID
+									   ),
+									)
+								);
+								$get_events = new WP_Query( $args );
 
 								// Check that we have returned our query of events, if not, give the option to schedule the event
 								if ( $get_events->found_posts >= 1 ) { ?>
@@ -769,44 +765,42 @@ class MAKER_FAIRE_FORM {
 										// Setup the edit URL and add an edit link to the admin area
 										$edit_event_url = get_edit_post_link();
 
-										// Get the location name that is scheduled
-										$locations = get_the_terms( get_the_ID(), 'location' );
-
 										// Show the location this event is setup for
-										if ( $locations ) :
-											$locs = '';
-											$count = 1;
-											foreach ( $locations as $location ) {
-												$locs = ( $count > 1 ) ? $location->name . ', ' : $location->name;
-											} ?>
+										if ( !empty( $event_record['faire_location'][0] ) ) : ?>
 											<tr>
 												<td style="width:80px;" valign="top"><strong>Location:</strong></td>
-												<td valign="top"><?php echo esc_html( $locs ); ?></td>
+												<td valign="top"><?php echo esc_html( get_the_title( intval( unserialize( $event_record['faire_location'][0] )[0] ) ) ); ?></td>
 											</tr>
 										<?php endif;
 
 										// Check that fields are set, and display them as needed.
 										if ( ! empty( $event_record['mfei_day'][0] ) ) : ?>
-											<tr>
+											<tr <?php post_class(); ?>>
 												<td style="width:80px;" valign="top"><strong>Day:</strong></td>
-												<td valign="top"><?php echo esc_html( $event_record['mfei_day'][0] ); ?> &nbsp; &nbsp; &nbsp; <a href="<?php echo esc_url( $edit_event_url ); ?>" target="_blank">Edit the Time and Date</a></td>
+												<td valign="top"><?php echo esc_html( $event_record['mfei_day'][0] ); ?></td>
 											</tr>
 										<?php endif; if ( ! empty( $event_record['mfei_start'][0] ) ) : ?>
-											<tr>
+											<tr class="<?php post_class(); ?>">
 												<td style="width:80px;" valign="top"><strong>Start Time:</strong></td>
 												<td valign="top"><?php echo esc_html( $event_record['mfei_start'][0] ); ?></td>
 											</tr>
 										<?php endif; if ( ! empty( $event_record['mfei_stop'][0] ) ) : ?>
-											<tr>
+											<tr class="<?php post_class(); ?>">
 												<td style="width:80px;" valign="top"><strong>Stop Time:</strong></td>
 												<td valign="top"><?php echo esc_html( $event_record['mfei_stop'][0] ); ?></td>
 											</tr>
 										<?php endif; if ( ! empty( $event_record['mfei_schedule_completed'][0] ) ) : ?>
-											<tr>
+											<tr class="<?php post_class(); ?>">
 												<td style="width:80px;" valign="top"><strong>Schedule Completed:</strong></td>
 												<td valign="top"><?php echo esc_html( $event_record['mfei_schedule_completed'][0] ); ?></td>
 											</tr>
 										<?php endif; ?>
+											<tr class="<?php post_class(); ?>">
+												<td valign="top"><strong>Edit</strong></td>
+												<td>
+													<a href="<?php echo esc_url( $edit_event_url ); ?>" class="button" target="_blank">Edit the Time and Date</a> <button href="" class="deleteme button-small button-secondary delete" data-key="mfei_record" data-nonce="<?php echo esc_attr( wp_create_nonce( 'delete_scheduled_post' ) ); ?>" data-postid="<?php echo esc_attr( get_the_id() ); ?>" data-value="<?php echo esc_attr( $event_record['mfei_record'][0] ); ?>" title="">Delete Scheduled Event</button>
+												</td>
+											</tr>
 
 									<?php endwhile; ?>
 									<tr>
@@ -4234,6 +4228,24 @@ class MAKER_FAIRE_FORM {
 		$messages['maker_id'] .= $maker_id;
 
 		return $messages;
+	}
+
+	/**
+	 * Delete the scheduled event, and the related post.
+	 */
+	public function mf_delete_scheduled_event() {
+		// Check our nonce and make sure it's correct
+		if ( ! wp_verify_nonce( $_POST['nonce'], 'delete_scheduled_post' ) )
+			die( json_encode( array( 'failed' => 'nonce failed.', 'post' => $_POST, ) ) );
+
+		$del = wp_trash_post( intval( $_POST['postid'] ) );
+
+		if ( $del ) {
+			die( json_encode( array( 'message' => 'deleted', 'pid' => intval( $_POST['postid'] ) ) ) );
+		} else {
+			die( json_encode( array( 'message' => 'unable to delete...' ) ) );
+		}
+
 	}
 }
 
