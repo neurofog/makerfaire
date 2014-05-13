@@ -19,7 +19,8 @@ jQuery(document).ready(function($) {
 			success: function( data ){
 				blurb = JSON.parse( data );
 				if ( blurb.pid ) {
-					$('.post-' + blurb.pid ).slideUp();
+					// This is only grabbing the first, needs to be updated to hide all of them.
+					// $('.post-' + blurb.pid ).hide();
 				}
 			}
 		});
