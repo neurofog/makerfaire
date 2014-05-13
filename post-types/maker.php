@@ -189,7 +189,7 @@ function maker_get_apps_by_id( $maker_id ) {
 		foreach ( $apps->posts as $app ) {
 			$data = json_decode( str_replace( "\'", "'", $app->post_content ) );
 			$app->data = $data;
-			$applications[ $data->form_type ][ $app->ID ] = $app;
+			$app = ( isset( $data->form_type ) && isset( $app->ID ) && ( !empty( $applications[ $data->form_type ][ $app->ID ] ) ) ) ? $applications[ $data->form_type ][ $app->ID ] : '';
 		}
 	} else {
 		$applications = false;
