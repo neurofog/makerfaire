@@ -76,6 +76,7 @@ if ( $type == 'schedule' ) {
 		$maker_args = array(
 			'post_type' 		=> 'maker',
 			'posts_per_page' 	=> 20,
+			'faire'				=> $faire,
 			'mfei_record' 		=> absint( $app_id ),
 		);
 		$makers = new WP_Query( $maker_args );
@@ -87,6 +88,8 @@ if ( $type == 'schedule' ) {
 		}
 
 		$schedule['maker_id_refs'] = ( ! empty( $maker_ids ) ) ? $maker_ids : null;
+
+		$maker_ids = array();
 
 		// Put the application into our list of schedules
 		array_push( $schedules, $schedule );
