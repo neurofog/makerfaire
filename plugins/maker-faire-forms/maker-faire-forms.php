@@ -765,19 +765,11 @@ class MAKER_FAIRE_FORM {
 										// Setup the edit URL and add an edit link to the admin area
 										$edit_event_url = get_edit_post_link();
 
-										// Get the location name that is scheduled
-										$locations = get_the_terms( get_the_ID(), 'location' );
-
 										// Show the location this event is setup for
-										if ( $locations ) :
-											$locs = '';
-											$count = 1;
-											foreach ( $locations as $location ) {
-												$locs = ( $count > 1 ) ? $location->name . ', ' : $location->name;
-											} ?>
+										if ( !empty( $event_record['faire_location'][0] ) ) : ?>
 											<tr>
 												<td style="width:80px;" valign="top"><strong>Location:</strong></td>
-												<td valign="top"><?php echo esc_html( $locs ); ?></td>
+												<td valign="top"><?php echo esc_html( get_the_title( intval( unserialize( $event_record['faire_location'][0] )[0] ) ) ); ?></td>
 											</tr>
 										<?php endif;
 
