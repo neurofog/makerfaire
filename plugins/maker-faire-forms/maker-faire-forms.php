@@ -733,26 +733,20 @@ class MAKER_FAIRE_FORM {
 								// Store the current application ID so we can return it within the loop
 								$parent_post_id = get_the_ID();
 
-								// Jake's fancy cached events query found in 'plugins/public-pages/makers.php' in mf_get_scheduled_item()
-								// The function output things for the front-end and all we want is the data.
-								$get_events = wp_cache_get( $post->ID . '_schedule' );
-								if ( $get_events == false ) {
-									$args = array(
-										'post_type'		=> 'event-items',
-										'orderby' 		=> 'meta_value',
-										'meta_key'		=> 'mfei_start',
-										'order'			=> 'asc',
-										'posts_per_page'=> '30',
-										'meta_query' 	=> array(
-											array(
-												'key' 	=> 'mfei_record',
-												'value'	=> $post->ID
-										   ),
-										)
-									);
-									$get_events = new WP_Query( $args );
-									wp_cache_set( $post->ID . '_schedule', $get_events, '', 300 );
-								}
+								$args = array(
+									'post_type'		=> 'event-items',
+									'orderby' 		=> 'meta_value',
+									'meta_key'		=> 'mfei_start',
+									'order'			=> 'asc',
+									'posts_per_page'=> '30',
+									'meta_query' 	=> array(
+										array(
+											'key' 	=> 'mfei_record',
+											'value'	=> $post->ID
+									   ),
+									)
+								);
+								$get_events = new WP_Query( $args );
 
 								// Check that we have returned our query of events, if not, give the option to schedule the event
 								if ( $get_events->found_posts >= 1 ) { ?>
