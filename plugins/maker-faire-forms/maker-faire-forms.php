@@ -798,8 +798,7 @@ class MAKER_FAIRE_FORM {
 											<tr class="<?php post_class(); ?>">
 												<td valign="top"><strong>Edit</strong></td>
 												<td>
-													<a href="<?php echo esc_url( $edit_event_url ); ?>" target="_blank">Edit the Time and Date</a><br>
-													<a href="" class="deleteme" data-key="mfei_record" data-nonce="<?php echo esc_attr( wp_create_nonce( 'delete_scheduled_post' ) ); ?>" data-postid="<?php echo esc_attr( get_the_id() ); ?>" data-value="<?php echo esc_attr( $event_record['mfei_record'][0] ); ?>" title="">Delete Scheduled Event</a>
+													<a href="<?php echo esc_url( $edit_event_url ); ?>" class="button" target="_blank">Edit the Time and Date</a> <button href="" class="deleteme button-small button-secondary delete" data-key="mfei_record" data-nonce="<?php echo esc_attr( wp_create_nonce( 'delete_scheduled_post' ) ); ?>" data-postid="<?php echo esc_attr( get_the_id() ); ?>" data-value="<?php echo esc_attr( $event_record['mfei_record'][0] ); ?>" title="">Delete Scheduled Event</button>
 												</td>
 											</tr>
 
