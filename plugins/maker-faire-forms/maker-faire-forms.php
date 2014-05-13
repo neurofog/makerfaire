@@ -1484,8 +1484,11 @@ class MAKER_FAIRE_FORM {
 		if ( empty( $_POST ) || ( ! isset( $_POST['mf_form'] ) && isset( $_POST['form_type'] ) && isset( $this->fields[ $_POST['form_type'] ] ) ) || isset( $_POST['mf_updated'] ) )
 			return false;
 
+		if ( ! isset( $_POST['form_type'] ) )
+			return false;
+
 		// If we are trying to save any presenter promo codes...
-		if ( $_POST['form_type'] == 'presenter' && isset( $_POST['presenter-promo-code'] ) && ! empty( $_POST['presenter-promo-code'] ) )
+		if ( ( isset( $_POST['form_type'] ) ) && $_POST['form_type'] == 'presenter' && isset( $_POST['presenter-promo-code'] ) && ! empty( $_POST['presenter-promo-code'] ) )
 			update_post_meta( absint( $id ), 'app-presenter-promo-code', esc_attr( $_POST['presenter-promo-code'] ) );
 
 		// Set some variables yo.
