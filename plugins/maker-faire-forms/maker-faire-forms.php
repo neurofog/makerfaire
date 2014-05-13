@@ -4238,6 +4238,24 @@ class MAKER_FAIRE_FORM {
 
 		return $messages;
 	}
+
+	/**
+	 * Delete the scheduled event, and the related post.
+	 */
+	public function mf_delete_scheduled_event() {
+		// Check our nonce and make sure it's correct
+		if ( ! wp_verify_nonce( $_POST['nonce'], 'delete_scheduled_post' ) )
+			die( json_encode( array( 'failed' => 'nonce failed.', 'post' => $_POST, ) ) );
+
+		$del = wp_trash_post( intval( $_POST['postid'] ) );
+
+		if ( $del ) {
+			die( json_encode( array( 'message' => 'deleted', 'pid' => intval( $_POST['postid'] ) ) ) );
+		} else {
+			die( json_encode( array( 'message' => 'unable to delete...' ) ) );
+		}
+
+	}
 }
 
 $mfform = new MAKER_FAIRE_FORM();
