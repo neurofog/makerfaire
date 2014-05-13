@@ -102,7 +102,7 @@ if ( $type == 'entity' ) {
 		// Application Description
 		$app_description_field = $mfform->merge_fields( 'project_description', $app_data->form_type );
 
-		$app['description'] = $app_data->{$app_description_field};
+		$app['description'] = ( !empty( $app_description_field ) ) ? $app_data->{$app_description_field} : '';
 
 		// Application YouTube URL
 		$video_field = $mfform->merge_fields( 'project_video', $app_data->form_type );
