@@ -263,6 +263,8 @@ class MAKER_FAIRE_FORM {
 		add_action( 'wp_ajax_nopriv_mfform_step', 	  array( &$this, 'ajax_handler' ) );
 		add_action( 'wp_ajax_mfform_step', 			  array( &$this, 'ajax_handler' ) );
 
+		add_action( 'wp_ajax_mf_delete_scheduled_event', array( &$this, 'mf_delete_scheduled_event' ) );
+
 		add_action( 'wp_ajax_nopriv_mfform_getforms', array( &$this, 'ajax_getforms' ) );
 		add_action( 'wp_ajax_mfform_getforms', 		  array( &$this, 'ajax_getforms' ) );
 
