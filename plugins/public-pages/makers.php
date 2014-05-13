@@ -67,7 +67,7 @@ function mf_public_blurb( $json ) {
 		if (!empty($json->project_photo)) {
 			$url = $json->project_photo;
 			$url = add_query_arg( 'w', 610, $url );
-			echo '<img src="'. esc_url( $url ) . '" class="thumbnail" />';
+			echo '<img src="'. wpcom_vip_get_resized_remote_image_url( $url, 610, 610 ) . '" class="thumbnail" />';
 		}
 		echo '<hr>';
 
