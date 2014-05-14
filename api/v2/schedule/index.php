@@ -55,6 +55,8 @@ if ( $type == 'schedule' ) {
 
 		$schedule['time_start'] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $dates[$day] . $start . $dates['time_zone'] ) ) );
 		$schedule['time_end'] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $dates[$day] . $stop . $dates['time_zone'] ) ) );
+		// Rename the field, keeping 'time_end' to ensure this works.
+		$schedule['time_stop'] = date( DATE_ATOM, strtotime( '-1 hour', strtotime( $dates[$day] . $stop . $dates['time_zone'] ) ) );
 
 		// REQUIRED: Venue ID reference
 		$locations = get_post_meta( absint( $post->ID ), 'faire_location', true );
