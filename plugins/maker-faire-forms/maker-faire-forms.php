@@ -3663,16 +3663,8 @@ class MAKER_FAIRE_FORM {
 				continue;
 
 			$form  = (array) json_decode( str_replace( "\'", "'", $forms[ $data['mfei_record'][0] ]->post_content ) );
-			$locs  = get_the_terms( $mfei->ID, 'location' );
-			$locst = "";
 
-			if ( $locs ) {
-				foreach( $locs as $loc ) {
-					$locst .= ( isset( $loc->name ) ) ? ", " . $loc->name : ", ";
-				}
-			}
-
-			$locst = htmlspecialchars_decode( substr( $locst, 2 ) );
+			$loc= get_the_title( get_post_meta( $mfei->ID, 'faire_location', true ) );
 
 			$fname = substr( $form['name'], 0, strpos( $form['name'], ' ' ) );
 			$lname = substr( $form['name'], strpos( $form['name'], ' ' ) + 1 );
@@ -3691,7 +3683,7 @@ class MAKER_FAIRE_FORM {
 					$line .= $data['mfei_start'][0]."\t";
 					$line .= $data['mfei_stop'][0]."\t";
 					$line .= $data['mfei_day'][0]."\t";
-					$line .= $locst."\t";
+					$line .= $loc."\t";
 					$line .= intval( $data['mfei_record'][0] )."\t";
 					$line .= $form['presentation_name'] . "\t";
 					$line .= "Presentation\t";
@@ -3699,6 +3691,7 @@ class MAKER_FAIRE_FORM {
 					$line .= $lname."\t";
 					$line .= $form['email']."\t";
 					$line .= $form['phone1']."\t";
+					$line .= ( is_array( $form['presenter_twitter'] ) ) ? implode(", ", $form['presenter_twitter'] ) : $form['presenter'];
 					$line .= $form['presenter_twitter']."\t";
 					$line .= $form['special_requests']."\t\r\n";
 				}
@@ -3706,7 +3699,7 @@ class MAKER_FAIRE_FORM {
 				$line = substr( $line, 0, -4 );
 
 			} elseif( $type == 'signage' ) {
-				$line  = $locst."\t";
+				$line  = $loc."\t";
 				$line .= $data['mfei_start'][0]."\t";
 				$line .= $data['mfei_stop'][0]."\t";
 				$line .= $data['mfei_day'][0]."\t";
@@ -3728,7 +3721,7 @@ class MAKER_FAIRE_FORM {
 					$line .= $fname."\t";
 					$line .= $lname."\t";
 					$line .= $form['presentation_name']."\t";
-					$line .= $locst."\t";
+					$line .= $loc."\t";
 					$line .= $data['mfei_day'][0]."\t";
 					$line .= $data['mfei_start'][0]."\t";
 					$line .= $data['mfei_stop'][0]."\r\n";
