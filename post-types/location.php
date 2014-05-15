@@ -645,8 +645,10 @@ function mf_default_locations() {
 	$db['latitude']		= get_post_meta( get_the_id(), 'latitude', true );
 	$db['longitude']	= get_post_meta( get_the_id(), 'longitude', true );
 
-	$new = shortcode_atts( $db, $gps );
-
-	return floatval( $new['latitude'] ) . ', ' . floatval( $new['longitude'] );
+	if ( ! empty( $db['latitude'] ) && ! empty( $db['longitude'] ) ) {
+		return floatval( $db['latitude'] ) . ', ' . floatval( $db['longitude'] );
+	} else {
+		return floatval( $gps['latitude'] ) . ', ' . floatval( $gps['longitude'] );
+	}
 
 }

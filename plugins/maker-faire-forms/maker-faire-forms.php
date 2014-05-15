@@ -3664,7 +3664,9 @@ class MAKER_FAIRE_FORM {
 
 			$form  = (array) json_decode( str_replace( "\'", "'", $forms[ $data['mfei_record'][0] ]->post_content ) );
 
-			$loc = get_the_title( $data['faire_location'][0] );
+			$location_id = ( isset( $data['faire_location'][0] ) ) ? $data['faire_location'][0][0] : 0;
+
+			$loc = get_the_title( $location_id );
 
 			$fname = substr( $form['name'], 0, strpos( $form['name'], ' ' ) );
 			$lname = substr( $form['name'], strpos( $form['name'], ' ' ) + 1 );
@@ -3691,8 +3693,7 @@ class MAKER_FAIRE_FORM {
 					$line .= $lname."\t";
 					$line .= $form['email']."\t";
 					$line .= $form['phone1']."\t";
-					$line .= ( is_array( $form['presenter_twitter'] ) ) ? implode(", ", $form['presenter_twitter'] ) : $form['presenter'];
-					$line .= $form['presenter_twitter']."\t";
+					$line .= ( isset( $form['presenter_twitter'] ) && is_array( $form['presenter_twitter'] ) ) ? implode(", ", $form['presenter_twitter'] ) : $form['presenter_twitter'];
 					$line .= $form['special_requests']."\t\r\n";
 				}
 
