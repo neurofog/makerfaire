@@ -43,7 +43,7 @@ if ( $type == 'category') {
 		$venue['id'] = absint( $term->term_id );
 
 		// REQUIRED: Category Name
-		$venue['name'] = esc_html( $term->name );
+		$venue['name'] = html_entity_decode( esc_js( $term->name ) );
 
 		// Put the application into our list of apps
 		array_push( $venues, $venue );
