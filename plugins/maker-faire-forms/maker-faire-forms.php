@@ -3664,7 +3664,7 @@ class MAKER_FAIRE_FORM {
 
 			$form  = (array) json_decode( str_replace( "\'", "'", $forms[ $data['mfei_record'][0] ]->post_content ) );
 
-			$loc= get_the_title( get_post_meta( $mfei->ID, 'faire_location', true ) );
+			$loc = get_the_title( $data['faire_location'][0] );
 
 			$fname = substr( $form['name'], 0, strpos( $form['name'], ' ' ) );
 			$lname = substr( $form['name'], strpos( $form['name'], ' ' ) + 1 );
