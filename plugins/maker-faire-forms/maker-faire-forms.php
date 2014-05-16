@@ -3691,7 +3691,7 @@ class MAKER_FAIRE_FORM {
 					$line .= $lname."\t";
 					$line .= $form['email']."\t";
 					$line .= $form['phone1']."\t";
-					$line .= ( isset( $form['presenter_twitter'] ) && is_array( $form['presenter_twitter'] ) ) ? implode(", ", $form['presenter_twitter'] ) : $form['presenter_twitter'];
+					$line .= ( isset( $form['presenter_twitter'] ) && is_array( $form['presenter_twitter'] ) ) ? implode(", ", $form['presenter_twitter'] ) : $form['presenter_twitter']."\t";
 					$line .= $form['special_requests']."\t\r\n";
 				}
 
