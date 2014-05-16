@@ -1094,7 +1094,7 @@ function mf_display_schedule_by_location( $atts ) {
 									// We may want to over ride the photo of an application on the schedule page by checking if there is a featured image on the event item
 									if ( has_post_thumbnail( absint( $event_id ) ) ) {
 										$output .= get_the_post_thumbnail( absint( $event_id ), 'schedule-thumb' );
-									} elseif ( $app->form_type == 'performer' ) {
+									} elseif ( $app->form_type == 'performer' || $app->form_type == 'exhibit' ) {
 										$output .= '<a href="' . get_permalink( absint( $app_obj->ID ) ) . '"><img src="' . wpcom_vip_get_resized_remote_image_url( $app->{ $mfform->merge_fields( 'user_photo', $app->form_type ) }, 140, 140 ) . '" alt="' . esc_attr( $app_obj->post_title ) . '" width="140" height="140"></a>';
 									}
 									elseif ( ! empty( $app->{ $mfform->merge_fields( 'user_photo', $app->form_type ) }[0] ) ) {
