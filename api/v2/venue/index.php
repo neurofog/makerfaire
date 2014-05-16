@@ -72,6 +72,21 @@ if ( $type == 'venue' ) {
 		$venue['latitude']	= ( isset( $meta['latitude'] ) ) ? floatval( $meta['latitude'][0] ) : '';
 		$venue['longitude']	= ( isset( $meta['longitude'] ) ) ? floatval( $meta['longitude'][0] ) : '';
 
+		// Let's add the venue categories
+		$cats = wp_get_post_terms( absint( $post->ID ), array( 'location_category' ) );
+
+		$category_ids = array();
+
+		if ( $cats && ! is_wp_error( $cats ) ) {
+			foreach( $cats as $cat ) {
+				$category_ids[] = absint( $cat->term_id );
+			}
+		} else {
+			$category_ids = null;
+		}
+
+		$venue['category_id_refs'] = $category_ids;
+
 
 		// Put the maker into our list of makers
 		array_push( $venues, $venue );
