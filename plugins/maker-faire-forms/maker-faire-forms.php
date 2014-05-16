@@ -3703,7 +3703,7 @@ class MAKER_FAIRE_FORM {
 				$line .= $data['mfei_stop'][0]."\t";
 				$line .= $data['mfei_day'][0]."\t";
 				$line .= $form['presentation_name']."\t";
-				$line .= ( is_array( $form['presenter_name'] ) ? implode( ', ', $form['presenter_name'] ) : $form['presenter_name'] )."\t";
+				$line .= ( is_array( $form['presenter_name'] ) ? implode( ', ', $form['presenter_name'] ) . "\t" : $form['presenter_name'] )."\t";
 
 			} elseif( $type == 'checkin' ) {
 
