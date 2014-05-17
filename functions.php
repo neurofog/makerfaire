@@ -30,6 +30,9 @@ include_once dirname( __FILE__ ) . '/plugins/admin-pages/current-faire/current-f
 // Sponsor Carousel
 include_once dirname( __FILE__ ) . '/plugins/public-pages/sponsor.php';
 
+// Sponsor Carousel
+include_once dirname( __FILE__ ) . '/plugins/instagram/instagram.php';
+
 // Post Locker
 include_once dirname( __FILE__ ) . '/plugins/hide-post-locker/hide-post-locker.php';
 
@@ -78,12 +81,15 @@ function make_enqueue_jquery() {
 	// Styles
 	wp_enqueue_style( 'make-bootstrap', get_stylesheet_directory_uri() . '/css/bootstrap.css' );
 	wp_enqueue_style( 'make-styles', get_stylesheet_directory_uri() . '/css/style.css' );
+	wp_enqueue_style( 'ytv', get_stylesheet_directory_uri() . '/css/ytv.css' );
 
 	// Scripts
 	wp_enqueue_script( 'jquery' );
 	wp_enqueue_script( 'make-bootstrap', get_stylesheet_directory_uri() . '/js/bootstrap.js', array( 'jquery' ) );
 	wp_enqueue_script( 'make-countdown', get_stylesheet_directory_uri() . '/js/jquery.countdown.js', array( 'jquery' ) );
 	wp_enqueue_script( 'jquery_cookie',  get_stylesheet_directory_uri() . '/js/jquery.cookie.js', array( 'jquery' ), null );
+	wp_enqueue_script( 'ytv', get_stylesheet_directory_uri() . '/js/ytv.js', array( 'jquery' ) );
+
 }
 add_action( 'wp_enqueue_scripts', 'make_enqueue_jquery' );
 
