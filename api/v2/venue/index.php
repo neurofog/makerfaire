@@ -72,6 +72,10 @@ if ( $type == 'venue' ) {
 		$venue['latitude']	= ( isset( $meta['latitude'] ) ) ? floatval( $meta['latitude'][0] ) : '';
 		$venue['longitude']	= ( isset( $meta['longitude'] ) ) ? floatval( $meta['longitude'][0] ) : '';
 
+		// They apparently changed the spec.
+		$venue['gps_lat']	= ( isset( $meta['latitude'] ) ) ? floatval( $meta['latitude'][0] ) : '';
+		$venue['gps_long']	= ( isset( $meta['longitude'] ) ) ? floatval( $meta['longitude'][0] ) : '';
+
 		// Let's add the venue categories
 		$cats = wp_get_post_terms( absint( $post->ID ), array( 'location_category' ) );
 
