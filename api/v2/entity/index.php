@@ -1,4 +1,5 @@
 <?php
+error_reporting( 'NONE' );
 /**
  * v2 of the Maker Faire API - ENTITY
  *
@@ -61,12 +62,17 @@ if ( $type == 'entity' ) {
 		$app['large_img_url'] = esc_url( $app_image );
 
 		// Application Locations
-		$locations = get_post_meta( absint( $post->ID ), 'faire_location', true );
+		$locations = mf_get_locations( $post->ID, true );
 
-		if ( empty ( $locations ) )
-			$locations = null;
+		$location_output = array();
+		foreach ( $locations as $location ) {
+			$location_output[] = $location->ID;
+		}
 
-		$app['venue_id_ref'] = $locations;
+		if ( empty ( $location_output ) )
+			$location_output = null;
+
+		$app['venue_id_ref'] = $location_output;
 
 		// Application Makers
 		$maker_args = array(
