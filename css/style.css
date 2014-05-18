@@ -295,6 +295,27 @@ footer .pills a {
 .home-page .aligncenter p {
   font-size: 18px;
 }
+.instagram-link {
+  color: #fff;
+}
+.instagram-link :hover {
+  color: #fff;
+  text-decoration: none;
+}
+.insta-caption {
+  background-color: rgba(0, 0, 0, 0.5);
+  position: relative;
+  padding: 3px !important;
+  margin: 4px;
+  height: 55px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  color: #fff important!;
+  margin-top: -60px;
+}
+.insta-caption a {
+  color: #fff;
+}
 .sidebar-bordered {
   border: 1px solid #d7d7d7;
   border-radius: 3px;
