@@ -10,6 +10,7 @@
 	background: #282828;
 	overflow: hidden;
 	font-family: arial, sans-serif;
+	margin-bottom: 20px;
 	}
 .ytv-canvas ::-webkit-scrollbar{
 	border-left: 1px solid #000;
@@ -25,7 +26,7 @@
 .ytv-video{
 	position: absolute;
 	top: 0;
-    right: 140px;
+    right: 155px;
     bottom: 0;
     left: 0;
     height: 100%;
@@ -47,7 +48,7 @@
     right: 0;
     bottom: 0;
     height: 100%;
-    width: 140px;
+    width: 155px;
 	}
 	.ytv-list-inner{
 		overflow: auto;
