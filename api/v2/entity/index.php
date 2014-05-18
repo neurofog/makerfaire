@@ -72,7 +72,7 @@ if ( $type == 'entity' ) {
 		if ( empty ( $location_output ) )
 			$location_output = null;
 
-		$app['venue_id_ref'] = $location_output;
+		$app['venue_id_ref'] = $location_output[0];
 
 		// Application Makers
 		$maker_args = array(
