@@ -50,22 +50,32 @@ class Make_Instagram {
 
 	public function show_images() {
 		$ps = $this->load_data();
-		$output = '<h2 class="red" style="color:red">From <a href="http://instagram.com/makerfaire/">@makerfaire</a> Bay Area 2014 on Instagram</h2>';
-		$output .= '<div class="row-fluid">';
+		$output = '<h2 class="red" style="color:red">Live from <a href="http://instagram.com/makerfaire/">@makerfaire</a> Bay Area 2014 on Instagram</h2>';
+		$output .= '<div class="row-fluid instagram-rows">';
 		for ( $i = 0; $i <= 2; $i++ ) {
 			$output .= '<div class="span4">';
-			$output .= '<a href="' . esc_url( $ps[ $i ]->link ) . '">';
-			$output .= '<img style="max-width:200px; height: auto;" src="' . esc_url( $ps[ $i ]->images->standard_resolution->url ) . '">';
+			$output .= '<a href="' . esc_url( $ps[ $i ]->link ) . '" class="instagram-link">';
+			$output .= '<div class="thumbnail">';
+			$output .= '<img style="max-width:180px; height: auto;" src="' . esc_url( $ps[ $i ]->images->standard_resolution->url ) . '">';
+			$output .= '<div class="caption insta-caption">';
+			$output .= wp_kses_post( Markdown( wp_trim_words( $ps[ $i ]->caption->text, 10, '...' ) ) );
+			$output .= '</div>';
+			$output .= '</div>';
 			$output .= '</a>';
 			$output .= '</div>';
 		}
 		$output .= '</div>';
 		$output .= '<div class="spacer" style="height: 20px;"></div>';
-		$output .= '<div class="row-fluid">';
+		$output .= '<div class="row-fluid instagram-rows">';
 		for ( $i = 3; $i <= 5; $i++ ) {
 			$output .= '<div class="span4">';
-			$output .= '<a href="' . esc_url( $ps[ $i ]->link ) . '">';
-			$output .= '<img style="max-width:200px; height: auto;" src="' . esc_url( $ps[ $i ]->images->standard_resolution->url ) . '">';
+			$output .= '<a href="' . esc_url( $ps[ $i ]->link ) . '" class="instagram-link">';
+			$output .= '<div class="thumbnail">';
+			$output .= '<img style="max-width:180px; height: auto;" src="' . esc_url( $ps[ $i ]->images->standard_resolution->url ) . '">';
+			$output .= '<div class="caption insta-caption">';
+			$output .= wp_kses_post( Markdown( wp_trim_words( $ps[ $i ]->caption->text, 10, '...' ) ) );
+			$output .= '</div>';
+			$output .= '</div>';
 			$output .= '</a>';
 			$output .= '</div>';
 		}
@@ -78,13 +88,9 @@ class Make_Instagram {
 
 $instagram = new Make_Instagram();
 
-function make_show_images( $return = true ) {
+function make_show_images() {
 	$instagram = new Make_Instagram();
-	if ( $return == true ) {
-		return $instagram->show_images();
-	} else {
-		echo $instagram->show_images();
-	}
+	return $instagram->show_images();
 }
 
 add_shortcode( 'show_instagram', 'make_show_images' );
