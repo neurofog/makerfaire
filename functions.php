@@ -1,7 +1,7 @@
 <?php
 
 // Set our global Faire Variable. Use the slug of the taxonomy as the value.
-define( 'MF_CURRENT_FAIRE', 'maker-faire-bay-area-2014' );
+define( 'MF_CURRENT_FAIRE', 'world-maker-faire-new-york-2014' );
 
 
 require_once( WP_CONTENT_DIR . '/themes/vip/plugins/vip-init.php' );
