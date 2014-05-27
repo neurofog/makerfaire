@@ -87,8 +87,8 @@
 		<h2>Performance Schedule Preference</h2>
 		<div>At Maker Faire, we have music and stage performances all weekend! We will do our best to create a balanced schedule, so that there are great acts all day long. Thanks for being flexible about your performance time.
 		<br /><br /><em><strong>Maker Faire Hours</strong>
-		<br />Saturday, May 17: 10am - 8pm
-		<br />Sunday, May 18: 10am - 6pm</em><br /><br /></div>
+		<br />Saturday, September 20: 10am - 7pm
+		<br />Sunday, September 21: 10am - 6pm</em><br /><br /></div>
 
 		<div class="input">
             <label>Which day(s) can you perform? Please pick the option that fits you best. *</label>
