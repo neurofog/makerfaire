@@ -320,23 +320,25 @@ footer .pills a {
   border: 1px solid #d7d7d7;
   border-radius: 3px;
   margin-bottom: 20px;
-  text-align: center;
+  text-align: left;
 }
 .sidebar-bordered .makey {
-  margin-top: -25px;
-  margin-left: -14px;
-  margin-right: -3px;
+  margin-top: 5px;
+  margin-left: 5px;
+  margin-right: 0px;
 }
 .sidebar-bordered .counter-title {
-  margin: 15px 20px 16px;
+  margin: 15px;
   font-size: 20px;
   line-height: 1.2em;
   font-family: "Proxima Nova", sans-serif;
   text-align: right;
+  color: #333;
 }
 .sidebar-bordered h5 {
-  font-size: 14px;
-  text-align: center;
+  font-size: 16px;
+  text-align: left;
+  padding: 5px 5px 5px 0;
 }
 .sidebar-bordered .center {
   text-align: center;
@@ -379,6 +381,12 @@ footer .pills a {
   color: #898989;
   font-weight: 400;
   margin-bottom: 10px;
+}
+.sidebar-bordered label {
+  font-size: 16px;
+}
+.sidebar-bordered input[type="checkbox"] {
+  margin: 0;
 }
 .sidebar-bordered-nl {
   border: 1px solid #d7d7d7;

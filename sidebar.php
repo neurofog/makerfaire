@@ -3,9 +3,7 @@
 	<div class="sidebar-bordered">
 
                 <img src="<?php echo esc_url( get_stylesheet_directory_uri() ); ?>/images/mr-makey.png" alt="Mr. Makey" class="makey pull-left">
-                <h3 class="counter-title">Maker Faire Bay Area<br />May 17 &amp; 18, 2014</h3>
-
-                <h3>Get news and updates on all <br>faires and calls for makers.</h3>
+                <h3 class="counter-title">Sign up for news and updates <br />on all faires and calls for makers.</h3>
 
                 <form class="form-inline" action="http://makermedia.createsend.com/t/r/s/jjuruj/" method="post" id="subForm">
                         <input type="text" placeholder="Enter your email" class="news-signup" name="cm-jjuruj-jjuruj" id="jjuruj-jjuruj">
