@@ -74,6 +74,7 @@ class MAKER_FAIRE_FORM {
 				'radio_details'         => 0,
 				'fire'                  => 0,
 				'hands_on'              => 0,
+				'solicit'               => 0,
 				'safety_details'        => 0,
 				),
 			's2' => array(
