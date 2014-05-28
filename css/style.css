@@ -353,6 +353,7 @@ footer .pills a {
   margin-top: -1px;
 }
 .sidebar-bordered.sponsored {
+  text-align: center;
   padding-top: 20px;
 }
 .sidebar-bordered.sponsored h3 {
@@ -374,7 +375,7 @@ footer .pills a {
   line-height: 1em;
   color: #363636;
 }
-.sidebar-bordered .count-down-sub-sub {
+.sidebar-bordered c .count-down-sub-sub {
   padding-top: 10px;
   font-size: 16px;
   font-family: "Helvetica Neue", sans-serif;
