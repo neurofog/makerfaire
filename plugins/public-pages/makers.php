@@ -1062,7 +1062,7 @@ function mf_display_schedule_by_location( $atts ) {
 		wp_cache_set( sanitize_title( $location->post_title ) . '_sunday_schedule_' . sanitize_title( $data['faire'] ), $sunday, 'locations', 300 );
 	}
 
-	$output = '<h2><a href="' . esc_url( get_permalink( absint( $data['location_id'] ) ) ) . '">' . esc_html( $location->post_title ) . '</a></h2>';
+	$output = '<h2><a href="' . esc_url( get_permalink( absint( $data['location_id'] ) ) . '?faire=' . $data['faire'] ) . '">' . esc_html( $location->post_title ) . '</a></h2>';
 
 	if ( ! empty( $location->post_excerpt ) )
 		$output .= '<div class="alert alert-info">' . wp_kses_post( Markdown( $location->post_excerpt ) ) . '</div>';
