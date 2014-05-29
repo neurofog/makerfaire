@@ -101,6 +101,7 @@ function maker_past_faires( $post ) {
 	$maker_id = get_post_meta( absint( $post->ID ), 'guid', true );
 	$apps = maker_get_apps_by_id( $maker_id );
 	$faire_names = array(
+		'2014_newyork' => 'World Maker Faire New York 2014',
 		'2014_bayarea' => 'Maker Faire Bay Area 2014',
 		'2013_newyork' => 'World Maker Faire New York 2013',
 		'2013_bayarea' => 'Maker Faire Bay Area 2013',
