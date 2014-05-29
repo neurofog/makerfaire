@@ -2229,6 +2229,8 @@ class MAKER_FAIRE_FORM {
 		add_post_meta( $pid, '_mf_form_type', $t );
 		add_post_meta( $pid, 'mf_gigya_id',  $r['uid'] );
 		wp_set_object_terms( $pid, $t, 'type' );
+		wp_set_object_terms( $pid, $r['tag'], 'post_tag' );
+		wp_set_object_terms( $pid, $r['cat'], 'category' );
 		wp_set_object_terms( $pid, esc_html( $this->faire_friendly_name ), 'faire' );
 
 		return $pid;
@@ -2295,6 +2297,8 @@ class MAKER_FAIRE_FORM {
 
 		update_post_meta( $id, '_mf_form_type',  $t );
 		update_post_meta( $id, '_mf_maker_name', $r['name'] );
+		wp_set_object_terms( $pid, $r['tag'], 'post_tag' );
+		wp_set_object_terms( $pid, $r['cat'], 'category' );
 
 		return wp_update_post( $d );
 	}
