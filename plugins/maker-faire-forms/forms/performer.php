@@ -233,7 +233,7 @@
             <li>Check to be sure you entered the correct address in your entry form. All future communications will be directed to the email address you provided. To check, select "Your Account" in the header above and click on the link to your application. The contact email you provided is in Step 2.</li>
         </ul>
         <p>Stay tuned for more information about participating in Maker Faire!</p>
-        <p class="btn btn-large"><a href="<?php echo home_url(); ?>/makerprofile/">Preview your Profile</a></p>
+        <p><a class="btn btn-large" href="<?php echo home_url(); ?>/makerprofile/">Preview your Profile</a></p>
 	</div>
     <!--STEP 6 END-->
 	<div class="review" style="display:none; position:relative;">
