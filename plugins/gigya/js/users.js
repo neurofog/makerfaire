@@ -55,8 +55,8 @@ function makerfaire_profile( maker ) {
 
 			// Check if we are on a certain date or have passed
 			var now = new Date();
-			var expire_date = new Date( '2013/10/04' ); // Set a date that applications older or equal to this will be considered previous faire.
-			var end_date = new Date( '2014/02/24' ); // Set the date that call to makers closes.
+			var expire_date = new Date( '2014/05/20' ); // Set a date that applications older or equal to this will be considered previous faire.
+			var end_date = new Date( '2014/07/20' ); // Set the date that call to makers closes.
 
 			for ( var type in results.forms ) {
 				for ( var app_id in results.forms[ type ] ) {
