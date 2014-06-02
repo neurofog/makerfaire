@@ -7,7 +7,7 @@
         <a href="#" onclick="gigya.accounts.showScreenSet({screenSet:'MakerFaire-Profile'});" />Edit Profile</a>
     </div>
 
-	<p><a href="<?php echo esc_url( home_url( '/bay-area-2014/call-for-makers/' ) ); ?>"><input type="button" value="Apply for Maker Faire" /></a></p>
+	<p><a href="<?php echo esc_url( home_url( '/new-york-2014/call-for-makers/' ) ); ?>"><input type="button" value="Apply for Maker Faire" /></a></p>
 
     <div class="loading">
         <p><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/ajax-loader.gif" alt=""> Loading Applications...</p>
