@@ -2338,6 +2338,8 @@ class MAKER_FAIRE_FORM {
 			$m .= '<p>In the meantime, please stay in touch and spread the word: like us on <a href="https://www.facebook.com/makerfaire">Facebook</a> and follow us on <a href="https://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/104410464300110463062/posts">Google+</a></p>';
 			$m .= '<p>Sabrina Merlo<br />Program Director<br />Maker Media, Inc.</p>';
 			$m .= '<p>Maker Faire (<a href="' . esc_url( home_url() ) . '">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
+			$m .= '<p>ps. You can update your application anytime until the Call For Makers closes:</p>';
+			$m .= '<ol><li<Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li><li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li><ol>';
 		} elseif ( $r['form_type'] == 'performer' ) {
 			// Call for Makers is running Auto-Responder text
 			$m .= '<p>You can update your application anytime until the Call For Makers closes:</p>';
@@ -2354,6 +2356,8 @@ class MAKER_FAIRE_FORM {
 			// $m .= '<li>Spread the word - Like us on <a href="https://www.facebook.com/makerfaire">Facebook</a> and follow us on <a href="https://twitter.com/makerfaire">Twitter</a> and <a href="https://plus.google.com/104410464300110463062/posts">Google+</a></li></ol>';
 			$m .= '<p>Sherry Huss<br />Vice President<br />Maker Media, Inc.</p>';
 			$m .= '<p>Maker Faire (<a href="' . esc_url( home_url() ) . '">makerfaire.com</a>)<br />MAKE (<a href="http://makezine.com">makezine.com</a>)</p>';
+			$m .= '<p>ps. You can update your application anytime until the Call For Makers closes:</p>';
+			$m .= '<ol><li<Log into your maker account from makerfaire.com. The login link is in the blue header at the top of every page.</li><li>After login, you\'ll see a link to edit any applications you\'ve started or submitted.</li><ol>';
 		} else {
 			// Call for Makers is running Auto-Responder text
 			$m .= '<p>You will be notified as to the status of your application no later than <strong>August 8th</strong>.</p>';
