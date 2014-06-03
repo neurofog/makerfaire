@@ -232,9 +232,10 @@
             <?php $this->radio('data[s1][sales]', array('Yes', 'No')); ?>
         </div>
         <div class="input dp-sales <?php echo esc_attr((strpos($this->form['data[s1][sales]'], 'Yes') !== false ? '' : 'h')); ?>">
-        	<div class="info">If you would like to sell or market your own creations at Maker Faire, you are a “Commercial Maker”. Due to high demand, we have a limited amount of Commercial Maker space available. If accepted, a Commercial Maker Fee of $425 is due on September 5.<br />
-        	All Commercial Maker spaces are tabletop or 10x10 spaces and include 1 table and 2 chairs. Additional tables, chairs and power can be purchased after acceptance during the payment process. Please continue to fill out this form.<br /><br />
-        	Established companies do not qualify as Commercial Makers. We have great opportunities available at Maker Faire for companies. Do not fill out this form, please visit <a href="http://makerfaire.com/sponsors/">our sponsors page</a>.</div>
+        	<div class="info">
+                <p>If you would like to sell or market your own creations at Maker Faire, you are a “Commercial Maker”. Due to high demand, we have a limited amount of Commercial Maker space available. If accepted, a Commercial Maker Fee of $425 is due on September 5.</p>
+                <p>All Commercial Maker spaces are tabletop or 10x10 spaces and include 1 table and 2 chairs. Additional tables, chairs and power can be purchased after acceptance during the payment process. Please continue to fill out this form.</p>
+                <p>Established companies do not qualify as Commercial Makers. We have great opportunities available at Maker Faire for companies. Do not fill out this form, please visit <a href="http://makerfaire.com/sponsors/">our sponsors page</a>.</p></div>
             <label>What product will you be selling or marketing?</label>
             <div class="info">Describe and list the price range of your product(s).</div>
             <?php $this->textarea('data[s1][sales_details]'); ?>
@@ -298,7 +299,7 @@
 
 		<div class="input">
             <label>Location *</label>
-            <div class="info">If you request to be inside, spaces are very limited and non-uniform. Most exhibits requesting inside space will be placed outside under large tents. If you are placed inside, locations will not exactly measure 10x10, 10x20, etc. Unless you note otherwise below, we will interpret your space request above as approximate. Thank you in advance for your flexibility.</div>
+            <div class="info">Most exhibits requesting inside space will be placed outside under large tents. Inside spaces are very limited and not uniformly shaped.</div>
             <?php $this->radio('data[s1][booth_location]', array('Inside', 'Outside', 'Either')); ?>
         </div>
 
