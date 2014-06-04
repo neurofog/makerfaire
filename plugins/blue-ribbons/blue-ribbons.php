@@ -21,6 +21,7 @@ class MF_Blue_Ribbons {
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_resources' ), 30 );
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'save_post', array( $this, 'save' ) );
+		add_shortcode( 'blue-ribbon', array( $this, 'blue_ribbon_list' ) );
 	}
 
 	/**
@@ -98,7 +99,6 @@ class MF_Blue_Ribbons {
 
 	}
 
-
 	/**
 	 * Render Meta Box content.
 	 *
@@ -124,7 +124,12 @@ class MF_Blue_Ribbons {
 		}
 	}
 
+	/**
+	 * Shortcode for the blue ribbons page.
+	 */
+	public function blue_ribbon_list( $atts ) {
 
+	}
 
 }
 
