@@ -36,6 +36,9 @@ include_once dirname( __FILE__ ) . '/plugins/instagram/instagram.php';
 // Post Locker
 include_once dirname( __FILE__ ) . '/plugins/hide-post-locker/hide-post-locker.php';
 
+// Blue Ribbons
+include_once dirname( __FILE__ ) . '/plugins/blue-ribbons/blue-ribbons.php';
+
 // Load the settings field for the Applications API
 include_once dirname( __FILE__ ) . '/api/admin-settings.php';
 
