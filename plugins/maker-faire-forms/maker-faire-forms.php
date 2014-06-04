@@ -27,7 +27,7 @@ class MAKER_FAIRE_FORM {
 	 * We'll store this into a variable for easier editing in the future instead of digging through this jungle of an application.
 	 * @var string
 	 */
-	public $commercial_maker_deadline = 'September 1st';
+	public $commercial_maker_deadline = 'September 5th';
 
 
 	/*
