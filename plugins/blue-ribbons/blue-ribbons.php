@@ -142,6 +142,7 @@ class MF_Blue_Ribbons {
 
 		$output = '';
 
+		for ( $i = $limit; $i > 0; $i-- ) {
 
 			$ribbons = intval( $faire->term_id ) . '_faire_' . sanitize_title( $atts['color'] ) . '_ribbons_won';
 
