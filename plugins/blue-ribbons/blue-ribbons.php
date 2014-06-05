@@ -172,7 +172,7 @@ class MF_Blue_Ribbons {
 				while ( $the_query->have_posts() ) {
 					$the_query->the_post();
 					$ribbons = get_post_meta( get_the_id(), intval( $faire->term_id ) . '_faire_blue_ribbons_won', true );
-					$output .= '<li><a href="' . get_permalink() . '">' . get_the_title() . '</li>';
+					$output .= '<li><a href="' . get_permalink() . '">' . get_the_title() . '</a></li>';
 				}
 				$output .= '</ul>';
 			} else {
