@@ -142,18 +142,27 @@ class MF_Blue_Ribbons {
 
 		$output = '';
 
-		for( $i = $limit; $i > 0; $i-- ){
 
-			$args = array(
-				'faire' 			=> $atts['faire'],
-				'meta_key'			=> intval( $faire->term_id ) . '_faire_blue_ribbons_won',
-				'meta_value'		=> $i,
-				'orderby' 			=> 'meta_value',
-				'posts_per_page'	=> absint( $atts['posts_per_page'] ),
-				);
+			$ribbons = intval( $faire->term_id ) . '_faire_' . sanitize_title( $atts['color'] ) . '_ribbons_won';
 
-			// The Query
-			$the_query = new WP_Query( $args );
+			$the_query = wp_cache_get( $i . '_' . $ribbons . '_cache' );
+
+			if ( false === $the_query ) {
+
+				$args = array(
+					'faire' 			=> sanitize_title( $atts['faire'] ),
+					'meta_key'			=> $ribbons,
+					'meta_value'		=> $i,
+					'orderby' 			=> 'meta_value',
+					'posts_per_page'	=> absint( $atts['posts_per_page'] ),
+					);
+
+				// The Query
+				$the_query = new WP_Query( $args );
+
+				wp_cache_set( $i . '_' . $ribbons . '_cache', $the_query );
+
+			}
 
 			// The Loop
 
