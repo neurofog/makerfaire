@@ -129,8 +129,9 @@ class MF_Blue_Ribbons {
 	 */
 	public function blue_ribbon_list( $atts ) {
 		$defaults = array(
-			'faire'	=> 'maker-faire-bay-area-2014',
-			'limit' => 10,
+			'faire'				=> 'maker-faire-bay-area-2014',
+			'limit' 			=> 10,
+			'posts_per_page'	=> 20,
 			);
 		$atts = shortcode_atts( $defaults, $atts );
 
@@ -143,10 +144,11 @@ class MF_Blue_Ribbons {
 		for( $i = $limit; $i > 0; $i-- ){
 
 			$args = array(
-				'faire' 	=> $atts['faire'],
-				'meta_key'	=> intval( $faire->term_id ) . '_faire_blue_ribbons_won',
-				'meta_value'=> $i,
-				'orderby' 	=> 'meta_value',
+				'faire' 			=> $atts['faire'],
+				'meta_key'			=> intval( $faire->term_id ) . '_faire_blue_ribbons_won',
+				'meta_value'		=> $i,
+				'orderby' 			=> 'meta_value',
+				'posts_per_page'	=> absint( $atts['posts_per_page'] ),
 				);
 
 			// The Query
