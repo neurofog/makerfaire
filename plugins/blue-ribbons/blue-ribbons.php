@@ -132,6 +132,7 @@ class MF_Blue_Ribbons {
 			'faire'				=> 'maker-faire-bay-area-2014',
 			'limit' 			=> 10,
 			'posts_per_page'	=> 20,
+			'color'				=> 'blue',
 			);
 		$atts = shortcode_atts( $defaults, $atts );
 
@@ -157,7 +158,7 @@ class MF_Blue_Ribbons {
 			// The Loop
 
 			if ( $the_query->have_posts() ) {
-				$output .= '<h3>' . intval( $i ) . ' Blue Ribbons</h3>';
+				$output .= '<h3>' . intval( $i ) . ' ' . ucfirst( esc_html( $atts['color'] ) ) . ' Ribbons</h3>';
 				$output .= '<ul>';
 				while ( $the_query->have_posts() ) {
 					$the_query->the_post();
