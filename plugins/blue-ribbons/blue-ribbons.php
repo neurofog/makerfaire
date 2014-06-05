@@ -80,7 +80,7 @@ class MF_Blue_Ribbons {
 				return $post_id;
 		}
 
-		$faires = get_the_terms( $post_id, 'faire' );
+		$faires = get_the_terms( intval( $_POST['post_ID'] ), 'faire' );
 
 		foreach ( $faires as $faire ) {
 
@@ -119,8 +119,8 @@ class MF_Blue_Ribbons {
 			$blue = get_post_meta( $post->ID, $faire->term_id . '_faire_blue_ribbons_won', true );
 			$red  = get_post_meta( $post->ID, $faire->term_id . '_faire_red_ribbons_won', true );
 			// Display the form, using the current value.
-			echo '<div><label style="width:100px; display:inline-block;" for="' . $faire->term_id . '_faire_blue_ribbons_won">Blue Ribbons</label> <input type="text" id="' . $faire->term_id . '_faire_blue_ribbons_won" name="' . $faire->term_id . '_faire_blue_ribbons_won" value="' . esc_attr( $blue ) . '" size="25" /></div>';
-			echo '<div><label style="width:100px; display:inline-block;" for="' . $faire->term_id . '_faire_red_ribbons_won">Red Ribbons</label> <input type="text" id="' . $faire->term_id . '_faire_red_ribbons_won" name="' . $faire->term_id . '_faire_red_ribbons_won" value="' . esc_attr( $red ) . '" size="25" /></div>';
+			echo '<div><label style="width:100px; display:inline-block;" for="' . esc_attr( $faire->term_id ) . '_faire_blue_ribbons_won">Blue Ribbons</label> <input type="text" id="' . esc_attr( $faire->term_id ) . '_faire_blue_ribbons_won" name="' . esc_attr( $faire->term_id ) . '_faire_blue_ribbons_won" value="' . esc_attr( $blue ) . '" size="25" /></div>';
+			echo '<div><label style="width:100px; display:inline-block;" for="' . esc_attr( $faire->term_id ) . '_faire_red_ribbons_won">Red Ribbons</label> <input type="text" id="' . esc_attr( $faire->term_id ) . '_faire_red_ribbons_won" name="' . esc_attr( $faire->term_id ) . '_faire_red_ribbons_won" value="' . esc_attr( $red ) . '" size="25" /></div>';
 		}
 	}
 
@@ -128,7 +128,48 @@ class MF_Blue_Ribbons {
 	 * Shortcode for the blue ribbons page.
 	 */
 	public function blue_ribbon_list( $atts ) {
+		$defaults = array(
+			'faire'	=> 'maker-faire-bay-area-2014',
+			'limit' => 10,
+			);
+		$atts = shortcode_atts( $defaults, $atts );
 
+		$faire = get_term_by( 'slug', $atts['faire'], 'faire' );
+
+		$limit = $atts['limit'];
+
+		$output = '';
+
+		for( $i = $limit; $i > 0; $i-- ){
+
+			$args = array(
+				'faire' 	=> $atts['faire'],
+				'meta_key'	=> intval( $faire->term_id ) . '_faire_blue_ribbons_won',
+				'meta_value'=> $i,
+				'orderby' 	=> 'meta_value',
+				);
+
+			// The Query
+			$the_query = new WP_Query( $args );
+
+			// The Loop
+
+			if ( $the_query->have_posts() ) {
+				$output .= '<h3>' . intval( $i ) . ' Blue Ribbons</h3>';
+				$output .= '<ul>';
+				while ( $the_query->have_posts() ) {
+					$the_query->the_post();
+					$ribbons = get_post_meta( get_the_id(), intval( $faire->term_id ) . '_faire_blue_ribbons_won', true );
+					$output .= '<li><a href="' . get_permalink() . '">' . get_the_title() . '</li>';
+				}
+				$output .= '</ul>';
+			} else {
+				// Nothing found here...
+			}
+			/* Restore original Post Data */
+			wp_reset_postdata();
+		}
+		return $output;
 	}
 
 }
