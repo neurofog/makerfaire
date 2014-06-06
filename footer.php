@@ -73,9 +73,12 @@
 		jQuery('.dropdown-toggle').dropdown();
 		jQuery('#north').tab('show');
 		jQuery('#myModal').modal('hide');
-		jQuery('#featuredMakers, #mf-featured-slider').carousel({
+		jQuery('#featuredMakers').carousel({
 			interval: 5000
 		});
+                        jQuery('#mf-featured-slider').carousel({
+                            interval: 8000
+                        });
 		jQuery('.carousel').carousel({
 			interval: 4000
 		});
