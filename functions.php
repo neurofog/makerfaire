@@ -39,6 +39,9 @@ include_once dirname( __FILE__ ) . '/plugins/hide-post-locker/hide-post-locker.p
 // Blue Ribbons
 include_once dirname( __FILE__ ) . '/plugins/blue-ribbons/blue-ribbons.php';
 
+// White House
+include_once dirname( __FILE__ ) . '/plugins/white-house/white-house.php';
+
 // Load the settings field for the Applications API
 include_once dirname( __FILE__ ) . '/api/admin-settings.php';
 
