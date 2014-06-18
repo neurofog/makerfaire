@@ -10,7 +10,7 @@ jQuery( document ).ready( function( $ ) {
 			output += '<div class="span3">';
 			output += '<a href="' + post.URL  + '">';
 			output += '<img class="thumbnail" src="' + post.featured_image + '?w=220&h=160&crop=1">';
-			output += '</a>;
+			output += '</a>';
 			output += '<a href="' + post.URL  + '">';
 			output += '<h4>' + post.title + '</h4>';
 			output += '</a>';
