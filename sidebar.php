@@ -1,9 +1,41 @@
 <div class="span4">
 
-	<div class="sidebar-bordered">
+  <div class="sidebar-bordered">
 
-                <img src="<?php echo esc_url( get_stylesheet_directory_uri() ); ?>/images/mr-makey.png" alt="Mr. Makey" class="makey pull-left">
-                <h3 class="counter-title">Sign up for news and updates <br />on all faires and calls for makers.</h3>
+    <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/mr-makey.png" alt="Mr. Makey" class="makey pull-left">
+    <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/countdown.png" alt="Mr. Makey" class="counter pull-left">
+
+    <div class="countdown">
+
+      <script type="text/javascript">
+
+        jQuery(document).ready(function() {
+          mfba = new Date(2014, 9-1, 20, 9, 00);
+          jQuery('.countdown').countdown({
+            until: mfba,
+            timezone: -5,
+            format: 'DHMS',
+            layout:'<div class="countdown-numbers"><table><tr><th>{dnn}</th><th>{sep}</td><th>{hnn}</th><th>{sep}</td><th>{mnn}</th><th>{sep}</td><th>{snn}</th></tr><tr class="time"><td>Days</td><td></td><td>Hours</td><td></td><td>Minutes</td><td></td><td>Seconds</td></tr></table></div>',
+            timeSeparator:'<span class="separator">:</span>',
+          });
+
+        });
+      </script>
+
+    </div>
+
+    <p class="buy-tickets"><a href="https://makerfaireny2014.eventbrite.com/"><img src="<?php echo get_stylesheet_directory_uri(); ?>/images/buy-tickets.png" alt="Buy tickets for Maker Faire" class=""></a></p>
+
+    <h5 class="count-down-sub">September 20 &amp; 21<br />
+      New York Hall of Science</h4>
+    <h5 class="count-down-sub-sub">Sat. 10 AM - 7 PM | Sun. 10 AM - 6 PM</h5>
+
+  </div>
+
+
+	<div class="sidebar-bordered-nl">
+
+                <h3 class="counter-title">Sign up for news and updates on all faires and calls for makers.</h3>
 
                 <form class="form-inline" action="http://makermedia.createsend.com/t/r/s/jjuruj/" method="post" id="subForm">
                         <input type="text" placeholder="Enter your email" class="news-signup" name="cm-jjuruj-jjuruj" id="jjuruj-jjuruj">

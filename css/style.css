@@ -320,15 +320,17 @@ footer .pills a {
   border: 1px solid #d7d7d7;
   border-radius: 3px;
   margin-bottom: 20px;
+  padding-top: 10px;
   text-align: left;
 }
 .sidebar-bordered .makey {
-  margin-top: 5px;
-  margin-left: 5px;
-  margin-right: 0px;
+  margin-top: -25px;
+  margin-left: -14px;
+  margin-right: 5px;
+  margin-bottom: 10px;
 }
 .sidebar-bordered .counter-title {
-  margin: 15px;
+  margin: 0px 20px 16px;
   font-size: 20px;
   line-height: 1.2em;
   font-family: "Proxima Nova", sans-serif;
@@ -337,7 +339,7 @@ footer .pills a {
 }
 .sidebar-bordered h5 {
   font-size: 16px;
-  text-align: left;
+  text-align: center;
   padding: 5px 5px 5px 0;
 }
 .sidebar-bordered .center {
@@ -402,7 +404,7 @@ footer .pills a {
 }
 .sidebar-bordered-nl .hidden h5 {
   margin: 7px 0;
-  font-size: 14px;
+  font-size: 16px;
   text-align: left;
 }
 .sidebar-bordered-nl .makey {
@@ -413,13 +415,17 @@ footer .pills a {
 .sidebar-bordered-nl h3 {
   color: #464646;
   margin: 10px 20px;
-  font-size: 18px;
+  font-size: 21px;
   text-align: center;
   line-height: 1em;
   font-family: "Proxima Nova", sans-serif;
 }
+.sidebar-bordered-nl h5 {
+  font-size: 16px;
+  text-align: left;
+}
 .sidebar-bordered-nl input[type="checkbox"] {
-  margin: 0 0 3px 20px!important;
+  margin: 0 0 3px 0px!important;
 }
 .soc_icons {
   margin: 0 0 0 14px;
