@@ -7,6 +7,7 @@ jQuery( document ).ready( function( $ ) {
 		the_posts = posts.posts;
 		output = '<div class="row">';
 		$.each( $( the_posts ), function( i, post ){
+			console.log(post);
 			output += '<div class="span3">';
 			output += '<a href="' + post.URL  + '">';
 			output += '<img class="thumbnail" src="' + post.featured_image + '?w=220&h=160&crop=1">';
