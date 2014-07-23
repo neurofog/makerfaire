@@ -86,7 +86,9 @@
           <h3><a href="#">Presenting Sponsor</a></h3>
           <div id="myCarousel" class="carousel slide">
                        <div class="carousel-inner">
-                              <img src="https://makerfaire.files.wordpress.com/2014/07/disney-sponsor-slider-01.gif" alt="Presented by Disney" />
+                            <a href="http://thewaltdisneycompany.com/citizenship" target="_blank">
+                                 <img src="https://makerfaire.files.wordpress.com/2014/07/disney-sponsor-slider-01.gif" alt="Presented by Disney" />
+                            </a>
                        </div>
                </div>
 
