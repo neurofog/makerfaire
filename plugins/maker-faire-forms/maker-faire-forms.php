@@ -1804,14 +1804,15 @@ class MAKER_FAIRE_FORM {
 				$extras .= ' Deadline ' . esc_html( $this->commercial_maker_deadline ) . '. If you are not marketing or selling a product, let us know at <a href="mailto:makers@makerfaire.com">makers@makerfaire.com</a>.</p>';
 			}
 
-			if ( isset( $form['food'] ) && strtolower( $form['food'] ) == 'yes' ) {
-				$extras .= '<p>You indicated that food would be included in your exhibit. Fill out the <a href="http://makerfaire.files.wordpress.com/2014/02/mf14_tff_vendor_application.pdf">';
-				$extras .= 'Health Permit Form</a> and pay the Health Permit Fee <a href="https://www.sp.makerfaire.com/ProductDetails.asp?ProductCode=MFHPF">here</a>.';
-				$extras .= ' Deadline April 4th. If you decided not to include food in your exhibit, email <a href="mailto:makers@makerfaire.com">makers@makerfaire.com</a>.</p>';
-			}
+			// Per request from Kate Rowe: Remove Food Conditional Response for Food Maker. (Keep code. We’ll need this for BA15, but not for NY14.)
+			// if ( isset( $form['food'] ) && strtolower( $form['food'] ) == 'yes' ) {
+			// 	$extras .= '<p>You indicated that food would be included in your exhibit. Fill out the <a href="http://makerfaire.files.wordpress.com/2014/02/mf14_tff_vendor_application.pdf">';
+			// 	$extras .= 'Health Permit Form</a> and pay the Health Permit Fee <a href="https://www.sp.makerfaire.com/ProductDetails.asp?ProductCode=MFHPF">here</a>.';
+			// 	$extras .= ' Deadline April 4th. If you decided not to include food in your exhibit, email <a href="mailto:makers@makerfaire.com">makers@makerfaire.com</a>.</p>';
+			// }
 
 			if ( isset( $form['lighting'] ) && strtolower( $form['lighting'] ) == 'dark' ) {
-				$extras .= '<p>You indicated that you would like to be placed in a dark space. Please be advised that the dark area at Maker Faire also tends to be loud. Tesla coils will be played at scheduled times throughout the weekend.<p>';
+				$extras .= '<p>You indicated that you would like to be placed in a dark space. Dark space is extremely limited and non-uniform. If you can exhibit in normal or low light, let us know.<p>';
 			}
 		}
 
