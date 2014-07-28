@@ -2298,9 +2298,22 @@ class MAKER_FAIRE_FORM {
 
 		update_post_meta( $id, '_mf_form_type',  $t );
 		update_post_meta( $id, '_mf_maker_name', $r['name'] );
-		// This works for tags, need to break them out for categories...
-		wp_set_object_terms( $id, $_POST['exhibit']['tags'], 'post_tag' );
-		// Cats need to be exploded...
+		
+		// Break out tags first
+        	if(isset($_POST['exhibit']['tags']) ) {
+             
+        		$tag_string = $_POST['exhibit']['tags'];
+            		$tags_clean = array();
+            		$tags = explode( ',', $tag_string );
+            		foreach ($tags as $tag ) {
+                    		$tags_clean[] = sanitize_title( $tag );
+            		}
+            
+            		wp_set_object_terms( $id, $tags_clean, 'post_tag');
+
+        	}
+        	
+        	// need to break them out for categories...
 		$cat_string = $_POST['exhibit']['cats'];
 		$cats = explode( ',', $cat_string );
 		foreach ($cats as $cat ) {
