@@ -1158,11 +1158,27 @@ class MAKER_FAIRE_FORM {
 	private function convert_content( $key, $value ) {
 		if ( $key == 'project_website' || $key == 'project_video' || $key == 'layout' || $key == 'group_website' || $key == 'presentation_website' || $key == 'video' ) {
 			$output = '<a href="' . esc_url( $value ) . '" target="_blank">' . esc_url( $value ) . '</a>';
+		} elseif (($key == 'tags') && (is_array($value))) {
+				$tag_names = array();
+				foreach ($value as $tag_slug) {
+					$tag_term = get_term_by('slug', $tag_slug,'post_tag');
+					$tag_names[] = $tag_term->name;
+				}
+				$output = join(", ",$tag_names);
+		} elseif (($key == 'cats') && (is_array($value))) {
+
+				$cat_names = array();
+				foreach ($value as $cat_slug) {
+					$cat_term = get_term_by('slug', $cat_slug,'category');
+					$cat_names[] = $cat_term->name;
+				}
+				$output = join(", ",$cat_names);
+
 		} elseif ( is_array( $value ) ) {
 			if ( empty( $value ) ) {
 				$output = '';
 			} else {
-				$output = $value[0];
+				$output = ucfirst(join(", ",$value));
 			}
 		} elseif ( ( $key == 'maker_photo' || $key == 'm_maker_photo' || $key == 'group_photo' || $key == 'presenter_photo' ) && ! empty( $value ) ) {
 			$output = '<a href="' . esc_url( $value ) . '"><img src="' . wpcom_vip_get_resized_remote_image_url( esc_url( $value ), 130, 130, true ) . '" width="130" height="130" target="_blank"></a>';
@@ -2300,7 +2316,7 @@ class MAKER_FAIRE_FORM {
 		update_post_meta( $id, '_mf_maker_name', $r['name'] );
 		
 		// Break out tags first
-        	if(isset($_POST['exhibit']['tags']) ) {
+        	if(isset($_POST['exhibit']) && isset($_POST['exhibit']['tags']) ) {
              
         		$tag_string = $_POST['exhibit']['tags'];
             		$tags_clean = array();
@@ -2314,10 +2330,34 @@ class MAKER_FAIRE_FORM {
         	}
         	
         	// need to break them out for categories...
+		if(isset($_POST['exhibit']) && isset($_POST['exhibit']['cats']) ) {
 		$cat_string = $_POST['exhibit']['cats'];
 		$cats = explode( ',', $cat_string );
 		foreach ($cats as $cat ) {
 			wp_set_object_terms( $id, sanitize_title( $cat ), 'category', true );
+			}
+		}
+
+		// Handle front-end cats properly
+		if(isset($r['cats']) ) {
+            $cats_clean = array();
+            $cats = (is_array($r['cats'])) ? $r['cats'] : explode( ',',$r['cats']);
+			foreach ($cats as $category ) {
+        		$cats_clean[] = sanitize_title( $category );
+            }
+			wp_set_object_terms( $id, $cats_clean, 'category');
+
+		}
+
+        // Handle front-end tags properly
+        if(isset($r['tags']) ) {
+            $tags_clean = array();
+			$tags = (is_array($r['tags'])) ? $r['tags'] : explode( ',',$r['tags']);
+			foreach ($tags as $tag ) {
+        		$tags_clean[] = sanitize_title( $tag );
+            }
+			wp_set_object_terms( $id, $tags_clean, 'post_tag' );
+
 		}
 
 		return wp_update_post( $d );
