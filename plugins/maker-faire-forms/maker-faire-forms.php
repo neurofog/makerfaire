@@ -1161,7 +1161,7 @@ class MAKER_FAIRE_FORM {
 		} elseif (($key == 'tags') && (is_array($value))) {
 				$tag_names = array();
 				foreach ($value as $tag_slug) {
-					$tag_term = get_term_by('slug', $tag_slug,'post_tag');
+					$tag_term = wpcom_vip_get_term_by('slug', $tag_slug,'post_tag');
 					$tag_names[] = $tag_term->name;
 				}
 				$output = join(", ",$tag_names);
@@ -1169,7 +1169,7 @@ class MAKER_FAIRE_FORM {
 
 				$cat_names = array();
 				foreach ($value as $cat_slug) {
-					$cat_term = get_term_by('slug', $cat_slug,'category');
+					$cat_term = wpcom_vip_get_term_by('slug', $cat_slug,'category');
 					$cat_names[] = $cat_term->name;
 				}
 				$output = join(", ",$cat_names);
